@@ -1,0 +1,16 @@
+import 'package:get/get.dart';
+import '../controllers/settings_controller.dart';
+import '../controllers/theme_mode_controller.dart';
+
+class SettingsBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<SettingsController>(
+          () => SettingsController(),
+    );
+    Get.lazyPut<ThemeModeController>(
+          () => ThemeModeController(),
+    );
+
+  }
+}

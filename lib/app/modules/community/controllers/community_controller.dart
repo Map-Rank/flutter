@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/models/user_model.dart';
+import 'package:mapnrank/app/providers/laravel_provider.dart';
 import 'package:mapnrank/app/repositories/community_repository.dart';
 import 'package:mapnrank/app/repositories/sector_repository.dart';
 import 'package:mapnrank/app/repositories/user_repository.dart';
@@ -30,7 +31,7 @@ class CommunityController extends GetxController {
   var allPosts = [].obs;
   var loadingPosts = true.obs;
   var createPosts = false.obs;
-  Post? post;
+  late Post post;
 
   var loadingRegions = true.obs;
   var regions = [].obs;
@@ -142,11 +143,12 @@ class CommunityController extends GetxController {
   }
 
   Future refreshCommunity({bool showMessage = false}) async {
-
+    await getAllPosts();
   }
 
 
   getAllPosts()async{
+    allPosts.clear();
     try{
       var list = await communityRepository.getAllPosts();
       print(list);
@@ -184,7 +186,7 @@ class CommunityController extends GetxController {
   }
 
   getAllRegions() async{
-    zoneRepository.getAllRegions(2, 1);
+    return zoneRepository.getAllRegions(2, 1);
   }
 
   void filterSearchRegions(String query) {
@@ -282,6 +284,8 @@ class CommunityController extends GetxController {
       }
 
         imageFiles.add(compressedImage) ;
+      print(imageFiles);
+      post.imagesFilePaths = imageFiles;
 
     }
     else{
@@ -306,7 +310,9 @@ class CommunityController extends GetxController {
 
         }
 
-          imageFiles.add(compressedImage) ;
+
+        imageFiles.add(compressedImage) ;
+        post?.imagesFilePaths?.add(compressedImage);
 
 
         i++;
@@ -317,6 +323,7 @@ class CommunityController extends GetxController {
   createPost(Post post)async{
     try{
       communityRepository.createPost(post);
+      await getAllPosts();
     }
     catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));

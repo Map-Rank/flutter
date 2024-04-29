@@ -64,7 +64,7 @@ class PostCardWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Material(
-                                child: IconButton(onPressed: ()=> Navigator.pop(context), icon: Icon(Icons.close, size: 20))
+                                child: IconButton(onPressed: ()=> Navigator.pop(context), icon: const Icon(Icons.close, size: 20))
                             ),
                             ClipRRect(
                               borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -112,22 +112,22 @@ class PostCardWidget extends StatelessWidget {
                           )
                       ),
                     ),
-                    SizedBox(width: 20,),
+                    const SizedBox(width: 20,),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${user?.firstName} ${user?.lastName}', style: TextStyle(fontSize: 12, color: appColor, overflow: TextOverflow.ellipsis)).marginOnly(bottom: 10),
+                        Text('${user?.firstName} ${user?.lastName}', style: const TextStyle(fontSize: 12, color: appColor, overflow: TextOverflow.ellipsis)).marginOnly(bottom: 10),
                         Expanded(
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
+                                  const FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
                                   Text(zone.toString()).marginOnly(right: 10),
-                                  FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
+                                  const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
                                   SizedBox(
                                     width: 100,
-                                      child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
+                                      child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
 
                                   //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
                                 ]
@@ -168,8 +168,8 @@ class PostCardWidget extends StatelessWidget {
 
               Row(
                 children: [
-                  FaIcon(FontAwesomeIcons.heart),
-                  SizedBox(width: 10,),
+                  const FaIcon(FontAwesomeIcons.heart),
+                  const SizedBox(width: 10,),
                   if(likeCount! <= 1)...[
                     Text('${likeCount!}like'),
                   ]
@@ -178,7 +178,7 @@ class PostCardWidget extends StatelessWidget {
                   ],
 
 
-                  Spacer(),
+                  const Spacer(),
                   if(commentCount! <= 1)...[
                     Text(' ${commentCount!} Comment'),
                   ]
@@ -199,7 +199,7 @@ class PostCardWidget extends StatelessWidget {
               ).marginSymmetric(vertical: 20),
 
 
-              Divider(
+              const Divider(
                 color: Colors.grey,
               ),
               Row(

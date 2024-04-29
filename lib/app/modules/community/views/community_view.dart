@@ -134,7 +134,11 @@ class CommunityView extends GetView<CommunityController> {
                                likeCount: controller.allPosts[index].likeCount,
                                shareCount: controller.allPosts[index].shareCount,
                                images: controller.allPosts[index].imagesUrl,
-                               user: User(firstName: controller.allPosts[index].user.firstName, lastName: controller.allPosts[index].user.lastName, avatarUrl: controller.allPosts[index].user.avatarUrl),
+                               user: User(
+                                   firstName: controller.allPosts[index].user.firstName,
+                                   lastName: controller.allPosts[index].user.lastName,
+                                   avatarUrl: controller.allPosts[index].user.avatarUrl
+                                 ),
                              );
                            },
                          )

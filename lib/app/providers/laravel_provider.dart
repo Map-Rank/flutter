@@ -151,14 +151,16 @@ class LaravelApiClient extends GetxService {
 Future getAllZones(int levelId, int parentId) async {
   var headers = {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    'Accept': 'application/json'
 
   };
-  var dio1 = Dio();
-  var response = await dio1.request(
-    '${baseUrl}api/zone?level_id=$levelId&parent_id=$parentId',
-    options:_optionsNetwork,
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/zone?level_id=$levelId&parent_id=$parentId',
+    options:Options(
+      method: 'GET',
+      headers: headers,
+    ),
   );
 
   if (response.statusCode == 200) {
@@ -230,11 +232,19 @@ Future createPost(Post post)async{
   };
   var list = [];
   for(var i = 0; i < post.imagesFilePaths!.length; i++){
-    list.add(await dio.MultipartFile.fromFile(post.imagesFilePaths![i].path, filename: ''),);
+    list.add(
+        '${
+          await dio.MultipartFile.fromFile(post.imagesFilePaths![i].path,
+              filename: '')
+        }'
+    );
 
   }
+  print(list);
   var data = dio.FormData.fromMap({
-    'files': list,
+    'files':  [
+      await dio.MultipartFile.fromFile(post.imagesFilePaths![0].path, filename: 'text1.txt'),
+    ],
     'content': post.content,
     'published_at': post.publishedDate,
     'zone_id': post.zonePostId,

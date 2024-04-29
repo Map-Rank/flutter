@@ -5,7 +5,7 @@ class Routes {
   static const VERIFICATION = '/verification_view';
 
   static const ROOT = '/root';
-  static const CREATE_POST = '/community';
+  static const CREATE_POST = '/community/community_view';
 
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';

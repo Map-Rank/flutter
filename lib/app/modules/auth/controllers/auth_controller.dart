@@ -95,9 +95,6 @@ class AuthController extends GetxController {
           () => AuthService(),
     );
 
-    Get.lazyPut<AuthService>(
-          () => AuthService(),
-    );
     Get.lazyPut<LaravelApiClient>(
           () => LaravelApiClient(),
     );

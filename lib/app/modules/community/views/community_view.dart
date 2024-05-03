@@ -17,13 +17,14 @@ class CommunityView extends GetView<CommunityController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(()=>PostCardWidget());
     return  WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         backgroundColor: secondaryColor,
         floatingActionButton: Obx(() => !controller.floatingActionButtonTapped.value?
         FloatingActionButton(
-            child: FaIcon(FontAwesomeIcons.add),
+            child: const FaIcon(FontAwesomeIcons.add),
             heroTag: null,
             onPressed: (){
               controller.floatingActionButtonTapped.value = !controller.floatingActionButtonTapped.value;
@@ -56,7 +57,7 @@ class CommunityView extends GetView<CommunityController> {
 
             },
                 heroTag: null,
-                icon: FaIcon(FontAwesomeIcons.multiply),
+                icon: const FaIcon(FontAwesomeIcons.multiply),
                 label: Text('Cancel')).marginOnly(bottom: 10),
 
 
@@ -121,27 +122,61 @@ class CommunityView extends GetView<CommunityController> {
                          height: Get.height,
                          child: Obx(() => controller.loadingPosts.value?
                              LoadingCardWidget()
-                             :ListView.builder(
+                             :Scrollbar(
+                               child: ListView.builder(
+                                 //controller: controller.scrollbarController,
                            padding: EdgeInsets.only(top: 10, ),
                            itemCount: controller.allPosts.length,
                            itemBuilder: (context, index) {
-                             return PostCardWidget(
-                               content: controller.allPosts[index].content,
-                               zone: controller.allPosts[index].zone['name'],
-                               publishedDate: controller.allPosts[index].publishedDate,
-                               postId: controller.allPosts[index].postId,
-                               commentCount: controller.allPosts[index].shareCount,
-                               likeCount: controller.allPosts[index].likeCount,
-                               shareCount: controller.allPosts[index].shareCount,
-                               images: controller.allPosts[index].imagesUrl,
-                               user: User(
-                                   firstName: controller.allPosts[index].user.firstName,
-                                   lastName: controller.allPosts[index].user.lastName,
-                                   avatarUrl: controller.allPosts[index].user.avatarUrl
+
+                            controller.likeTapped.value = controller.allPosts[index].likeTapped;
+                               return PostCardWidget(
+                                 likeTapped: RxBool(controller.allPosts[index].likeTapped),
+                                 content: controller.allPosts[index].content,
+                                 zone: controller.allPosts[index].zone['name'],
+                                 publishedDate: controller.allPosts[index].publishedDate,
+                                 postId: controller.allPosts[index].postId,
+                                 commentCount: controller.allPosts[index].commentCount,
+                                 likeCount: controller.allPosts[index].likeCount,
+                                 shareCount: controller.allPosts[index].shareCount,
+                                 images: controller.allPosts[index].imagesUrl,
+                                 user: User(
+                                     firstName: controller.allPosts[index].user.firstName,
+                                     lastName: controller.allPosts[index].user.lastName,
+                                     avatarUrl: controller.allPosts[index].user.avatarUrl
                                  ),
-                             );
+
+                                 onLikeTapped: (){
+                                   controller.selectedPost.clear();
+                                   controller.selectedPost.add(controller.allPosts[index]);
+                                   if(controller.allPosts[index]==controller.selectedPost[0]){
+                                     //controller.likeTapped.value = !controller.likeTapped.value;
+                                     Get.find<PostCardWidget>().likeTapped = controller.allPosts[index].likeTapped?RxBool(false):RxBool(true);
+                                     controller.allPosts[index].likeTapped = !controller.allPosts[index].likeTapped;
+                                     controller.likeUnlikePost(controller.allPosts[index].postId);
+                                   }
+
+                                 },
+                                 onCommentTapped: () async{
+                                   controller.postDetails = await controller.getAPost(controller.allPosts[index].postId);
+                                   controller.commentList.value = controller.postDetails.commentList!;
+                                   Get.toNamed(Routes.COMMENT_VIEW);
+
+                                 },
+                                 onPictureTapped: () async{
+                                   controller.postDetails = controller.allPosts[index];
+                                   Get.toNamed(Routes.DETAILS_VIEW);
+
+                                 },
+                                 onSharedTapped: ()async{
+                                   await controller.sharePost(controller.allPosts[index].postId);
+                                 },
+
+                                 liked: controller.allPosts[index].liked,
+                               );
                            },
-                         )
+                         ),
+                             )
 
                          ),
                        ),

@@ -6,6 +6,8 @@ class Routes {
 
   static const ROOT = '/root';
   static const CREATE_POST = '/community/community_view';
+  static const COMMENT_VIEW = '/community/comment_view';
+  static const DETAILS_VIEW = '/community/details_view';
 
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';

@@ -18,4 +18,27 @@ class CommunityRepository {
     return _laravelApiClient.createPost(post);
   }
 
+  Future likeUnlikePost(int postId) {
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.likeUnlikePost(postId);
+  }
+
+  Future getAPost(int postId){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.getAPost(postId);
+
+  }
+
+  Future commentPost(int postId, String comment){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.commentPost(postId, comment);
+
+  }
+
+  Future sharePost(int postId){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.sharePost(postId);
+
+  }
+
 }

@@ -9,6 +9,8 @@ import 'package:mapnrank/app/modules/settings/views/theme_mode_view.dart';
 
 
 import '../modules/auth/bindings/auth_binding.dart';
+import '../modules/community/views/comment_view.dart';
+import '../modules/community/views/details_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import 'app_routes.dart';
 
@@ -22,5 +24,8 @@ class Theme1AppPages {
     GetPage(name: Routes.REGISTER, page: () => RegisterView(), binding: AuthBinding(), transition: Transition.zoom),
     GetPage(name: Routes.ROOT, page: () => const RootView(), binding: RootBinding(), transition: Transition.zoom ),
     GetPage(name: Routes.CREATE_POST, page: () => const CreatePostView(), transition: Transition.downToUp ),
+    GetPage(name: Routes.COMMENT_VIEW, page: () => CommentView(), transition: Transition.rightToLeft ),
+    GetPage(name: Routes.DETAILS_VIEW, page: () => DetailsView(), transition: Transition.rightToLeft ),
+
   ];
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../color_constants.dart';
+import '../community/widgets/comment_widget.dart';
 
 
 class PostCardWidget extends StatelessWidget {
@@ -17,7 +18,15 @@ class PostCardWidget extends StatelessWidget {
     this.likeCount,
     this.commentCount,
     this.shareCount,
-     this.images
+     this.images,
+     this.liked,
+     this.onLikeTapped,
+     this.onCommentTapped,
+     this.onPictureTapped,
+     this.onSharedTapped,
+     this.shareTapped,
+     this.likeTapped,
+     this.commentTapped,
   }) : super(key: key);
 
   final List? sectors;
@@ -26,10 +35,20 @@ class PostCardWidget extends StatelessWidget {
   final int? postId;
   var zone;
   final User? user;
-  final int? likeCount;
+  int? likeCount;
   final int? commentCount;
   final int? shareCount;
   final List? images;
+  final bool? liked;
+  final Function()? onLikeTapped;
+   final Function()? onCommentTapped;
+   final Function()? onSharedTapped;
+   final Function()? onPictureTapped;
+  RxBool? likeTapped;
+  var commentTapped;
+  var shareTapped;
+
+
 
 
   @override
@@ -142,39 +161,81 @@ class PostCardWidget extends StatelessWidget {
               ),
               Text(content!),
               if(images!.isNotEmpty)...[
-                ClipRect(
-                  child: FadeInImage(
-                    width: Get.width,
-                    height: Get.height/4,
-                    fit: BoxFit.cover,
-                    image:  NetworkImage('${GlobalService().baseUrl}'
-                        '${images![0]['url'].substring(1,images![0]['url'].length)}',
-                        headers: GlobalService.getTokenHeaders()
-                    ),
-                    placeholder: const AssetImage(
-                        "assets/images/loading.gif"),
-                    imageErrorBuilder:
-                        (context, error, stackTrace) {
-                      return Image.asset(
-                          "assets/images/loading.gif",
+                if( images!.length == 1)...[
+                  GestureDetector(
+                    onTap: onPictureTapped,
+                    child: ClipRect(
+                      child: FadeInImage(
                           width: Get.width,
-                          height: Get.height/4,
-                          fit: BoxFit.fitWidth);
-                    },
-                  ),
-                ),
+                          height: Get.height/3,
+                          fit: BoxFit.cover,
+                          image:  NetworkImage('${GlobalService().baseUrl}'
+                              '${images![0]['url'].substring(1,images![0]['url'].length)}',
+                              headers: GlobalService.getTokenHeaders()
+                          ),
+                          placeholder: const AssetImage(
+                              "assets/images/loading.gif"),
+                          imageErrorBuilder:
+                              (context, error, stackTrace) {
+                            return Image.asset(
+                                "assets/images/loading.gif",
+                                width: Get.width,
+                                height: Get.height/4,
+                                fit: BoxFit.fitWidth);
+                          },
+                        )
+
+                    ),
+                  )
+                ]
+                else...[
+                  SizedBox(
+                    height: Get.height/4,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: images?.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                            onTap: onPictureTapped,
+                          child: FadeInImage(
+                            width: Get.width-50,
+                            height: Get.height/4,
+                            fit: BoxFit.cover,
+                            image:  NetworkImage('${GlobalService().baseUrl}'
+                                '${images![index]['url'].substring(1,images![index]['url'].length)}',
+                                headers: GlobalService.getTokenHeaders()
+                            ),
+                            placeholder: const AssetImage(
+                                "assets/images/loading.gif"),
+                            imageErrorBuilder:
+                                (context, error, stackTrace) {
+                              return Image.asset(
+                                  "assets/images/loading.gif",
+                                  width: Get.width,
+                                  height: Get.height/4,
+                                  fit: BoxFit.fitWidth);
+                            },
+                          ).marginOnly(right: 10),
+                        );
+
+                      },
+                    ),
+                  )
+                ]
+
+               ,
               ],
 
 
               Row(
                 children: [
-                  const FaIcon(FontAwesomeIcons.heart),
+                  FaIcon(FontAwesomeIcons.heart, color: liked! ? interfaceColor: null),
                   const SizedBox(width: 10,),
                   if(likeCount! <= 1)...[
-                    Text('${likeCount!}like'),
+                    Text('${likeCount!} like'),
                   ]
                   else...[
-                    Text('${likeCount!}likes'),
+                    Text('${likeCount!} likes'),
                   ],
 
 
@@ -196,7 +257,7 @@ class PostCardWidget extends StatelessWidget {
 
 
                 ],
-              ).marginSymmetric(vertical: 20),
+              ).marginOnly(top: 10, bottom: 10),
 
 
               const Divider(
@@ -205,23 +266,35 @@ class PostCardWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    children: const [
-                      FaIcon(FontAwesomeIcons.heart),
-                      Text('Like')
-                    ],
+                  GestureDetector(
+                    onTap:onLikeTapped,
+
+                    child: Column(
+                      children:  [
+                        Obx(() =>   !likeTapped!.value?FaIcon(FontAwesomeIcons.heart,):
+                        FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,),),
+
+                        Text('Like')
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: const [
-                      FaIcon(FontAwesomeIcons.comment),
-                      Text('Comment')
-                    ],
+                  GestureDetector(
+                    onTap: onCommentTapped,
+                    child: Column(
+                      children: const [
+                        FaIcon(FontAwesomeIcons.comment),
+                        Text('Comment')
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: const [
-                      FaIcon(FontAwesomeIcons.shareFromSquare),
-                      Text('Share'),
-                    ],
+                  GestureDetector(
+                    onTap: onSharedTapped,
+                    child: Column(
+                      children: const [
+                        FaIcon(FontAwesomeIcons.shareFromSquare),
+                        Text('Share'),
+                      ],
+                    ),
                   ),
 
                   
@@ -229,13 +302,11 @@ class PostCardWidget extends StatelessWidget {
 
                 ],
                 
-              )
-
-
-
+              ),
 
             ]
         ).paddingSymmetric(horizontal: 10, vertical: 10)
     );
   }
+
 }

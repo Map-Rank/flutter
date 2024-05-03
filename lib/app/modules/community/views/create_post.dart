@@ -597,8 +597,6 @@ class CreatePostView extends GetView<CommunityController> {
                              //alignment: Alignment.centerRight,
                              child: IconButton(
                                  onPressed: (){
-
-                                   controller.imageFiles.removeAt(index);
                                    controller.imageFiles.removeAt(index);
                                  },
                                  icon: Icon(Icons.delete, color: inactive, size: 25, )

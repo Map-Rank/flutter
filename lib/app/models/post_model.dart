@@ -15,8 +15,13 @@ class Post extends Model {
   int? commentCount;
   int? shareCount;
   int? likeCount;
+  bool? likeTapped;
+  bool? commentTapped;
+  bool? shareTapped;
   User? user;
+  bool? liked;
   List? imagesFilePaths;
+  List? commentList;
 
   Post({this.postId,
     this.publishedDate,
@@ -30,7 +35,12 @@ class Post extends Model {
     this.commentCount,
     this.zonePostId,
     this.sectorPostId,
-    this.imagesFilePaths
+    this.imagesFilePaths,
+    this.liked,
+    this.likeTapped,
+    this.commentTapped,
+    this.shareTapped,
+    this.commentList
   });
 
   Post.fromJson(Map<String, dynamic> json) {

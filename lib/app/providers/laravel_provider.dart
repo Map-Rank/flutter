@@ -3,6 +3,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
@@ -224,36 +225,111 @@ Future getAllPosts() async {
 }
 
 Future createPost(Post post)async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+  var request = http.MultipartRequest('POST', Uri.parse('${GlobalService().baseUrl}/api/post'));
+  request.fields.addAll({
+    'content': post.content!,
+    'zone_id': post.zonePostId,
+    'sectors': '1'
+  });
+
+  for(var i = 0; i < post.imagesFilePaths!.length; i++){
+    request.files.add(await http.MultipartFile.fromPath('media[]', ".${post.imagesFilePaths![i].path}"));
+    }
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var data = await response.stream.bytesToString();
+    var result = json.decode(data);
+    if (result['status'] == true) {
+      return result['data'];
+    } else {
+      throw  Exception((result['message']));
+    }
+  }
+  else {
+    throw Exception(response.reasonPhrase);
+  }
+
+}
+
+
+Future likeUnlikePost(int postId)async{
+    print(postId);
 
   var headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
   };
-  var list = [];
-  for(var i = 0; i < post.imagesFilePaths!.length; i++){
-    list.add(
-        '${
-          await dio.MultipartFile.fromFile(post.imagesFilePaths![i].path,
-              filename: '')
-        }'
-    );
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/post/like/$postId',
+    options: Options(
+      method: 'POST',
+      headers: headers,
+    ),
+  );
 
+  if (response.statusCode == 200) {
+    if (response.data['status'] == true) {
+      return response.data['data'];
+    } else {
+      throw  Exception(response.data['message']);
+    }
   }
-  print(list);
-  var data = dio.FormData.fromMap({
-    'files':  [
-      await dio.MultipartFile.fromFile(post.imagesFilePaths![0].path, filename: 'text1.txt'),
-    ],
-    'content': post.content,
-    'published_at': post.publishedDate,
-    'zone_id': post.zonePostId,
-    'sectors': 1,
-  });
+  else {
+    throw Exception(response.statusMessage);
+  }
 
-  var dio1 = Dio();
-  var response = await dio1.request(
-    '${GlobalService().baseUrl}api/post',
+}
+
+Future getAPost(int postId) async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/post/$postId',
+    options: Options(
+      method: 'GET',
+      headers: headers,
+    ),
+  );
+
+  if (response.statusCode == 200) {
+    if (response.data['status'] == true) {
+      return response.data['data'];
+    } else {
+      throw  Exception(response.data['message']);
+    }
+  }
+  else {
+    throw Exception(response.statusMessage);
+  }
+}
+
+Future commentPost(int postId, String comment)async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+  var data = json.encode({
+    "text": comment
+  });
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/post/comment/$postId',
     options: Options(
       method: 'POST',
       headers: headers,
@@ -269,13 +345,38 @@ Future createPost(Post post)async{
     }
   }
   else {
-    //print(response.statusMessage);
-    throw  Exception(response.statusMessage);
+    throw Exception(response.statusMessage);
   }
+
 
 }
 
+sharePost(int postId) async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/post/share/1933',
+    options: Options(
+      method: 'POST',
+      headers: headers,
+    ),
+  );
 
+  if (response.statusCode == 200) {
+    if (response.data['status'] == true) {
+      return response.data['data'];
+    } else {
+      throw  Exception(response.data['message']);
+    }
+  }
+  else {
+    throw Exception(response.statusMessage);
+  }
+}
 
 
 

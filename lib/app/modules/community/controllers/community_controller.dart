@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,11 +15,13 @@ import 'package:mapnrank/app/repositories/user_repository.dart';
 import 'package:mapnrank/app/repositories/zone_repository.dart';
 import 'package:mapnrank/common/ui.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Im;
 import 'dart:math' as Math;
 
 
 import '../../../models/post_model.dart';
+import '../../global_widgets/post_card_widget.dart';
 
 
 
@@ -32,6 +35,7 @@ class CommunityController extends GetxController {
   var loadingPosts = true.obs;
   var createPosts = false.obs;
   late Post post;
+  Post postDetails = Post();
 
   var loadingRegions = true.obs;
   var regions = [].obs;
@@ -72,7 +76,19 @@ class CommunityController extends GetxController {
 
   late Post postModel;
 
+  late ScrollController scrollbarController;
+
   var imageFiles = [].obs;
+
+  RxBool likeTapped = false.obs;
+
+  var selectedPost = [].obs;
+
+  var postSelectedIndex = 0.obs;
+
+  var comment = ''.obs;
+
+  var commentList = [].obs;
 
   CommunityController() {
 
@@ -84,6 +100,8 @@ class CommunityController extends GetxController {
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
     sectorRepository = SectorRepository();
+
+    scrollbarController = ScrollController()..addListener(_scrollListener);
 
     await getAllPosts();
 
@@ -146,6 +164,12 @@ class CommunityController extends GetxController {
     await getAllPosts();
   }
 
+  void _scrollListener() {
+    print(scrollbarController.position.extentAfter);
+    if (scrollbarController.position.extentAfter < 10) {
+        allPosts.addAll(List.generate(5, (index) => 'Inserted $index'));
+    }
+  }
 
   getAllPosts()async{
     allPosts.clear();
@@ -167,7 +191,9 @@ class CommunityController extends GetxController {
             content: list[i]['content'],
             publishedDate: list[i]['published_at'],
             imagesUrl: list[i]['images'],
-            user: user
+            user: user,
+            liked: list[i]['liked'],
+            likeTapped: list[i]['liked'],
 
         );
 
@@ -284,7 +310,6 @@ class CommunityController extends GetxController {
       }
 
         imageFiles.add(compressedImage) ;
-      print(imageFiles);
       post.imagesFilePaths = imageFiles;
 
     }
@@ -312,7 +337,7 @@ class CommunityController extends GetxController {
 
 
         imageFiles.add(compressedImage) ;
-        post?.imagesFilePaths?.add(compressedImage);
+        post.imagesFilePaths = imageFiles;
 
 
         i++;
@@ -322,14 +347,146 @@ class CommunityController extends GetxController {
 
   createPost(Post post)async{
     try{
-      communityRepository.createPost(post);
+      await communityRepository.createPost(post);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post created successfully' ));
       await getAllPosts();
+
     }
     catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
       createPosts.value = true;
+    }
+
+  }
+
+  likeUnlikePost(int postId)async{
+    try{
+      //await communityRepository.likeUnlikePost(postId);
+
+    }
+    catch (e) {
+      likeTapped.value = !likeTapped.value;
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+    finally {
+
+    }
+
+  }
+
+  getAPost(int postId)async{
+    try{
+      var result= await communityRepository.getAPost(postId);
+      print("Result is : ${result}");
+      User user = User(userId: result['creator'][0]['id'],
+          lastName:result['creator'][0]['last_name'],
+          firstName: result['creator'][0]['first_name'],
+          avatarUrl: result['creator'][0]['avatar']
+      );
+      Post postModel = Post(
+        zone: result['zone'],
+        postId: result['id'],
+        commentCount:result ['comment_count'],
+        likeCount:result ['like_count'] ,
+        shareCount:result ['share_count'],
+        content: result['content'],
+        publishedDate: result['published_at'],
+        imagesUrl: result['images'],
+        user: user,
+        liked: result['liked'],
+        likeTapped: result['liked'],
+        commentList: result['comments']
+
+      );
+      return postModel;
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+    finally {
+
+    }
+
+  }
+
+  commentPost(int postId, String comment)async{
+    try{
+      var result= await communityRepository.commentPost(postId, comment);
+      print("Result is : ${result}");
+      User user = User(userId: result['creator'][0]['id'],
+          lastName:result['creator'][0]['last_name'],
+          firstName: result['creator'][0]['first_name'],
+          avatarUrl: result['creator'][0]['avatar']
+      );
+      Post postModel = Post(
+          zone: result['zone'],
+          postId: result['id'],
+          commentCount:result ['comment_count'],
+          likeCount:result ['like_count'] ,
+          shareCount:result ['share_count'],
+          content: result['content'],
+          publishedDate: result['published_at'],
+          imagesUrl: result['images'],
+          user: user,
+          liked: result['liked'],
+          likeTapped: result['liked'],
+          commentList: result['comments']
+
+      );
+      return postModel;
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+    finally {
+
+    }
+
+  }
+
+  sharePost(int postId)async{
+    try{
+      await communityRepository.sharePost(postId);
+      showDialog(context: Get.context!,
+          barrierDismissible: true,
+          builder: (context) {
+        return Center(
+          child: Container(
+            height: Get.height/2.5,
+            width: Get.width-20,
+            padding: EdgeInsets.all(20),
+            color: Colors.white,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  Expanded(child: Text('https://dev.residat.com/show-post/${postId}', style: TextStyle(color: Colors.grey, fontSize: 14),)),
+                    GestureDetector(
+                      onTap: () async{
+                        await Clipboard.setData(ClipboardData(text: "your text"));
+                      },
+                        child: FaIcon(FontAwesomeIcons.copy))
+                ],)
+
+              ],
+            ),
+          ),
+        );
+          },
+      );
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+    finally {
+
     }
 
   }

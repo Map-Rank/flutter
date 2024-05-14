@@ -90,23 +90,43 @@ class CommentView extends GetView<CommunityController> {
     children:
                 [
                   PostCardWidget(
+                    popUpWidget: SizedBox(),
                     likeTapped: RxBool(controller.postDetails!.likeTapped!),
                     content: controller.postDetails!.content,
                     zone: controller.postDetails!.zone['name'],
                     publishedDate: controller.postDetails!.publishedDate,
                     postId: controller.postDetails!.postId,
                     commentCount: controller.postDetails!.commentCount,
-                    likeCount: controller.postDetails!.likeCount,
+                    likeCount: RxInt(controller.selectedPost.contains(controller.postDetails) && controller.postDetails!.likeTapped!?
+                    controller.postDetails.likeCount!-1
+                        :controller.selectedPost.contains(controller.postDetails) && !controller.postDetails!.likeTapped!?
+                    controller.postDetails.likeCount!+1:
+                    controller.postDetails.likeCount!,),
                     shareCount: controller.postDetails!.shareCount,
                     images: controller.postDetails!.imagesUrl,
                     user: controller.postDetails!.user!,
+                    likeWidget:  Obx(() =>
+                    controller.selectedPost.contains(controller.postDetails) &&controller.postDetails.likeTapped!?
+                    const FaIcon(FontAwesomeIcons.heart,):
+                    controller.selectedPost.contains(controller.postDetails) &&!controller.postDetails.likeTapped!?
+                    const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
+                    !controller.postDetails.likeTapped!?
+                    const FaIcon(FontAwesomeIcons.heart,):
+                    const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,)
+
+
+                      ,),
+
+
                     onLikeTapped: (){
-                      controller.selectedPost.clear();
-                      controller.selectedPost.add(controller.postDetails);
-                      if(controller.postDetails == controller.selectedPost[0]){
-                        //controller.likeTapped.value = !controller.likeTapped.value;
-                        controller.postDetails!.likeTapped = !controller.postDetails!.likeTapped!;
-                        controller.likeUnlikePost(controller.postDetails!.postId!);
+
+                      if( controller.selectedPost.contains(controller.postDetails)){
+                        controller.selectedPost.remove(controller.postDetails);
+                        controller.likeUnlikePost(controller.postDetails.postId!);
+                      }
+                      else{
+                        controller.selectedPost.add(controller.postDetails);
+                        controller.likeUnlikePost(controller.postDetails.postId!);
                       }
 
                     },

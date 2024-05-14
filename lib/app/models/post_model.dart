@@ -8,7 +8,7 @@ class Post extends Model {
   String? publishedDate;
   var zone;
   var zonePostId;
-  var sectorPostId;
+  var postSectors;
   int? postId;
   List? sectors;
   List? imagesUrl;
@@ -34,7 +34,7 @@ class Post extends Model {
     this.shareCount,
     this.commentCount,
     this.zonePostId,
-    this.sectorPostId,
+    this.postSectors,
     this.imagesFilePaths,
     this.liked,
     this.likeTapped,

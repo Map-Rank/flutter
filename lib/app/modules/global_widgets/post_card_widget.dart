@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../color_constants.dart';
+import '../community/controllers/community_controller.dart';
 import '../community/widgets/comment_widget.dart';
 
 
 class PostCardWidget extends StatelessWidget {
-   PostCardWidget({Key? key,
+  PostCardWidget({Key? key,
     this.user,
     this.sectors,
     this.zone,
@@ -18,15 +19,18 @@ class PostCardWidget extends StatelessWidget {
     this.likeCount,
     this.commentCount,
     this.shareCount,
-     this.images,
-     this.liked,
-     this.onLikeTapped,
-     this.onCommentTapped,
-     this.onPictureTapped,
-     this.onSharedTapped,
-     this.shareTapped,
-     this.likeTapped,
-     this.commentTapped,
+    this.images,
+    this.liked,
+    this.onLikeTapped,
+    this.onCommentTapped,
+    this.onPictureTapped,
+    this.onSharedTapped,
+    this.shareTapped,
+    this.likeTapped,
+    this.commentTapped,
+    this.likeWidget,
+    this.onActionTapped,
+    this.popUpWidget
   }) : super(key: key);
 
   final List? sectors;
@@ -35,18 +39,21 @@ class PostCardWidget extends StatelessWidget {
   final int? postId;
   var zone;
   final User? user;
-  int? likeCount;
+  RxInt? likeCount;
   final int? commentCount;
   final int? shareCount;
   final List? images;
   final bool? liked;
   final Function()? onLikeTapped;
-   final Function()? onCommentTapped;
-   final Function()? onSharedTapped;
-   final Function()? onPictureTapped;
+  final Function()? onCommentTapped;
+  final Function()? onSharedTapped;
+  final Function()? onPictureTapped;
+  final Function()? onActionTapped;
   RxBool? likeTapped;
   var commentTapped;
   var shareTapped;
+  Widget? likeWidget;
+  Widget? popUpWidget;
 
 
 
@@ -66,7 +73,7 @@ class PostCardWidget extends StatelessWidget {
           //borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
@@ -139,24 +146,34 @@ class PostCardWidget extends StatelessWidget {
                         Text('${user?.firstName} ${user?.lastName}', style: const TextStyle(fontSize: 12, color: appColor, overflow: TextOverflow.ellipsis)).marginOnly(bottom: 10),
                         Expanded(
                             child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
-                                  Text(zone.toString()).marginOnly(right: 10),
-                                  const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
-                                  SizedBox(
-                                    width: 100,
-                                      child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
+                                SizedBox(
+                                    width: Get.width/4,
+                                    child: Text(zone.toString()).marginOnly(right: 10)),
+                                const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
+                                SizedBox(
+                                    width: Get.width/4,
+                                    child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
 
-                                  //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
-                                ]
+
+                                //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
+                              ],
                             )
                         ),
                       ],
-                    )
+                    ),
+                    const Spacer(),
+
+                    popUpWidget!,
+
 
 
                   ],
+
+
                 ),
               ),
               Text(content!),
@@ -165,7 +182,7 @@ class PostCardWidget extends StatelessWidget {
                   GestureDetector(
                     onTap: onPictureTapped,
                     child: ClipRect(
-                      child: FadeInImage(
+                        child: FadeInImage(
                           width: Get.width,
                           height: Get.height/3,
                           fit: BoxFit.cover,
@@ -196,7 +213,7 @@ class PostCardWidget extends StatelessWidget {
                       itemCount: images?.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                            onTap: onPictureTapped,
+                          onTap: onPictureTapped,
                           child: FadeInImage(
                             width: Get.width-50,
                             height: Get.height/4,
@@ -223,19 +240,19 @@ class PostCardWidget extends StatelessWidget {
                   )
                 ]
 
-               ,
+                ,
               ],
 
 
-              Row(
+              Obx(() => Row(
                 children: [
-                  FaIcon(FontAwesomeIcons.heart, color: liked! ? interfaceColor: null),
+                  Obx(() => FaIcon(FontAwesomeIcons.heart, color: likeCount!.value>0! ? interfaceColor: null),),
                   const SizedBox(width: 10,),
-                  if(likeCount! <= 1)...[
-                    Text('${likeCount!} like'),
+                  if(likeCount!.value <= 1)...[
+                    Obx(() => Text('${likeCount!.value} like'),)
                   ]
                   else...[
-                    Text('${likeCount!} likes'),
+                    Obx(() => Text('${likeCount!.value} likes'),)
                   ],
 
 
@@ -257,7 +274,7 @@ class PostCardWidget extends StatelessWidget {
 
 
                 ],
-              ).marginOnly(top: 10, bottom: 10),
+              ).marginOnly(top: 10, bottom: 10),),
 
 
               const Divider(
@@ -271,10 +288,10 @@ class PostCardWidget extends StatelessWidget {
 
                     child: Column(
                       children:  [
-                        Obx(() =>   !likeTapped!.value?FaIcon(FontAwesomeIcons.heart,):
-                        FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,),),
 
-                        Text('Like')
+                        likeWidget!,
+
+                        const Text('Like')
                       ],
                     ),
                   ),
@@ -297,11 +314,11 @@ class PostCardWidget extends StatelessWidget {
                     ),
                   ),
 
-                  
+
 
 
                 ],
-                
+
               ),
 
             ]

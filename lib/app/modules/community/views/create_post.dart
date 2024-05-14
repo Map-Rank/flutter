@@ -5,8 +5,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
+import 'package:mapnrank/app/modules/community/widgets/buildSelectSector.dart';
+import 'package:mapnrank/app/modules/community/widgets/buildSelectZone.dart';
 import 'package:mapnrank/app/modules/global_widgets/location_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
+import 'package:mapnrank/app/services/global_services.dart';
 import '../../../../color_constants.dart';
 
 class CreatePostView extends GetView<CommunityController> {
@@ -21,12 +24,12 @@ class CreatePostView extends GetView<CommunityController> {
           backgroundColor: Get.theme.colorScheme.secondary,
           elevation: 0,
           title:  Text(
-            'Create a Post'.tr,
-            style: Get.textTheme.headline6!.merge(TextStyle(color: Colors.white)),
+            !controller.createUpdatePosts.value?'Create a Post'.tr:'Update a Post',
+            style: Get.textTheme.headline6!.merge(const TextStyle(color: Colors.white)),
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
             onPressed: () => {
               Navigator.pop(context),
               //Get.back()
@@ -38,7 +41,9 @@ class CreatePostView extends GetView<CommunityController> {
             child: Center(
                 child: InkWell(
                     onTap: () async{
-                      controller.createPost(controller.post!);
+                      !controller.createUpdatePosts.value?
+                      controller.createPost(controller.post!)
+                      :controller.updatePost(controller.post!);
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -49,13 +54,18 @@ class CreatePostView extends GetView<CommunityController> {
 
                         width: Get.width/2,
                         height: 40,
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                         child: Center(
-                            child: Obx(() =>  !controller.createPosts.value ?
-                            Text('Post', style: Get.textTheme.bodyText2!.merge(TextStyle(color: Colors.white)))
-                                : SizedBox(height: 20,
-                                child: SpinKitThreeBounce(color: Colors.white, size: 20))
+                            child: Obx(() =>  !controller.createUpdatePosts.value?!controller.createPosts.value ?
+                            Text('Post', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                : const SizedBox(height: 20,
+                                child: SpinKitThreeBounce(color: Colors.white, size: 20)):
+                                !controller.updatePosts.value?
+                            Text('Update', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                    : const SizedBox(height: 20,
+                                    child: SpinKitThreeBounce(color: Colors.white, size: 20))
+
                             )
                         )
                     )
@@ -74,7 +84,7 @@ class CreatePostView extends GetView<CommunityController> {
           child: Container(
             decoration: const BoxDecoration(color: backgroundColor,
               ),
-            child:  Obx(() => ListView(
+            child:  ListView(
               children: [
                 Column(
                     children: <Widget>[
@@ -85,6 +95,7 @@ class CreatePostView extends GetView<CommunityController> {
                               child: SizedBox(
                                 height: Get.height*0.5,
                                 child: TextFormField(
+                                  initialValue: controller.post.content,
                                   style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
                                   cursorColor: Colors.black,
                                   textInputAction:TextInputAction.done ,
@@ -97,7 +108,7 @@ class CreatePostView extends GetView<CommunityController> {
                                       fillColor: Palette.background,
                                       enabledBorder: InputBorder.none,
                                       //filled: true,
-                                      prefixIcon: Icon(Icons.description),
+                                      prefixIcon: const Icon(Icons.description),
                                       hintText: 'Share your thoughts ',
                                       hintStyle: TextStyle(fontSize: 28, color: Colors.grey.shade400)
                                   ),
@@ -111,415 +122,69 @@ class CreatePostView extends GetView<CommunityController> {
 
                 buildInputImages(context),
 
-                buildSelectSector(context),
+                BuildSelectSector(),
 
-                buildSelectZone(context),
+                BuildSelectZone(),
 
 
 
 
               ],
-            ).paddingOnly(bottom: 80),)
+            ).paddingOnly(bottom: 80)
           ),
         )
     );
   }
 
-  Widget buildSelectSector(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
 
-        Text('Select a sector',
-          style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-          textAlign: TextAlign.start,
-        ),
-        Obx(() =>
-            Column(
-              children: [
-                TextFieldWidget(
-                  readOnly: false,
-                  keyboardType: TextInputType.text,
-                  validator: (input) => input!.isEmpty ? 'Required field' : null,
-                  iconData: FontAwesomeIcons.search,
-                  style: const TextStyle(color: labelColor),
-                  hintText: 'Select or search by sector name',
-                  onChanged: (value)=>{
-                    controller.filterSearchSectors(value)
-                  },
-                  errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                ),
-                controller.loadingSectors.value ?
-                Column(
-                  children: [
-                    for(var i=0; i < 4; i++)...[
-                      Container(
-                          width: Get.width,
-                          height: 60,
-                          margin: const EdgeInsets.all(5),
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            child: Image.asset(
-                              'assets/images/loading.gif',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 40,
-                            ),
-                          ))
-                    ]
-                  ],
-                ) :
-                Container(
-                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                    // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                      ],
-                    ),
-
-                    child: ListView.builder(
-                      //physics: AlwaysScrollableScrollPhysics(),
-                        itemCount:controller.sectors.length,
-                        shrinkWrap: true,
-                        primary: false,
-                        itemBuilder: (context, index) {
-
-                          return GestureDetector(
-                              onTap: () async {
-
-
-                                controller.selectedIndex. value = index;
-                                if(controller.sectorsSelected.contains(controller.sectors[index]) ){
-                                  controller.sectorsSelected.remove(controller.sectors[index]);
-                                }
-                                else{
-                                  controller.sectorsSelected.add(controller.sectors[index]);
-                                  controller.post?.sectorPostId = controller.sectors[index]['id'];
-                                }
-
-
-
-                              },
-                              child: Obx(() => LocationWidget(
-                                regionName: controller.sectors[index]['name'],
-                                selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
-                              ).marginOnly(bottom: 5))
-                          );
-                        })
-                )
-              ],
-            ),
-        ).marginOnly(bottom: 20),
-
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget buildSelectZone(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Select a region',
-            style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-            textAlign: TextAlign.start,
-          ),
-          Obx(() =>
-              Column(
-                children: [
-                  TextFieldWidget(
-                    readOnly: false,
-                    keyboardType: TextInputType.text,
-                    validator: (input) => input!.isEmpty ? 'Required field' : null,
-                    //onChanged: (input) => controller.selectUser.value = input,
-                    //labelText: "Research receiver".tr,
-                    iconData: FontAwesomeIcons.search,
-                    style: const TextStyle(color: labelColor),
-                    hintText: 'Search by region name',
-                    onChanged: (value)=>{
-                      controller.filterSearchRegions(value)
-                    },
-                    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                  ),
-                  controller.loadingRegions.value ?
-                  Column(
-                    children: [
-                      for(var i=0; i < 4; i++)...[
-                        Container(
-                            width: Get.width,
-                            height: 60,
-                            margin: const EdgeInsets.all(5),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.asset(
-                                'assets/images/loading.gif',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: 40,
-                              ),
-                            ))
-                      ]
-                    ],
-                  ) :
-                  Container(
-                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                        ],
-                      ),
-
-                      child: ListView.builder(
-                        //physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
-
-                            return GestureDetector(
-                                onTap: () async {
-                                  //controller.regionSelectedValue.clear();
-                                  if(controller.regionSelectedValue.contains(controller.regions[index]) ){
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.remove(controller.regions[index]);
-                                  }
-                                  else{
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.add(controller.regions[index]);
-                                  }
-                                  controller.regionSelected.value = !controller.regionSelected.value;
-                                  controller.regionSelectedIndex.value = index;
-                                  controller.divisionsSet = await controller.getAllDivisions(index);
-                                  controller.listDivisions.value =  controller.divisionsSet['data'];
-                                  controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                  controller.divisions.value =  controller.listDivisions;
-
-                                  print(controller.regionSelected);
-
-                                },
-                                child: Obx(() => LocationWidget(
-                                  regionName: controller.regions[index]['name'],
-                                  selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
-                                ))
-                            );
-                          })
-                  )
-                ],
-              ),
-          ).marginOnly(bottom: 20),
-          if(controller.regionSelectedValue.isNotEmpty)...[
-            Text('Select a division',
-              style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
-            ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchDivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingDivisions.value ?
-                    Column(
-                      children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                          ],
-                        ),
-
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async{
-                                    if(controller.divisionSelectedValue.contains(controller.divisions[index]) ){
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.remove(controller.divisions[index]);
-                                    }
-                                    else{
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.add(controller.divisions[index]);
-                                    }
-                                    controller.divisionSelected.value = !controller.divisionSelected.value;
-                                    controller.divisionSelectedIndex.value = index;
-                                    controller.subdivisionsSet = await controller.getAllSubdivisions(index);
-                                    controller.listSubdivisions.value = controller.subdivisionsSet['data'];
-                                    controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
-                                    controller.subdivisions.value = controller.listSubdivisions;
-                                    //print(controller.subdivisionSelectedValue[0]['id'].toString());
-
-                                  },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.divisions[index]['name'],
-                                    selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
-                  ],
-                ),
-            ).marginOnly(bottom: 20),
-          ],
-          if(controller.divisionSelectedValue.isNotEmpty)...[
-            Text('Select a subdivision',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
-            ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by sub-division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchSubdivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingSubdivisions.value ?
-                    Column(
-                      children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                          ],
-                        ),
-
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async {
-
-                                    if(controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ){
-                                      controller.subdivisionSelectedValue.clear();
-                                      controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
-                                    }
-                                    else{
-                                      controller.subdivisionSelectedValue.clear();
-                                      controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
-                                      controller.post?.zonePostId = controller.subdivisions[index]['id'];
-                                    }
-                                    controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
-                                    controller.subdivisionSelectedIndex.value = index;
-
-
-                                    print(controller.subdivisions);
-
-                                    //controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
-
-
-                                    //print(controller.subdivisionSelected);
-
-                                  },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.subdivisions[index]['name'],
-                                    selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
-                  ],
-                ),
-            ).marginOnly(bottom: 20),
-          ],
-
-          const SizedBox(height: 20),
-
-        ],
-      ),
-
-    );
-  }
 
   Widget buildInputImages(BuildContext context){
     return Container(
-      decoration: BoxDecoration(
-        //borderRadius: BorderRadius.all(Radius.circular(10)),
+      decoration: const BoxDecoration(
         color: backgroundColor,
       ),
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.only(bottom: 20),
       child: Column(
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
+         Obx(() => 
+             controller.createUpdatePosts.value?
+             SizedBox(
+               height: Get.height/4,
+               child: ListView.builder(
+                 scrollDirection: Axis.horizontal,
+                 itemCount: controller.post.imagesUrl?.length,
+                 itemBuilder: (context, index) {
+                   return GestureDetector(
+                     //onTap: onPictureTapped,
+                     child: FadeInImage(
+                       width: Get.width-50,
+                       height: Get.height/4,
+                       fit: BoxFit.cover,
+                       image:  NetworkImage('${GlobalService().baseUrl}'
+                           '${controller.post.imagesUrl![index]['url'].substring(1,controller.post.imagesUrl![index]['url'].length)}',
+                           headers: GlobalService.getTokenHeaders()
+                       ),
+                       placeholder: const AssetImage(
+                           "assets/images/loading.gif"),
+                       imageErrorBuilder:
+                           (context, error, stackTrace) {
+                         return Image.asset(
+                             "assets/images/loading.gif",
+                             width: Get.width,
+                             height: Get.height/4,
+                             fit: BoxFit.fitWidth);
+                       },
+                     ).marginOnly(right: 10),
+                   );
+
+                 },
+               ),
+             )
+                 :SizedBox()
+                 
+         ),
          Obx(() =>  controller.imageFiles.length <= 0 ?
          GestureDetector(
              onTap: () {
@@ -527,12 +192,12 @@ class CreatePostView extends GetView<CommunityController> {
                    context: Get.context!,
                    builder: (_){
                      return AlertDialog(
-                       shape: RoundedRectangleBorder(
+                       shape: const RoundedRectangleBorder(
                            borderRadius: BorderRadius.all(Radius.circular(20))
                        ),
                        content: Container(
                            height: 140,
-                           padding: EdgeInsets.all(10),
+                           padding: const EdgeInsets.all(10),
                            child: Column(
                                children: [
                                  ListTile(
@@ -540,16 +205,16 @@ class CreatePostView extends GetView<CommunityController> {
                                      await controller.pickImage(ImageSource.camera);
                                      Navigator.pop(Get.context!);
                                    },
-                                   leading: Icon(FontAwesomeIcons.camera),
-                                   title: Text('Take a picture', style: Get.textTheme.headline1!.merge(TextStyle(fontSize: 15))),
+                                   leading: const Icon(FontAwesomeIcons.camera),
+                                   title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
                                  ),
                                  ListTile(
                                    onTap: ()async{
                                      await controller.pickImage(ImageSource.gallery);
                                      Navigator.pop(Get.context!);
                                    },
-                                   leading: Icon(FontAwesomeIcons.image),
-                                   title: Text('Upload an image', style: Get.textTheme.headline1!.merge(TextStyle(fontSize: 15))),
+                                   leading: const Icon(FontAwesomeIcons.image),
+                                   title: Text('Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
                                  )
                                ]
                            )
@@ -557,7 +222,7 @@ class CreatePostView extends GetView<CommunityController> {
                        actions: [
                          TextButton(
                              onPressed: ()=> Navigator.pop(context),
-                             child: Text('Cancel', style: Get.textTheme.headline4!.merge(TextStyle(color: inactive)),))
+                             child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
                        ],
                      );
                    });
@@ -573,15 +238,15 @@ class CreatePostView extends GetView<CommunityController> {
                height:Get.width/2,
                child: ListView.separated(
                    scrollDirection: Axis.horizontal,
-                   padding: EdgeInsets.all(12),
+                   padding: const EdgeInsets.all(12),
                    itemBuilder: (context, index){
                      return Stack(
                        //mainAxisAlignment: MainAxisAlignment.end,
                        children: [
                          Padding(
-                             padding: EdgeInsets.symmetric(vertical: 10),
+                             padding: const EdgeInsets.symmetric(vertical: 10),
                              child: ClipRRect(
-                               borderRadius: BorderRadius.all(Radius.circular(10)),
+                               borderRadius: const BorderRadius.all(Radius.circular(10)),
                                child: Image.file(
                                  controller.imageFiles[index],
                                  fit: BoxFit.cover,
@@ -599,7 +264,7 @@ class CreatePostView extends GetView<CommunityController> {
                                  onPressed: (){
                                    controller.imageFiles.removeAt(index);
                                  },
-                                 icon: Icon(Icons.delete, color: inactive, size: 25, )
+                                 icon: const Icon(Icons.delete, color: inactive, size: 25, )
                              ),
                            ),
                          ),
@@ -607,7 +272,7 @@ class CreatePostView extends GetView<CommunityController> {
                      );
                    },
                    separatorBuilder: (context, index){
-                     return SizedBox(width: 8);
+                     return const SizedBox(width: 8);
                    },
                    itemCount: controller.imageFiles.length),
              ),
@@ -620,12 +285,12 @@ class CreatePostView extends GetView<CommunityController> {
                            context: Get.context!,
                            builder: (_){
                              return AlertDialog(
-                               shape: RoundedRectangleBorder(
+                               shape: const RoundedRectangleBorder(
                                    borderRadius: BorderRadius.all(Radius.circular(20))
                                ),
                                content: Container(
                                    height: 140,
-                                   padding: EdgeInsets.all(10),
+                                   padding: const EdgeInsets.all(10),
                                    child: Column(
                                      children: [
                                        ListTile(
@@ -633,17 +298,17 @@ class CreatePostView extends GetView<CommunityController> {
                                            await controller.pickImage(ImageSource.camera);
                                            Navigator.pop(Get.context!);
                                          },
-                                         leading: Icon(FontAwesomeIcons.camera),
-                                         title: Text('Take a picture', style: Get.textTheme.headline1!.merge(TextStyle(fontSize: 15))),
+                                         leading: const Icon(FontAwesomeIcons.camera),
+                                         title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
                                        ),
                                        ListTile(
                                          onTap: ()async{
                                            await controller.pickImage(ImageSource.gallery);
                                            Navigator.pop(Get.context!);
                                          },
-                                         leading: Icon(FontAwesomeIcons.image),
+                                         leading: const Icon(FontAwesomeIcons.image),
                                          title: Text(
-                                             'Upload an image', style: Get.textTheme.headline1!.merge(TextStyle(fontSize: 15))),
+                                             'Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
                                        )
                                      ],
                                    )
@@ -651,12 +316,12 @@ class CreatePostView extends GetView<CommunityController> {
                                actions: [
                                  TextButton(
                                      onPressed: ()=> Navigator.pop(context),
-                                     child: Text('Cancel', style: Get.textTheme.headline4!.merge(TextStyle(color: inactive)),))
+                                     child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
                                ],
                              );
                            });
                      },
-                     child: Icon(FontAwesomeIcons.circlePlus),
+                     child: const Icon(FontAwesomeIcons.circlePlus),
                    )
                ),
              )
@@ -673,7 +338,7 @@ class CreatePostView extends GetView<CommunityController> {
         width: 100,
         height: 100,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           child: Image.asset(
             'assets/img/loading.gif',
             fit: BoxFit.cover,

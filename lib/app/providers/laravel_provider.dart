@@ -194,7 +194,8 @@ Future getAllZones(int levelId, int parentId) async {
     }
   }
 
-Future getAllPosts() async {
+Future getAllPosts(int page) async {
+    print("Page is: ${page}");
   var headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -202,7 +203,7 @@ Future getAllPosts() async {
   };
   var dio = Dio();
   var response = await dio.request(
-    '${GlobalService().baseUrl}api/post',
+    '${GlobalService().baseUrl}api/post?page=$page&size=10',
     options: Options(
       method: 'GET',
       headers: headers,
@@ -225,21 +226,65 @@ Future getAllPosts() async {
 }
 
 Future createPost(Post post)async{
+  print(post.zonePostId);
+  print(post.content);
+
+
   var headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
   };
-  var request = http.MultipartRequest('POST', Uri.parse('${GlobalService().baseUrl}/api/post'));
+  var request = http.MultipartRequest('POST', Uri.parse('${GlobalService().baseUrl}api/post'));
   request.fields.addAll({
     'content': post.content!,
-    'zone_id': post.zonePostId,
-    'sectors': '1'
+    'zone_id': post.zonePostId.toString(),
+    'published_at': '2024-04-29T14:44:42',
+    'sectors': '${post.sectors}'
   });
 
   for(var i = 0; i < post.imagesFilePaths!.length; i++){
     request.files.add(await http.MultipartFile.fromPath('media[]', ".${post.imagesFilePaths![i].path}"));
     }
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var data = await response.stream.bytesToString();
+    var result = json.decode(data);
+    if (result['status'] == true) {
+      return result['data'];
+    } else {
+      throw  Exception((result['message']));
+    }
+  }
+  else {
+    throw Exception(response.reasonPhrase);
+  }
+
+}
+
+Future updatePost(Post post) async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+
+  var request = http.MultipartRequest('POST', Uri.parse('${GlobalService().baseUrl}api/post/${post.postId}'));
+  request.fields.addAll({
+    'content': post.content!,
+    'zone_id': post.zonePostId.toString(),
+    'published_at': '2024-04-29T14:44:42',
+    'sectors[]': '${post.sectors}',
+    '_method': 'PUT'
+  });
+
+  for(var i = 0; i < post.imagesFilePaths!.length; i++){
+    request.files.add(await http.MultipartFile.fromPath('media[]', ".${post.imagesFilePaths![i].path}"));
+  }
 
   request.headers.addAll(headers);
 
@@ -376,6 +421,34 @@ sharePost(int postId) async{
   else {
     throw Exception(response.statusMessage);
   }
+}
+
+deletePost(int postId) async{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+  };
+  var dio = Dio();
+  var response = await dio.request(
+    '${GlobalService().baseUrl}api/post/$postId',
+    options: Options(
+      method: 'DELETE',
+      headers: headers,
+    ),
+  );
+
+  if (response.statusCode == 200) {
+    if (response.data['status'] == true) {
+      return response.data['data'];
+    } else {
+      throw  Exception(response.data['message']);
+    }
+  }
+  else {
+    throw Exception(response.statusMessage);
+  }
+
 }
 
 

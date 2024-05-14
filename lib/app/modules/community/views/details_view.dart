@@ -75,16 +75,22 @@ class DetailsView extends GetView<CommunityController> {
                 GestureDetector(
                   onTap: (){
                     showModalBottomSheet(context: context,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
                         builder: (context) {
                           return Container(
+                            padding: EdgeInsets.all(20),
                             decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                            child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
+
                           );
                         },
                     );
                   },
                   child: Align(
                     alignment: Alignment.centerLeft,
-                      child: Expanded(child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.white),),).marginAll(20)),
+                      child: Expanded(child: SizedBox(
+
+                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)),).marginAll(20)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -129,36 +135,38 @@ class DetailsView extends GetView<CommunityController> {
               [
                 if(controller.postDetails.imagesUrl!.isNotEmpty)...[
                   if( controller.postDetails.imagesUrl!.length == 1)...[
-                    GestureDetector(
-                      //onTap: onPictureTapped,
-                      child: ClipRect(
-                          child: FadeInImage(
-                            width: Get.width,
-                            height: Get.height,
-                            fit: BoxFit.cover,
-                            image:  NetworkImage('${GlobalService().baseUrl}'
-                                '${controller.postDetails.imagesUrl![0]['url'].substring(1,controller.postDetails.imagesUrl![0]['url'].length)}',
-                                headers: GlobalService.getTokenHeaders()
-                            ),
-                            placeholder: const AssetImage(
-                                "assets/images/loading.gif"),
-                            imageErrorBuilder:
-                                (context, error, stackTrace) {
-                              return Image.asset(
-                                  "assets/images/loading.gif",
-                                  width: Get.width,
-                                  height: Get.height,
-                                  fit: BoxFit.fitWidth);
-                            },
-                          )
+                    Expanded(
+                      child: GestureDetector(
+                        //onTap: onPictureTapped,
+                        child: ClipRect(
+                            child: FadeInImage(
+                              width: Get.width,
+                              height: Get.height,
+                              fit: BoxFit.cover,
+                              image:  NetworkImage('${GlobalService().baseUrl}'
+                                  '${controller.postDetails.imagesUrl![0]['url'].substring(1,controller.postDetails.imagesUrl![0]['url'].length)}',
+                                  headers: GlobalService.getTokenHeaders()
+                              ),
+                              placeholder: const AssetImage(
+                                  "assets/images/loading.gif"),
+                              imageErrorBuilder:
+                                  (context, error, stackTrace) {
+                                return Image.asset(
+                                    "assets/images/loading.gif",
+                                    width: Get.width,
+                                    height: Get.height,
+                                    fit: BoxFit.fitWidth);
+                              },
+                            )
 
+                        ),
                       ),
                     )
                   ]
                   else...[
-                    SizedBox(
-                      width: Get.width,
-                      height: Get.height*0.7,
+                    Expanded(
+                      //width: Get.width,
+                      //height: Get.height*0.7,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: controller.postDetails.imagesUrl?.length,

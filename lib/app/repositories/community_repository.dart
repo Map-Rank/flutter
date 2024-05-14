@@ -8,14 +8,19 @@ class CommunityRepository {
 
 
 
-  Future getAllPosts() {
+  Future getAllPosts(int page) {
     _laravelApiClient = Get.find<LaravelApiClient>();
-    return _laravelApiClient.getAllPosts();
+    return _laravelApiClient.getAllPosts(page);
   }
 
   Future createPost(Post post) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.createPost(post);
+  }
+
+  Future updatePost(Post post) {
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.updatePost(post);
   }
 
   Future likeUnlikePost(int postId) {
@@ -38,6 +43,12 @@ class CommunityRepository {
   Future sharePost(int postId){
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.sharePost(postId);
+
+  }
+
+  Future deletePost(int postId){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.deletePost(postId);
 
   }
 

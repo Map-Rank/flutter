@@ -35,7 +35,7 @@ class SettingsService extends GetxService {
         //Ui.parseColor(setting.value.accentColor),
         hintColor: Ui.parseColor(setting.value.secondColor, opacity: 0.8),
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(primary: Ui.parseColor(setting.value.mainColor, opacity: 0.8)),
+          style: TextButton.styleFrom(foregroundColor: Ui.parseColor(setting.value.mainColor, opacity: 0.8)),
         ),
         colorScheme: const ColorScheme.light(
           primary: pink,

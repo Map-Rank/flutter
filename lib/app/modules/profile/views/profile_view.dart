@@ -22,8 +22,8 @@ class ProfileView extends GetView<ProfileController> {
             child: Container(
               decoration: const BoxDecoration(color: backgroundColor,
                 borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.0),
-                    topLeft: Radius.circular(20.0)),
+                    topRight: Radius.circular(21.0),
+                    topLeft: Radius.circular(21.0)),
 
               ),
             )

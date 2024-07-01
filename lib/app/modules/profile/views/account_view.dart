@@ -92,9 +92,10 @@ class AccountView extends GetView<ProfileController> {
                       key: null,
                       errorText: '',
                       suffixIcon: const Icon(null),
-                      suffix: Icon(null),
+                      suffix: const Icon(null),
                     ),
                     TextFieldWidget(
+                      isFirst: true,
                       readOnly: false,
                       labelText: 'Last Name',
                       hintText: "Flanklin Junior",
@@ -155,7 +156,7 @@ class AccountView extends GetView<ProfileController> {
                       suffixIcon: const Icon(null),
                       suffix: const Icon(null),
                     ),
-                    const TextFieldWidget(
+                     TextFieldWidget(
                       readOnly: true,
                       labelText: 'Gender',
                       hintText: "Male",
@@ -165,11 +166,11 @@ class AccountView extends GetView<ProfileController> {
                       //     controller.currentUser.value.phoneNumber = input,
                       // onChanged: (value) =>
                       //     {controller.currentUser.value.phoneNumber = value},
-                      iconData: Icons.phone,
+                      iconData: Icons.person,
                       key: null,
                       errorText: '',
-                      suffixIcon: Icon(null),
-                      suffix: Icon(null),
+                      suffixIcon:const Icon(null),
+                      suffix:const Icon(null),
                     ),
                   ],
                 ),

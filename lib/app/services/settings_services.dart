@@ -38,22 +38,24 @@ class SettingsService extends GetxService {
           style: TextButton.styleFrom(foregroundColor: Ui.parseColor(setting.value.mainColor, opacity: 0.8)),
         ),
         colorScheme: const ColorScheme.light(
-          primary: pink,
+          primary: Colors.black,
           secondary: interfaceColor,
         ),
         textTheme: GoogleFonts.getTextTheme(
           'Poppins',
           TextTheme(
-            headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700, color: hinTextColor, height: 1.3),
+            //titleMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
+            headline6: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black, height: 1.3, ),
             headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: interfaceColor, height: 1.3),
             headline4: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400, color: interfaceColor, height: 1.3),
             headline3: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700, color: interfaceColor, height: 1.3),
             headline2: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w700, color: pink, height: 1.4),
-            headline1: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300, color: interfaceColor, height: 1.4),
+            headline1: TextStyle(fontSize: 18.0, fontWeight: FontWeight.normal, color: Colors.black, height: 1.4),
             subtitle2: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600, color: interfaceColor, height: 1.2),
             subtitle1: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w400, color: pink, height: 1.2),
+            labelMedium:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2) ,
             bodyText2: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
-            bodyText1: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400, color: interfaceColor, height: 1.2),
+            bodyText1: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.grey, height: 1.2),
             caption: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w300, color: Ui.parseColor(setting.value.accentColor, opacity: 0.8), height: 1.2),
           ),
 
@@ -79,6 +81,7 @@ class SettingsService extends GetxService {
         ),
         textTheme: GoogleFonts.getTextTheme(
             'Poppins',
+
             TextTheme(
               headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700, color: interfaceColor, height: 1.3),
               headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700, color: interfaceColor, height: 1.3),

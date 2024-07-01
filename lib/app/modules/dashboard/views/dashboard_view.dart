@@ -23,7 +23,7 @@ class DashboardView extends GetView<DashboardController> {
               controller.onInit();
             },
             child: Container(
-              decoration: BoxDecoration(color: backgroundColor,
+              decoration:const BoxDecoration(color: backgroundColor,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20.0),
                     topLeft: Radius.circular(20.0)),

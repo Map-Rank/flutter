@@ -167,7 +167,7 @@ class CommentView extends GetView<CommunityController> {
 
 
   Widget buildLoader() {
-    return Container(
+    return SizedBox(
         width: 100,
         height: 100,
         child: ClipRRect(

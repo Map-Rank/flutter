@@ -5,20 +5,20 @@ import 'package:get/get.dart';
 import '../color_constants.dart';
 
 class Ui {
-  static GetSnackBar SuccessSnackBar({String title = 'Success', required String message}) {
+  static GetSnackBar  SuccessSnackBar({String title = 'Success', required String message}) {
     Get.log("[$title] $message");
     return GetSnackBar(
       titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
       messageText: Text(message, style: Get.textTheme.caption!.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
-      margin: EdgeInsets.all(20),
+      margin:const EdgeInsets.all(20),
       backgroundColor: Colors.green,
       isDismissible: true,
       dismissDirection: DismissDirection.horizontal,
       icon: Icon(Icons.check_circle_outline, size: 32, color: Get.theme.primaryColor),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      padding:const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       borderRadius: 8,
-      duration: Duration(seconds: 2),
+      duration:const Duration(seconds: 2),
     );
   }
 
@@ -28,7 +28,7 @@ class Ui {
       titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
       messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.caption?.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
-      margin: EdgeInsets.all(20),
+      margin:const EdgeInsets.all(20),
       isDismissible: true,
       dismissDirection: DismissDirection.horizontal,
       backgroundColor: Colors.redAccent,

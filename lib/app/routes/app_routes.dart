@@ -8,6 +8,9 @@ class Routes {
   static const CREATE_POST = '/community/community_view';
   static const COMMENT_VIEW = '/community/comment_view';
   static const DETAILS_VIEW = '/community/details_view';
+  
+  static const ACCOUNT = '/profile/account_view';
+  static const CONTACT_US = '/profile/contact_us_view';
 
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';

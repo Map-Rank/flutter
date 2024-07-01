@@ -44,6 +44,22 @@ class ContactUsView extends GetView<ProfileController> {
                 height: 40,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 1.5,
+                    width: MediaQuery.sizeOf(context).width /2.8,
+                    color:Colors.grey.shade200,
+                  ),
+                  Container(
+                    height: 1.5,
+                    width: MediaQuery.sizeOf(context).width /2.8,
+                    color:Colors.grey.shade200,
+                  )
+                ],
+              ),
+              const SizedBox(height: 40,),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(

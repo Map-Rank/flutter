@@ -11,6 +11,8 @@ class Routes {
   
   static const ACCOUNT = '/profile/account_view';
   static const CONTACT_US = '/profile/contact_us_view';
+  static const FOLLOWERS = '/profile/followers';
+  static const ARTICLES = '/profile/articles';
 
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';

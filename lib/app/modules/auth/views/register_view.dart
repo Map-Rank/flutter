@@ -232,7 +232,7 @@ class RegisterView extends GetView<AuthController> {
             onChanged: (value) => {
               controller.currentUser.value.phoneNumber = value
             },
-            validator: (input) => input!.length < 9 || input!.length >9 ? 'Enter exactly 9 characters' : null,
+            validator: (input) => input!.length < 9 || input.length >9 ? 'Enter exactly 9 characters' : null,
             iconData: Icons.phone,
             key: null,
             errorText: '',
@@ -258,8 +258,8 @@ class RegisterView extends GetView<AuthController> {
                     hintText: '',
 
                   ),
-                  onSaved: (input) => (controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme")?controller.currentUser?.value?.gender = "male":
-                  controller.selectedGender.value == 'Other'? controller.currentUser.value.gender = 'other':controller.currentUser?.value?.gender = "female",
+                  onSaved: (input) => (controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme")?controller.currentUser.value.gender = "male":
+                  controller.selectedGender.value == 'Other'? controller.currentUser.value.gender = 'other':controller.currentUser.value.gender = "female",
                   isExpanded: true,
                   alignment: Alignment.bottomCenter,
 
@@ -280,13 +280,13 @@ class RegisterView extends GetView<AuthController> {
                   onChanged: (String? newValue) {
                     controller.selectedGender.value = newValue!;
                     if(controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme"){
-                      controller.currentUser?.value?.gender = "male";
+                      controller.currentUser.value.gender = "male";
                     }
                     else if (controller.selectedGender.value == 'Other'){
-                      controller.currentUser?.value?.gender = "other";
+                      controller.currentUser.value.gender = "other";
                     }
                     else{
-                      controller.currentUser?.value?.gender = "female";
+                      controller.currentUser.value.gender = "female";
                     }
 
 

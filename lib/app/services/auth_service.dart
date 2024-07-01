@@ -10,6 +10,7 @@ class AuthService extends GetxService {
 
   UserRepository? _usersRepo;
 
+
   AuthService() {
     _usersRepo = UserRepository();
     _box = GetStorage();

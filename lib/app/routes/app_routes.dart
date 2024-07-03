@@ -9,6 +9,9 @@ class Routes {
   static const COMMENT_VIEW = '/community/comment_view';
   static const DETAILS_VIEW = '/community/details_view';
 
+  static const EVENT_DETAILS_VIEW = '/events/event_details_view';
+  static const CREATE_EVENT = '/events/create_event';
+
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';
   static const SETTINGS_LANGUAGE = '/settings/language';

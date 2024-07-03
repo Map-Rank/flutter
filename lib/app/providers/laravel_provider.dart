@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -9,59 +8,58 @@ import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import 'package:mapnrank/app/services/global_services.dart';
+import '../models/event_model.dart';
 import 'dio_client.dart';
 //import 'package:dio/dio.dart' as dio_form_data;
 
 class LaravelApiClient extends GetxService {
-  late DioClient _httpClient;
+  late DioClient httpClient;
   late String baseUrl;
-  late dio.Options _optionsNetwork;
-  late dio.Options _optionsCache;
+  late dio.Options optionsNetwork;
+  late dio.Options optionsCache;
 
   LaravelApiClient() {
     baseUrl = GlobalService().baseUrl;
-    _httpClient = DioClient(baseUrl, dio.Dio());
+    httpClient = DioClient(baseUrl, dio.Dio());
   }
 
   Future<LaravelApiClient> init() async {
-    _optionsNetwork = _httpClient.optionsNetwork!;
-    _optionsCache = _httpClient.optionsCache!;
+    optionsNetwork = httpClient.optionsNetwork!;
+    optionsCache = httpClient.optionsCache!;
     return this;
   }
 
-  bool isLoading({required String task, required List<String> tasks}) {
-    return _httpClient.isLoading(task: task, tasks: tasks);
-  }
+  // bool isLoading({required String task, required List<String> tasks}) {
+  //   return httpClient.isLoading(task: task, tasks: tasks);
+  // }
 
 
   void forceRefresh() {
     if (!foundation.kIsWeb && !foundation.kDebugMode) {
-      _optionsCache = dio.Options(headers: _optionsCache.headers);
-      _optionsNetwork = dio.Options(headers: _optionsNetwork.headers);
+      optionsCache = dio.Options(headers: optionsCache.headers);
+      optionsNetwork = dio.Options(headers: optionsNetwork.headers);
     }
   }
 
-  void unForceRefresh() {
-    if (!foundation.kIsWeb && !foundation.kDebugMode) {
-      _optionsNetwork = buildCacheOptions(const Duration(days: 3), forceRefresh: true, options: _optionsNetwork);
-      _optionsCache = buildCacheOptions(const Duration(minutes: 10), forceRefresh: false, options: _optionsCache);
-    }
-  }
 
-  Future<User> register(User user) async {
+  Future<UserModel> register(UserModel user) async {
     Uri uri = getApiBaseUri("register");
     Get.log(uri.toString());
-    var response = await _httpClient.postUri(
+    var response = await httpClient.postUri(
       uri,
       data: json.encode(user.toJson()),
-      options: _optionsNetwork,
-      onSendProgress: (int count, int total) {  },
-      onReceiveProgress: (int count, int total) {  },
+      options: optionsNetwork,
+      onSendProgress: (int count, int total) {
+        print('Register Progress: $count/$total');
+      },
+      onReceiveProgress: (int count, int total) {
+        print('Register Progress: $count/$total');
+      },
     );
     if (response.data['status'] == true) {
       response.data['data']['auth'] = true;
-      User.auth = true;
-      return User.fromJson(response.data['data']);
+      UserModel.auth = true;
+      return UserModel.fromJson(response.data['data']);
     } else {
       throw  Exception(response.data['message']);
     }
@@ -89,38 +87,58 @@ class LaravelApiClient extends GetxService {
   //   }
   // }
   //
-  Future<User> login(User user) async {
+
+  //Handling User
+  Future<UserModel> login(UserModel user) async {
     Uri _uri = getApiBaseUri("login");
     Get.log(_uri.toString());
-    var response = await _httpClient.postUri(
+    var response = await httpClient.postUri(
       _uri,
       data: json.encode(user.toJson()),
-      options: _optionsNetwork,
-      onSendProgress: (int count, int total) {  },
-      onReceiveProgress: (int count, int total) {  },
+      options: optionsNetwork,
+      onSendProgress: (int count, int total) {
+        print('Register Progress: $count/$total');
+      },
+      onReceiveProgress: (int count, int total) {
+        print('Register Progress: $count/$total');
+      },
     );
     if (response.data['status'] == true) {
-      User.auth = true;
-      return User.fromJson(response.data['data']);
+      UserModel.auth = true;
+      print("Data is: ${response.data['data']}");
+
+      return UserModel.fromJson(response.data['data']);
     } else {
       throw Exception(response.data['message']);
     }
   }
 
-  Future<User> logout() async {
-    Uri _uri = getApiBaseUri("logout");
-    Get.log(_uri.toString());
-    var response = await _httpClient.postUri(
-      _uri,
-      data: json.encode('user.toJson()'),
-      options: _optionsNetwork,
-      onSendProgress: (int count, int total) {  },
-      onReceiveProgress: (int count, int total) {  },
+  Future logout() async {
+    print(Get.find<AuthService>().user.value.authToken);
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/logout',
+      options: Options(
+        method: 'POST',
+        headers: headers,
+      ),
     );
-    if (response.data['status'] == true) {
-      return User.fromJson(response.data['data']);
-    } else {
-      throw Exception(response.data['message']);
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        print('Finally Logged out');
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      throw  Exception(response.statusMessage);
     }
   }
 
@@ -149,6 +167,8 @@ class LaravelApiClient extends GetxService {
     return Uri.parse(getApiBaseUrl(path));
   }
 
+
+  // Handling Sectors and zones
 Future getAllZones(int levelId, int parentId) async {
   var headers = {
     'Content-Type': 'application/json',
@@ -166,7 +186,6 @@ Future getAllZones(int levelId, int parentId) async {
 
   if (response.statusCode == 200) {
     if (response.data['status'] == true) {
-      print(response.data);
       return response.data;
     } else {
       throw  Exception(response.data['message']);
@@ -182,9 +201,9 @@ Future getAllZones(int levelId, int parentId) async {
   Future getAllSectors() async {
     Uri uri = getApiBaseUri("sector");
     Get.log(uri.toString());
-    var response = await _httpClient.getUri(
+    var response = await httpClient.getUri(
       uri,
-      options: _optionsNetwork,
+      options: optionsNetwork,
       onReceiveProgress: (int count, int total) {  },
     );
     if (response.data['status'] == true) {
@@ -194,6 +213,8 @@ Future getAllZones(int levelId, int parentId) async {
     }
   }
 
+
+  // Handling Posts
 Future getAllPosts(int page) async {
     print("Page is: ${page}");
   var headers = {
@@ -228,6 +249,8 @@ Future getAllPosts(int page) async {
 Future createPost(Post post)async{
   print(post.zonePostId);
   print(post.content);
+  print(post.imagesFilePaths);
+  print(post.sectors);
 
 
   var headers = {
@@ -239,12 +262,16 @@ Future createPost(Post post)async{
   request.fields.addAll({
     'content': post.content!,
     'zone_id': post.zonePostId.toString(),
-    'published_at': '2024-04-29T14:44:42',
-    'sectors': '${post.sectors}'
+    'published_at': DateTime.now().toString(),
+    //'sectors': '1'
   });
 
   for(var i = 0; i < post.imagesFilePaths!.length; i++){
     request.files.add(await http.MultipartFile.fromPath('media[]', ".${post.imagesFilePaths![i].path}"));
+    }
+  for(var i =0; i < post.sectors!.length; i++)
+    {
+      request.fields['sectors[${i}]'] = post.sectors![i].toString();
     }
 
   request.headers.addAll(headers);
@@ -404,7 +431,7 @@ sharePost(int postId) async{
   };
   var dio = Dio();
   var response = await dio.request(
-    '${GlobalService().baseUrl}api/post/share/1933',
+    '${GlobalService().baseUrl}api/post/share/$postId',
     options: Options(
       method: 'POST',
       headers: headers,
@@ -450,6 +477,271 @@ deletePost(int postId) async{
   }
 
 }
+
+//Filter Posts by zone
+  Future filterPostsByZone(int page, int zoneId) async {
+    print("Page is: ${page}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/post?page=$page&zone_id=$zoneId&size=10',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      //print(response.statusMessage);
+      throw  Exception(response.statusMessage);
+    }
+
+
+  }
+
+  //Filter Posts by sectors
+  Future filterPostsBySectors(int page, var sectors) async {
+    print("Page is: ${page}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/post?page=$page&sectors=$sectors&size=10',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      //print(response.statusMessage);
+      throw  Exception(response.statusMessage);
+    }
+
+
+  }
+
+
+//Handling Events
+
+  Future getAllEvents(int page) async {
+    print("Page is: ${page}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/events?page=$page&size=10',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      //print(response.statusMessage);
+      throw  Exception(response.statusMessage);
+    }
+
+
+  }
+
+  Future getAnEvent(int eventId) async{
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/events/$eventId',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      throw Exception(response.statusMessage);
+    }
+  }
+
+  createEvent(Event event) async{
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+    };
+
+    var request = http.MultipartRequest('POST', Uri.parse('${GlobalService().baseUrl}api/events'));
+    request.fields.addAll({
+      'title': event.title!,
+      'description': event.content!,
+      'location': event.zone!,
+      'organized_by': event.organizer!,
+      'user_id': Get.find<AuthService>().user.value.userId.toString(),
+      'date_debut': event.startDate!,
+      'date_fin': event.endDate!,
+      'sector_id': '1',
+      'zone_id': event.zoneEventId!.toString(),
+      'published_at': DateTime.now().toString()
+    });
+
+      request.files.add(await http.MultipartFile.fromPath('media', ".${event.imagesFilePaths![0].path}"));
+
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 201) {
+      var data = await response.stream.bytesToString();
+      var result = json.decode(data);
+      if (result['status'] == true) {
+        return result['data'];
+      } else {
+        throw  Exception((result['message']));
+      }
+    }
+    else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  updateEvent(Event event)async{
+
+  }
+
+  deleteEvent(int eventId) async{
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}'
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/events/$eventId',
+      options: Options(
+        method: 'DELETE',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      throw Exception(response.statusMessage);
+    }
+
+  }
+
+
+  //Filter Events by zone
+  Future filterEventsByZone(int page, int zoneId) async {
+    print("Page is: ${page}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/events?page=$page&zone_id=$zoneId&size=10',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      //print(response.statusMessage);
+      throw  Exception(response.statusMessage);
+    }
+
+
+  }
+
+  //Filter Events by sectors
+  Future filterEventsBySectors(int page, var sectors) async {
+    print("Page is: ${page}");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get.find<AuthService>().user.value.authToken}',
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      '${GlobalService().baseUrl}api/events?page=$page&sectors=$sectors&size=10',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw  Exception(response.data['message']);
+      }
+    }
+    else {
+      //print(response.statusMessage);
+      throw  Exception(response.statusMessage);
+    }
+
+
+  }
+
+
+
 
 
 

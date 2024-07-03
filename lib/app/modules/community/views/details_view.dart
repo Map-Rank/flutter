@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
+import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
 import 'package:mapnrank/app/modules/community/widgets/comment_widget.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
 import '../../../../color_constants.dart';
@@ -20,6 +21,8 @@ class DetailsView extends GetView<CommunityController> {
   Post? post;
 
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +30,7 @@ class DetailsView extends GetView<CommunityController> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipOval(
@@ -70,50 +73,86 @@ class DetailsView extends GetView<CommunityController> {
           color: Colors.black,
           height: 120,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 GestureDetector(
                   onTap: (){
                     showModalBottomSheet(context: context,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                        builder: (context) {
-                          return Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                            child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                      builder: (context) {
+                        return Container(
+                          height: Get.height/2,
+                          padding: EdgeInsets.all(20),
+                          decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
 
-                          );
-                        },
+                        );
+                      },
                     );
                   },
                   child: Align(
-                    alignment: Alignment.centerLeft,
-                      child: Expanded(child: SizedBox(
-
-                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)),).marginAll(20)),
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)).marginAll(20)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  TextButton.icon(
-                      onPressed: (){},
-                      icon: const FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white,),
-                      label: const Text('like', style: TextStyle(color: Colors.white,),)),
-                  TextButton.icon(
-                      onPressed: () async{
-                        controller.postDetails = await controller.getAPost(controller.postDetails!.postId!);
-                        controller.commentList.value = controller.postDetails.commentList!;
-                    Get.toNamed(Routes.COMMENT_VIEW);
-                  },
-                      icon: const FaIcon(FontAwesomeIcons.comment, color: Colors.white,),
-                      label: const Text('Comment', style:  TextStyle(color: Colors.white,),)),
-                  TextButton.icon(
-                      onPressed: (){},
-                      icon: const FaIcon(FontAwesomeIcons.share, color: Colors.white,),
-                      label: const Text('Share', style: TextStyle(color: Colors.white,),))
+                    TextButton.icon(
+                      onPressed: (){
+                        var arguments = Get.arguments as Map<String, dynamic>;
+                        if(arguments!=null) {
+                          if (arguments['post'] != null) {
+                            post = arguments['post'];
+                          }}
 
-                ],)
+                        if( controller.selectedPost.contains(post)){
+                          controller.likeCount?.value = (controller.likeCount!.value - 1);
+                          controller.selectedPost.remove(post);
+                          //controller.postSelectedIndex.value = index;
+                          controller.likeUnlikePost(post!.postId!);
+                        }
+                        else{
+                          controller.likeCount?.value = (controller.likeCount!.value + 1);
+                              controller.selectedPost.add(post);
+                          controller.likeUnlikePost(post!.postId!);
+                        }
+
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white,),
+                      label: Obx(() => Text('${controller.likeCount}', style: TextStyle(color: Colors.white,),)),),
+                    TextButton.icon(
+                        onPressed: () async{
+                          showDialog(context: context, builder: (context){
+                            return CommentLoadingWidget();
+                          },);
+                          controller.postDetails = await controller.getAPost(controller.postDetails!.postId!);
+                          controller.commentList.value = controller.postDetails.commentList!;
+                          Navigator.of(context).pop();
+                          controller.commentCount!.value = controller.postDetails.commentCount!;
+                          Get.toNamed(Routes.COMMENT_VIEW);
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.comment, color: Colors.white,),
+                        label: Text('${controller.postDetails.commentCount}', style:  TextStyle(color: Colors.white,),)),
+                    TextButton.icon(
+                        onPressed: () async{
+                          var arguments = Get.arguments as Map<String, dynamic>;
+                          if(arguments!=null) {
+                            if (arguments['post'] != null) {
+                              post = arguments['post'];
+                            }}
+
+                            controller.shareCount?.value = (controller.shareCount!.value + 1);
+                            controller.sharedPost.add(post);
+                            controller.sharePost(post!.postId!);
+
+
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.share, color: Colors.white,),
+                        label: Obx(() => Text('${controller.shareCount}', style: TextStyle(color: Colors.white,),)))
+
+                  ],)
 
               ]
           ),

@@ -1,14 +1,13 @@
-import 'dart:io';
-import 'package:get/get.dart';
+
 import 'parents/model.dart';
 
-class User extends Model {
+class UserModel extends Model {
   String? firstName;
   String? lastName;
   String? email;
   String? password;
   String? gender;
-  String? phoneNumber;
+  var phoneNumber;
   String? birthdate;
   String? zoneId;
   int? userId;
@@ -18,10 +17,10 @@ class User extends Model {
   static bool? auth;
   List? sectors;
 
-  User({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,
+  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,
   this.lastName, this.zoneId, this. sectors});
 
-  User.fromJson(Map<String, dynamic> json) {
+  UserModel.fromJson(Map<String, dynamic> json) {
     firstName = stringFromJson(json, 'first_name');
     lastName = stringFromJson(json, 'last_name');
     email = stringFromJson(json, 'email');
@@ -49,10 +48,15 @@ class User extends Model {
     data['zone_id'] = zoneId;
     data['date_of_birth'] = birthdate;
     data['password'] = password;
+    data['token'] = authToken;
+    data['id'] = userId;
     //data['sectors'] = sectors;
 
 
     return data;
   }
+
+
+
 
 }

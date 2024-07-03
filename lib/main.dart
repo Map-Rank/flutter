@@ -6,15 +6,15 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mapnrank/app/modules/auth/bindings/auth_binding.dart';
 import 'package:mapnrank/app/modules/auth/views/login_view.dart';
-import 'package:mapnrank/app/modules/root/bindings/root_binding.dart';
-import 'package:mapnrank/app/modules/root/controllers/root_controller.dart';
 import 'package:mapnrank/app/providers/laravel_provider.dart';
 import 'package:mapnrank/app/routes/theme_app_pages.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import 'package:mapnrank/app/services/settings_services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-import 'app/services/global_services.dart';
-//import 'firebase_options.dart';
+
 
   initServices() async {
   Get.log('starting services ...');
@@ -33,12 +33,11 @@ import 'app/services/global_services.dart';
 
 void main() async{
    WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+
    await initServices();
   runApp(const MyApp());
 }
@@ -57,6 +56,26 @@ class MyApp extends StatelessWidget {
       //   fontFamily: 'Poppins'
       // ),
       //initialRoute: Theme1AppPages.INITIAL,
+      onReady: () async {
+        //await Get.putAsync(() => FireBaseMessagingService().init());
+      },
+      onUnknownRoute: (settings) {
+        // Optionally, navigate to a specific error page or handle it gracefully
+        return GetPageRoute(
+          settings: RouteSettings(name: '/notfound'),
+          page: () => Scaffold(
+            appBar: AppBar(title: Text('Page Not Found')),
+            body: Center(child: Text('404 - Page Not Found')),
+          ),
+        );
+      },
+      unknownRoute: GetPage(
+        name: '/notfound',
+        page: () => Scaffold(
+          appBar: AppBar(title: Text('Page Not Found')),
+          body: Center(child: Text('404 - Page Not Found')),
+        ),
+      ),
       initialBinding: AuthBinding(),
       getPages: Theme1AppPages.routes,
       defaultTransition: Transition.cupertino,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/location_widget.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
@@ -30,8 +32,6 @@ class RegisterView extends GetView<AuthController> {
           child: ListView(
             primary: true,
             children: [
-              //
-
               Align(
                 alignment: Alignment.center,
                 child: Image.asset(
@@ -159,7 +159,7 @@ class RegisterView extends GetView<AuthController> {
 
 
 
-                ],),),
+                ],),).marginOnly(bottom: 20),
 
               Obx(() =>  !controller.registerNext.value?
               buildPersonalInfo(context):!controller.registerNextStep1.value?
@@ -177,39 +177,46 @@ class RegisterView extends GetView<AuthController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+
           TextFieldWidget(
+            isFirst: true,
+            isLast: true,
             readOnly: false,
             labelText: 'First Name',
             hintText: "john",
-            initialValue: '',
             keyboardType: TextInputType.text,
             onSaved: (input) => controller.currentUser.value.firstName = input,
             onChanged: (value) => {
               controller.currentUser.value.firstName = value,
             },
             validator: (input) => input!.length < 3 ? 'Enter at least 3 characters': null,
-            iconData: Icons.person, key: null, errorText: '', suffixIcon: const Icon(null), suffix: Icon(null),
+            iconData: Icons.person, key: null,
+            suffixIcon: const Icon(null), suffix: Icon(null),
+            prefixIcon: Image.asset("assets/icons/user.png", width: 22, height: 22),
           ),
           TextFieldWidget(
+            isLast: true,
+            isFirst: true,
             readOnly: false,
             labelText: 'Last Name',
             hintText: "Doe",
-            initialValue: '',
             keyboardType: TextInputType.text,
             onSaved: (input) => controller.currentUser.value.lastName = input,
             onChanged: (value) => {
             controller.currentUser.value.lastName = value,
             },
             validator: (input) => input!.length < 3 ? 'Enter at least 3 characters': null,
-            iconData: Icons.person, key: null, errorText: '',
+            iconData: Icons.person, key: null,
             suffixIcon: const Icon(null),
+            prefixIcon: Image.asset("assets/icons/user.png", width: 22, height: 22),
             suffix: const Icon(null),
           ),
           TextFieldWidget(
+            isLast: true,
+            isFirst: true,
             readOnly: false,
             labelText: 'Email',
             hintText: "johndoe@gmail.com",
-            initialValue: '',
             keyboardType: TextInputType.emailAddress,
             onSaved: (input) => controller.currentUser.value.email = input,
             onChanged: (value) => {
@@ -219,117 +226,161 @@ class RegisterView extends GetView<AuthController> {
             validator: (input){
               return !input!.contains('@') ? 'Enter a valid email address': null;
             },
-            iconData: Icons.alternate_email, key: null, errorText: '',
+            iconData: Icons.mail_outline, key: null,
             suffixIcon: const Icon(null), suffix: const Icon(null),
+            prefixIcon: Image.asset("assets/icons/email.png", width: 22, height: 22),
           ),
-          TextFieldWidget(
-            readOnly: false,
-            labelText: 'Phone',
-            hintText: "677777777",
-            initialValue: '',
-            keyboardType: TextInputType.number,
-            onSaved: (input) => controller.currentUser.value.phoneNumber = input,
-            onChanged: (value) => {
-              controller.currentUser.value.phoneNumber = value
-            },
-            validator: (input) => input!.length < 9 || input!.length >9 ? 'Enter exactly 9 characters' : null,
-            iconData: Icons.phone,
-            key: null,
-            errorText: '',
-            suffixIcon: const Icon(null),
-            suffix: const Icon(null),
-          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Phone Number',
+                style: Get.textTheme.labelMedium,
+                textAlign:TextAlign.start,
+              ).paddingOnly(left: 10, right: 20),
+        SizedBox(height: 10,),
+              IntlPhoneField(
+                validator: (phone) {
+                  // Check if the field is empty and return null to skip validation
+                  if (phone!.completeNumber.isEmpty) {
+                    return 'Input a phone number';
+                  }
+                  return 'Input a phone number';
 
-          const SizedBox(height: 10),
+                },
 
-          Container(
-              decoration: BoxDecoration(
-                color:  Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: Offset(0, 5)),
-                ],
-                //border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButtonFormField(
-                  dropdownColor: Colors.white,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: '',
-
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                  border:OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                  contentPadding: EdgeInsets.all(10),
+                  labelStyle: TextStyle(
+                    color: Colors.white,
                   ),
-                  onSaved: (input) => (controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme")?controller.currentUser?.value?.gender = "male":
-                  controller.selectedGender.value == 'Other'? controller.currentUser.value.gender = 'other':controller.currentUser?.value?.gender = "female",
-                  isExpanded: true,
-                  alignment: Alignment.bottomCenter,
-
-                  style: const TextStyle(color: labelColor),
-                  value: controller.selectedGender.value,
-                  // Down Arrow Icon
-                  icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black,),
-
-                  // Array list of items
-                  items: controller.genderList.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items, style: const TextStyle(color: Colors.black),),
-                    );
-                  }).toList(),
-                  // After selecting the desired option,it will
-                  // change button value to selected value
-                  onChanged: (String? newValue) {
-                    controller.selectedGender.value = newValue!;
-                    if(controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme"){
-                      controller.currentUser?.value?.gender = "male";
-                    }
-                    else if (controller.selectedGender.value == 'Other'){
-                      controller.currentUser?.value?.gender = "other";
-                    }
-                    else{
-                      controller.currentUser?.value?.gender = "female";
-                    }
-
-
-                  },).marginOnly(left: 20, right: 20, top: 10, bottom: 10).paddingOnly( top: 20, bottom: 14),
-              )
-          ).paddingOnly(left: 5, right: 5, top: 20, bottom: 14,
-          ),
-
-          InkWell(
-              onTap: ()=>{ controller.birthDatePicker() },
-              child: Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
-                margin:const  EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
-                decoration: BoxDecoration(
-                    color: Get.theme.primaryColor,
-                    borderRadius:const BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: Offset(0, 5)),
-                    ],
-                    border: Border.all(color: Get.theme.focusColor.withOpacity(0.05))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text('Birth Date'.tr, style: const TextStyle(color: labelColor)
-                    ),
-                    Obx(() =>
-                        ListTile(
-                            leading: const Icon(Icons.calendar_today),
-                            title: Text(controller.birthDateDisplay.value,
-                              style: Get.textTheme.headline1?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
-                            )
-                        ))
-                  ],
+                  hintText: '677777777',
+                  labelText: 'Phone Number',
+                  suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
                 ),
-              )
+                initialCountryCode: 'CM',
+                style:  Get.textTheme.headline1,
+                onSaved: (phone) {
+                  controller.currentUser.value.phoneNumber = phone;
+                },
+                onChanged:(value) => {
+                  controller.currentUser.value.phoneNumber = value,
+                },
+              ),
+            ],
           ),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+            Text('Gender'.tr, style: Get.textTheme.labelMedium
+            ).marginOnly(left: 10),
+              Stack(
+                children: <Widget>[
+                  Container(
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          boxShadow: [
+                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: Offset(0, 5)),
+                          ],
+                          border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))
+                      ),
+                      child: DropdownButtonFormField(
+
+                        validator: (value) {
+                          return value == 'Select  your gender'? 'Please select a gender':null;
+                        },
+                        dropdownColor: Colors.white,
+                        decoration: const InputDecoration.collapsed(
+                          hintText: '',
+
+                        ),
+                        onSaved: (input) => (controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme")?controller.currentUser?.value?.gender = "male":
+                        controller.selectedGender.value == 'Other'? controller.currentUser.value.gender = 'other':controller.currentUser?.value?.gender = "female",
+                        isExpanded: true,
+                        alignment: Alignment.bottomCenter,
+
+                        style: const TextStyle(color: labelColor),
+                        value: controller.selectedGender.value,
+                        // Down Arrow Icon
+                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black,),
+
+                        // Array list of items
+                        items: controller.genderList.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items, style: Get.textTheme.headline1, textAlign: TextAlign.center,),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          controller.selectedGender.value = newValue!;
+                          if(controller.selectedGender.value == "Male"||controller.selectedGender.value == "Homme"){
+                            controller.currentUser?.value?.gender = "male";
+                          }
+                          else if (controller.selectedGender.value == 'Other'){
+                            controller.currentUser?.value?.gender = "other";
+                          }
+                          else{
+                            controller.currentUser?.value?.gender = "female";
+                          }
+
+
+                        },).marginOnly(left: 50, right: 20, ).paddingOnly( top: 10, bottom: 10)
+                  ).paddingOnly(top: 10, bottom: 20
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20.0, left: 10.0),
+                    child: Image.asset("assets/icons/gender.png", width: 22, height: 22),
+                  ),
+                ]),
+
+          ],),
+
+
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              InkWell(
+                  onTap: ()=>{ controller.birthDatePicker() },
+                  child: Container(
+                    child: TextFieldWidget(
+                      onTap: (){
+                        controller.birthDatePicker();
+                      },
+                      isFirst: true,
+                      isLast: true,
+                      readOnly: true,
+                      labelText: 'Birth Date',
+                      textController: controller.birthDateDisplay,
+                      //hintText: "01/01/2024",
+                      //initialValue: controller.birthDateDisplay.value,
+                      keyboardType: TextInputType.text,
+                      validator: (input) => input =="--/--/--" ? 'Please select a birthday': null,
+                      iconData: Icons.person, key: null,
+                      suffixIcon: const Icon(null), suffix: Icon(null),
+                      prefixIcon: Image.asset("assets/icons/calendar_age.png", width: 22, height: 22),
+                    ),
+                  )
+              ),
+            ],
+          ),
+
 
           Obx(() {
             return TextFieldWidget(
+              isFirst: true,
+              isLast: true,
               labelText: 'Password',
               hintText: "••••••••••••",
               readOnly: false,
-              //initialValue: controller.password.value,
+              textController: TextEditingController(text: controller.currentUser.value.password),
               onSaved: (input) => controller.currentUser.value.password = input,
               onChanged: (value) => {
                 // controller.password.value = value,
@@ -348,15 +399,17 @@ class RegisterView extends GetView<AuthController> {
                 color: Theme.of(context).focusColor,
                 icon: Icon(controller.hidePassword.value ? Icons.visibility_outlined : Icons.visibility_off_outlined),
               ),
-              errorText: '',
+              prefixIcon: Image.asset("assets/icons/password.png", width: 22, height: 22),
               suffix: const Icon(null),
             );
           }),
           Obx(() {
             return TextFieldWidget(
+              isFirst: true,
               labelText: 'Confirm Password',
               hintText: "••••••••••••",
               readOnly: false,
+              textController: TextEditingController(text: controller.confirmPassword),
               //initialValue: controller.password.value,
               onSaved: (input) => controller.confirmPassword = input!,
               onChanged: (value) => {
@@ -368,6 +421,7 @@ class RegisterView extends GetView<AuthController> {
               obscureText: controller.hidePassword.value,
               iconData: Icons.lock_outline,
               keyboardType: TextInputType.visiblePassword,
+              prefixIcon: Image.asset("assets/icons/password.png", width: 22, height: 22),
               suffixIcon: IconButton(
                 onPressed: () {
                   controller.hidePassword.value = !controller.hidePassword.value;
@@ -375,7 +429,6 @@ class RegisterView extends GetView<AuthController> {
                 color: Theme.of(context).focusColor,
                 icon: Icon(controller.hidePassword.value ? Icons.visibility_outlined : Icons.visibility_off_outlined),
               ),
-              errorText: '',
               suffix: Icon(null),
             );
           }),
@@ -451,9 +504,9 @@ class RegisterView extends GetView<AuthController> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text('Profile Image',
-            style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
+            style: Get.textTheme.labelMedium,
             textAlign: TextAlign.start,
-          ),
+          ).marginOnly(left: 20),
           Row(
             children: [
               Obx(() {
@@ -490,109 +543,160 @@ class RegisterView extends GetView<AuthController> {
                 ),
               )
             ],
-          ).marginOnly(bottom: 20),
+          ).marginOnly(bottom: 20, left: 20),
 
-          TextFieldWidget(
-            readOnly: false,
-            labelText: 'Company Name',
-            hintText: "Map & Rank",
-            initialValue: '',
-            keyboardType: TextInputType.text,
-            onSaved: (input) => controller.currentUser.value.companyName = input,
-            onChanged: (value) => {
-              controller.currentUser.value.companyName = value,
-              // controller.currentUser.value.email = controller.email.value
-            },
-            validator: (input) {
-              input!.length < 3 ? 'Enter at least 3 letters' : null;
-            },
-            iconData: Icons.person, key: null, errorText: '', suffixIcon: Icon(null), suffix: Icon(null),
-          ),
+          // TextFieldWidget(
+          //   readOnly: false,
+          //   labelText: 'Company Name',
+          //   hintText: "Map & Rank",
+          //   initialValue: '',
+          //   keyboardType: TextInputType.text,
+          //   onSaved: (input) => controller.currentUser.value.companyName = input,
+          //   onChanged: (value) => {
+          //     controller.currentUser.value.companyName = value,
+          //     // controller.currentUser.value.email = controller.email.value
+          //   },
+          //   validator: (input) {
+          //     input!.length < 3 ? 'Enter at least 3 letters' : null;
+          //   },
+          //   isFirst: true,
+          //   iconData: Icons.person, key: null, suffixIcon: Icon(null), suffix: Icon(null),
+          // ),
+          // SizedBox(height: 10,),
+            Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment:  CrossAxisAlignment.start,
+            children: [
 
-          Text('Select a sector',
-            style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-            textAlign: TextAlign.start,
-          ),
-          Obx(() =>
-              Column(
-                children: [
-                  TextFieldWidget(
-                    readOnly: false,
-                    keyboardType: TextInputType.text,
-                    validator: (input) => input!.isEmpty ? 'Required field' : null,
-                    iconData: FontAwesomeIcons.search,
-                    style: const TextStyle(color: labelColor),
-                    hintText: 'Select or search by sector name',
-                    onChanged: (value)=>{
-                      controller.filterSearchSectors(value)
-                    },
-                    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                  ),
-                  controller.loadingSectors.value ?
-                  Column(
-                    children: [
-                      for(var i=0; i < 4; i++)...[
-                        Container(
-                            width: Get.width,
-                            height: 60,
-                            margin: const EdgeInsets.all(5),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.asset(
-                                'assets/images/loading.gif',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: 40,
-                              ),
-                            ))
-                      ]
-                    ],
-                  ) :
-                  Container(
-                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                        ],
+              Text('Select a Sector ', style:  Get.textTheme.labelMedium,).marginOnly(left: 10, bottom: 20),
+              GestureDetector(
+                onTap: (){
+                  showDialog(context: context,
+                    builder: (context) {
+                    return Dialog(
+                      insetPadding: EdgeInsets.all(20),
+
+                      child: Container(
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            TextFieldWidget(
+                              labelText: 'Select a sector',
+                              onCancelTapped: (){
+                                print('Nathalie');
+                                Navigator.of(context).pop();
+                              },
+                              selection: true,
+                              isFirst: true,
+                              readOnly: false,
+                              keyboardType: TextInputType.text,
+                              validator: (input) => input!.isEmpty ? 'Required field' : null,
+                              iconData: FontAwesomeIcons.search,
+                              style: const TextStyle(color: labelColor),
+                              hintText: 'Select or search by sector name',
+                              onChanged: (value)=>{
+                                controller.filterSearchSectors(value)
+                              },
+                              suffixIcon: const Icon(null), suffix: const Icon(null),
+                            ),
+                            controller.loadingSectors.value ?
+                            Column(
+                              children: [
+                                for(var i=0; i < 4; i++)...[
+                                  Container(
+                                      width: Get.width,
+                                      height: 60,
+                                      margin: const EdgeInsets.all(5),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                        child: Image.asset(
+                                          'assets/images/loading.gif',
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 40,
+                                        ),
+                                      ))
+                                ]
+                              ],
+                            ) :
+                            Container(
+                                margin: const EdgeInsetsDirectional.only(end: 10, start: 10, ),
+                                // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                  ],
+                                ),
+
+                                child: ListView.builder(
+                                  //physics: AlwaysScrollableScrollPhysics(),
+                                    itemCount:controller.sectors.length,
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    itemBuilder: (context, index) {
+
+                                      return GestureDetector(
+                                          onTap: () async {
+
+
+                                            controller.selectedIndex. value = index;
+                                            if(controller.sectorsSelected.contains(controller.sectors[index]) ){
+                                              controller.sectorsSelected.remove(controller.sectors[index]);
+                                            }
+                                            else{
+                                              controller.sectorsSelected.add(controller.sectors[index]);
+                                            }
+
+
+
+                                          },
+                                          child: Obx(() => LocationWidget(
+                                            regionName: controller.sectors[index]['name'],
+                                            selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
+                                          ).marginOnly(bottom: 5))
+                                      );
+                                    })
+                            )
+                          ],
+                        ).marginOnly(bottom: 20),
                       ),
+                    );
 
-                      child: ListView.builder(
-                        //physics: AlwaysScrollableScrollPhysics(),
-                          itemCount:controller.sectors.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
+                  },);
+                },
+                child: Container(
+                  decoration: BoxDecoration(shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Obx(() => controller.sectorsSelected.isEmpty?
+                      Text('Choose a sector', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),)):
+                      RichText(text: TextSpan(
+                          children:[
+                            for(var sector in controller.sectorsSelected)...[
+                              TextSpan(text: '${sector['name']}, ',style: Get.textTheme.headline1, )
+                            ]
+                          ]
+                      )),),
 
-                            return GestureDetector(
-                                onTap: () async {
-
-
-                                  controller.selectedIndex. value = index;
-                                  if(controller.sectorsSelected.contains(controller.sectors[index]) ){
-                                    controller.sectorsSelected.remove(controller.sectors[index]);
-                                  }
-                                  else{
-                                    controller.sectorsSelected.add(controller.sectors[index]);
-                                  }
+                      FaIcon(FontAwesomeIcons.angleDown, size: 10,)
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
 
 
 
-                                },
-                                child: Obx(() => LocationWidget(
-                                  regionName: controller.sectors[index]['name'],
-                                  selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
-                                ).marginOnly(bottom: 5))
-                            );
-                          })
-                  )
-                ],
-              ),
-          ).marginOnly(bottom: 20),
-
-          const SizedBox(height: 20),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -610,11 +714,11 @@ class RegisterView extends GetView<AuthController> {
               )),
               Obx(() => BlockButtonWidget(
                 onPressed: () {
-                  if (controller.sectorsSelected.isNotEmpty){
-                    controller.registerNextStep1.value = !controller.registerNextStep1.value;
+                  if(controller.sectorsSelected.isEmpty){
+                    Get.showSnackbar(Ui.warningSnackBar(message: 'Please select at least one sector'));
                   }
                   else{
-                    Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a sector' ));
+                    controller.registerNextStep1.value = !controller.registerNextStep1.value;
                   }
 
                 },
@@ -652,280 +756,418 @@ class RegisterView extends GetView<AuthController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Select a region',
-            style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-            textAlign: TextAlign.start,
-          ),
-          Obx(() =>
-              Column(
-                children: [
-                  TextFieldWidget(
-                    readOnly: false,
-                    keyboardType: TextInputType.text,
-                    validator: (input) => input!.isEmpty ? 'Required field' : null,
-                    //onChanged: (input) => controller.selectUser.value = input,
-                    //labelText: "Research receiver".tr,
-                    iconData: FontAwesomeIcons.search,
-                    style: const TextStyle(color: labelColor),
-                    hintText: 'Search by region name',
-                    onChanged: (value)=>{
-                      controller.filterSearchRegions(value)
-                    },
-                    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                  ),
-                  controller.loadingRegions.value ?
-                  Column(
+          Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment:  CrossAxisAlignment.start,
+      children: [
+        RichText(text: TextSpan(children: [
+          TextSpan(text: 'Select a Region ', style:  Get.textTheme.labelMedium,),
+          TextSpan(text: '(mandatory)', style: TextStyle(color: Colors.red))
+        ])).marginOnly(left: 10, bottom: 20),
+        GestureDetector(
+          onTap: (){
+            showDialog(context: context, builder: (context){
+              return Dialog(
+                insetPadding: EdgeInsets.all(20),
+                child: Container(
+                  child: Column(
                     children: [
-                      for(var i=0; i < 4; i++)...[
-                        Container(
-                            width: Get.width,
-                            height: 60,
-                            margin: const EdgeInsets.all(5),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.asset(
-                                'assets/images/loading.gif',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: 40,
-                              ),
-                            ))
-                      ]
-                    ],
-                  ) :
-                  Container(
-                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                        ],
+                      TextFieldWidget(
+                        labelText: "Select a region",
+                        isFirst: true,
+                        selection: true,
+                        onCancelTapped: (){
+                          Navigator.of(context).pop();
+                        },
+                        readOnly: false,
+                        keyboardType: TextInputType.text,
+                        validator: (input) => input!.isEmpty ? 'Required field' : null,
+                        //onChanged: (input) => controller.selectUser.value = input,
+                        //labelText: "Research receiver".tr,
+                        iconData: FontAwesomeIcons.search,
+                        style: const TextStyle(color: Colors.black),
+                        hintText: 'Search by region name',
+                        onChanged: (value)=>{
+                          controller.filterSearchRegions(value)
+                        },
+                        suffixIcon: const Icon(null), suffix: const Icon(null),
                       ),
-
-                      child: ListView.builder(
-                        //physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
-
-                            return GestureDetector(
-                                onTap: () async {
-                                  //controller.regionSelectedValue.clear();
-                                  if(controller.regionSelectedValue.contains(controller.regions[index]) ){
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.remove(controller.regions[index]);
-                                  }
-                                  else{
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.add(controller.regions[index]);
-                                  }
-                                  controller.regionSelected.value = !controller.regionSelected.value;
-                                  controller.regionSelectedIndex.value = index;
-                                  controller.divisionsSet = await controller.getAllDivisions(index);
-                                  controller.listDivisions.value =  controller.divisionsSet['data'];
-                                  controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                  controller.divisions.value =  controller.listDivisions;
-
-                                  print(controller.regionSelected);
-
-                                },
-                                child: Obx(() => LocationWidget(
-                                  regionName: controller.regions[index]['name'],
-                                  selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
+                      controller.loadingRegions.value ?
+                      Column(
+                        children: [
+                          for(var i=0; i < 4; i++)...[
+                            Container(
+                                width: Get.width,
+                                height: 60,
+                                margin: const EdgeInsets.all(5),
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  child: Image.asset(
+                                    'assets/images/loading.gif',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 40,
+                                  ),
                                 ))
-                            );
-                          })
-                  )
-                ],
-              ),
+                          ]
+                        ],
+                      ) :
+                      Container(
+                          margin: const EdgeInsetsDirectional.only(end: 10, start: 10, ),
+                          // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                            ],
+                          ),
+
+                          child: ListView.builder(
+                            //physics: AlwaysScrollableScrollPhysics(),
+                              itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
+                              shrinkWrap: true,
+                              primary: false,
+                              itemBuilder: (context, index) {
+
+                                return GestureDetector(
+                                    onTap: () async {
+                                      //controller.regionSelectedValue.clear();
+                                      if(controller.regionSelectedValue.contains(controller.regions[index]) ){
+                                        controller.regionSelectedValue.clear();
+                                        controller.regionSelectedValue.remove(controller.regions[index]);
+                                      }
+                                      else{
+                                        controller.regionSelectedValue.clear();
+                                        controller.regionSelectedValue.add(controller.regions[index]);
+                                      }
+                                      controller.regionSelected.value = !controller.regionSelected.value;
+                                      controller.regionSelectedIndex.value = index;
+                                      controller.divisionsSet = await controller.getAllDivisions(index);
+                                      controller.listDivisions.value =  controller.divisionsSet['data'];
+                                      controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                      controller.divisions.value =  controller.listDivisions;
+
+                                      print(controller.regionSelected);
+
+                                    },
+                                    child: Obx(() => LocationWidget(
+                                      regionName: controller.regions[index]['name'],
+                                      selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
+                                    ))
+                                );
+                              })
+                      )
+                    ],
+                  ),
+
+                ),
+
+              );
+
+            },);
+
+          },
+          child: Container(
+            decoration: BoxDecoration(shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Obx(() => controller.regionSelectedValue.isNotEmpty?
+                    Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headline1,)
+                    :Text('Choose a region', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
+                ),
+                FaIcon(FontAwesomeIcons.angleDown, size: 10,)
+              ],
+            ),
+          ),
+        )
+      ],
+    ).marginOnly(bottom: 20),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment:  CrossAxisAlignment.start,
+            children: [
+              RichText(text: TextSpan(children: [
+                TextSpan(text: 'Select a Division ', style:  Get.textTheme.labelMedium,),
+                TextSpan(text: '(Optional...)', style: TextStyle(color: Colors.grey.shade600))
+              ])).marginOnly(left: 10, bottom: 20),
+              GestureDetector(
+                onTap: (){
+                  if(controller.regionSelectedValue.isEmpty){
+                    Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a region first'));
+                  }
+                  else{
+                    showDialog(context: context, builder: (context) {
+                      return Dialog(
+                        insetPadding: EdgeInsets.all(20),
+                        child: Container(
+                            child: Column(
+                              children: [
+                                Obx(() =>
+                                    Column(
+                                      children: [
+                                        TextFieldWidget(
+                                          isFirst: true,
+                                          isLast:true,
+                                          labelText: 'Select a division',
+                                          readOnly: false,
+                                          selection: true,
+                                          onCancelTapped: (){
+                                            Navigator.of(context).pop();
+
+                                          },
+                                          keyboardType: TextInputType.text,
+                                          validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                          //onChanged: (input) => controller.selectUser.value = input,
+                                          //labelText: "Research receiver".tr,
+                                          iconData: FontAwesomeIcons.search,
+                                          style: const TextStyle(color: Colors.black),
+                                          hintText: 'Search by division name',
+                                          onChanged: (value)=>{
+                                            controller.filterSearchDivisions(value)
+                                          },
+                                          suffixIcon: const Icon(null), suffix: const Icon(null),
+                                        ),
+                                        controller.loadingDivisions.value ?
+                                        Column(
+                                          children: [
+                                            for(var i=0; i < 4; i++)...[
+                                              Container(
+                                                  width: Get.width,
+                                                  height: 60,
+                                                  margin: const EdgeInsets.all(5),
+                                                  child: ClipRRect(
+                                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                                    child: Image.asset(
+                                                      'assets/images/loading.gif',
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      height: 40,
+                                                    ),
+                                                  ))
+                                            ]
+                                          ],
+                                        ) :
+                                        Container(
+                                            margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                            // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                              ],
+                                            ),
+
+                                            child: ListView.builder(
+                                              //physics: AlwaysScrollableScrollPhysics(),
+                                                itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
+                                                shrinkWrap: true,
+                                                primary: false,
+                                                itemBuilder: (context, index) {
+
+                                                  return GestureDetector(
+                                                      onTap: () async{
+                                                        if(controller.divisionSelectedValue.contains(controller.divisions[index]) ){
+                                                          controller.divisionSelectedValue.clear();
+                                                          controller.divisionSelectedValue.remove(controller.divisions[index]);
+                                                        }
+                                                        else{
+                                                          controller.divisionSelectedValue.clear();
+                                                          controller.divisionSelectedValue.add(controller.divisions[index]);
+                                                        }
+                                                        controller.divisionSelected.value = !controller.divisionSelected.value;
+                                                        controller.divisionSelectedIndex.value = index;
+                                                        controller.subdivisionsSet = await controller.getAllSubdivisions(index);
+                                                        controller.listSubdivisions.value = controller.subdivisionsSet['data'];
+                                                        controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
+                                                        controller.subdivisions.value = controller.listSubdivisions;
+                                                        print(controller.subdivisionSelectedValue[0]['id'].toString());
+
+                                                      },
+                                                      child: Obx(() => LocationWidget(
+                                                        regionName: controller.divisions[index]['name'],
+                                                        selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
+                                                      ))
+                                                  );
+                                                })
+                                        )
+                                      ],
+                                    ),
+                                ).marginOnly(bottom: 20),
+                              ],
+                            )
+                        ),
+
+                      );
+                    },);
+                  }
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Obx(() => controller.divisionSelectedValue.isNotEmpty?
+                      Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headline1,):
+                      Text('Choose a Division', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
+
+                      FaIcon(FontAwesomeIcons.angleDown, size: 10,)
+                    ],
+                  ),
+                ),
+              )
+            ],
           ).marginOnly(bottom: 20),
-          if(controller.regionSelectedValue.isNotEmpty)...[
-            Text('Select a division',
-              style: Get.textTheme.bodyText2?.merge(TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
-            ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchDivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingDivisions.value ?
-                    Column(
-                      children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                          ],
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment:  CrossAxisAlignment.start,
+            children: [
+              RichText(text: TextSpan(children: [
+                TextSpan(text: 'Select a Subdivision ', style:  Get.textTheme.labelMedium,),
+                TextSpan(text: '(Optional...)', style: TextStyle(color: Colors.grey.shade600))
+              ])).marginOnly(left: 10, bottom: 20),
+              GestureDetector(
+                onTap: (){
+                  if(controller.divisionSelectedValue.isEmpty){
+                    Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a region, then a division  first'));
+                  }
+                  else{
+                    showDialog(context: context, builder: (context) {
+                      return Dialog(
+                        insetPadding: EdgeInsets.all(20),
+                        child: Container(
+                          child: Column(
+                            children: [
+                              TextFieldWidget(
+                                isFirst: true,
+                                labelText: 'Select a Subdivision',
+                                readOnly: false,
+                                selection: true,
+                                onCancelTapped: (){
+                                  Navigator.of(context).pop();
+                                },
+                                keyboardType: TextInputType.text,
+                                validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                //onChanged: (input) => controller.selectUser.value = input,
+                                //labelText: "Research receiver".tr,
+                                iconData: FontAwesomeIcons.search,
+                                style: const TextStyle(color: labelColor),
+                                hintText: 'Search by sub-division name',
+                                onChanged: (value)=>{
+                                  controller.filterSearchSubdivisions(value)
+                                },
+                                suffixIcon: const Icon(null), suffix: const Icon(null),
+                              ),
+                              controller.loadingSubdivisions.value ?
+                              Column(
+                                children: [
+                                  for(var i=0; i < 4; i++)...[
+                                    Container(
+                                        width: Get.width,
+                                        height: 60,
+                                        margin: const EdgeInsets.all(5),
+                                        child: ClipRRect(
+                                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                          child: Image.asset(
+                                            'assets/images/loading.gif',
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 40,
+                                          ),
+                                        ))
+                                  ]
+                                ],
+                              ) :
+                              Container(
+                                  margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                  // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                    ],
+                                  ),
+
+                                  child: ListView.builder(
+                                    //physics: AlwaysScrollableScrollPhysics(),
+                                      itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      itemBuilder: (context, index) {
+
+                                        return GestureDetector(
+                                            onTap: () async {
+
+                                              if(controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ){
+                                                controller.subdivisionSelectedValue.clear();
+                                                controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
+                                              }
+                                              else{
+                                                controller.subdivisionSelectedValue.clear();
+                                                controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
+                                              }
+                                              controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
+                                              controller.subdivisionSelectedIndex.value = index;
+
+
+                                              print(controller.subdivisions);
+
+                                              controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
+
+
+                                              //print(controller.subdivisionSelected);
+
+                                            },
+                                            child: Obx(() => LocationWidget(
+                                              regionName: controller.subdivisions[index]['name'],
+                                              selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
+                                            ))
+                                        );
+                                      })
+                              )
+                            ],
+                          ),
+
                         ),
-
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async{
-                                    if(controller.divisionSelectedValue.contains(controller.divisions[index]) ){
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.remove(controller.divisions[index]);
-                                    }
-                                    else{
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.add(controller.divisions[index]);
-                                    }
-                                    controller.divisionSelected.value = !controller.divisionSelected.value;
-                                    controller.divisionSelectedIndex.value = index;
-                                    controller.subdivisionsSet = await controller.getAllSubdivisions(index);
-                                    controller.listSubdivisions.value = controller.subdivisionsSet['data'];
-                                    controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
-                                    controller.subdivisions.value = controller.listSubdivisions;
-                                    print(controller.subdivisionSelectedValue[0]['id'].toString());
-
-                                  },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.divisions[index]['name'],
-                                    selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
-                  ],
+                      );
+                    },);
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Obx(() => controller.subdivisionSelectedValue.isEmpty?
+                      Text('Choose a Subdivision', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
+                        Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headline1,),)
+                      ,
+                      FaIcon(FontAwesomeIcons.angleDown, size: 10,)
+                    ],
+                  ),
                 ),
-            ).marginOnly(bottom: 20),
-          ],
-          if(controller.divisionSelectedValue.isNotEmpty)...[
-            Text('Select a subdivision',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
-            ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by sub-division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchSubdivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingSubdivisions.value ?
-                    Column(
-                      children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                          ],
-                        ),
+              )
+            ],
+          ).marginOnly(bottom: 20),
 
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async {
-
-                                    if(controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ){
-                                      controller.subdivisionSelectedValue.clear();
-                                      controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
-                                    }
-                                    else{
-                                      controller.subdivisionSelectedValue.clear();
-                                      controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
-                                    }
-                                    controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
-                                    controller.subdivisionSelectedIndex.value = index;
-
-
-                                    print(controller.subdivisions);
-
-                                    controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
-
-
-                                    //print(controller.subdivisionSelected);
-
-                                  },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.subdivisions[index]['name'],
-                                    selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
-                  ],
-                ),
-            ).marginOnly(bottom: 20),
-          ],
 
           const SizedBox(height: 20),
 
@@ -938,12 +1180,12 @@ class RegisterView extends GetView<AuthController> {
                   }
               )),
               SizedBox(
-                  width: Get.width/1.5,
-                  child: const Text(" By clicking Agree & Join, you agree to the LinkedIn User , "
-                      "Privacy Policy, and Cookie Policy.",style: TextStyle(fontFamily: "poppins",fontSize: 15, color: Colors.grey))),
+                  width: Get.width/1.3,
+                  child: Text("By clicking Agree & Join, you agree to the Map&Rank User , "
+                      "Privacy Policy",style: TextStyle(fontFamily: "poppins",fontSize: 15, color: Colors.grey.shade800))),
               //Spacer(),
             ],
-          ).paddingSymmetric(horizontal: 30),
+          ).paddingSymmetric(horizontal: 10),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -966,28 +1208,26 @@ class RegisterView extends GetView<AuthController> {
     onPressed: () {
     //controller.login(),
     //controller.registerNext.value = !controller.registerNext.value;
-      if(controller.regionSelectedValue.isNotEmpty){
-        if(controller.divisionSelectedValue.isNotEmpty){
-          if(controller.subdivisionSelectedValue.isNotEmpty){
-             controller.register();
-          }
-          else{
-            Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a subdivision' ));
-          }
-        }
-        else{
-          Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a division' ));
-        }
+      if(controller.regionSelectedValue.isEmpty){
+        Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a zone'));
       }
       else{
-        Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a region' ));
+        if(controller.isConfidentialityChecked.value){
+          controller.register();
+        }
+        else{
+          Get.showSnackbar(Ui.warningSnackBar(message: 'Please agree to the terms and conditions to create your account'));
+        }
       }
+
+
+
 
 
     },
     color: Get.theme.colorScheme.secondary,
     text: !controller.loading.value? Text(
-    'Next',
+    'Create account',
     style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
     ): const SizedBox(height: 30,
     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
@@ -1008,10 +1248,9 @@ class RegisterView extends GetView<AuthController> {
               ),
             ],
           ).paddingSymmetric(vertical: 20),
-        ],
-      ),
+      ],
 
-    );
+    ));
   }
 
   Widget buildLoader() {

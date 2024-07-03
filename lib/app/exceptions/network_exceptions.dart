@@ -41,22 +41,22 @@ abstract class NetworkExceptions {
         var errorMessage = "";
         if (error is DioError) {
           switch (error.type) {
-            case DioErrorType.cancel:
+            case DioExceptionType.cancel:
               errorMessage = "Request Cancelled";
               break;
-            case DioErrorType.connectTimeout:
+            case DioExceptionType.connectionTimeout:
               errorMessage = "Connection request timeout";
               break;
-            case DioErrorType.other:
+            case DioExceptionType.connectionError:
               errorMessage = "No internet connection";
               break;
-            case DioErrorType.receiveTimeout:
+            case DioExceptionType.receiveTimeout:
               errorMessage = "Send timeout in connection with API server";
               break;
-            case DioErrorType.response:
+            case DioExceptionType.badResponse:
               errorMessage = NetworkExceptions.handleResponse(error.response!);
               break;
-            case DioErrorType.sendTimeout:
+            case DioExceptionType.sendTimeout:
               errorMessage = "Send timeout in connection with API server";
               break;
           }

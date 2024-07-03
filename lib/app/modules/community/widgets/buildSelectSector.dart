@@ -80,7 +80,6 @@ class BuildSelectSector extends GetView<CommunityController> {
                           return GestureDetector(
                               onTap: () async {
 
-
                                 controller.selectedIndex. value = index;
                                 if(controller.sectorsSelected.contains(controller.sectors[index]) ){
                                   if(controller.noFilter.value){
@@ -88,9 +87,13 @@ class BuildSelectSector extends GetView<CommunityController> {
                                     controller.post?.sectors?.remove(controller.sectors[index]['id']);
                                   }
                                   else{
+                                    var sectorsIds = [];
                                     controller.sectorsSelected.remove(controller.sectors[index]);
+                                    for(var i = 0; i<controller.sectorsSelected.length; i++){
+                                      sectorsIds.add(controller.sectors[index]['id']);
+                                    }
                                     //controller.post?.sectors?.remove(controller.sectors[index]['id']);
-                                    controller.filterSearchPostsBySectors(controller.sectors[index]['id'].toString());
+                                    controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 
                                 }
@@ -98,10 +101,17 @@ class BuildSelectSector extends GetView<CommunityController> {
                                   if(controller.noFilter.value){
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     controller.post?.sectors?.add(controller.sectors[index]['id']);
+                                    print( controller.sectors[index]);
+                                    print('nath');
                                   }
                                   else{
+                                    print('christelle');
                                     controller.sectorsSelected.add(controller.sectors[index]);
-                                    controller.filterSearchPostsBySectors(controller.sectors[index]['id'].toString());
+                                    var sectorsIds = [];
+                                    for(var i = 0; i<controller.sectorsSelected.length; i++){
+                                      sectorsIds.add(controller.sectors[index]['id']);
+                                    }
+                                    controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 
 

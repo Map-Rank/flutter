@@ -33,12 +33,12 @@ class RootView extends GetView<RootController> {
               label: 'Community',
             ),
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.comment,
-              label: 'Chat',
+              icon: FontAwesomeIcons.calendar,
+              label: 'Events',
             ),
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.user,
-              label: 'Profile',
+              icon: FontAwesomeIcons.bell,
+              label: 'Notifications',
             ),
           ],
         ),

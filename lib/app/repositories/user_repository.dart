@@ -4,27 +4,19 @@ import '../providers/laravel_provider.dart';
 
 class UserRepository {
    late LaravelApiClient _laravelApiClient;
-
-
-
-  Future login<int>(User user) {
+  Future login(UserModel user) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.login(user);
   }
 
-  // Future<User> get(int id) {
-  //   _laravelApiClient = Get.find<LaravelApiClient>();
-  //   return _laravelApiClient.getUser(id);
-  // }
+   Future logout<int>() {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.logout();
+   }
 
-  //  update(User user) {
-  //   //print("Nath");
-  //    _laravelApiClient = Get.find<LaravelApiClient>();
-  //   //print("Nathalie");
-  //   return _laravelApiClient.updateUser(user);
-  // }
 
-  Future<User> register(User user) {
+
+  Future<UserModel> register(UserModel user) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.register(user);
   }

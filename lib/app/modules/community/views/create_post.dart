@@ -21,57 +21,125 @@ class CreatePostView extends GetView<CommunityController> {
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
-          backgroundColor: Get.theme.colorScheme.secondary,
+          backgroundColor: backgroundColor,
           elevation: 0,
-          title:  Text(
-            !controller.createUpdatePosts.value?'Create a Post'.tr:'Update a Post',
-            style: Get.textTheme.headline6!.merge(const TextStyle(color: Colors.white)),
-          ),
+          // title:  Text(
+          //   !controller.createUpdatePosts.value?'Create a Post'.tr:'Update a Post',
+          //   style: Get.textTheme.headline6!.merge(const TextStyle(color: Colors.white)),
+          // ),
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
             onPressed: () => {
               Navigator.pop(context),
               //Get.back()
             },
           ),
-        ),
-        bottomSheet: SizedBox(
-            height: 80,
-            child: Center(
-                child: InkWell(
-                    onTap: () async{
-                      !controller.createUpdatePosts.value?
-                      controller.createPost(controller.post!)
-                      :controller.updatePost(controller.post!);
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: interfaceColor,
-                          ),
+          actions: [
+            SizedBox(
+                //height: 80,
+                child: Center(
+                    child: InkWell(
+                        onTap: () async{
+                          controller.createPosts.value = !controller.createPosts.value;
 
-                        width: Get.width/2,
-                        height: 40,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                        child: Center(
-                            child: Obx(() =>  !controller.createUpdatePosts.value?!controller.createPosts.value ?
-                            Text('Post', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
-                                : const SizedBox(height: 20,
-                                child: SpinKitThreeBounce(color: Colors.white, size: 20)):
+                          !controller.createUpdatePosts.value?
+                          controller.createPosts.value?
+                          await  controller.createPost(controller.post!):(){}
+                              :controller.updatePosts.value?
+                          await  controller.updatePost(controller.post!):(){};
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: interfaceColor,
+                            ),
+
+                            width: Get.width/3.5,
+                            height: 40,
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                            child: Center(
+                                child: Obx(() =>  !controller.createUpdatePosts.value?!controller.createPosts.value ?
+                                Text('Post', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                    : const SizedBox(height: 20,
+                                    child: SpinKitThreeBounce(color: Colors.white, size: 20)):
                                 !controller.updatePosts.value?
-                            Text('Update', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                Text('Update', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
                                     : const SizedBox(height: 20,
                                     child: SpinKitThreeBounce(color: Colors.white, size: 20))
 
+                                )
                             )
                         )
                     )
                 )
             )
+          ],
         ),
+        bottomSheet: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Spacer(),
+
+            TextButton.icon(
+              icon: FaIcon(FontAwesomeIcons.add, color: interfaceColor, size: 15,),
+                onPressed: (){
+              controller.inputSector.value = !controller.inputSector.value;
+            }, label: Text('Add sector', style: TextStyle(color: interfaceColor),)),
+            TextButton.icon(
+                icon: FaIcon(FontAwesomeIcons.add, color: interfaceColor, size: 15),
+                onPressed: (){
+              controller.inputZone.value = !controller.inputZone.value;
+            }, label: Text('Add zone', style: TextStyle(color: interfaceColor,),)),
+            GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: Get.context!,
+                      builder: (_){
+                        return AlertDialog(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(20))
+                          ),
+                          content: Container(
+                              height: 140,
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                  children: [
+                                    ListTile(
+                                      onTap: ()async{
+                                        await controller.pickImage(ImageSource.camera);
+                                        Navigator.pop(Get.context!);
+                                      },
+                                      leading: const Icon(FontAwesomeIcons.camera),
+                                      title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                    ),
+                                    ListTile(
+                                      onTap: ()async{
+                                        await controller.pickImage(ImageSource.gallery);
+                                        Navigator.pop(Get.context!);
+                                      },
+                                      leading: const Icon(FontAwesomeIcons.image),
+                                      title: Text('Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                    )
+                                  ]
+                              )
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: ()=> Navigator.pop(context),
+                                child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
+                          ],
+                        );
+                      });
+                },
+                child: FaIcon(FontAwesomeIcons.camera)
+            )
+           //buildInputImages(context),
+
+          ],
+        ).marginAll(20),
         body: Theme(
           data: ThemeData(
             //canvasColor: Colors.yellow,
@@ -89,14 +157,15 @@ class CreatePostView extends GetView<CommunityController> {
                 Column(
                     children: <Widget>[
                       Card(
+                        color: backgroundColor,
                           elevation: 0,
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                height: Get.height*0.5,
+                                height: Get.height*0.2,
                                 child: TextFormField(
-                                  initialValue: controller.post.content,
-                                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                                  initialValue: !controller.createUpdatePosts.value?'':controller.post.content,
+                                  style: TextStyle(color: Colors.black, fontSize: 20),
                                   cursorColor: Colors.black,
                                   textInputAction:TextInputAction.done ,
                                   maxLines: 20,
@@ -108,8 +177,8 @@ class CreatePostView extends GetView<CommunityController> {
                                       fillColor: Palette.background,
                                       enabledBorder: InputBorder.none,
                                       //filled: true,
-                                      prefixIcon: const Icon(Icons.description),
-                                      hintText: 'Share your thoughts ',
+                                      hintText: 'Share your thoughts... ',
+
                                       hintStyle: TextStyle(fontSize: 28, color: Colors.grey.shade400)
                                   ),
 
@@ -120,11 +189,21 @@ class CreatePostView extends GetView<CommunityController> {
                     ]
                 ).marginOnly(top: 20, bottom: 5),
 
-                buildInputImages(context),
+                if(controller.imageFiles.length >= 0 )...[
+                  buildInputImages(context),
+                ],
+                Obx(() => Visibility(
+                    visible: controller.inputSector.value,
+                    child: BuildSelectSector()),),
+    Obx(() => Visibility(
+      visible: controller.inputZone.value,
+      child: BuildSelectZone(),),)
 
-                BuildSelectSector(),
 
-                BuildSelectZone(),
+
+
+
+
 
 
 
@@ -186,52 +265,7 @@ class CreatePostView extends GetView<CommunityController> {
                  
          ),
          Obx(() =>  controller.imageFiles.length <= 0 ?
-         GestureDetector(
-             onTap: () {
-               showDialog(
-                   context: Get.context!,
-                   builder: (_){
-                     return AlertDialog(
-                       shape: const RoundedRectangleBorder(
-                           borderRadius: BorderRadius.all(Radius.circular(20))
-                       ),
-                       content: Container(
-                           height: 140,
-                           padding: const EdgeInsets.all(10),
-                           child: Column(
-                               children: [
-                                 ListTile(
-                                   onTap: ()async{
-                                     await controller.pickImage(ImageSource.camera);
-                                     Navigator.pop(Get.context!);
-                                   },
-                                   leading: const Icon(FontAwesomeIcons.camera),
-                                   title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
-                                 ),
-                                 ListTile(
-                                   onTap: ()async{
-                                     await controller.pickImage(ImageSource.gallery);
-                                     Navigator.pop(Get.context!);
-                                   },
-                                   leading: const Icon(FontAwesomeIcons.image),
-                                   title: Text('Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
-                                 )
-                               ]
-                           )
-                       ),
-                       actions: [
-                         TextButton(
-                             onPressed: ()=> Navigator.pop(context),
-                             child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
-                       ],
-                     );
-                   });
-             },
-             child: const Align(
-                 alignment: Alignment.centerRight,
-
-                 child: FaIcon(FontAwesomeIcons.camera))
-         )
+         SizedBox()
              : Column(
            children: [
              SizedBox(

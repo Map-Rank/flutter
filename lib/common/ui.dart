@@ -121,20 +121,24 @@ class Ui {
     );
   }
 
-  static InputDecoration getInputDecoration({String hintText = '', required String errorText, required IconData iconData, required Widget suffixIcon, required Widget suffix}) {
+  static InputDecoration getInputDecoration({String hintText = '', var errorText, required var prefixIcon, required Widget suffixIcon, required Widget suffix, var isFirst}) {
     return InputDecoration(
       hintText: hintText,
-      hintStyle: Get.textTheme.caption!.merge(TextStyle(color: Colors.grey)),
-      prefixIcon: iconData != null ? Icon(iconData, color: Get.theme.focusColor).marginOnly(right: 14) : SizedBox(),
-      prefixIconConstraints: iconData != null ? BoxConstraints.expand(width: 38, height: 38) : BoxConstraints.expand(width: 0, height: 0),
+      hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+      prefixIcon: prefixIcon != null? prefixIcon: SizedBox(),
+      prefixIconConstraints: prefixIcon != null ? BoxConstraints.expand(width: 38, height: 38) : BoxConstraints.expand(width: 10, height: 10),
       floatingLabelBehavior: FloatingLabelBehavior.never,
       contentPadding: EdgeInsets.all(0),
-      border: OutlineInputBorder(borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+      border: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+      focusedBorder: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5)), borderRadius: BorderRadius.circular(10)),
+      enabledBorder: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid,color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10)),
       suffixIcon: suffixIcon,
       suffix: suffix,
-      errorText: errorText,
+       errorText: errorText,
+        errorBorder:  errorText!=null?OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Colors.black ),borderRadius: BorderRadius.circular(10)):OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Colors.red ),borderRadius: BorderRadius.circular(10))
     );
   }
 
@@ -152,6 +156,8 @@ class Ui {
       suffixIcon: suffixIcon,
       suffix: suffix,
       errorText: errorText,
+
+
     );
   }
 

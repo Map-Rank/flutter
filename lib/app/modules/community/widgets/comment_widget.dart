@@ -42,26 +42,26 @@ class CommentWidget extends StatelessWidget {
 
           Expanded(
             child: SizedBox(
-              height: 100,
+              height: 80,
               child: Column(
                 children: [
                   SizedBox(
-                      height: 40,
+                      //height: 40,
                       //width: Get.width/2.5,
                       child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: Text(user, style: Get.textTheme.headline4!.merge(TextStyle(fontSize: 13, color: buttonColor, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,)
+                                child: Text(user, style: Get.textTheme.headline6!, overflow: TextOverflow.ellipsis,)
                             )
                           ]
                       )
-                  ),
+                  ).marginOnly(bottom: 10),
                   Expanded(
                       child: SizedBox(
                         width: Get.width,
-                      child: Text(comment))),
+                      child: Text(comment, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodyText1,))),
                 ],
 
               ),

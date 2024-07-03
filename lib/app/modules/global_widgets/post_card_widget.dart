@@ -38,10 +38,10 @@ class PostCardWidget extends StatelessWidget {
   final String? content;
   final int? postId;
   var zone;
-  final User? user;
+  final UserModel? user;
   RxInt? likeCount;
   final int? commentCount;
-  final int? shareCount;
+  RxInt? shareCount;
   final List? images;
   final bool? liked;
   final Function()? onLikeTapped;
@@ -77,7 +77,7 @@ class PostCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 80,
+                height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,20 +143,20 @@ class PostCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${user?.firstName} ${user?.lastName}', style: const TextStyle(fontSize: 12, color: appColor, overflow: TextOverflow.ellipsis)).marginOnly(bottom: 10),
+                        Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',overflow:TextOverflow.ellipsis , style: Get.textTheme.headline6).marginOnly(bottom: 10),
                         Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
+                                const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
                                 SizedBox(
                                     width: Get.width/4,
-                                    child: Text(zone.toString()).marginOnly(right: 10)),
+                                    child: Text(zone.toString(), style: Get.textTheme.bodyText1).marginOnly(right: 10)),
                                 const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
                                 SizedBox(
                                     width: Get.width/4,
-                                    child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
+                                    child: Text(publishedDate!, style: Get.textTheme.bodyText1)),
 
 
                                 //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
@@ -170,13 +170,12 @@ class PostCardWidget extends StatelessWidget {
                     popUpWidget!,
 
 
-
                   ],
 
 
                 ),
               ),
-              Text(content!),
+              Text(content!).marginOnly(bottom: 20),
               if(images!.isNotEmpty)...[
                 if( images!.length == 1)...[
                   GestureDetector(
@@ -264,10 +263,12 @@ class PostCardWidget extends StatelessWidget {
                     Text(' ${commentCount!} Comments'),
                   ],
                   if(shareCount! <= 1)...[
-                    Text(' . ${shareCount!} Share'),
+                    Obx(() =>  Text(' . ${shareCount!} Share'),),
+
                   ]
                   else...[
-                    Text(' . ${shareCount!} Shares'),
+                    Obx(() =>Text(' . ${shareCount!} Shares'), )
+
                   ],
 
 
@@ -308,15 +309,11 @@ class PostCardWidget extends StatelessWidget {
                     onTap: onSharedTapped,
                     child: Column(
                       children: const [
-                        FaIcon(FontAwesomeIcons.shareFromSquare),
+                        FaIcon(FontAwesomeIcons.shareFromSquare, key: Key('shareIcon'),),
                         Text('Share'),
                       ],
                     ),
                   ),
-
-
-
-
                 ],
 
               ),

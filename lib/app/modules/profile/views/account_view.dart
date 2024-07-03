@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
@@ -91,6 +90,7 @@ class AccountView extends GetView<ProfileController> {
                       iconData: Icons.person,
                       key: null,
                       errorText: '',
+                      prefixIcon: const Icon(Icons.person_2_outlined),
                       suffixIcon: const Icon(null),
                       suffix: const Icon(null),
                     ),
@@ -112,6 +112,7 @@ class AccountView extends GetView<ProfileController> {
                       iconData: Icons.person,
                       key: null,
                       errorText: '',
+                      prefixIcon: const Icon(Icons.person_2_outlined),
                       suffixIcon: const Icon(null),
                       suffix: const Icon(null),
                     ),
@@ -133,6 +134,7 @@ class AccountView extends GetView<ProfileController> {
                       iconData: Icons.alternate_email,
                       key: null,
                       errorText: '',
+                      prefixIcon: const Icon(Icons.email_outlined),
                       suffixIcon: const Icon(null),
                       suffix: const Icon(null),
                     ),
@@ -153,6 +155,7 @@ class AccountView extends GetView<ProfileController> {
                       iconData: Icons.phone,
                       key: null,
                       errorText: '',
+                      prefixIcon: const Icon(Icons.phone_android_outlined),
                       suffixIcon: const Icon(null),
                       suffix: const Icon(null),
                     ),
@@ -169,8 +172,8 @@ class AccountView extends GetView<ProfileController> {
                       iconData: Icons.person,
                       key: null,
                       errorText: '',
-                      suffixIcon:const Icon(null),
-                      suffix:const Icon(null),
+                      prefixIcon:const Icon(Icons.groups_outlined),
+                      suffix:const Icon(null), suffixIcon: Icon(null),
                     ),
                   ],
                 ),

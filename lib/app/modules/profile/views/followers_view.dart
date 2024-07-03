@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
+import 'package:mapnrank/app/services/settings_services.dart';
 
 class FollowersView extends GetView<ProfileController> {
   const FollowersView({super.key});
@@ -63,11 +64,11 @@ class FollowersView extends GetView<ProfileController> {
                               ),
                             ),
                           ),
-                          subtitle: const Text(
+                          subtitle: Text(
                             'mvogoP@gmail.com',
-                            style: TextStyle(
-                                color: Colors.grey, fontSize: 14.0),
-                          ),
+                            style: Get.textTheme.headline1!.merge(const TextStyle(
+                                color: Colors.grey, fontSize: 14.0,fontWeight: FontWeight.w400),
+                          )),
                           trailing: const Icon(
                             Icons.navigate_next_rounded,
                             size: 24,

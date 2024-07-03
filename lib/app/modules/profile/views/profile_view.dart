@@ -1,10 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
@@ -107,7 +101,42 @@ class ProfileView extends GetView<ProfileController> {
                                     Padding(
                                       padding: EdgeInsets.only(top: 8.0),
                                       child: Text(
-                                        'Articles',
+                                        'Posts',
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14.0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Padding(
+                              padding:
+                                  EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                '|',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.0),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.ARTICLES);
+                              },
+                              child: const SizedBox(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      '3',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16.0),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'Events',
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14.0),

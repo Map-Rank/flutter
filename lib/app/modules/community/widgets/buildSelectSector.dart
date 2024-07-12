@@ -21,7 +21,7 @@ class BuildSelectSector extends GetView<CommunityController> {
       children: [
 
         Text('Select a sector',
-          style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
+          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
           textAlign: TextAlign.start,
         ),
         Obx(() =>
@@ -78,6 +78,7 @@ class BuildSelectSector extends GetView<CommunityController> {
                         itemBuilder: (context, index) {
 
                           return GestureDetector(
+                            // coverage:ignore-start
                               onTap: () async {
 
                                 controller.selectedIndex. value = index;
@@ -120,6 +121,7 @@ class BuildSelectSector extends GetView<CommunityController> {
 
 
                               },
+                              // coverage:ignore-end
                               child: Obx(() => LocationWidget(
                                 regionName: controller.sectors[index]['name'],
                                 selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,

@@ -57,11 +57,11 @@ class CreateEventView extends GetView<EventsController> {
                         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                         child: Center(
                             child: Obx(() =>  !controller.createUpdateEvents.value?!controller.createEvents.value ?
-                            Text('Create', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                            Text('Create', style: Get.textTheme.bodyMedium!.merge(const TextStyle(color: Colors.white)))
                                 : const SizedBox(height: 20,
                                 child: SpinKitThreeBounce(color: Colors.white, size: 20)):
                             !controller.updateEvents.value?
-                            Text('Update', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                            Text('Update', style: Get.textTheme.bodyMedium!.merge(const TextStyle(color: Colors.white)))
                                 : const SizedBox(height: 20,
                                 child: SpinKitThreeBounce(color: Colors.white, size: 20))
 
@@ -227,7 +227,7 @@ class CreateEventView extends GetView<EventsController> {
                                 ListTile(
                                     leading: const Icon(Icons.calendar_today),
                                     title: Text(controller.startingDateDisplay.value,
-                                      style: Get.textTheme.headline1?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
+                                      style: Get.textTheme.headlineMedium?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
                                     )
                                 ))
                           ],
@@ -256,7 +256,7 @@ class CreateEventView extends GetView<EventsController> {
                                 ListTile(
                                     leading: const Icon(Icons.calendar_today),
                                     title: Text(controller.endingDateDisplay.value,
-                                      style: Get.textTheme.headline1?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
+                                      style: Get.textTheme.headlineMedium?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
                                     )
                                 ))
                           ],
@@ -382,7 +382,7 @@ class CreateEventView extends GetView<EventsController> {
                                             Navigator.pop(Get.context!);
                                           },
                                           leading: const Icon(FontAwesomeIcons.camera),
-                                          title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                          title: Text('Take a picture', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                         ),
                                         ListTile(
                                           onTap: ()async{
@@ -390,7 +390,7 @@ class CreateEventView extends GetView<EventsController> {
                                             Navigator.pop(Get.context!);
                                           },
                                           leading: const Icon(FontAwesomeIcons.image),
-                                          title: Text('Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                          title: Text('Upload an image', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                         )
                                       ]
                                   )
@@ -398,7 +398,7 @@ class CreateEventView extends GetView<EventsController> {
                               actions: [
                                 TextButton(
                                     onPressed: ()=> Navigator.pop(context),
-                                    child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
+                                    child: Text('Cancel', style: Get.textTheme.headlineMedium!.merge(const TextStyle(color: inactive)),))
                               ],
                             );
                           });

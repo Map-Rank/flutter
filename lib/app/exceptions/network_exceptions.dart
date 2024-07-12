@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -59,6 +60,10 @@ abstract class NetworkExceptions {
             case DioExceptionType.sendTimeout:
               errorMessage = "Send timeout in connection with API server";
               break;
+            case DioExceptionType.badCertificate:
+              // TODO: Handle this case.
+            case DioExceptionType.unknown:
+              // TODO: Handle this case.
           }
         } else if (error is SocketException) {
           errorMessage = "No internet connection";

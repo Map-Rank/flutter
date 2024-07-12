@@ -37,7 +37,7 @@ class LocationWidget extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Expanded(
-                            child: Text(regionName, style: Get.textTheme.headline4?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
+                            child: Text(regionName, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
                         )
                       ]
                   )

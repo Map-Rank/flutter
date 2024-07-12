@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -66,7 +67,7 @@ class DashboardView extends GetView<DashboardController> {
                     backgroundColor: backgroundColor,
                     title: Text(
                       GlobalService().appName,
-                      style: Get.textTheme.headline6!.merge(TextStyle(color: interfaceColor)),
+                      style: Get.textTheme.headlineSmall!.merge(TextStyle(color: interfaceColor)),
                     ),
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,

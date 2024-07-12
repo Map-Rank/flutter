@@ -33,7 +33,7 @@ class MainDrawerWidget extends StatelessWidget {
                   ),
                   accountName: Text(
                     Get.find<AuthService>().user.value.firstName.toString()! +" " +Get.find<AuthService>().user.value.lastName.toString(),
-                    style: Theme.of(context).textTheme.headline2!.merge(const TextStyle(color: interfaceColor, fontSize: 15)),
+                    style: Theme.of(context).textTheme.headlineMedium!.merge(const TextStyle(color: interfaceColor, fontSize: 15)),
                   ),
                   accountEmail: Text(""
                   ),

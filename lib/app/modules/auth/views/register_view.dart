@@ -262,7 +262,7 @@ class RegisterView extends GetView<AuthController> {
                   suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
                 ),
                 initialCountryCode: 'CM',
-                style:  Get.textTheme.headline1,
+                style:  Get.textTheme.headlineMedium,
                 onSaved: (phone) {
                   controller.currentUser.value.phoneNumber = phone;
                 },
@@ -313,7 +313,7 @@ class RegisterView extends GetView<AuthController> {
                         items: controller.genderList.map((String items) {
                           return DropdownMenuItem(
                             value: items,
-                            child: Text(items, style: Get.textTheme.headline1, textAlign: TextAlign.center,),
+                            child: Text(items, style: Get.textTheme.headlineMedium, textAlign: TextAlign.center,),
                           );
                         }).toList(),
                         // After selecting the desired option,it will
@@ -348,11 +348,11 @@ class RegisterView extends GetView<AuthController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               InkWell(
-                  onTap: ()=>{ controller.birthDatePicker() },
+                  onTap: ()=>{ controller.birthDatePicker(context, Get.height/2) },
                   child: Container(
                     child: TextFieldWidget(
                       onTap: (){
-                        controller.birthDatePicker();
+                        controller.birthDatePicker(context, Get.height/2);
                       },
                       isFirst: true,
                       isLast: true,
@@ -473,7 +473,7 @@ class RegisterView extends GetView<AuthController> {
               color: Get.theme.colorScheme.secondary,
               text: !controller.loading.value? Text(
                 'Next',
-                style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+                style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
               ): const SizedBox(height: 30,
                   child: SpinKitThreeBounce(color: Colors.white, size: 20)),
             ).paddingSymmetric(vertical: 40, horizontal: 20),),
@@ -678,11 +678,11 @@ class RegisterView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Obx(() => controller.sectorsSelected.isEmpty?
-                      Text('Choose a sector', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),)):
+                      Text('Choose a sector', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)):
                       RichText(text: TextSpan(
                           children:[
                             for(var sector in controller.sectorsSelected)...[
-                              TextSpan(text: '${sector['name']}, ',style: Get.textTheme.headline1, )
+                              TextSpan(text: '${sector['name']}, ',style: Get.textTheme.headlineMedium, )
                             ]
                           ]
                       )),),
@@ -708,7 +708,7 @@ class RegisterView extends GetView<AuthController> {
                 color: Get.theme.colorScheme.secondary,
                 text: !controller.loading.value? Text(
                   'Prev',
-                  style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+                  style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
               )),
@@ -725,7 +725,7 @@ class RegisterView extends GetView<AuthController> {
                 color: Get.theme.colorScheme.secondary,
                 text: !controller.loading.value? Text(
                   'Next',
-                  style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+                  style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
               ),),
@@ -878,8 +878,8 @@ class RegisterView extends GetView<AuthController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Obx(() => controller.regionSelectedValue.isNotEmpty?
-                    Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headline1,)
-                    :Text('Choose a region', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
+                    Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,)
+                    :Text('Choose a region', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
                 ),
                 FaIcon(FontAwesomeIcons.angleDown, size: 10,)
               ],
@@ -1020,8 +1020,8 @@ class RegisterView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Obx(() => controller.divisionSelectedValue.isNotEmpty?
-                      Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headline1,):
-                      Text('Choose a Division', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
+                      Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,):
+                      Text('Choose a Division', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
 
                       FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                     ],
@@ -1157,8 +1157,8 @@ class RegisterView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Obx(() => controller.subdivisionSelectedValue.isEmpty?
-                      Text('Choose a Subdivision', style: Get.theme.textTheme.headline1!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
-                        Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headline1,),)
+                      Text('Choose a Subdivision', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
+                        Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headlineMedium,),)
                       ,
                       FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                     ],
@@ -1200,7 +1200,7 @@ class RegisterView extends GetView<AuthController> {
                 color: Get.theme.colorScheme.secondary,
                 text: !controller.loading.value? Text(
                   'Prev',
-                  style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+                  style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
               )),
@@ -1220,15 +1220,11 @@ class RegisterView extends GetView<AuthController> {
         }
       }
 
-
-
-
-
     },
     color: Get.theme.colorScheme.secondary,
     text: !controller.loading.value? Text(
     'Create account',
-    style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+    style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
     ): const SizedBox(height: 30,
     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
     ))

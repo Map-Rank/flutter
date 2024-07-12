@@ -92,7 +92,7 @@ class TextFieldWidget extends StatelessWidget {
           minLines: maxLines,
           validator: validator,
           enabled: editable,
-          style: style ?? Get.textTheme.headline1,
+          style: style ?? Get.textTheme.headlineMedium,
           obscureText: obscureText ?? false,
           textAlign: textAlign ?? TextAlign.start,
           decoration: Ui.getInputDecoration(

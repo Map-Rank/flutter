@@ -143,7 +143,7 @@ class PostCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',overflow:TextOverflow.ellipsis , style: Get.textTheme.headline6).marginOnly(bottom: 10),
+                        Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',overflow:TextOverflow.ellipsis , style: Get.textTheme.headlineSmall).marginOnly(bottom: 10),
                         Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,11 +152,11 @@ class PostCardWidget extends StatelessWidget {
                                 const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
                                 SizedBox(
                                     width: Get.width/4,
-                                    child: Text(zone.toString(), style: Get.textTheme.bodyText1).marginOnly(right: 10)),
+                                    child: Text(zone.toString(), style: Get.textTheme.bodySmall).marginOnly(right: 10)),
                                 const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
                                 SizedBox(
                                     width: Get.width/4,
-                                    child: Text(publishedDate!, style: Get.textTheme.bodyText1)),
+                                    child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
 
 
                                 //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))

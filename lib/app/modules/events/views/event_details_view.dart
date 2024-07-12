@@ -148,7 +148,7 @@ class EventDetailsView extends GetView<EventsController> {
                             SizedBox(
                                 //width: Get.width/5,
                                 //height: 40,
-                                child: Text(controller.eventDetails.publishedDate!, overflow: TextOverflow.ellipsis, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
+                                child: Text(controller.eventDetails.publishedDate!, overflow: TextOverflow.ellipsis, style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
 
 
                             //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))

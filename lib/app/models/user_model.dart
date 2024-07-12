@@ -12,12 +12,13 @@ class UserModel extends Model {
   String? zoneId;
   int? userId;
   String? avatarUrl;
+  var imageFile;
   String? authToken;
   String? companyName;
   static bool? auth;
   List? sectors;
 
-  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,
+  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,this.imageFile,
   this.lastName, this.zoneId, this. sectors});
 
   UserModel.fromJson(Map<String, dynamic> json) {

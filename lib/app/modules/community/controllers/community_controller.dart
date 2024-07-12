@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -201,7 +202,7 @@ class CommunityController extends GetxController {
     super.dispose();
   }
 
-  Future refreshCommunity({bool showMessage = false}) async {
+  refreshCommunity({bool showMessage = false}) async {
     loadingPosts.value = true;
     listAllPosts = await getAllPosts(0);
     allPosts.value= listAllPosts;
@@ -264,20 +265,20 @@ class CommunityController extends GetxController {
     }
 
   }
-  filterSearchPostsByName(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllPosts;
-    if(query.isNotEmpty) {
-      List dummyListData = [];
-      dummyListData = dummySearchList.where((element) => element.user.firstName
-          .toString().toLowerCase().contains(query.toLowerCase()) || element.user.lastName
-          .toString().toLowerCase().contains(query.toLowerCase())).toList();
-      allPosts.value = dummyListData;
-      return;
-    } else {
-      allPosts.value = listAllPosts;
-    }
-  }
+  // filterSearchPostsByName(String query){
+  //   List dummySearchList = [];
+  //   dummySearchList = listAllPosts;
+  //   if(query.isNotEmpty) {
+  //     List dummyListData = [];
+  //     dummyListData = dummySearchList.where((element) => element.user.firstName
+  //         .toString().toLowerCase().contains(query.toLowerCase()) || element.user.lastName
+  //         .toString().toLowerCase().contains(query.toLowerCase())).toList();
+  //     allPosts.value = dummyListData;
+  //     return;
+  //   } else {
+  //     allPosts.value = listAllPosts;
+  //   }
+  // }
 
   filterSearchPostsBySectors(var query)async{
     var postList = [];
@@ -391,84 +392,6 @@ class CommunityController extends GetxController {
     }
   }
 
-  filterSearchPostsBySubdivisionZone(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllPosts;
-
-    if(subdivisionSelectedValue.isNotEmpty) {
-      List dummyListData = [];
-        for (int j = 0; j < dummySearchList.length; j++) {
-              if (dummySearchList[j].zone['id'].toString() ==
-                  subdivisionSelectedValue[0]['id'].toString()) {
-                dummyListData.add(dummySearchList[j]);
-
-
-          }
-
-        }
-
-        allPosts.value = dummyListData;
-        noFilter.value = false;
-        return;
-    }else {
-
-      filterSearchPostsByDivisionZone(query);
-      //allPosts.value = listAllPosts;
-      //noFilter.value = false;
-    }
-  }
-
-  filterSearchPostsByDivisionZone(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllPosts;
-
-    if(divisionSelectedValue.isNotEmpty) {
-      List dummyListData = [];
-      for (int j = 0; j < dummySearchList.length; j++) {
-        if (dummySearchList[j].zone['id'].toString() ==
-            divisionSelectedValue[0]['id'].toString()) {
-          dummyListData.add(dummySearchList[j]);
-
-
-        }
-
-      }
-
-      allPosts.value = dummyListData;
-      noFilter.value = false;
-      return;
-    }else {
-      filterSearchPostsByRegionZone(query);
-      //allPosts.value = listAllPosts;
-      noFilter.value = false;
-    }
-  }
-
-  filterSearchPostsByRegionZone(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllPosts;
-
-    if(regionSelectedValue.isNotEmpty) {
-      List dummyListData = [];
-      for (int j = 0; j < dummySearchList.length; j++) {
-        if (dummySearchList[j].zone['id'].toString() ==
-            regionSelectedValue[0]['id'].toString()) {
-          dummyListData.add(dummySearchList[j]);
-
-
-        }
-
-      }
-
-      allPosts.value = dummyListData;
-      noFilter.value = false;
-      return;
-    }else {
-
-      allPosts.value = listAllPosts;
-      noFilter.value = false;
-    }
-  }
 
   getAllRegions() async{
     return zoneRepository.getAllRegions(2, 1);

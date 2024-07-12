@@ -25,11 +25,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../color_constants.dart';
 
 
-
-
 class EventsController extends GetxController {
 
-  final Rx<UserModel> currentUser = Get.find<AuthService>().user;
+  Rx<UserModel> currentUser = Get.find<AuthService>().user;
   var startingDate = "--/--/--".obs;
   var startingDateDisplay = "--/--/--".obs;
   var endingDate = "--/--/--".obs;

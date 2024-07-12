@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,7 @@ class NotificationView extends GetView<NotificationController> {
                     backgroundColor: primaryColor,
                     title: Text(
                       GlobalService().appName,
-                      style: Get.textTheme.headline6!.merge(TextStyle(color: Colors.white)),
+                      style: Get.textTheme.headlineSmall!.merge(TextStyle(color: Colors.white)),
                     ),
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.parallax,

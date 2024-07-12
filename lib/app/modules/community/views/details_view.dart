@@ -55,7 +55,7 @@ class DetailsView extends GetView<CommunityController> {
                   width: 20,
                 ),
 
-                Text('${controller.postDetails!.user!.firstName!} ${controller.postDetails!.user!.lastName!}', style: Get.textTheme.headline4!.merge(const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,),
+                Text('${controller.postDetails!.user!.firstName!} ${controller.postDetails!.user!.lastName!}', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,),
 
 
               ]

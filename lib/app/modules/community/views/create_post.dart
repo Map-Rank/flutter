@@ -62,11 +62,11 @@ class CreatePostView extends GetView<CommunityController> {
                             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                             child: Center(
                                 child: Obx(() =>  !controller.createUpdatePosts.value?!controller.createPosts.value ?
-                                Text('Post', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                Text('Post', style: Get.textTheme.bodyMedium!.merge(const TextStyle(color: Colors.white)))
                                     : const SizedBox(height: 20,
                                     child: SpinKitThreeBounce(color: Colors.white, size: 20)):
                                 !controller.updatePosts.value?
-                                Text('Update', style: Get.textTheme.bodyText2!.merge(const TextStyle(color: Colors.white)))
+                                Text('Update', style: Get.textTheme.bodyMedium!.merge(const TextStyle(color: Colors.white)))
                                     : const SizedBox(height: 20,
                                     child: SpinKitThreeBounce(color: Colors.white, size: 20))
 
@@ -113,7 +113,7 @@ class CreatePostView extends GetView<CommunityController> {
                                         Navigator.pop(Get.context!);
                                       },
                                       leading: const Icon(FontAwesomeIcons.camera),
-                                      title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                      title: Text('Take a picture', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                     ),
                                     ListTile(
                                       onTap: ()async{
@@ -121,7 +121,7 @@ class CreatePostView extends GetView<CommunityController> {
                                         Navigator.pop(Get.context!);
                                       },
                                       leading: const Icon(FontAwesomeIcons.image),
-                                      title: Text('Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                      title: Text('Upload an image', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                     )
                                   ]
                               )
@@ -129,7 +129,7 @@ class CreatePostView extends GetView<CommunityController> {
                           actions: [
                             TextButton(
                                 onPressed: ()=> Navigator.pop(context),
-                                child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
+                                child: Text('Cancel', style: Get.textTheme.headlineMedium!.merge(const TextStyle(color: inactive)),))
                           ],
                         );
                       });
@@ -333,7 +333,7 @@ class CreatePostView extends GetView<CommunityController> {
                                            Navigator.pop(Get.context!);
                                          },
                                          leading: const Icon(FontAwesomeIcons.camera),
-                                         title: Text('Take a picture', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                         title: Text('Take a picture', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                        ),
                                        ListTile(
                                          onTap: ()async{
@@ -342,7 +342,7 @@ class CreatePostView extends GetView<CommunityController> {
                                          },
                                          leading: const Icon(FontAwesomeIcons.image),
                                          title: Text(
-                                             'Upload an image', style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 15))),
+                                             'Upload an image', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                        )
                                      ],
                                    )
@@ -350,7 +350,7 @@ class CreatePostView extends GetView<CommunityController> {
                                actions: [
                                  TextButton(
                                      onPressed: ()=> Navigator.pop(context),
-                                     child: Text('Cancel', style: Get.textTheme.headline4!.merge(const TextStyle(color: inactive)),))
+                                     child: Text('Cancel', style: Get.textTheme.headlineMedium!.merge(const TextStyle(color: inactive)),))
                                ],
                              );
                            });

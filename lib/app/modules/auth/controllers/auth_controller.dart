@@ -30,14 +30,14 @@ import '../../notifications/controllers/notification_controller.dart';
 
 class AuthController extends GetxController {
 
-  final Rx<UserModel> currentUser = Get.find<AuthService>().user;
+  Rx<UserModel> currentUser = Get.find<AuthService>().user;
   late GlobalKey<FormState> loginFormKey;
   late GlobalKey<FormState> registerFormKey;
   final hidePassword = true.obs;
   RxBool loading = false.obs;
   RxBool registerNext = false.obs;
   RxBool registerNextStep1 = false.obs;
-  final _picker = ImagePicker();
+  var picker = ImagePicker();
   late File profileImage = File('assets/images/loading.gif') ;
   final loadProfileImage = false.obs;
   var birthDate = "--/--/--".obs;
@@ -251,14 +251,14 @@ class AuthController extends GetxController {
     }
   }
 
-  birthDatePicker() async {
+  birthDatePicker(BuildContext context, double height) async {
     DateTime? pickedDate = await showRoundedDatePicker(
 
-      context: Get.context!,
+      context: context,
       theme: ThemeData.light().copyWith(
           primaryColor: buttonColor
       ),
-      height: Get.height/2,
+      height: height,
       initialDate: DateTime.now().subtract(const Duration(days: 365,)),
       firstDate: DateTime(1950),
       lastDate: DateTime(DateTime.now().year),
@@ -298,7 +298,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text('Take a picture', style: Get.textTheme.headline1?.merge(const TextStyle(fontSize: 15))),
+                      title: Text('Take a picture', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     ),
                     ListTile(
                       onTap: ()async{
@@ -307,7 +307,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.image),
-                      title: Text('Upload Image', style: Get.textTheme.headline1?.merge(const TextStyle(fontSize: 15))),
+                      title: Text('Upload Image', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     )
                   ],
                 )
@@ -318,7 +318,7 @@ class AuthController extends GetxController {
   profileImagePicker(String source) async {
     if(source=='camera'){
       final XFile? pickedImage =
-      await _picker.pickImage(source: ImageSource.camera);
+      await picker.pickImage(source: ImageSource.camera);
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
@@ -345,7 +345,7 @@ class AuthController extends GetxController {
     }
     else{
       final XFile? pickedImage =
-      await _picker.pickImage(source: ImageSource.gallery);
+      await picker.pickImage(source: ImageSource.gallery);
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
@@ -387,7 +387,6 @@ class AuthController extends GetxController {
   }
 
   login() async {
-
     if (loginFormKey.currentState!.validate()) {
       loginFormKey.currentState!.save();
       loading.value = true;

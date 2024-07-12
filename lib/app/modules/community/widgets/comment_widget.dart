@@ -53,7 +53,7 @@ class CommentWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: Text(user, style: Get.textTheme.headline6!, overflow: TextOverflow.ellipsis,)
+                                child: Text(user, style: Get.textTheme.headlineSmall!, overflow: TextOverflow.ellipsis,)
                             )
                           ]
                       )
@@ -61,7 +61,7 @@ class CommentWidget extends StatelessWidget {
                   Expanded(
                       child: SizedBox(
                         width: Get.width,
-                      child: Text(comment, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodyText1,))),
+                      child: Text(comment, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodySmall,))),
                 ],
 
               ),

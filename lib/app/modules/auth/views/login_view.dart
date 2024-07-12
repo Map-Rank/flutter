@@ -129,7 +129,7 @@ class LoginView extends GetView<AuthController> {
                       color: Get.theme.colorScheme.secondary,
                       text: Text(
                         'Login',
-                        style: Get.textTheme.headline6?.merge(TextStyle(color: Get.theme.primaryColor)),
+                        style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                       )
                     ).paddingSymmetric(vertical: 10, horizontal: 20)
                       :BlockButtonWidget(

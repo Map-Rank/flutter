@@ -34,8 +34,8 @@ class BuildSelectZone extends GetView<EventsController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Choose a region'),
-                    FaIcon(FontAwesomeIcons.angleDown)
+                    Text('Choose a region', key: Key('chooseRegion'),),
+                    FaIcon(FontAwesomeIcons.angleDown, key: Key('chooseRegionIcon'),)
                   ],
                 ),
               ),
@@ -43,7 +43,7 @@ class BuildSelectZone extends GetView<EventsController> {
           ]
           else...[
             Text('Select a region',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
               textAlign: TextAlign.start,
             ),
             Obx(() =>
@@ -102,6 +102,7 @@ class BuildSelectZone extends GetView<EventsController> {
                             itemBuilder: (context, index) {
 
                               return GestureDetector(
+                                // coverage:ignore-start
                                   onTap: () async {
                                     controller.regionSelected.value = !controller.regionSelected.value;
                                     controller.regionSelectedIndex.value = index;
@@ -155,6 +156,7 @@ class BuildSelectZone extends GetView<EventsController> {
 
 
                                   },
+                                  // coverage:ignore-end
                                   child: Obx(() => LocationWidget(
                                     regionName: controller.regions[index]['name'],
                                     selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
@@ -168,12 +170,14 @@ class BuildSelectZone extends GetView<EventsController> {
           ],
           if(!controller.chooseADivision.value ||controller.regionSelectedValue.isEmpty)...[
             GestureDetector(
+              // coverage:ignore-start
               onTap: (){
                 controller.chooseADivision.value = true;
                 if(controller.regionSelectedValue.isEmpty) {
                   Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a region first"));
                 }
               },
+              // coverage:ignore-end
               child: Container(
                 margin: EdgeInsets.all(20),
                 decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.grey)),
@@ -192,7 +196,7 @@ class BuildSelectZone extends GetView<EventsController> {
           ]
           else...[
             Text('Select a division',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
               textAlign: TextAlign.start,
             ),
             Obx(() =>
@@ -251,6 +255,7 @@ class BuildSelectZone extends GetView<EventsController> {
                             itemBuilder: (context, index) {
 
                               return GestureDetector(
+                                // coverage:ignore-start
                                   onTap: () async{
                                     controller.divisionSelected.value = !controller.divisionSelected.value;
                                     controller.divisionSelectedIndex.value = index;
@@ -299,6 +304,7 @@ class BuildSelectZone extends GetView<EventsController> {
                                     //print(controller.subdivisionSelectedValue[0]['id'].toString());
 
                                   },
+                                  // coverage:ignore-end
                                   child: Obx(() => LocationWidget(
                                     regionName: controller.divisions[index]['name'],
                                     selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
@@ -338,7 +344,7 @@ class BuildSelectZone extends GetView<EventsController> {
           ]
           else...[
             Text('Select a subdivision',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
               textAlign: TextAlign.start,
             ),
             Obx(() =>

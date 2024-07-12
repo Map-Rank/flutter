@@ -123,7 +123,7 @@ class EventCardWidget extends StatelessWidget {
                     Row(
                       children: [
                         SizedBox(
-                            child: Text(title!, style: Get.textTheme.headline6,),
+                            child: Text(title!, style: Get.textTheme.headlineSmall,),
                           width: Get.width/2,
                         ),
 
@@ -144,12 +144,12 @@ class EventCardWidget extends StatelessWidget {
                         SizedBox(
                             width: Get.width/4,
                           //height: 40,
-                            child: Text(zone.toString(), style: Get.textTheme.bodyText1, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
+                            child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
                         const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
                         SizedBox(
                             //width: Get.width/5,
                           //height: 20,
-                            child: Text(publishedDate!, style: Get.textTheme.bodyText1, overflow: TextOverflow.ellipsis,)),
+                            child: Text(publishedDate!, style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,)),
 
 
                         //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))

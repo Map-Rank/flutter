@@ -157,17 +157,14 @@ class PostCardWidget extends StatelessWidget {
                             alignment: WrapAlignment.spaceBetween,
                             runAlignment: WrapAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                //width: Get.width/4.3,
-                                child: SizedBox(
-                                  width: Get.width/3.4,
+                              SizedBox(
+                                width: Get.width/3.4,
 
-                                  child: Wrap(children: [
-                                    Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
-                                        //overflow:TextOverflow.ellipsis ,
-                                        style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4))),
-                                  ],)
-                                ),
+                                child: Wrap(children: [
+                                  Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
+                                      //overflow:TextOverflow.ellipsis ,
+                                      style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4))),
+                                ],)
                               ),
                               Align(
                                 alignment: Alignment.centerRight,

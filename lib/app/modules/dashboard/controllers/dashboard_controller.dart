@@ -37,7 +37,7 @@ late WebViewController webViewController;
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://www.google.com'));
+      ..loadRequest(Uri.parse('https://www.residat.com/dashboard'));
     super.onInit();
 
   }

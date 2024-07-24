@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-07-12 11:04:47</td>
+            <td class="headerValue">2024-07-18 18:04:41</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -87,7 +87,12 @@
 <a name="25"><span class="lineNum">      25 </span><span class="lineNoCov">          0 :     _laravelApiClient = Get.find&lt;LaravelApiClient&gt;();</span></a>
 <a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 :     return await _laravelApiClient.logout();</span></a>
 <a name="27"><span class="lineNum">      27 </span>            :   }</a>
-<a name="28"><span class="lineNum">      28 </span>            : }</a>
+<a name="28"><span class="lineNum">      28 </span>            : </a>
+<a name="29"><span class="lineNum">      29 </span>            :   Future resetPassword(String email) async {</a>
+<a name="30"><span class="lineNum">      30 </span>            :     _laravelApiClient = Get.find&lt;LaravelApiClient&gt;();</a>
+<a name="31"><span class="lineNum">      31 </span>            :     await _laravelApiClient.resetPassword(email);</a>
+<a name="32"><span class="lineNum">      32 </span>            :   }</a>
+<a name="33"><span class="lineNum">      33 </span>            : }</a>
 </pre>
       </td>
     </tr>

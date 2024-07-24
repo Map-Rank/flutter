@@ -1427,7 +1427,7 @@ void main() {
     var event = Event(
       content: 'Test post content',
       zoneEventId: 1,
-      imagesFilePaths: [File('path_to_image.jpg')],
+      imagesFileBanner: [File('path_to_image.jpg')],
       sectors: [1, 2],
     );
 
@@ -1464,7 +1464,7 @@ void main() {
       eventSectors: [1,2],
       imagesUrl: 'https:example.com',
       publishedDate:'10-09-10' ,
-      imagesFilePaths: [File('path_to_image.jpg')],
+      imagesFileBanner: [File('path_to_image.jpg')],
       sectors: [1, 2],
     );
 
@@ -1500,7 +1500,7 @@ void main() {
       eventSectors: [1,2],
       imagesUrl: 'https:example.com',
       publishedDate:'10-09-10' ,
-      imagesFilePaths: [File('path_to_image.jpg')],
+      imagesFileBanner: [File('path_to_image.jpg')],
       sectors: [1, 2],
     );
 

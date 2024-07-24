@@ -69,6 +69,7 @@ class CommunityController extends GetxController {
   var loadingSectors = true.obs;
   var sectors = [].obs;
   var sectorsSelected = [].obs;
+  var postFollowed = [].obs;
   var selectedIndex = 0.obs;
   var listSectors = [].obs;
   var sectorsSet ={};
@@ -95,6 +96,8 @@ class CommunityController extends GetxController {
 
   var postSelectedIndex = 0.obs;
 
+  var postFollowedIndex = 0.obs;
+
   var postSharedIndex = 0.obs;
 
   var comment = ''.obs;
@@ -103,6 +106,7 @@ class CommunityController extends GetxController {
   var commentList = [].obs;
 
   TextEditingController commentController = TextEditingController();
+
 
   RxInt? likeCount = 0.obs;
   RxInt? shareCount = 0.obs;
@@ -203,6 +207,9 @@ class CommunityController extends GetxController {
   }
 
   refreshCommunity({bool showMessage = false}) async {
+    selectedPost.clear();
+    listAllPosts.clear();
+    allPosts.clear();
     loadingPosts.value = true;
     listAllPosts = await getAllPosts(0);
     allPosts.value= listAllPosts;
@@ -244,6 +251,7 @@ class CommunityController extends GetxController {
             liked: list[i]['liked'],
             likeTapped: list[i]['liked'],
             sectors: list[i]['sectors'],
+            isFollowing: list[i]['is_following']
 
 
         );
@@ -307,12 +315,13 @@ class CommunityController extends GetxController {
             liked: list[i]['liked'],
             likeTapped: list[i]['liked'],
             sectors: list[i]['sectors'],
+            isFollowing: list[i]['is_following']
 
 
           );
 
           //print(User.fromJson(list[i]['creator']));
-          postList.add(post);
+          postList.add(post.isFollowing);
         }
         loadingPosts.value = false;
         allPosts.value = postList;
@@ -528,27 +537,46 @@ class CommunityController extends GetxController {
     }
   }
 
+  getSpecificZone(int zoneId){
+    try{
+      var result = zoneRepository.getSpecificZone(zoneId);
+      return result;
+    }
+    catch(e){
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+
+  }
+
   emptyArrays(){
+    postFollowed.clear();
     sectorsSelected.clear();
     imageFiles.clear();
     regionSelectedValue.clear();
     divisionSelectedValue.clear();
+    createUpdatePosts.value = false;
     subdivisionSelectedValue.clear();
   }
 
   createPost(Post post)async{
     try{
-      await communityRepository.createPost(post);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post created successfully' ));
-      loadingPosts.value = true;
-      await getAllPosts(0);
       createPosts.value = true;
+      await communityRepository.createPost(post);
+      listAllPosts.clear();
+      allPosts.clear();
+      loadingPosts.value = true;
+      listAllPosts = await getAllPosts(0);
+      allPosts.value = listAllPosts;
+      createPosts.value = false;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post created successfully' ));
+      Navigator.pop(Get.context!);
     }
     catch (e) {
+      createPosts.value = false;
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
-      createPosts.value = true;
+      createPosts.value = false;
       emptyArrays();
 
 
@@ -557,19 +585,27 @@ class CommunityController extends GetxController {
   }
 
   updatePost(Post post)async{
+    print(post.content);
     try{
+      updatePosts.value = true;
       await communityRepository.updatePost(post);
       Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post updated successfully' ));
+      listAllPosts.clear();
+      allPosts.clear();
       loadingPosts.value = true;
-      await getAllPosts(0);
+      listAllPosts = await getAllPosts(0);
+      allPosts.value = listAllPosts;
+      emptyArrays();
+      Navigator.of(Get.context!).pop();
 
     }
     catch (e) {
+      updatePosts.value = false;
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
-      createPosts.value = true;
-      emptyArrays();
+      updatePosts.value = false;
+
     }
 
   }
@@ -612,7 +648,12 @@ class CommunityController extends GetxController {
         likeTapped: result['liked'],
         commentList: result['comments'],
         sectors: result['sectors'],
-        zonePostId: result['zone']
+        zonePostId: result['zone']['id'],
+        zoneLevelId: result['zone']['level_id'],
+        zoneParentId: result['zone']['parent_id']
+
+
+
 
       );
       return postModel;
@@ -698,8 +739,11 @@ class CommunityController extends GetxController {
     try{
       await communityRepository.deletePost(postId);
       Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post deleted successfully' ));
+      listAllPosts.clear();
+      allPosts.clear();
       loadingPosts.value = true;
-      await getAllPosts(0);
+      listAllPosts = await getAllPosts(0);
+      allPosts.value = listAllPosts;
 
     }
     catch (e) {
@@ -707,6 +751,47 @@ class CommunityController extends GetxController {
     }
     finally {
       //createPosts.value = true;
+    }
+
+  }
+
+
+  followUser(int userId)async{
+    try{
+      showDialog(context: Get.context!, builder: (context){
+        return CommentLoadingWidget();
+      },);
+      await userRepository.followUser(userId);
+      Navigator.of(Get.context!).pop();
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'You are now following this user' ));
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+
+    }
+    finally {
+
+    }
+
+  }
+
+  unfollowUser(int userId)async{
+    try{
+      showDialog(context: Get.context!, builder: (context){
+        return CommentLoadingWidget();
+      },);
+      await userRepository.unfollowUser(userId);
+      Navigator.of(Get.context!).pop();
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'You have just unfollowed this user' ));
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+
+    }
+    finally {
+
     }
 
   }

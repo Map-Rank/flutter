@@ -14,12 +14,14 @@ class UserModel extends Model {
   String? avatarUrl;
   var imageFile;
   String? authToken;
-  String? companyName;
+  String? profession;
   static bool? auth;
   List? sectors;
+  List? myPosts = [];
+  List? myEvents = [];
 
-  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,this.imageFile,
-  this.lastName, this.zoneId, this. sectors});
+  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.profession, this.gender,this.imageFile,
+  this.lastName, this.zoneId, this. sectors, this.myPosts, this.myEvents});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     firstName = stringFromJson(json, 'first_name');
@@ -51,6 +53,7 @@ class UserModel extends Model {
     data['password'] = password;
     data['token'] = authToken;
     data['id'] = userId;
+    data['my_posts'] = myPosts;
     //data['sectors'] = sectors;
 
 

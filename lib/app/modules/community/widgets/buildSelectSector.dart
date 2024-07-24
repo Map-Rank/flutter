@@ -16,14 +16,24 @@ class BuildSelectSector extends GetView<CommunityController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
+      padding: EdgeInsets.all(20),
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Select a sector',
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+              textAlign: TextAlign.start,
+            ),
 
-        Text('Select a sector',
-          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-          textAlign: TextAlign.start,
-        ),
+             TextButton(onPressed: (){
+               Navigator.of(context).pop();
+             }, child: Text('Ok/Cancel'))
+
+          ],),
+
+
         Obx(() =>
             Column(
               children: [
@@ -103,7 +113,6 @@ class BuildSelectSector extends GetView<CommunityController> {
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     controller.post?.sectors?.add(controller.sectors[index]['id']);
                                     print( controller.sectors[index]);
-                                    print('nath');
                                   }
                                   else{
                                     print('christelle');
@@ -112,6 +121,7 @@ class BuildSelectSector extends GetView<CommunityController> {
                                     for(var i = 0; i<controller.sectorsSelected.length; i++){
                                       sectorsIds.add(controller.sectors[index]['id']);
                                     }
+                                    controller.post.sectors = sectorsIds;
                                     controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 

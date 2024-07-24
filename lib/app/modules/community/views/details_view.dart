@@ -44,7 +44,7 @@ class DetailsView extends GetView<CommunityController> {
                         imageErrorBuilder:
                             (context, error, stackTrace) {
                           return Image.asset(
-                              "assets/images/téléchargement (3).png",
+                              "assets/images/user_admin.png",
                               width: 50,
                               height: 50,
                               fit: BoxFit.fitWidth);
@@ -81,6 +81,7 @@ class DetailsView extends GetView<CommunityController> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
                       builder: (context) {
                         return Container(
+                          width: Get.width,
                           height: Get.height/2,
                           padding: EdgeInsets.all(20),
                           decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),

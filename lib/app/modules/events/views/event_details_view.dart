@@ -110,7 +110,7 @@ class EventDetailsView extends GetView<EventsController> {
                               imageErrorBuilder:
                                   (context, error, stackTrace) {
                                 return Image.asset(
-                                    "assets/images/téléchargement (3).png",
+                                    "assets/images/user_admin.png",
                                     fit: BoxFit.fitWidth);
                               },
                             ),

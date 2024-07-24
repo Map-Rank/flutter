@@ -14,6 +14,12 @@ import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/forgot_password_view.dart';
 import '../modules/community/views/comment_view.dart';
 import '../modules/community/views/details_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/account_view.dart';
+import '../modules/profile/views/articles_view.dart';
+import '../modules/profile/views/contact_us_view.dart';
+import '../modules/profile/views/followers_view.dart';
+import '../modules/profile/views/profile_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import 'app_routes.dart';
 
@@ -32,6 +38,13 @@ class Theme1AppPages {
     GetPage(name: Routes.DETAILS_VIEW, page: () => DetailsView(), transition: Transition.rightToLeft ),
     GetPage(name: Routes.EVENT_DETAILS_VIEW, page: () => EventDetailsView(), transition: Transition.rightToLeft ),
     GetPage(name: Routes.CREATE_EVENT, page: () => const CreateEventView(), transition: Transition.downToUp ),
+    GetPage(name: Routes.PROFILE, page: () =>const ProfileView(),binding: ProfileBinding(), transition: Transition.rightToLeft ),
+    GetPage(name: Routes.ACCOUNT, page: () =>const AccountView(),binding: ProfileBinding(), transition: Transition.rightToLeft ),
+    GetPage(name: Routes.CONTACT_US, page: () =>const ContactUsView(),binding: ProfileBinding(), transition: Transition.rightToLeft ),
+    GetPage(name: Routes.FOLLOWERS, page: () =>const FollowersView(),binding: ProfileBinding(), transition: Transition.rightToLeft ),
+    GetPage(name: Routes.ARTICLES, page: () =>const ArticlesView(),binding: ProfileBinding(), transition: Transition.rightToLeft ),
 
   ];
 }
+
+

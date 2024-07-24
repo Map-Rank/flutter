@@ -27,7 +27,10 @@ class CommunityView extends GetView<CommunityController> {
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         backgroundColor: backgroundColor,
-        floatingActionButton: FloatingActionButton.extended(onPressed: (){
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: interfaceColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            onPressed: (){
           controller.noFilter.value = true;
           controller.chooseARegion.value = false;
           controller.chooseADivision.value = false;
@@ -39,7 +42,7 @@ class CommunityView extends GetView<CommunityController> {
           Get.toNamed(Routes.CREATE_POST);
         },
             heroTag: null,
-            icon: const FaIcon(FontAwesomeIcons.add),
+            icon: const FaIcon(FontAwesomeIcons.add,),
             label: const Text('Create post')),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -61,29 +64,6 @@ class CommunityView extends GetView<CommunityController> {
                   leading: Icon(null),
                   centerTitle: true,
                   backgroundColor: backgroundColor,
-                  actions: [
-                    GestureDetector(
-                      onTap: (){
-
-                      },
-                      child: Center(
-                        child: ClipOval(
-                            child: FadeInImage(
-                              width: 30,
-                              height: 30,
-                              fit: BoxFit.cover,
-                              image:  NetworkImage(Get.find<AuthService>().user.value.avatarUrl.toString(), headers: {}),
-                              placeholder: const AssetImage(
-                                  "assets/images/loading.gif"),
-                              imageErrorBuilder:
-                                  (context, error, stackTrace) {
-                                return FaIcon(FontAwesomeIcons.solidUserCircle, size: 30, color: interfaceColor,).marginOnly(right: 20,top: 10,bottom: 10);
-                              },
-                            )
-                        ),
-                      ),
-                    ),
-                  ],
                   title: Container(
                     decoration: BoxDecoration(
                       border: Border(bottom: BorderSide(color: interfaceColor))
@@ -184,6 +164,58 @@ class CommunityView extends GetView<CommunityController> {
                             lastName: controller.allPosts[index].user.lastName,
                             avatarUrl: controller.allPosts[index].user.avatarUrl
                         ),
+                        followWidget: Obx(() =>controller.postFollowed.contains(controller.allPosts[index])&& controller.postFollowedIndex.value == index &&controller.allPosts[index].isFollowing?
+                        GestureDetector(
+                            onTap: (){
+                              controller.postSelectedIndex.value = index;
+
+                              if( controller.postFollowed.contains(controller.allPosts[index])){
+                                controller.postFollowed.remove(controller.allPosts[index]);
+                                controller.postFollowedIndex.value = index;
+                                controller.unfollowUser(controller.allPosts[index].postId);
+                              }
+                              else{
+                                controller.postFollowed.add(controller.allPosts[index]);
+                                controller.postFollowedIndex.value = index;
+                                controller.followUser(controller.allPosts[index].user.userId);
+                              }
+
+
+
+                            },
+                            child: Text('+ Follow',style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),)):
+                        controller.postFollowed.contains(controller.allPosts[index])&& controller.postFollowedIndex.value == index  &&!controller.allPosts[index].isFollowing?
+                        Text('Following', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),):
+                        !controller.postFollowed.contains(controller.allPosts[index]) && !controller.allPosts[index].isFollowing?
+                        GestureDetector(
+                            onTap: (){
+                              controller.postSelectedIndex.value = index;
+
+                              if( !controller.postFollowed.contains(controller.allPosts[index])){
+                                controller.postFollowed.add(controller.allPosts[index]);
+                                controller.postFollowedIndex.value = index;
+                                controller.followUser(controller.allPosts[index].user.userId);
+                              }
+
+
+
+                            }, child: Text('+ Follow', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),)):
+                        !controller.allPosts[index].isFollowing?
+                        GestureDetector(
+                            onTap: (){
+                              controller.postSelectedIndex.value = index;
+
+                              if( !controller.postFollowed.contains(controller.allPosts[index])){
+                                controller.postFollowed.add(controller.allPosts[index]);
+                                controller.postFollowedIndex.value = index;
+                                controller.followUser(controller.allPosts[index].user.userId);
+                              }
+
+
+
+                            }, child: Text('+ Follow',style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor), )):
+                        Text('Following', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),),
+                        ),
                         likeWidget:  Obx(() =>
                         controller.selectedPost.contains(controller.allPosts[index])&& controller.postSelectedIndex.value == index &&controller.allPosts[index].likeTapped?
                         const FaIcon(FontAwesomeIcons.heart,):
@@ -241,54 +273,142 @@ class CommunityView extends GetView<CommunityController> {
 
 
                         },
-                        popUpWidget:controller.allPosts[index].user.userId == controller.currentUser.value.userId?
-                        PopupMenuButton(
-                          onSelected: (value) async{
-                            if(value == 'Delete'){
-                              await controller.deletePost(controller.allPosts[index].eventId);
-                            }
-                            if(value == 'Edit'){
-                              controller.createUpdatePosts.value = true;
-                              controller.post = await controller.getAPost(controller.allPosts[index].eventId);
-                              print('sectors ${controller.post.sectors!}');
+                        popUpWidget:
+                            GestureDetector(
+                               onTap: (){
+                                     showModalBottomSheet(context: context, builder: (context) {
+                                       return controller.allPosts[index].user.userId == controller.currentUser.value.userId?
+                                         Container(
+                                           height: Get.height/3,
+                                         child: ListView(
+                                           padding: EdgeInsets.all(20),
+                                           children: [
+                                             GestureDetector(onTap: () async{
+                                               showDialog(context: context, builder: (context){
+                                                 return CommentLoadingWidget();
+                                               },);
+                                               await controller.deletePost(controller.allPosts[index].postId);
+                                               Navigator.of(context).pop();
+                                             }, child: Row(children: [
+                                               Icon(FontAwesomeIcons.trashCan),
+                                               SizedBox(width: 20,),
+                                               Text('Delete', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
+                                             ],)).marginSymmetric(vertical: 10, ),
 
-                              for(int i = 0; i <controller.post.sectors!.length; i++) {
+                                             GestureDetector(onTap: () async{
+                                               showDialog(context: context, builder: (context){
+                                                 return CommentLoadingWidget();
+                                               },);
+                                               controller.createUpdatePosts.value = true;
+                                               controller.post = await controller.getAPost(controller.allPosts[index].postId);
 
-                                controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.post.sectors![i]['id']).toList()[0]);
-                              }
-                              print('sectors selected : ${controller.sectorsSelected}');
+                                               for(int i = 0; i <controller.post.sectors!.length; i++) {
+
+                                                 controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.post.sectors![i]['id']).toList()[0]);
+                                               }
+                                               print('sectors selected : ${controller.sectorsSelected}');
+
+                                               if(controller.post.zoneLevelId == '2'){
+                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, controller.post.zonePostId);
+                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
+                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                                 controller.divisions.value =  controller.listDivisions;
+                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
+
+                                               }
+                                               else if(controller.post.zoneLevelId == '3'){
+
+                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(controller.post.zoneParentId));
+                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
+                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                                 controller.divisions.value =  controller.listDivisions;
+                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.post.zoneParentId).toList()[0]);
+                                                 //controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
+                                                 print('Divisions : ${controller.divisions}');
+                                                 print('Divisions : ${controller.post.zonePostId}');
+
+                                                 controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, controller.post.zonePostId);
+                                                 controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
+                                                 controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
+                                                 controller.subdivisions.value =  controller.listSubdivisions;
+                                                 controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
+                                               }
+                                               else if(controller.post.zoneLevelId == '4'){
+                                                 var region = await controller.getSpecificZone(int.parse(controller.post.zoneParentId));
+                                                 print(region);
+
+                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(region['parent_id']));
+                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
+                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                                 controller.divisions.value =  controller.listDivisions;
+
+                                                 controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, int.parse(controller.post.zoneParentId));
+                                                 controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
+                                                 controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
+                                                 controller.subdivisions.value =  controller.listSubdivisions;
+                                                 controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == int.parse(controller.post.zoneParentId)).toList()[0]);
+
+                                                 print(controller.divisionSelectedValue);
 
 
-                              controller.noFilter.value = true;
-                              Get.toNamed(Routes.CREATE_POST);
-                            }
-                          },
-                          itemBuilder: (context) {
-                            return {'Edit', 'Delete'}.map((String choice) {
-                              return PopupMenuItem<String>(
-                                value: choice,
-                                child: Text(choice, style: const TextStyle(color: Colors.black),),
-                              );
-                            }).toList();
+                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.divisionSelectedValue[0]['parent_id']).toList()[0]);
 
-                          },)
-                            :PopupMenuButton(
-                          onSelected: (value) async{
+                                                 controller.subdivisionSelectedValue.add(controller.subdivisions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
+                                               }
 
-                          },
-                          itemBuilder: (context) {
-                            print(controller.currentUser.value.userId);
-                            return {'',''}.map((String choice) {
-                              return PopupMenuItem<String>(
-                                value: choice,
-                                child: Text(choice, style: const TextStyle(color: Colors.black),),
-                              );
-                            }).toList();
 
-                          },),
+                                               Navigator.of(context).pop();
+                                               controller.noFilter.value = true;
+                                               Get.toNamed(Routes.CREATE_POST);
+                                             }, child: Row(
+                                               mainAxisAlignment: MainAxisAlignment.start,
+                                               children: [
+                                               Icon(FontAwesomeIcons.edit),
+                                               SizedBox(width: 20,),
+                                               Text('Edit', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
+                                             ],))
+                                           ],
+
+                                         ),
+                                       ):
+                                       Container(
+                                         height: Get.height/3,
+                                         child: ListView(
+                                           padding: EdgeInsets.all(20),
+                                           children: [
+                                             Align(
+                                               alignment: Alignment.centerLeft,
+                                               child: GestureDetector(onTap: (){
+                                                 controller.postSelectedIndex.value = index;
+
+                                                 if(controller.postFollowed.contains(controller.allPosts[index])){
+                                                   controller.postFollowed.remove(controller.allPosts[index]);
+                                                   controller.postFollowedIndex.value = index;
+                                                   controller.unfollowUser(controller.allPosts[index].user.userId);
+                                                 }
+                                                 else{
+                                                   controller.postFollowedIndex.value = index;
+                                                   controller.unfollowUser(controller.allPosts[index].user.userId);
+                                                 }
+
+                                               }, child: Row(children: [
+                                                 Icon(FontAwesomeIcons.cancel),
+                                                 SizedBox(width: 20,),
+                                                 Text('Unfollow', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
+                                               ],)
+
+                                             )
+                                             )],
+                                         ),
+                                       );
+                                     },);
+
+                               },
+                                child: Icon(FontAwesomeIcons.ellipsisVertical, size: 20,))
+                        ,
 
                         liked: controller.allPosts[index].liked,
-                      ))
+                      ).marginOnly(bottom: 5))
                           :Center(
                         child: SizedBox(
                           height: Get.height/2,
@@ -325,9 +445,10 @@ class CommunityView extends GetView<CommunityController> {
                 ),
             ),
 
-          ):Center(
+          ):controller.page >0?
+                       Center(
                         child: CircularProgressIndicator(color: interfaceColor, ),
-                      ): LoadingCardWidget()
+                      ):SizedBox(): LoadingCardWidget()
 
                     ]))
 

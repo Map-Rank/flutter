@@ -102,6 +102,7 @@ class CommentView extends GetView<CommunityController> {
 
               Obx(() => SliverToBoxAdapter(
                 child:   PostCardWidget(
+                  followWidget: SizedBox(),
                   popUpWidget: SizedBox(),
                   likeTapped: RxBool(controller.postDetails!.likeTapped!),
                   content: controller.postDetails!.content,

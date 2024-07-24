@@ -10,6 +10,7 @@ import 'package:mapnrank/app/modules/events/widgets/buildSelectZone.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../../color_constants.dart';
+import '../../../../common/ui.dart';
 
 class CreateEventView extends GetView<EventsController> {
   const CreateEventView({super.key});
@@ -28,6 +29,7 @@ class CreateEventView extends GetView<EventsController> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
             onPressed: () => {
+              controller.emptyArrays(),
               Navigator.pop(context),
               //Get.back()
             },
@@ -36,14 +38,31 @@ class CreateEventView extends GetView<EventsController> {
             Center(
                 child: InkWell(
                     onTap: () async{
-                      controller.createEvents.value = !controller.createEvents.value;
-                      //controller.createEvents.value = !controller.createEvents.value;
-                      !controller.createUpdateEvents.value?
-                      controller.createEvents.value?
-                      await controller.createEvent(controller.event!):(){}
-                          :controller.updateEvents.value?
-                      await controller.updateEvent(controller.event!):(){};
-                      Navigator.pop(context);
+                      if(controller.event.imagesFileBanner != null || controller.event.imagesUrl != null ){
+                        print(controller.event.sectors);
+                        if(controller.event.sectors != null && controller.event.sectors!.isNotEmpty){
+                          if(controller.event.zoneEventId != null){
+                            controller.createEvents.value = !controller.createEvents.value;
+                            controller.updateEvents.value = !controller.updateEvents.value;
+                            //controller.createEvents.value = !controller.createEvents.value;
+                            !controller.createUpdateEvents.value?
+                            controller.createEvents.value?
+                            await controller.createEvent(controller.event!):(){}
+                                :controller.updateEvents.value?
+                            await controller.updateEvent(controller.event!):(){};
+                          }
+                          else{
+                            Get.showSnackbar(Ui.warningSnackBar(message: 'You cannot create an event without specifying a zone'));
+                          }
+                        }
+                        else{
+                          Get.showSnackbar(Ui.warningSnackBar(message: 'You cannot create an event without specifying a sector'));
+                        }
+                      }
+                      else{
+                        Get.showSnackbar(Ui.warningSnackBar(message: 'You cannot create an event without a banner'));
+                      }
+
                     },
                     child: Container(
                         decoration: BoxDecoration(
@@ -74,23 +93,32 @@ class CreateEventView extends GetView<EventsController> {
         ),
         bottomSheet: Row(
           mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Spacer(),
 
             TextButton.icon(
                 icon: FaIcon(FontAwesomeIcons.add, color: interfaceColor, size: 15,),
                 onPressed: (){
-                  controller.inputSector.value = !controller.inputSector.value;
+                  showDialog(context: context,
+                    builder: (context) => Dialog(
+                      insetPadding: EdgeInsets.all(20),
+                      child:  BuildSelectSector(),
+                    ),);
                 }, label: Text('Add sector', style: TextStyle(color: interfaceColor),)),
             TextButton.icon(
                 icon: FaIcon(FontAwesomeIcons.add, color: interfaceColor, size: 15),
                 onPressed: (){
-                  controller.inputZone.value = !controller.inputZone.value;
+                  showDialog(context: context,
+                      builder: (context) => Dialog(
+                        insetPadding: EdgeInsets.all(20),
+                        child:  BuildSelectZone(),
+                      ),);
                 }, label: Text('Add zone', style: TextStyle(color: interfaceColor,),)),
             //buildInputImages(context),
 
           ],
-        ).marginAll(20),
+        ),
         body: Theme(
           data: ThemeData(
             //canvasColor: Colors.yellow,
@@ -181,10 +209,11 @@ class CreateEventView extends GetView<EventsController> {
                   ).marginOnly(top: 20, bottom: 5),
 
                   TextFieldWidget(
+                    textController: controller.eventLocation,
                     readOnly: false,
                     labelText: 'Location',
                     hintText: "yaounde",
-                    initialValue: !controller.createUpdateEvents.value?'':controller.event.zone,
+                    //initialValue: !controller.createUpdateEvents.value?'':controller.event.zone,
                     keyboardType: TextInputType.text,
                     onChanged: (value) => {
                       controller.event.zone = value
@@ -197,7 +226,8 @@ class CreateEventView extends GetView<EventsController> {
                     readOnly: false,
                     labelText: 'Organized by',
                     hintText: "Map & Rank",
-                    initialValue: !controller.createUpdateEvents.value?'':controller.event.organizer,
+                    textController: controller.eventOrganizerController,
+                    //initialValue: !controller.createUpdateEvents.value?'':controller.event.organizer,
                     keyboardType: TextInputType.text,
                     onChanged: (value) => {
                       controller.event.organizer = value
@@ -264,16 +294,78 @@ class CreateEventView extends GetView<EventsController> {
                       )
                   ),
 
+                  Obx(() => Visibility(
+                      visible: controller.sectorsSelected.isNotEmpty,
+                      child:  Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Selected sector(s)', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),)).marginOnly(bottom: 10),
+                            Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                                padding: EdgeInsets.all(20),
+                                child: Wrap(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    RichText(text: TextSpan(
+                                        children:[
+                                          for(var sector in controller.sectorsSelected)...[
+                                            TextSpan(text: '${sector['name']}, ',style: Get.textTheme.headlineMedium, )
+                                          ]
+                                        ]
+                                    )),
 
+                                  ],
+                                )
+
+                            ),
+                          ]
+
+                      )),).marginOnly(bottom: 20),
 
                   Obx(() => Visibility(
-                    visible: controller.inputSector.value,
-                    child: BuildSelectSector(),)),
-                  Obx(() => Visibility(
-                    visible: controller.inputZone.value,
-                    child: BuildSelectZone(),))
+                      visible: controller.regionSelectedValue.isNotEmpty || controller.divisionSelectedValue.isNotEmpty
+                          || controller.subdivisionSelectedValue.isNotEmpty,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Selected Zone', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),)).marginOnly(bottom: 10),
+                          Container(
+                              width: Get.width,
+                              decoration: BoxDecoration(shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                              padding: EdgeInsets.all(20),
+                              child: Wrap(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  RichText(text: TextSpan(
+                                      children:[
+                                        if(controller.regionSelectedValue.isNotEmpty)...[
+                                          TextSpan(text: 'Region: ${controller.regionSelectedValue[0]['name']}, ',style: Get.textTheme.headlineMedium, )
+                                        ],
+                                        if(controller.divisionSelectedValue.isNotEmpty)...[
+                                          TextSpan(text: 'Division: ${controller.divisionSelectedValue[0]['name']}, ',style: Get.textTheme.headlineMedium, )
+                                        ],
+                                        if(controller.subdivisionSelectedValue.isNotEmpty)...[
+                                          TextSpan(text: 'Sub-division: ${controller.subdivisionSelectedValue[0]['name']}, ',style: Get.textTheme.headlineMedium, )
+                                        ],
+                                      ]
+                                  )),
 
+                                ],
+                              )
 
+                          ),
+                        ],
+                      )
+                  ),)
 
 
 

@@ -90,6 +90,11 @@ class EventsController extends GetxController {
   var inputSector = false.obs;
   var inputZone = false.obs;
 
+  TextEditingController eventOrganizerController = TextEditingController();
+
+  TextEditingController eventLocation = TextEditingController();
+
+
 
   EventsController(){
     Get.lazyPut(()=>CommunityController());
@@ -171,6 +176,8 @@ class EventsController extends GetxController {
 
 
   Future refreshEvents({bool showMessage = false}) async {
+    listAllEvents.clear();
+    allEvents.clear();
     loadingEvents.value = true;
     listAllEvents = await getAllEvents(0);
     allEvents.value= listAllEvents;
@@ -187,6 +194,7 @@ class EventsController extends GetxController {
      sectorsSelected.clear();
      imageFiles.clear();
      regionSelectedValue.clear();
+     createUpdateEvents.value = false;
      divisionSelectedValue.clear();
      subdivisionSelectedValue.clear();
   }
@@ -216,7 +224,7 @@ class EventsController extends GetxController {
       }
 
       imageFiles.add(compressedImage) ;
-      event.imagesFilePaths = imageFiles;
+      event.imagesFileBanner = imageFiles;
 
     }
     else{
@@ -243,7 +251,7 @@ class EventsController extends GetxController {
 
 
         imageFiles.add(compressedImage) ;
-        event.imagesFilePaths = imageFiles;
+        event.imagesFileBanner = imageFiles;
 
 
         i++;
@@ -603,6 +611,17 @@ class EventsController extends GetxController {
     }
   }
 
+  getSpecificZone(int zoneId){
+    try{
+      var result = zoneRepository.getSpecificZone(zoneId);
+      return result;
+    }
+    catch(e){
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    }
+
+  }
+
   getAllEvents(int page)async{
     var eventsList = [];
     try{
@@ -610,7 +629,7 @@ class EventsController extends GetxController {
       var list = await eventsRepository.getAllEvents(page);
 
       for( var i = 0; i< list.length; i++) {
-        event = Event(
+        var event = Event(
             zone: list[i]['location'],
             eventId: list[i]['id'].toInt(),
             content: list[i]['description'],
@@ -619,13 +638,17 @@ class EventsController extends GetxController {
             title: list[i]['title'],
             eventCreatorId: int.parse(list[i]['user_id']),
             organizer: list[i]['organized_by'],
-            eventSectors: list[i][''],
+            eventSectors: list[i]['sector'],
             startDate: list[i]['date_debut'],
-            endDate: list[i]['date_fin']
-
+            endDate: list[i]['date_fin'],
+            zoneParentId: list[i]['zone']['parent_id'],
+            zoneLevelId: list[i]['zone']['level_id'],
+            zoneEventId: list[i]['zone']['id'],
             //sectors: list[i]['sectors']
 
         );
+        print(list[i]['sector']);
+        print(event.eventSectors);
 
         //print(User.fromJson(list[i]['creator']));
         //if(list[i]['is_valid'] == "1"){
@@ -659,11 +682,12 @@ class EventsController extends GetxController {
           imagesUrl: result['image'],
           title: result['title'],
           eventCreatorId: int.parse(result['user_id']),
-          organizer: result['organized_by']
-
-        //sectors: list[i]['sectors']
+          organizer: result['organized_by'],
+        zoneParentId: result['zone']['parent_id'],
+        zoneLevelId: result['zone']['level_id'], //sectors: list[i]['sectors']
 
       );
+      eventModel.sectors = result['sector'].toList();
       return eventModel;
 
     }
@@ -686,10 +710,12 @@ class EventsController extends GetxController {
     try{
 
       await eventsRepository.createEvent(event);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event created successfully' ));
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
       createEvents.value = true;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event created successfully' ));
+      Navigator.pop(Get.context!);
 
     }
     catch (e) {
@@ -707,16 +733,22 @@ class EventsController extends GetxController {
   updateEvent(Event event)async{
     try{
       await eventsRepository.updateEvent(event);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event updated successfully' ));
+      listAllEvents.clear();
+      allEvents.clear();
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event updated successfully' ));
+      emptyArrays();
+      Navigator.pop(Get.context!);
 
     }
     catch (e) {
+      updateEvents.value = false;
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
-      createEvents.value = true;
+      updateEvents.value = false;
       emptyArrays();
     }
 
@@ -729,7 +761,8 @@ class EventsController extends GetxController {
       await eventsRepository.deleteEvent(eventId);
       Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event deleted successfully' ));
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
 
     }
     catch (e) {

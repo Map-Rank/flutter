@@ -106,6 +106,9 @@ class LoginView extends GetView<AuthController> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
+                          if( controller.currentUser.value.email != null){
+                            controller.emailController.text = controller.currentUser.value.email!;
+                          }
                           Get.toNamed(Routes.FORGOT_PASSWORD);
                         },
                         child: const Text("Forgot password?",

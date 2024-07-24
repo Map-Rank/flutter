@@ -16,14 +16,23 @@ class BuildSelectSector extends GetView<EventsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
+     padding: EdgeInsets.all(20),
       children: [
-
-        Text('Select a sector',
-          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-          textAlign: TextAlign.start,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('Select a sector',
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+              textAlign: TextAlign.start,
+            ),
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text('ok/cancel'))
+          ],
         ),
+
         Obx(() =>
             Column(
               children: [
@@ -101,12 +110,12 @@ class BuildSelectSector extends GetView<EventsController> {
                                 else{
                                   if(controller.noFilter.value){
                                     controller.sectorsSelected.add(controller.sectors[index]);
-                                    controller.event?.sectors?.add(controller.sectors[index]['id']);
-                                    print( controller.sectors[index]);
-                                    print('nath');
+                                    controller.event?.sectors = [controller.sectors[index]['id']];
+                                    print( controller.event?.sectors);
+
                                   }
                                   else{
-                                    print('christelle');
+
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     var sectorsIds = [];
                                     for(var i = 0; i<controller.sectorsSelected.length; i++){

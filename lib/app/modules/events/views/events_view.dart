@@ -11,6 +11,7 @@ import 'package:mapnrank/app/routes/app_routes.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
+import '../../community/widgets/comment_loading_widget.dart';
 
 
 class EventsView extends GetView<EventsController> {
@@ -24,6 +25,8 @@ class EventsView extends GetView<EventsController> {
       child: Scaffold(
         backgroundColor: secondaryColor,
         floatingActionButton:  FloatingActionButton.extended(
+            backgroundColor: interfaceColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             onPressed: (){
               controller.noFilter.value = true;
               controller.chooseARegion.value = false;
@@ -62,29 +65,6 @@ class EventsView extends GetView<EventsController> {
                     leading: Icon(null),
                     centerTitle: true,
                     backgroundColor: backgroundColor,
-                    actions: [
-                      GestureDetector(
-                        onTap: (){
-
-                        },
-                        child: Center(
-                          child: ClipOval(
-                              child: FadeInImage(
-                                width: 30,
-                                height: 30,
-                                fit: BoxFit.cover,
-                                image:  NetworkImage(Get.find<AuthService>().user.value.avatarUrl.toString(), headers: {}),
-                                placeholder: const AssetImage(
-                                    "assets/images/loading.gif"),
-                                imageErrorBuilder:
-                                    (context, error, stackTrace) {
-                                  return FaIcon(FontAwesomeIcons.solidUserCircle, size: 30, color: interfaceColor,).marginOnly(right: 20,top: 10,bottom: 10);
-                                },
-                              )
-                          ),
-                        ),
-                      ),
-                    ],
                     title: Container(
                       decoration: BoxDecoration(
                           border: Border(bottom: BorderSide(color: interfaceColor))
@@ -175,52 +155,117 @@ class EventsView extends GetView<EventsController> {
                             zone: controller.allEvents[index].zone != null?controller.allEvents[index].zone: '',
                             publishedDate: controller.allEvents[index].publishedDate,
                             eventId: controller.allEvents[index].eventId,
-                            popUpWidget:controller.allEvents[index].eventCreatorId == controller.currentUser.value.userId?
-                            PopupMenuButton(
-                              onSelected: (value) async{
-                                if(value == 'Delete'){
-                                  await controller.deleteEvent(controller.allEvents[index].eventId);
-                                }
-                                if(value == 'Edit'){
-                                  controller.createUpdateEvents.value = true;
-                                  controller.event = controller.allEvents[index];
+                            popUpWidget: GestureDetector(
+                                  onTap: (){
+                                    controller.allEvents[index].eventCreatorId == controller.currentUser.value.userId?
+                                        showModalBottomSheet(context: context, builder: (context) => Container(
+                                          child: ListView(
+                                            padding: EdgeInsets.all(20),
+                                            children: [
+                                              TextButton(onPressed: () async{
+                                                showDialog(context: context, builder: (context){
+                                                  return CommentLoadingWidget();
+                                                },);
+                                                await controller.deleteEvent(controller.allEvents[index].eventId);
+                                                Navigator.of(context).pop();
+                                              }, child: Text('Delete')),
+                                              
+                                              TextButton(onPressed: () async{
+                                      showDialog(context: context, builder: (context){
+                                        return CommentLoadingWidget();
+                                      },);
+                                      controller.createUpdateEvents.value = true;
 
-                                  for(int i = 0; i <controller.event.sectors!.length; i++) {
+                                      //controller.event = await controller.getAnEvent(controller.allEvents[index].eventId);
+                                      controller.event = controller.allEvents[index];
 
-                                    controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.event.sectors![i]['id']).toList()[0]);
-                                  }
-                                  print('sectors selected : ${controller.sectorsSelected}');
+                                      controller.eventLocation.text = controller.event.zone;
+                                      controller.eventOrganizerController.text = controller.event.organizer!;
+                                      controller.startingDateDisplay.value = controller.event.startDate!;
+                                      controller.endingDateDisplay.value = controller.event.endDate!;
+                                      controller.startingDateDisplay.value = controller.event.startDate!;
+                                      controller.endingDateDisplay.value = controller.event.endDate!;
+
+                                      //for(int i = 0; i <controller.event.sectors!.length; i++) {
+                                      controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.event.eventSectors!['id']).toList()[0]);
+                                      // }
 
 
-                                  controller.noFilter.value = true;
-                                  Get.toNamed(Routes.CREATE_EVENT);
-                                }
-                              },
-                              itemBuilder: (context) {
-                                return {'Edit', 'Delete'}.map((String choice) {
-                                  return PopupMenuItem<String>(
-                                    value: choice,
-                                    child: Text(choice, style: const TextStyle(color: Colors.black),),
-                                  );
-                                }).toList();
+                                      if(controller.event.zoneLevelId == '2'){
+                                        controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, controller.event.zoneEventId);
+                                        controller.listDivisions.value =  controller.divisionsSet['data'];
+                                        controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                        controller.divisions.value =  controller.listDivisions;
+                                        controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.event.zoneEventId).toList()[0]);
 
-                              },)
-                                :PopupMenuButton(
-                              onSelected: (value) async{
+                                      }
+                                      else if(controller.event.zoneLevelId == '3'){
 
-                              },
-                              itemBuilder: (context) {
-                                return {'',''}.map((String choice) {
-                                  return PopupMenuItem<String>(
-                                    value: choice,
-                                    child: Text(choice, style: const TextStyle(color: Colors.black),),
-                                  );
-                                }).toList();
+                                        controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(controller.event.zoneEventId));
+                                        controller.listDivisions.value =  controller.divisionsSet['data'];
+                                        controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                        controller.divisions.value =  controller.listDivisions;
+                                        controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.event.zoneParentId).toList()[0]);
+                                        //controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
+                                        print('Divisions : ${controller.divisions}');
+                                        print('Divisions : ${controller.event.zoneEventId}');
 
-                              },),
+                                        controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, controller.event.zoneEventId);
+                                        controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
+                                        controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
+                                        controller.subdivisions.value =  controller.listSubdivisions;
+                                        controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == controller.event.zoneEventId).toList()[0]);
+                                      }
+                                      else if(controller.event.zoneLevelId == "4"){
+                                        var region = await controller.getSpecificZone(int.parse(controller.event.zoneParentId));
+                                        print(region);
 
-                          ),
-                        ))
+                                        controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(region['parent_id']));
+                                        controller.listDivisions.value =  controller.divisionsSet['data'];
+                                        controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                        controller.divisions.value =  controller.listDivisions;
+
+                                        controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, int.parse(controller.event.zoneParentId));
+                                        controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
+                                        controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
+                                        controller.subdivisions.value =  controller.listSubdivisions;
+                                        controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == int.parse(controller.event.zoneParentId)).toList()[0]);
+
+                                        print(controller.subdivisions);
+
+
+                                        controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.divisionSelectedValue[0]['parent_id']).toList()[0]);
+
+
+
+                                        controller.subdivisionSelectedValue.add(controller.subdivisions.where((element) => element['id'] == controller.event.zoneEventId).toList()[0]);
+                                      }
+
+
+                                      Navigator.of(context).pop();
+
+
+                                      controller.noFilter.value = true;
+                                      Get.toNamed(Routes.CREATE_EVENT);
+                                    }, child: Text('Edit'))
+                                            ],),
+                                        )
+                                            ,):
+                                            showModalBottomSheet(context: context, builder:(context) {
+                                              return Container(
+                                              child: ListView(
+                                              children: [],
+
+                                              ),
+                                              );
+                                            },);
+                                  },
+                                    child: Icon(FontAwesomeIcons.ellipsisVertical)
+                            )
+                          )
+                        )
+                        )
+
                             :Center(
                           child: SizedBox(
                             height: Get.height/2,
@@ -257,10 +302,10 @@ class EventsView extends GetView<EventsController> {
                             ),
                           ),
 
-                        ):
+                        ):controller.page >0?
                         Center(
                           child: CircularProgressIndicator(color: interfaceColor, ),
-                        ):LoadingCardWidget()
+                        ):SizedBox():LoadingCardWidget()
                       ]))
                 ],
               )),

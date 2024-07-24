@@ -30,7 +30,7 @@ void main() {
       authToken: 'mockAuthToken',
       zoneId: 'zone1',
       birthdate: '1990-01-01',
-      companyName: 'Company Inc',
+      profession: 'Company Inc',
       sectors: ['sector1', 'sector2'],
     );
 

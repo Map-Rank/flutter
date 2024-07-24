@@ -105,7 +105,7 @@ class EventCardWidget extends StatelessWidget {
                             imageErrorBuilder:
                                 (context, error, stackTrace) {
                               return Image.asset(
-                                  "assets/images/téléchargement (3).png",
+                                  "assets/images/user_admin.png",
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.fitWidth);

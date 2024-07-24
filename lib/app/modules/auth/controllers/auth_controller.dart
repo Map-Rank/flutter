@@ -43,6 +43,10 @@ class AuthController extends GetxController {
   var birthDate = "--/--/--".obs;
   TextEditingController birthDateDisplay = TextEditingController();
 
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
 
   var loadingRegions = true.obs;
   var regions = [].obs;
@@ -329,11 +333,13 @@ class AuthController extends GetxController {
           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
           print('Lenght'+compressedImage.lengthSync().toString());
           profileImage = compressedImage;
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
         else{
           profileImage = File(pickedImage.path);
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
@@ -356,12 +362,14 @@ class AuthController extends GetxController {
           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
           print('Lenght'+compressedImage.lengthSync().toString());
           profileImage = compressedImage;
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
         else{
           print(pickedImage);
           profileImage = File(pickedImage.path);
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
@@ -372,7 +380,9 @@ class AuthController extends GetxController {
   }
 
   void register() async {
+
     try {
+      loading.value = true;
       currentUser.value = await userRepository.register(currentUser.value);
       Get.find<AuthService>().user.value = currentUser.value;
       await Get.find<RootController>().changePage(0);
@@ -396,6 +406,9 @@ class AuthController extends GetxController {
         Get.find<AuthService>().user.value.userId = a.userId;
         Get.find<AuthService>().user.value.firstName = a.firstName;
         Get.find<AuthService>().user.value.lastName = a.lastName;
+        Get.find<AuthService>().user.value.gender = a.gender;
+        Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
+        Get.find<AuthService>().user.value.email = a.email;
 
         update();
         loading.value = false;
@@ -423,19 +436,62 @@ class AuthController extends GetxController {
 
 
 
+
   }
 
+  getUser() async {
+
+    try {
+      var user = await userRepository.getUser();
+      print(user);
+      currentUser.value= user;
+      currentUser.value.myPosts = user.myPosts;
+      currentUser.value.myEvents = user.myEvents;
+
+      Get.find<AuthService>().user.value = currentUser.value;
+      print('my podt : ${currentUser.value.myPosts}');
+      //await Get.find<RootController>().changePage(0);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'User Profile info retrieved successfully' ));
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    } finally {
+    }
+
+  }
   logout() async {
       try {
+        loading.value = true;
         await userRepository.logout();
         Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged out successfully' ));
+        loading.value = false;
         await Get.toNamed(Routes.LOGIN);
 
       }
       catch (e) {
+        loading.value = false;
         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
       } finally {
+        loading.value = false;
       }
+
+
+
+
+  }
+
+
+  resetPassword(String email) async {
+    try {
+      loading.value = true;
+      await userRepository.resetPassword(email);
+    }
+    catch (e) {
+      loading.value = false;
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    } finally {
+      loading.value = false;
+    }
 
 
 

@@ -8,10 +8,12 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/root/controllers/root_controller.dart';
 import 'package:mapnrank/app/repositories/sector_repository.dart';
 import 'package:mapnrank/app/repositories/user_repository.dart';
 import 'package:mapnrank/app/repositories/zone_repository.dart';
+import 'package:mapnrank/app/routes/app_routes.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../color_constants.dart';
@@ -21,26 +23,30 @@ import 'dart:math' as Math;
 import '../../../../common/ui.dart';
 import '../../../models/user_model.dart';
 import '../../../providers/laravel_provider.dart';
-import '../../chat_room/controllers/chat_room_controller.dart';
 import '../../community/controllers/community_controller.dart';
 import '../../dashboard/controllers/dashboard_controller.dart';
-import '../../profile/controllers/profile_controller.dart';
+import '../../notifications/controllers/notification_controller.dart';
 
 
 class AuthController extends GetxController {
 
-  final Rx<User> currentUser = Get.find<AuthService>().user;
+  Rx<UserModel> currentUser = Get.find<AuthService>().user;
   late GlobalKey<FormState> loginFormKey;
   late GlobalKey<FormState> registerFormKey;
   final hidePassword = true.obs;
   RxBool loading = false.obs;
   RxBool registerNext = false.obs;
   RxBool registerNextStep1 = false.obs;
-  final _picker = ImagePicker();
+  var picker = ImagePicker();
   late File profileImage = File('assets/images/loading.gif') ;
   final loadProfileImage = false.obs;
   var birthDate = "--/--/--".obs;
-  var birthDateDisplay = "--/--/--".obs;
+  TextEditingController birthDateDisplay = TextEditingController();
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
 
   var loadingRegions = true.obs;
   var regions = [].obs;
@@ -73,6 +79,12 @@ class AuthController extends GetxController {
   var listSectors = [].obs;
   var sectorsSet ={};
 
+  var chooseSector = false.obs;
+  var chooseRegion = false.obs;
+  var chooseDivision = false.obs;
+  var chooseSubdivision = false.obs;
+
+
   var confirmPassword='';
   RxBool isConfidentialityChecked = false.obs;
   late UserRepository userRepository ;
@@ -104,11 +116,11 @@ class AuthController extends GetxController {
     Get.lazyPut<CommunityController>(
           () => CommunityController(),
     );
-    Get.lazyPut<ChatRoomController>(
-          () => ChatRoomController(),
+    Get.lazyPut<NotificationController>(
+          () => NotificationController(),
     );
-    Get.lazyPut<ProfileController>(
-          () => ProfileController(),
+    Get.lazyPut<EventsController>(
+          () => EventsController(),
     );
 
   }
@@ -117,6 +129,7 @@ class AuthController extends GetxController {
 
   @override
   void onInit() async {
+    birthDateDisplay.text = "--/--/--";
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
     sectorRepository = SectorRepository();
@@ -242,17 +255,17 @@ class AuthController extends GetxController {
     }
   }
 
-  birthDatePicker() async {
+  birthDatePicker(BuildContext context, double height) async {
     DateTime? pickedDate = await showRoundedDatePicker(
 
-      context: Get.context!,
+      context: context,
       theme: ThemeData.light().copyWith(
           primaryColor: buttonColor
       ),
-      height: Get.height/2,
-      initialDate: DateTime.now().subtract(const Duration(days: 1)),
+      height: height,
+      initialDate: DateTime.now().subtract(const Duration(days: 365,)),
       firstDate: DateTime(1950),
-      lastDate: DateTime(2040),
+      lastDate: DateTime(DateTime.now().year),
       styleDatePicker: MaterialRoundedDatePickerStyle(
           textStyleYearButton: const TextStyle(
             fontSize: 52,
@@ -264,7 +277,7 @@ class AuthController extends GetxController {
     );
     if (pickedDate != null ) {
       //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      birthDateDisplay.value = DateFormat('dd-MM-yyyy').format(pickedDate);
+      birthDateDisplay.text = DateFormat('dd-MM-yyyy').format(pickedDate);
       birthDate.value =DateFormat('yyyy-MM-dd').format(pickedDate);
       currentUser.value.birthdate = birthDate.value;
     }
@@ -289,7 +302,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text('Take a picture', style: Get.textTheme.headline1?.merge(const TextStyle(fontSize: 15))),
+                      title: Text('Take a picture', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     ),
                     ListTile(
                       onTap: ()async{
@@ -298,7 +311,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.image),
-                      title: Text('Upload Image', style: Get.textTheme.headline1?.merge(const TextStyle(fontSize: 15))),
+                      title: Text('Upload Image', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     )
                   ],
                 )
@@ -309,7 +322,7 @@ class AuthController extends GetxController {
   profileImagePicker(String source) async {
     if(source=='camera'){
       final XFile? pickedImage =
-      await _picker.pickImage(source: ImageSource.camera);
+      await picker.pickImage(source: ImageSource.camera);
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
@@ -320,11 +333,13 @@ class AuthController extends GetxController {
           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
           print('Lenght'+compressedImage.lengthSync().toString());
           profileImage = compressedImage;
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
         else{
           profileImage = File(pickedImage.path);
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
@@ -336,7 +351,7 @@ class AuthController extends GetxController {
     }
     else{
       final XFile? pickedImage =
-      await _picker.pickImage(source: ImageSource.gallery);
+      await picker.pickImage(source: ImageSource.gallery);
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
@@ -347,12 +362,14 @@ class AuthController extends GetxController {
           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
           print('Lenght'+compressedImage.lengthSync().toString());
           profileImage = compressedImage;
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
         else{
           print(pickedImage);
           profileImage = File(pickedImage.path);
+          currentUser.value.imageFile = profileImage;
           loadProfileImage.value = !loadProfileImage.value;
 
         }
@@ -363,8 +380,11 @@ class AuthController extends GetxController {
   }
 
   void register() async {
+
     try {
+      loading.value = true;
       currentUser.value = await userRepository.register(currentUser.value);
+      Get.find<AuthService>().user.value = currentUser.value;
       await Get.find<RootController>().changePage(0);
       Get.showSnackbar(Ui.SuccessSnackBar(message: 'Your account was created successfully' ));
     }
@@ -381,16 +401,31 @@ class AuthController extends GetxController {
       loginFormKey.currentState!.save();
       loading.value = true;
       try {
-        currentUser.value = await userRepository.login(currentUser.value);
-        if (kDebugMode) {
-          print('Christellle');
-          print(currentUser.value);
-        }
-        if (kDebugMode) {
-          print(Get.find<AuthService>().user.value.authToken);
-        }
-        await Get.find<RootController>().changePage(0);
+        var a = await userRepository.login(currentUser.value);
+        Get.find<AuthService>().user.value.authToken = a.authToken;
+        Get.find<AuthService>().user.value.userId = a.userId;
+        Get.find<AuthService>().user.value.firstName = a.firstName;
+        Get.find<AuthService>().user.value.lastName = a.lastName;
+        Get.find<AuthService>().user.value.gender = a.gender;
+        Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
+        Get.find<AuthService>().user.value.email = a.email;
+
+        update();
+        loading.value = false;
         Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged in successfully' ));
+        Get.put(RootController());
+        Get.lazyPut(()=>DashboardController());
+        Get.lazyPut<CommunityController>(
+              () => CommunityController(),
+        );
+        Get.lazyPut<NotificationController>(
+              () => NotificationController(),
+        );
+        Get.lazyPut<EventsController>(
+              () => EventsController(),
+        );
+        await Get.find<RootController>().changePage(0);
+
       }
       catch (e) {
         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
@@ -398,6 +433,66 @@ class AuthController extends GetxController {
         loading.value = false;
       }
     }
+
+
+
+
+  }
+
+  getUser() async {
+
+    try {
+      var user = await userRepository.getUser();
+      print(user);
+      currentUser.value= user;
+      currentUser.value.myPosts = user.myPosts;
+      currentUser.value.myEvents = user.myEvents;
+
+      Get.find<AuthService>().user.value = currentUser.value;
+      print('my podt : ${currentUser.value.myPosts}');
+      //await Get.find<RootController>().changePage(0);
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'User Profile info retrieved successfully' ));
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    } finally {
+    }
+
+  }
+  logout() async {
+      try {
+        loading.value = true;
+        await userRepository.logout();
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged out successfully' ));
+        loading.value = false;
+        await Get.toNamed(Routes.LOGIN);
+
+      }
+      catch (e) {
+        loading.value = false;
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      } finally {
+        loading.value = false;
+      }
+
+
+
+
+  }
+
+
+  resetPassword(String email) async {
+    try {
+      loading.value = true;
+      await userRepository.resetPassword(email);
+    }
+    catch (e) {
+      loading.value = false;
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    } finally {
+      loading.value = false;
+    }
+
 
 
 

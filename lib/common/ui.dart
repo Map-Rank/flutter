@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,8 +9,8 @@ class Ui {
   static GetSnackBar SuccessSnackBar({String title = 'Success', required String message}) {
     Get.log("[$title] $message");
     return GetSnackBar(
-      titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
-      messageText: Text(message, style: Get.textTheme.caption!.merge(TextStyle(color: Get.theme.primaryColor))),
+      titleText: Text(title.tr, style: Get.textTheme.headlineMedium!.merge(TextStyle(color: Get.theme.primaryColor))),
+      messageText: Text(message, style: Get.textTheme.headlineMedium!.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
       margin: EdgeInsets.all(20),
       backgroundColor: Colors.green,
@@ -25,8 +26,8 @@ class Ui {
   static GetSnackBar ErrorSnackBar({String title = 'Error', required String message}) {
     Get.log("[$title] $message", isError: true);
     return GetSnackBar(
-      titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
-      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.caption?.merge(TextStyle(color: Get.theme.primaryColor))),
+      titleText: Text(title.tr, style: Get.textTheme.headlineSmall!.merge(TextStyle(color: Get.theme.primaryColor))),
+      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.headlineMedium?.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
       margin: EdgeInsets.all(20),
       isDismissible: true,
@@ -42,8 +43,8 @@ class Ui {
   static GetSnackBar InfoSnackBar({String title = 'Info', required String message}) {
     Get.log("[$title] $message", isError: true);
     return GetSnackBar(
-      titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
-      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.caption?.merge(TextStyle(color: Get.theme.primaryColor))),
+      titleText: Text(title.tr, style: Get.textTheme.headlineSmall!.merge(TextStyle(color: Get.theme.primaryColor))),
+      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.headlineMedium?.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
       margin: EdgeInsets.all(20),
       isDismissible: true,
@@ -59,8 +60,8 @@ class Ui {
   static GetSnackBar warningSnackBar({String title = 'Warning', required String message}) {
     Get.log("[$title] $message", isError: true);
     return GetSnackBar(
-      titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.primaryColor))),
-      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.caption?.merge(TextStyle(color: Get.theme.primaryColor))),
+      titleText: Text(title.tr, style: Get.textTheme.headlineSmall!.merge(TextStyle(color: Get.theme.primaryColor))),
+      messageText: Text(message.substring(0, min(message.length, 200)), style: Get.textTheme.headlineMedium?.merge(TextStyle(color: Get.theme.primaryColor))),
       snackPosition: SnackPosition.BOTTOM,
       isDismissible: true,
       dismissDirection: DismissDirection.horizontal,
@@ -76,8 +77,8 @@ class Ui {
   static GetSnackBar defaultSnackBar({String title = 'Alert', required String message}) {
     Get.log("[$title] $message", isError: false);
     return GetSnackBar(
-      titleText: Text(title.tr, style: Get.textTheme.headline6!.merge(TextStyle(color: Get.theme.hintColor))),
-      messageText: Text(message, style: Get.textTheme.caption!.merge(TextStyle(color: Get.theme.focusColor))),
+      titleText: Text(title.tr, style: Get.textTheme.headlineSmall!.merge(TextStyle(color: Get.theme.hintColor))),
+      messageText: Text(message, style: Get.textTheme.headlineMedium!.merge(TextStyle(color: Get.theme.focusColor))),
       snackPosition: SnackPosition.BOTTOM,
       margin: EdgeInsets.all(20),
       backgroundColor: Get.theme.primaryColor,
@@ -96,8 +97,8 @@ class Ui {
       mainButton: mainButton,
       isDismissible: true,
       dismissDirection: DismissDirection.vertical,
-      titleText: Text(title.tr, style: Get.textTheme.subtitle2),
-      messageText: Text(message, style: Get.textTheme.caption?.merge(TextStyle(color: buttonColor, fontSize: 12)), maxLines: 2),
+      titleText: Text(title.tr, style: Get.textTheme.titleSmall),
+      messageText: Text(message, style: Get.textTheme.headlineMedium?.merge(TextStyle(color: buttonColor, fontSize: 12)), maxLines: 2),
       snackPosition: SnackPosition.TOP,
       margin: EdgeInsets.symmetric(horizontal: 10),
       backgroundColor: Get.theme.primaryColor,
@@ -121,27 +122,31 @@ class Ui {
     );
   }
 
-  static InputDecoration getInputDecoration({String hintText = '', required String errorText, required IconData iconData, required Widget suffixIcon, required Widget suffix}) {
+  static InputDecoration getInputDecoration({String hintText = '', var errorText, required var prefixIcon, required Widget suffixIcon, required Widget suffix, var isFirst}) {
     return InputDecoration(
       hintText: hintText,
-      hintStyle: Get.textTheme.caption!.merge(TextStyle(color: Colors.grey)),
-      prefixIcon: iconData != null ? Icon(iconData, color: Get.theme.focusColor).marginOnly(right: 14) : SizedBox(),
-      prefixIconConstraints: iconData != null ? BoxConstraints.expand(width: 38, height: 38) : BoxConstraints.expand(width: 0, height: 0),
+      hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+      prefixIcon: prefixIcon != null? prefixIcon: SizedBox(),
+      prefixIconConstraints: prefixIcon != null ? BoxConstraints.expand(width: 38, height: 38) : BoxConstraints.expand(width: 10, height: 10),
       floatingLabelBehavior: FloatingLabelBehavior.never,
       contentPadding: EdgeInsets.all(0),
-      border: OutlineInputBorder(borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+      border: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+      focusedBorder: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5)), borderRadius: BorderRadius.circular(10)),
+      enabledBorder: isFirst== null? OutlineInputBorder(borderSide:BorderSide.none)
+      :OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid,color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10)),
       suffixIcon: suffixIcon,
       suffix: suffix,
-      errorText: errorText,
+       errorText: errorText,
+        errorBorder:  errorText!=null?OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Colors.black ),borderRadius: BorderRadius.circular(10)):OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Colors.red ),borderRadius: BorderRadius.circular(10))
     );
   }
 
   static InputDecoration getSearchInputDecoration({String hintText = '', required String errorText, required IconData iconData, required Widget suffixIcon, required Widget suffix}) {
     return InputDecoration(
       hintText: hintText,
-      hintStyle: Get.textTheme.caption!.merge(TextStyle(color: Colors.grey)),
+      hintStyle: Get.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey)),
       prefixIcon: iconData != null ? Icon(iconData, color: Get.theme.focusColor).marginOnly(right: 14) : SizedBox(),
       prefixIconConstraints: iconData != null ? BoxConstraints.expand(width: 38, height: 38) : BoxConstraints.expand(width: 0, height: 0),
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -152,6 +157,8 @@ class Ui {
       suffixIcon: suffixIcon,
       suffix: suffix,
       errorText: errorText,
+
+
     );
   }
 

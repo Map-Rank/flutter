@@ -6,8 +6,9 @@ class LoadingCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      padding: EdgeInsets.zero,
         physics: AlwaysScrollableScrollPhysics(),
-        itemCount: 3,
+        itemCount: 4,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
           crossAxisSpacing: 10.0,

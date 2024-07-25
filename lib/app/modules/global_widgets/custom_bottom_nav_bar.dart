@@ -53,8 +53,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               margin: EdgeInsets.only(top: 10, bottom: 10),
               alignment: Alignment.center,
               decoration: BoxDecoration(color: widget.currentIndex == index ? color.withOpacity(0.2) : Colors.transparent, borderRadius: BorderRadius.circular(10)),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Icon(
                     icon,

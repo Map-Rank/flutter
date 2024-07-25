@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -30,6 +31,9 @@ abstract class NetworkExceptions {
       case 503:
         return "Service unavailable";
         break;
+      case 422:
+        return "Invalid Credentials";
+        break;
       default:
         return "Received invalid status code";
     }
@@ -41,24 +45,28 @@ abstract class NetworkExceptions {
         var errorMessage = "";
         if (error is DioError) {
           switch (error.type) {
-            case DioErrorType.cancel:
+            case DioExceptionType.cancel:
               errorMessage = "Request Cancelled";
               break;
-            case DioErrorType.connectTimeout:
+            case DioExceptionType.connectionTimeout:
               errorMessage = "Connection request timeout";
               break;
-            case DioErrorType.other:
+            case DioExceptionType.connectionError:
               errorMessage = "No internet connection";
               break;
-            case DioErrorType.receiveTimeout:
+            case DioExceptionType.receiveTimeout:
               errorMessage = "Send timeout in connection with API server";
               break;
-            case DioErrorType.response:
+            case DioExceptionType.badResponse:
               errorMessage = NetworkExceptions.handleResponse(error.response!);
               break;
-            case DioErrorType.sendTimeout:
+            case DioExceptionType.sendTimeout:
               errorMessage = "Send timeout in connection with API server";
               break;
+            case DioExceptionType.badCertificate:
+              // TODO: Handle this case.
+            case DioExceptionType.unknown:
+              // TODO: Handle this case.
           }
         } else if (error is SocketException) {
           errorMessage = "No internet connection";

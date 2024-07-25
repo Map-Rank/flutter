@@ -13,6 +13,16 @@ class CommunityRepository {
     return _laravelApiClient.getAllPosts(page);
   }
 
+  Future filterPostsByZone(int page, int zoneId) {
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.filterPostsByZone(page, zoneId);
+  }
+
+  Future filterPostsBySectors(int page, var sectors) {
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.filterPostsBySectors(page, sectors);
+  }
+
   Future createPost(Post post) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.createPost(post);

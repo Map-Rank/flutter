@@ -31,37 +31,42 @@ class CommentWidget extends StatelessWidget {
                   imageErrorBuilder:
                       (context, error, stackTrace) {
                     return Image.asset(
-                        "assets/images/téléchargement (3).png",
+                        "assets/images/user_admin.png",
                         width: 50,
                         height: 50,
                         fit: BoxFit.fitWidth);
                   }
               )
-          ).marginOnly(right: 20),
+          ).marginOnly(right: 10),
 
 
           Expanded(
-            child: SizedBox(
-              height: 100,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  //borderRadius: BorderRadius.circular(20)
+              ),
+              height: 80,
               child: Column(
                 children: [
                   SizedBox(
-                      height: 40,
+                      //height: 40,
                       //width: Get.width/2.5,
                       child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
-                                child: Text(user, style: Get.textTheme.headline4!.merge(TextStyle(fontSize: 13, color: buttonColor, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,)
+                                child: Text(user, style: Get.textTheme.headlineSmall?.merge(TextStyle(fontSize: 14, fontWeight: FontWeight.w600))!, overflow: TextOverflow.ellipsis,)
                             )
                           ]
                       )
-                  ),
+                  ).marginOnly(bottom: 10),
                   Expanded(
                       child: SizedBox(
                         width: Get.width,
-                      child: Text(comment))),
+                      child: Text(comment, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodyMedium,))),
                 ],
 
               ),

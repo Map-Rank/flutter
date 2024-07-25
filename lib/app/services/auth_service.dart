@@ -5,7 +5,7 @@ import '../repositories/user_repository.dart';
 
 
 class AuthService extends GetxService {
-  final user = User().obs;
+  var user = UserModel().obs;
   GetStorage? _box;
 
   UserRepository? _usersRepo;
@@ -16,7 +16,7 @@ class AuthService extends GetxService {
   }
 
   Future<AuthService> init() async {
-    user.listen((User user) {
+    user.listen((UserModel user) {
       _box?.write('current_user', user.toJson());
     });
     await getCurrentUser();
@@ -24,21 +24,25 @@ class AuthService extends GetxService {
   }
 
   Future getCurrentUser() async {
-    if (User.auth == null && _box!.hasData('current_user')) {
-      user.value = User.fromJson(await _box?.read('current_user'));
-      User.auth = true;
+    if (UserModel.auth == null && _box!.hasData('current_user')) {
+      user.value = UserModel.fromJson(await _box?.read('current_user'));
+      UserModel.auth = true;
     } else {
-      User.auth = false;
+      UserModel.auth = false;
     }
   }
 
   Future removeCurrentUser() async {
-    user.value =  User();
-    await _usersRepo?.signOut();
+    user.value =  UserModel();
+    await _usersRepo?.logout();
     await _box?.remove('current_user');
   }
 
-  bool get isAuth => User.auth ?? false;
+  bool get isAuth => UserModel.auth ?? false;
+
+
+
+
 
   //String get apiToken => (user.value.auth ?? false) ? user.value.apiToken : '';
 }

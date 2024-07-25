@@ -32,19 +32,22 @@ abstract class Model {
   }
 
 
-  String stringFromJson(Map<String, dynamic> json, String attribute, {String defaultValue = ''}) {
-    try {
-      return json != null
-          ? json[attribute] != null
-          ? json[attribute].toString()
-          : defaultValue
-          : defaultValue;
-    } catch (e) {
-      throw Exception('Error while parsing $attribute[$e]');
-    }
-  }
+   String stringFromJson(Map<String, dynamic>? json, String attribute, {String defaultValue = ''}) {
+     try {
+       if (json != null && json.containsKey(attribute)) {
+         return json[attribute]?.toString() ?? defaultValue;
+       }
+       return defaultValue; // Return default value if attribute is missing
+     } catch (e) {
+       throw Exception('Error while parsing $attribute: $e');
+     }
+   }
 
-  DateTime dateFromJson(Map<String, dynamic> json, String attribute, {required DateTime defaultValue}) {
+
+
+
+
+   DateTime dateFromJson(Map<String, dynamic> json, String attribute, {required DateTime defaultValue}) {
     try {
       return json != null
           ? json[attribute] != null
@@ -99,22 +102,27 @@ abstract class Model {
     }
   }
 
-  bool boolFromJson(Map<String, dynamic> json, String attribute, {bool defaultValue = false}) {
-    try {
-      if (json[attribute] != null) {
-        if (json[attribute] is bool) {
-          return json[attribute];
-        } else if ((json[attribute] is String) && !['0', '', 'false'].contains(json[attribute])) {
-          return true;
-        } else if ((json[attribute] is int) && ![0, -1].contains(json[attribute])) {
-          return true;
-        }
-        return false;
-      }
-      return defaultValue;
-    } catch (e) {
-      throw Exception('Error while parsing $attribute[$e]');
-    }
-  }
+   bool boolFromJson(Map<String, dynamic> json, String attribute, {bool defaultValue = false}) {
+     try {
+       if (json[attribute] != null) {
+         if (json[attribute] is bool) {
+           return json[attribute];
+         } else if (json[attribute] is String) {
+           final lowerValue = json[attribute].toLowerCase();
+           if (['true', '1'].contains(lowerValue)) {
+             return true;
+           } else if (['false', '0', ''].contains(lowerValue)) {
+             return false;
+           }
+         } else if (json[attribute] is int) {
+           return json[attribute] != 0;
+         }
+       }
+       return defaultValue;
+     } catch (e) {
+       throw Exception('Error while parsing $attribute[$e]');
+     }
+   }
+
 
 }

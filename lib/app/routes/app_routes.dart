@@ -9,6 +9,14 @@ class Routes {
   static const COMMENT_VIEW = '/community/comment_view';
   static const DETAILS_VIEW = '/community/details_view';
 
+  static const EVENT_DETAILS_VIEW = '/events/event_details_view';
+  static const CREATE_EVENT = '/events/create_event';
+  static const PROFILE = '/profile/profile_view';
+  static const ACCOUNT = '/profile/account_view';
+  static const CONTACT_US = '/profile/contact_us_view';
+  static const FOLLOWERS = '/profile/followers';
+  static const ARTICLES = '/profile/articles';
+
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';
   static const SETTINGS_LANGUAGE = '/settings/language';

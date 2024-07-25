@@ -8,6 +8,8 @@ class Post extends Model {
   String? publishedDate;
   var zone;
   var zonePostId;
+  var zoneLevelId;
+  var zoneParentId;
   var postSectors;
   int? postId;
   List? sectors;
@@ -18,7 +20,8 @@ class Post extends Model {
   bool? likeTapped;
   bool? commentTapped;
   bool? shareTapped;
-  User? user;
+  bool? isFollowing;
+  UserModel? user;
   bool? liked;
   List? imagesFilePaths;
   List? commentList;
@@ -40,13 +43,17 @@ class Post extends Model {
     this.likeTapped,
     this.commentTapped,
     this.shareTapped,
-    this.commentList
+    this.commentList,
+    this.zoneLevelId,
+    this.zoneParentId,
+    this.isFollowing,
   });
 
   Post.fromJson(Map<String, dynamic> json) {
     content = stringFromJson(json, 'content');
     postId = intFromJson(json, 'id');
     publishedDate = stringFromJson(json, 'published_at');
+    zonePostId = stringFromJson(json, 'zone_id');
 
 
 
@@ -59,8 +66,8 @@ class Post extends Model {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = postId;
     data['content'] = content;
-    data['zone_id'] = zone;
     data['published_at'] = publishedDate;
+    data['zone_id'] = zonePostId;
     //data['sectors'] = sectors;
 
 

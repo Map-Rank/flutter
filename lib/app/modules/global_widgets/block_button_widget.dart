@@ -6,7 +6,7 @@ class BlockButtonWidget extends StatelessWidget {
 
   final Color color;
   final Widget text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

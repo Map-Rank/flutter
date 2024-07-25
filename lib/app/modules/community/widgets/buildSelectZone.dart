@@ -2,326 +2,558 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
+import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/global_widgets/location_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
+import 'package:mapnrank/common/ui.dart';
 import '../../../../color_constants.dart';
 import '../../../services/global_services.dart';
 
 class BuildSelectZone extends GetView<CommunityController> {
   BuildSelectZone({Key? key,
-   }) : super(key: key);
+  }) : super(key: key);
 
 
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Select a region',
-            style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-            textAlign: TextAlign.start,
-          ),
-          Obx(() =>
-              Column(
-                children: [
-                  TextFieldWidget(
-                    readOnly: false,
-                    keyboardType: TextInputType.text,
-                    validator: (input) => input!.isEmpty ? 'Required field' : null,
-                    //onChanged: (input) => controller.selectUser.value = input,
-                    //labelText: "Research receiver".tr,
-                    iconData: FontAwesomeIcons.search,
-                    style: const TextStyle(color: labelColor),
-                    hintText: 'Search by region name',
-                    onChanged: (value)=>{
-                      controller.filterSearchRegions(value)
-                    },
-                    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                  ),
-                  controller.loadingRegions.value ?
-                  Column(
-                    children: [
-                      for(var i=0; i < 4; i++)...[
-                        Container(
-                            width: Get.width,
-                            height: 60,
-                            margin: const EdgeInsets.all(5),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.asset(
-                                'assets/images/loading.gif',
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: 40,
+    Get.lazyPut(()=>EventsController());
+    return ListView(
+      padding: EdgeInsets.all(20),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Select a Zone',
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor, fontSize: 18)),
+              textAlign: TextAlign.start,
+            ),
+
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text('Ok/Cancel'))
+
+          ],).marginOnly(bottom: 20),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text('Select a region'),
+            GestureDetector(
+              onTap: (){
+                showDialog(context: context,
+                  builder:  (context) => Dialog(
+                      child:  ListView(
+                        padding: EdgeInsets.all(20),
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Select a region',
+                                style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                                textAlign: TextAlign.start,
                               ),
-                            ))
-                      ]
-                    ],
-                  ) :
-                  Container(
-                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                              TextButton(onPressed: (){
+                                Navigator.of(context).pop();
+                              }, child: Text('Ok/Cancel'))
+                            ],
+                          ),
+
+                          Obx(() =>
+                              Column(
+                                children: [
+                                  TextFieldWidget(
+                                    readOnly: false,
+                                    keyboardType: TextInputType.text,
+                                    validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                    //onChanged: (input) => controller.selectUser.value = input,
+                                    //labelText: "Research receiver".tr,
+                                    iconData: FontAwesomeIcons.search,
+                                    style: const TextStyle(color: labelColor),
+                                    hintText: 'Search by region name',
+                                    onChanged: (value)=>{
+                                      controller.filterSearchRegions(value)
+                                    },
+                                    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
+                                  ),
+                                  controller.loadingRegions.value ?
+                                  Column(
+                                    children: [
+                                      for(var i=0; i < 4; i++)...[
+                                        Container(
+                                            width: Get.width,
+                                            height: 60,
+                                            margin: const EdgeInsets.all(5),
+                                            child: ClipRRect(
+                                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                              child: Image.asset(
+                                                'assets/images/loading.gif',
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: 40,
+                                              ),
+                                            ))
+                                      ]
+                                    ],
+                                  ) :
+                                  Container(
+                                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                        ],
+                                      ),
+
+                                      child: ListView.builder(
+                                        //physics: AlwaysScrollableScrollPhysics(),
+                                          itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          itemBuilder: (context, index) {
+
+                                            return GestureDetector(
+                                              // coverage:ignore-start
+                                                onTap: () async {
+                                                  controller.regionSelected.value = !controller.regionSelected.value;
+                                                  controller.regionSelectedIndex.value = index;
+                                                  if(controller.regionSelectedValue.contains(controller.regions[index]) ){
+                                                    if(controller.noFilter.value){
+                                                      controller.regionSelectedValue.remove(controller.regions[index]);
+                                                      controller.chooseARegion.value = false;
+                                                      controller.regionSelectedValue.clear();
+
+
+                                                    }
+                                                    else{
+                                                      controller.regionSelectedValue.remove(controller.regions[index]);
+                                                      controller.regionSelectedValue.clear();
+                                                      controller.filterSearchPostsByZone(controller.regions[index]['id']);
+                                                      controller.chooseARegion.value = false;
+                                                      controller.loadingPosts.value = true;
+                                                      controller.listAllPosts = await controller.getAllPosts(0);
+                                                      controller.allPosts.value = controller.listAllPosts;
+                                                      //controller.allPosts.value = await controller.getAllPosts(0);
+                                                      //controller.filterSearchPostsByRegionZone(controller.regions[index]['id'].toString());
+                                                      //controller.post?.sectors?.remove(controller.sectors[index]['id']);
+                                                    }
+
+                                                  }
+                                                  else{
+
+                                                    if(controller.noFilter.value){
+                                                      controller.regionSelectedValue.clear();
+                                                      controller.post?.zonePostId = controller.regions[index]['id'];
+                                                      controller.regionSelectedValue.add(controller.regions[index]);
+
+                                                    }
+                                                    else{
+                                                      controller.regionSelectedValue.clear();
+                                                      controller.post?.zonePostId = controller.regions[index]['id'];
+                                                      controller.regionSelectedValue.add(controller.regions[index]);
+                                                      controller.filterSearchPostsByZone(controller.regions[index]['id']);
+                                                      //controller.filterSearchPostsByRegionZone(controller.regions[index]['id'].toString());
+                                                      //controller.post?.sectors?.remove(controller.sectors[index]['id']);
+                                                    }
+
+
+
+                                                  }
+
+                                                  controller.divisionsSet = await controller.getAllDivisions(index);
+                                                  controller.listDivisions.value =  controller.divisionsSet['data'];
+                                                  controller.loadingDivisions.value = ! controller.divisionsSet['status'];
+                                                  controller.divisions.value =  controller.listDivisions;
+
+
+                                                },
+                                                // coverage:ignore-end
+                                                child: Obx(() => LocationWidget(
+                                                  regionName: controller.regions[index]['name'],
+                                                  selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
+                                                ))
+                                            );
+                                          })
+                                  )
+                                ],
+                              ),
+                          ).marginOnly(bottom: 20),
                         ],
-                      ),
-
-                      child: ListView.builder(
-                        //physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          itemBuilder: (context, index) {
-
-                            return GestureDetector(
-                                onTap: () async {
-                                  //controller.regionSelectedValue.clear();
-                                  if(controller.regionSelectedValue.contains(controller.regions[index]) ){
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.remove(controller.regions[index]);
-                                  }
-                                  else{
-                                    controller.regionSelectedValue.clear();
-                                    controller.regionSelectedValue.add(controller.regions[index]);
-                                  }
-                                  controller.regionSelected.value = !controller.regionSelected.value;
-                                  controller.regionSelectedIndex.value = index;
-                                  controller.divisionsSet = await controller.getAllDivisions(index);
-                                  controller.listDivisions.value =  controller.divisionsSet['data'];
-                                  controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                  controller.divisions.value =  controller.listDivisions;
-
-                                  print(controller.regionSelected);
-
-                                },
-                                child: Obx(() => LocationWidget(
-                                  regionName: controller.regions[index]['name'],
-                                  selected: controller.regionSelectedIndex.value == index && controller.regionSelectedValue.contains(controller.regions[index]) ? true  : false ,
-                                ))
-                            );
-                          })
+                      )
                   )
-                ],
+                  ,);
+              },
+              child: Container(
+                decoration: BoxDecoration(shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                padding: EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Obx(() => controller.regionSelectedValue.isNotEmpty?
+                    Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,)
+                        :Text('Choose a region', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
+                    ),
+                    FaIcon(FontAwesomeIcons.angleDown, size: 10,)
+                  ],
+                ),
               ),
-          ).marginOnly(bottom: 20),
-          if(controller.regionSelectedValue.isNotEmpty)...[
-            Text('Select a division',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
+
             ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchDivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingDivisions.value ?
-                    Column(
+          ],
+        ).marginOnly(bottom: 20),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Select a division'),
+            GestureDetector(
+              onTap: (){
+                controller.chooseADivision.value = true;
+                if(controller.regionSelectedValue.isEmpty) {
+                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a region first"));
+                }
+                else{
+                  showDialog(context: context, builder: (context) => Dialog(
+                    insetPadding: EdgeInsets.all(20),
+                    child: ListView(
+                      padding: EdgeInsets.all(20),
                       children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Select a division',
+                              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                              textAlign: TextAlign.start,
+                            ),
+                            TextButton(onPressed: (){
+                              Navigator.of(context).pop();
+                            }, child: Text('Ok/Cancel'))
                           ],
                         ),
 
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async{
-                                    if(controller.divisionSelectedValue.contains(controller.divisions[index]) ){
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.remove(controller.divisions[index]);
-                                    }
-                                    else{
-                                      controller.divisionSelectedValue.clear();
-                                      controller.divisionSelectedValue.add(controller.divisions[index]);
-                                    }
-                                    controller.divisionSelected.value = !controller.divisionSelected.value;
-                                    controller.divisionSelectedIndex.value = index;
-                                    controller.subdivisionsSet = await controller.getAllSubdivisions(index);
-                                    controller.listSubdivisions.value = controller.subdivisionsSet['data'];
-                                    controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
-                                    controller.subdivisions.value = controller.listSubdivisions;
-                                    //print(controller.subdivisionSelectedValue[0]['id'].toString());
-
+                        Obx(() =>
+                            Column(
+                              children: [
+                                TextFieldWidget(
+                                  readOnly: false,
+                                  keyboardType: TextInputType.text,
+                                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                  //onChanged: (input) => controller.selectUser.value = input,
+                                  //labelText: "Research receiver".tr,
+                                  iconData: FontAwesomeIcons.search,
+                                  style: const TextStyle(color: labelColor),
+                                  hintText: 'Search by division name',
+                                  onChanged: (value)=>{
+                                    controller.filterSearchDivisions(value)
                                   },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.divisions[index]['name'],
-                                    selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
+                                  errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
+                                ),
+                                controller.loadingDivisions.value ?
+                                Column(
+                                  children: [
+                                    for(var i=0; i < 4; i++)...[
+                                      Container(
+                                          width: Get.width,
+                                          height: 60,
+                                          margin: const EdgeInsets.all(5),
+                                          child: ClipRRect(
+                                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                            child: Image.asset(
+                                              'assets/images/loading.gif',
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: 40,
+                                            ),
+                                          ))
+                                    ]
+                                  ],
+                                ) :
+                                Container(
+                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                    // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                      ],
+                                    ),
+
+                                    child: ListView.builder(
+                                      //physics: AlwaysScrollableScrollPhysics(),
+                                        itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        itemBuilder: (context, index) {
+
+                                          return GestureDetector(
+                                            // coverage:ignore-start
+                                              onTap: () async{
+                                                controller.divisionSelected.value = !controller.divisionSelected.value;
+                                                controller.divisionSelectedIndex.value = index;
+                                                if(controller.divisionSelectedValue.contains(controller.divisions[index]) ){
+                                                  if(controller.noFilter.value){
+                                                    controller.divisionSelectedValue.remove(controller.divisions[index]);
+                                                    controller.divisionSelectedValue.clear();
+                                                    controller.chooseADivision.value = false;
+
+                                                  }
+                                                  else{
+                                                    controller.divisionSelectedValue.remove(controller.divisions[index]);
+                                                    controller.divisionSelectedValue.clear();
+                                                    controller.chooseADivision.value = false;
+                                                    //controller.post?.sectors?.remove(controller.sectors[index]['id']);
+                                                    //controller.filterSearchPostsByDivisionZone(controller.divisions[index]['id'].toString());
+                                                    await controller.filterSearchPostsByZone(controller.regionSelectedValue[0]['id']);
+
+                                                  }
+
+
+                                                }
+                                                else{
+
+                                                  if(controller.noFilter.value){
+                                                    controller.divisionSelectedValue.clear();
+                                                    controller.post?.zonePostId = controller.divisions[index]['id'];
+                                                    controller.divisionSelectedValue.add(controller.divisions[index]);
+                                                  }
+                                                  else{
+                                                    controller.divisionSelectedValue.clear();
+                                                    controller.divisionSelectedValue.add(controller.divisions[index]);
+                                                    await controller.filterSearchPostsByZone(controller.divisions[index]['id']);
+                                                    //controller.filterSearchPostsByDivisionZone(controller.divisions[index]['id'].toString());
+                                                  }
+                                                }
+
+
+
+
+
+                                                controller.subdivisionsSet = await controller.getAllSubdivisions(index);
+                                                controller.listSubdivisions.value = controller.subdivisionsSet['data'];
+                                                controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
+                                                controller.subdivisions.value = controller.listSubdivisions;
+                                                //print(controller.subdivisionSelectedValue[0]['id'].toString());
+
+                                              },
+                                              // coverage:ignore-end
+                                              child: Obx(() => LocationWidget(
+                                                regionName: controller.divisions[index]['name'],
+                                                selected: controller.divisionSelectedIndex.value == index && controller.divisionSelectedValue.contains(controller.divisions[index]) ? true  : false ,
+                                              ))
+                                          );
+                                        })
+                                )
+                              ],
+                            ),
+                        ).marginOnly(bottom: 20),
+                      ],
+                    ) ,
+                  ),);
+                }
+              },
+              child:  Container(
+                decoration: BoxDecoration(shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                padding: EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Obx(() => controller.divisionSelectedValue.isNotEmpty?
+                    Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,):
+                    Text('Choose a Division', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
+
+                    FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                   ],
                 ),
-            ).marginOnly(bottom: 20),
-          ],
-          if(controller.divisionSelectedValue.isNotEmpty)...[
-            Text('Select a subdivision',
-              style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
+              ),
             ),
-            Obx(() =>
-                Column(
-                  children: [
-                    TextFieldWidget(
-                      readOnly: false,
-                      keyboardType: TextInputType.text,
-                      validator: (input) => input!.isEmpty ? 'Required field' : null,
-                      //onChanged: (input) => controller.selectUser.value = input,
-                      //labelText: "Research receiver".tr,
-                      iconData: FontAwesomeIcons.search,
-                      style: const TextStyle(color: labelColor),
-                      hintText: 'Search by sub-division name',
-                      onChanged: (value)=>{
-                        controller.filterSearchSubdivisions(value)
-                      },
-                      errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                    ),
-                    controller.loadingSubdivisions.value  ?
-                    Column(
+          ],
+        ).marginOnly(bottom: 20),
+
+
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Select a subdivision'),
+            GestureDetector(
+              onTap: (){
+                controller.chooseASubDivision.value = true;
+                if(controller.regionSelectedValue.isEmpty) {
+                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a region first then a division"));
+                }
+                else if(controller.divisionSelectedValue.isEmpty) {
+                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a division first"));
+                }
+                else{
+                  showDialog(context: context, builder: (context) => Dialog(
+                    insetPadding: EdgeInsets.all(20),
+                    child: ListView(
+                      padding: EdgeInsets.all(20),
                       children: [
-                        for(var i=0; i < 4; i++)...[
-                          Container(
-                              width: Get.width,
-                              height: 60,
-                              margin: const EdgeInsets.all(5),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                child: Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 40,
-                                ),
-                              ))
-                        ]
-                      ],
-                    ) :
-                    Container(
-                        margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                        // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Select a subdivision',
+                              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                              textAlign: TextAlign.start,
+                            ),
+                            TextButton(onPressed: (){
+                              Navigator.of(context).pop();
+                            }, child: Text('Ok/Cancel'))
                           ],
                         ),
-
-                        child: ListView.builder(
-                          //physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
-                            shrinkWrap: true,
-                            primary: false,
-                            itemBuilder: (context, index) {
-
-                              return GestureDetector(
-                                  onTap: () async {
-
-                                    if(controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ){
-
-
-
-                                      if(controller.noFilter.value){
-                                        controller.subdivisionSelectedValue.clear();
-                                        controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
-                                      }
-                                      else{
-                                        controller.subdivisionSelectedValue.clear();
-                                        controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
-                                        //controller.post?.sectors?.remove(controller.sectors[index]['id']);
-                                        controller.filterSearchPostsByZone(controller.subdivisions[index]['id'].toString());
-                                      }
-                                    }
-                                    else{
-                                      if(controller.noFilter.value){
-                                        controller.subdivisionSelectedValue.clear();
-                                        controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
-                                        controller.post?.zonePostId = controller.subdivisions[index]['id'];
-                                      }
-                                      else{
-                                        controller.subdivisionSelectedValue.clear();
-                                        controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
-                                        //controller.post?.zonePostId = controller.subdivisions[index]['id'];
-                                        controller.filterSearchPostsByZone(controller.subdivisions[index]['id'].toString());
-                                      }
-
-
-                                    }
-                                    controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
-                                    controller.subdivisionSelectedIndex.value = index;
-
-
-                                    print(controller.subdivisions);
-
-                                    //controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
-
-
-                                    //print(controller.subdivisionSelected);
-
+                        Obx(() =>
+                            Column(
+                              children: [
+                                TextFieldWidget(
+                                  readOnly: false,
+                                  keyboardType: TextInputType.text,
+                                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                  //onChanged: (input) => controller.selectUser.value = input,
+                                  //labelText: "Research receiver".tr,
+                                  iconData: FontAwesomeIcons.search,
+                                  style: const TextStyle(color: labelColor),
+                                  hintText: 'Search by sub-division name',
+                                  onChanged: (value)=>{
+                                    controller.filterSearchSubdivisions(value)
                                   },
-                                  child: Obx(() => LocationWidget(
-                                    regionName: controller.subdivisions[index]['name'],
-                                    selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
-                                  ))
-                              );
-                            })
-                    )
+                                  errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
+                                ),
+                                controller.loadingSubdivisions.value  ?
+                                Column(
+                                  children: [
+                                    for(var i=0; i < 4; i++)...[
+                                      Container(
+                                          width: Get.width,
+                                          height: 60,
+                                          margin: const EdgeInsets.all(5),
+                                          child: ClipRRect(
+                                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                            child: Image.asset(
+                                              'assets/images/loading.gif',
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: 40,
+                                            ),
+                                          ))
+                                    ]
+                                  ],
+                                ) :
+                                Container(
+                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                    // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(color: Get.theme.focusColor.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                                      ],
+                                    ),
+
+                                    child: ListView.builder(
+                                      //physics: AlwaysScrollableScrollPhysics(),
+                                        itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        itemBuilder: (context, index) {
+
+                                          return GestureDetector(
+                                              onTap: () async {
+                                                controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
+                                                controller.subdivisionSelectedIndex.value = index;
+
+                                                if(controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ){
+
+
+
+                                                  if(controller.noFilter.value){
+                                                    controller.subdivisionSelectedValue.clear();
+                                                    controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
+                                                    controller.chooseASubDivision.value = false;
+                                                  }
+                                                  else{
+                                                    controller.subdivisionSelectedValue.clear();
+                                                    controller.subdivisionSelectedValue.remove(controller.subdivisions[index]);
+                                                    controller.chooseASubDivision.value = false;
+                                                    await controller.filterSearchPostsByZone(controller.divisionSelectedValue[0]['id']);
+                                                    //controller.filterSearchPostsBySubdivisionZone(controller.subdivisions[index]['id'].toString());
+
+                                                  }
+                                                }
+                                                else{
+                                                  if(controller.noFilter.value){
+                                                    controller.subdivisionSelectedValue.clear();
+                                                    controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
+                                                    controller.post?.zonePostId = controller.subdivisions[index]['id'];
+                                                  }
+                                                  else{
+                                                    controller.subdivisionSelectedValue.clear();
+                                                    controller.subdivisionSelectedValue.add(controller.subdivisions[index]);
+                                                    //controller.post?.zonePostId = controller.subdivisions[index]['id'];
+                                                    //controller.filterSearchPostsBySubdivisionZone(controller.subdivisions[index]['id'].toString());
+                                                    await controller.filterSearchPostsByZone(controller.subdivisions[index]['id']);
+                                                  }
+
+
+                                                }
+
+
+
+                                                print(controller.subdivisions);
+
+                                                //controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
+
+
+                                                //print(controller.subdivisionSelected);
+
+                                              },
+                                              child: Obx(() => LocationWidget(
+                                                regionName: controller.subdivisions[index]['name'],
+                                                selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
+                                              ))
+                                          );
+                                        })
+                                )
+                              ],
+                            ),
+                        ).marginOnly(bottom: 20),
+                      ],
+                    ),
+                  ),);
+                }
+              },
+              child:Container(
+                decoration: BoxDecoration(shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
+                padding: EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Obx(() => controller.subdivisionSelectedValue.isEmpty?
+                    Text('Choose a Subdivision', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
+                    Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headlineMedium,),)
+                    ,
+                    FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                   ],
                 ),
-            ).marginOnly(bottom: 20),
+              ),
+            ),
           ],
+        ).marginOnly(bottom: 20),
 
-          const SizedBox(height: 20),
 
-        ],
-      ),
 
-    ));
+      ],
+    );
   }
 }

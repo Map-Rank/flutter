@@ -16,14 +16,24 @@ class BuildSelectSector extends GetView<CommunityController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
+      padding: EdgeInsets.all(20),
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Select a sector',
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+              textAlign: TextAlign.start,
+            ),
 
-        Text('Select a sector',
-          style: Get.textTheme.bodyText2?.merge(const TextStyle(color: labelColor)),
-          textAlign: TextAlign.start,
-        ),
+             TextButton(onPressed: (){
+               Navigator.of(context).pop();
+             }, child: Text('Ok/Cancel'))
+
+          ],),
+
+
         Obx(() =>
             Column(
               children: [
@@ -78,8 +88,8 @@ class BuildSelectSector extends GetView<CommunityController> {
                         itemBuilder: (context, index) {
 
                           return GestureDetector(
+                            // coverage:ignore-start
                               onTap: () async {
-
 
                                 controller.selectedIndex. value = index;
                                 if(controller.sectorsSelected.contains(controller.sectors[index]) ){
@@ -88,9 +98,13 @@ class BuildSelectSector extends GetView<CommunityController> {
                                     controller.post?.sectors?.remove(controller.sectors[index]['id']);
                                   }
                                   else{
+                                    var sectorsIds = [];
                                     controller.sectorsSelected.remove(controller.sectors[index]);
+                                    for(var i = 0; i<controller.sectorsSelected.length; i++){
+                                      sectorsIds.add(controller.sectors[index]['id']);
+                                    }
                                     //controller.post?.sectors?.remove(controller.sectors[index]['id']);
-                                    controller.filterSearchPostsBySectors(controller.sectors[index]['id'].toString());
+                                    controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 
                                 }
@@ -98,10 +112,17 @@ class BuildSelectSector extends GetView<CommunityController> {
                                   if(controller.noFilter.value){
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     controller.post?.sectors?.add(controller.sectors[index]['id']);
+                                    print( controller.sectors[index]);
                                   }
                                   else{
+                                    print('christelle');
                                     controller.sectorsSelected.add(controller.sectors[index]);
-                                    controller.filterSearchPostsBySectors(controller.sectors[index]['id'].toString());
+                                    var sectorsIds = [];
+                                    for(var i = 0; i<controller.sectorsSelected.length; i++){
+                                      sectorsIds.add(controller.sectors[index]['id']);
+                                    }
+                                    controller.post.sectors = sectorsIds;
+                                    controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 
 
@@ -110,6 +131,7 @@ class BuildSelectSector extends GetView<CommunityController> {
 
 
                               },
+                              // coverage:ignore-end
                               child: Obx(() => LocationWidget(
                                 regionName: controller.sectors[index]['name'],
                                 selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,

@@ -20,7 +20,7 @@ class LocationWidget extends StatelessWidget{
     return Container(
         height: 80,
         decoration: BoxDecoration(
-            border: selected? Border.all(color: interfaceColor,width: 2) : null,
+            //border: selected? Border.all(color: interfaceColor,width: 2) : null,
             borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
         padding: const EdgeInsets.only(top: 10, right: 10, bottom: 10),
@@ -37,7 +37,7 @@ class LocationWidget extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Expanded(
-                            child: Text(regionName, style: Get.textTheme.headline4?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
+                            child: Text(regionName, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
                         )
                       ]
                   )

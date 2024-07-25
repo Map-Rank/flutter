@@ -13,7 +13,7 @@ class SettingsView extends GetView<SettingsController> {
       appBar: AppBar(
           title: Text(
             "Settings".tr,
-            style: context.textTheme.headline6,
+            style: context.textTheme.headlineSmall,
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,

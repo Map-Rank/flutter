@@ -25,11 +25,12 @@ class Setting extends Model {
         this.scaffoldDarkColor,
         this.scaffoldColor,});
 
+// coverage:ignore-start
   @override
   Map<String, dynamic> toJson() {
     // TODO: implement toJson
     throw UnimplementedError();
   }
-
+// coverage:ignore-end
 
 }

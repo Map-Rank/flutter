@@ -28,9 +28,11 @@ class PostCardWidget extends StatelessWidget {
     this.shareTapped,
     this.likeTapped,
     this.commentTapped,
+    this.onFollowTapped,
     this.likeWidget,
     this.onActionTapped,
-    this.popUpWidget
+    this.popUpWidget,
+    this.followWidget,
   }) : super(key: key);
 
   final List? sectors;
@@ -38,10 +40,10 @@ class PostCardWidget extends StatelessWidget {
   final String? content;
   final int? postId;
   var zone;
-  final User? user;
+  final UserModel? user;
   RxInt? likeCount;
   final int? commentCount;
-  final int? shareCount;
+  RxInt? shareCount;
   final List? images;
   final bool? liked;
   final Function()? onLikeTapped;
@@ -49,11 +51,14 @@ class PostCardWidget extends StatelessWidget {
   final Function()? onSharedTapped;
   final Function()? onPictureTapped;
   final Function()? onActionTapped;
+  final Function()? onFollowTapped;
   RxBool? likeTapped;
   var commentTapped;
   var shareTapped;
   Widget? likeWidget;
   Widget? popUpWidget;
+  Widget? followWidget;
+
 
 
 
@@ -82,6 +87,7 @@ class PostCardWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     InkWell(
                       onTap: () => showDialog(
                           context: context, builder: (_){
@@ -98,7 +104,7 @@ class PostCardWidget extends StatelessWidget {
                                 width: Get.width,
                                 height: Get.height/2,
                                 fit: BoxFit.cover,
-                                image:  NetworkImage(user!.avatarUrl!, headers: {}),
+                                image:  NetworkImage(user!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
                                 placeholder: const AssetImage(
                                     "assets/images/loading.gif"),
                                 imageErrorBuilder:
@@ -124,13 +130,13 @@ class PostCardWidget extends StatelessWidget {
                             width: 40,
                             height: 40,
                             fit: BoxFit.cover,
-                            image:  NetworkImage(user!.avatarUrl!, headers: {}),
+                            image:  NetworkImage(user!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
                             placeholder: const AssetImage(
                                 "assets/images/loading.gif"),
                             imageErrorBuilder:
                                 (context, error, stackTrace) {
                               return Image.asset(
-                                  "assets/images/téléchargement (3).png",
+                                  "assets/images/user_admin.png",
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.fitWidth);
@@ -138,29 +144,56 @@ class PostCardWidget extends StatelessWidget {
                           )
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(width: 15,),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${user?.firstName} ${user?.lastName}', style: const TextStyle(fontSize: 12, color: appColor, overflow: TextOverflow.ellipsis)).marginOnly(bottom: 10),
+                        SizedBox(
+                          //height: 10,
+                          child: Wrap(
+                            spacing: Get.width*0.20,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            alignment: WrapAlignment.spaceBetween,
+                            runAlignment: WrapAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: Get.width/3.4,
+
+                                child: Wrap(children: [
+                                  Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
+                                      //overflow:TextOverflow.ellipsis ,
+                                      style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4))),
+                                ],)
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                  child: followWidget!)
+
+                            ],
+                          ),
+                        ),
+
                         Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const FaIcon(FontAwesomeIcons.locationDot).marginOnly(right: 10),
-                                SizedBox(
-                                    width: Get.width/4,
-                                    child: Text(zone.toString()).marginOnly(right: 10)),
-                                const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
-                                SizedBox(
-                                    width: Get.width/4,
-                                    child: Text(publishedDate!, style: Get.textTheme.headline1!.merge(const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: appColor, ),))),
+                            child: SizedBox(
+                              height: 10,
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 20,
+                                children: [
+                                  const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
+                                  SizedBox(
+                                      //width: Get.width/4,
+                                      child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
+                                  const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
+                                  SizedBox(
+                                     //width: Get.width/4,
+                                      child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
 
 
-                                //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
-                              ],
+                                  //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
+                                ],
+                              ),
                             )
                         ),
                       ],
@@ -170,13 +203,22 @@ class PostCardWidget extends StatelessWidget {
                     popUpWidget!,
 
 
-
                   ],
 
 
                 ),
               ),
-              Text(content!),
+              Wrap(
+                children: [
+                  Text( content!, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black87, letterSpacing: 0.1),),
+                  (content!.length +1) > 3?
+                  Text('See more', style: TextStyle(color: Colors.grey))
+                  :SizedBox()
+
+                ]
+               
+                    
+                  ).marginOnly(bottom: 20),
               if(images!.isNotEmpty)...[
                 if( images!.length == 1)...[
                   GestureDetector(
@@ -264,10 +306,12 @@ class PostCardWidget extends StatelessWidget {
                     Text(' ${commentCount!} Comments'),
                   ],
                   if(shareCount! <= 1)...[
-                    Text(' . ${shareCount!} Share'),
+                    Obx(() =>  Text(' . ${shareCount!} Share'),),
+
                   ]
                   else...[
-                    Text(' . ${shareCount!} Shares'),
+                    Obx(() =>Text(' . ${shareCount!} Shares'), )
+
                   ],
 
 
@@ -308,15 +352,11 @@ class PostCardWidget extends StatelessWidget {
                     onTap: onSharedTapped,
                     child: Column(
                       children: const [
-                        FaIcon(FontAwesomeIcons.shareFromSquare),
+                        FaIcon(FontAwesomeIcons.shareFromSquare, key: Key('shareIcon'),),
                         Text('Share'),
                       ],
                     ),
                   ),
-
-
-
-
                 ],
 
               ),

@@ -4,33 +4,50 @@ import '../providers/laravel_provider.dart';
 
 class UserRepository {
    late LaravelApiClient _laravelApiClient;
-
-
-
-  Future login<int>(User user) {
+  Future login(UserModel user) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.login(user);
   }
 
-  // Future<User> get(int id) {
-  //   _laravelApiClient = Get.find<LaravelApiClient>();
-  //   return _laravelApiClient.getUser(id);
-  // }
+   Future logout<int>() {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.logout();
+   }
 
-  //  update(User user) {
-  //   //print("Nath");
-  //    _laravelApiClient = Get.find<LaravelApiClient>();
-  //   //print("Nathalie");
-  //   return _laravelApiClient.updateUser(user);
-  // }
 
-  Future<User> register(User user) {
+
+  Future register(UserModel user) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.register(user);
   }
+
+   Future  getUser() {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.getUser();
+   }
+
+   Future updateUser(UserModel user) {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.updateUser(user);
+   }
 
   Future signOut() async {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return await _laravelApiClient.logout();
   }
+
+  Future resetPassword(String email) async {
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    await _laravelApiClient.resetPassword(email);
+  }
+
+   Future followUser(int userId) async {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     await _laravelApiClient.followUser(userId);
+   }
+
+   Future unfollowUser(int userId) async {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     await _laravelApiClient.unfollowUser(userId);
+   }
 }

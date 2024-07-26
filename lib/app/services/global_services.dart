@@ -18,4 +18,5 @@ class GlobalService extends GetxService {
     headers['accept'] = 'application/json';
     return headers;
   }
+  static String contactUsNumber = "+237693306986";
 }

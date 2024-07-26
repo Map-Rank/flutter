@@ -100,7 +100,7 @@ class MainDrawerWidget extends StatelessWidget {
                 drawer: true,
                 onTap: (e) async {
                   Get.back();
-                  await Get.find<RootController>().changePage(2);
+                  await Get.find<RootController>().changePage(3);
                 }
             ),
 

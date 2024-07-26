@@ -9,7 +9,7 @@ class EventsRepository {
 
 
 
-  Future getAllEvents(int page) {
+   getAllEvents(int page) {
     _laravelApiClient = Get.find<LaravelApiClient>();
     return _laravelApiClient.getAllEvents(page);
   }

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -8,13 +11,18 @@ import 'package:mapnrank/app/modules/community/widgets/buildSelectSector.dart';
 import 'package:mapnrank/app/modules/community/widgets/buildSelectZone.dart';
 import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
 import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/loading_cards.dart';
 import 'package:mapnrank/app/modules/global_widgets/post_card_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
+import '../../../../common/ui.dart';
 import '../../../services/auth_service.dart';
+import '../../../services/global_services.dart';
+import '../../auth/controllers/auth_controller.dart';
+import '../../events/controllers/events_controller.dart';
 
 
 class CommunityView extends GetView<CommunityController> {
@@ -26,30 +34,173 @@ class CommunityView extends GetView<CommunityController> {
     return  WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: interfaceColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             onPressed: (){
-          controller.noFilter.value = true;
-          controller.chooseARegion.value = false;
-          controller.chooseADivision.value = false;
-          controller.chooseASubDivision.value = false;
-          if(controller.post?.sectors != null){
-            controller.post?.sectors!.clear();
-          }
+            controller.rating.value =0;
+            controller.feedbackController.clear();
+            showModalBottomSheet(
 
-          Get.toNamed(Routes.CREATE_POST);
+              enableDrag: true,
+              isScrollControlled: true,
+              context: context,
+              builder: (context) => Container(
+                height: Get.height*0.7,
+                child: ListView(
+                  padding: EdgeInsets.all(20),
+                  children: [
+                    Text('Send us Your feedback', style: TextStyle(fontSize: 16),).marginOnly(top: 20, bottom: 10),
+                    SizedBox(
+                      width: Get.width,
+                      height: 70,
+                      child: TextFormField(
+                        controller: controller.feedbackController,
+                        maxLines: 80,
+                        decoration: InputDecoration(
+                            hintText: "Enter your feedback here...",
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+                          focusedBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+
+                        ),
+                        onChanged: (value) {
+                          controller.feedbackController.text = value;
+                        },
+
+                      ),
+                    ).marginOnly(bottom: 20),
+                    RichText(text: TextSpan(
+                      children: [
+                        WidgetSpan(child:Text('Input an image', style: TextStyle(fontSize: 16),),),
+                        WidgetSpan(child:Text('  (Optional)', style: TextStyle(fontSize: 12, color: Colors.grey),),),
+
+                      ]
+                    )).marginOnly(bottom: 20),
+                    Row(
+                      children: [
+                        Obx(() {
+                          if(!controller.loadFeedbackImage.value) {
+                            return buildLoader();
+                          } else {
+                            return controller.feedbackImage !=null? ClipRRect(
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              child: Image.file(
+                                controller.feedbackImage,
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              ),
+                            ):
+                            buildLoader();
+                          }
+                        }
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () async {
+
+                            await controller.selectCameraOrGalleryFeedbackImage();
+                            controller.loadFeedbackImage.value = false;
+
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: Get.theme.focusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                            child: Icon(Icons.add_photo_alternate_outlined, size: 42, color: Get.theme.focusColor.withOpacity(0.4)),
+                          ),
+                        )
+                      ],
+                    ).marginOnly(bottom: 20, left: 20),
+                    Text('Rate us', style: TextStyle(fontSize: 16)).marginOnly(top: 10, bottom: 10),
+                    Obx(() {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(5, (index) {
+                          return InkWell(
+                            onTap: () {
+                              controller.rating.value = (index + 1).toInt();
+                            },
+                            child: index < controller.rating.value
+                                ? Icon(Icons.star, size: 50, color: Color(0xFFFFB24D))
+                                : Icon(Icons.star_border, size: 50, color: Color(0xFFFFB24D)),
+                          );
+                        }),
+                      );
+                    }).marginOnly(bottom: Get.height/10),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: Get.width,
+                          child: BlockButtonWidget(color: interfaceColor,
+                              text: Text('Submit', style: TextStyle(color: Colors.white),),
+                              onPressed: () async{
+                            if(controller.feedbackController.text.isNotEmpty){
+                              if(controller.rating.value != 0){
+                                await controller.sendFeedback();
+                                Navigator.of(context).pop();
+                              }
+                              else{
+                                Get.showSnackbar(Ui.warningSnackBar(message: 'Please rate us'));
+                              }
+
+                            }
+                            else{
+                              Get.showSnackbar(Ui.warningSnackBar(message: 'Please write a feedback'));
+                            }
+
+                              } ),
+                        ),
+                        SizedBox(height: 10,),
+                        Container(
+                          width: Get.width,
+                          decoration:BoxDecoration(
+                            border: Border.all(color: interfaceColor),
+                            borderRadius: BorderRadius.circular(20),
+
+                          ),
+                          //width: Get.width/2,
+                          child: MaterialButton(
+                            onPressed: (){
+                              controller.launchWhatsApp(controller.feedbackController.text);
+                            },
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                            color: Colors.white,
+                            disabledElevation: 0,
+                            disabledColor: Get.theme.focusColor,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Wrap(
+                              children: [
+                                Icon(FontAwesomeIcons.whatsapp, color: interfaceColor,),
+                                SizedBox(width: 10,),
+                                Text('Send through Whatsapp')
+                              ],
+                            ),
+                            elevation: 0,
+                          ),
+                        )
+
+
+                      ],
+                    ),
+                  ],
+                ),
+              ),);
+
         },
             heroTag: null,
-            icon: const FaIcon(FontAwesomeIcons.add,),
-            label: const Text('Create post')),
+            label: const Text('Contact us')),
         body: RefreshIndicator(
           onRefresh: () async {
             await controller.refreshCommunity(showMessage: true);
             controller.onInit();
           },
           child:  Container(
+            color: backgroundColor,
             height: Get.height,
             child: Obx(() => CustomScrollView(
               controller: controller.scrollbarController,
@@ -60,79 +211,239 @@ class CommunityView extends GetView<CommunityController> {
                   //expandedHeight: 80,
                   leadingWidth: 0,
                   floating: true,
-                  toolbarHeight: 80,
+                  toolbarHeight: 140,
                   leading: Icon(null),
                   centerTitle: true,
-                  backgroundColor: backgroundColor,
                   title: Container(
-                    decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: interfaceColor))
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                      TextButton.icon(
-                        icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                        label: Text('Filter by sector', style: TextStyle(color: interfaceColor)),
-                        onPressed: () {
-
-                          controller.noFilter.value = false;
-                          showModalBottomSheet(context: context,
-
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                            builder: (context) {
-                              return Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: const BoxDecoration(
-                                      color: backgroundColor,
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-
-                                  ),
-                                  child: ListView(children: [BuildSelectSector()])
-                              );
+                    //margin: EdgeInsets.only(bottom: 20),
+                    color: Colors.white,
+                    child:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              Scaffold.of(context).openDrawer();
                             },
-                          );
-
-                        },),
-                      SizedBox(
-                        height: 30,
-                        child:  VerticalDivider(color: interfaceColor, thickness: 4, ),
-                      ),
-
-                      TextButton.icon(
-                        icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                        label: Text('Filter by zone', style: TextStyle(color: interfaceColor),),
-                        onPressed: () {
-
-                          controller.noFilter.value = false;
-                          controller.regionSelectedValue.clear();
-                          controller.divisionSelectedValue.clear();
-                          showModalBottomSheet(
-                            //isScrollControlled: true,
-                            context: context,
-
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                            builder: (context) {
-                              return Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: const BoxDecoration(
-                                      color: backgroundColor,
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-
-                                  ),
-                                  child: ListView(children:[BuildSelectZone()] )
-                              );
-                            },
-                          );
-
-                        },),
-
-                    ],),
+                            child: Image.asset(
+                                "assets/images/logo.png",
+                                width: Get.width/6,
+                                height: Get.width/6,
+                                fit: BoxFit.fitWidth),
+                          ),
+                          Container(
+                           height: 40,
+                            width: Get.width/1.6,
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(10)
+                              
+                            ),
+                            child: TextFormField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide:BorderSide.none,),
+                              hintText: 'Search subdivision',
+                              hintStyle: TextStyle(fontSize: 14),
+                              prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
+                            ),
+                                                      ),
+                          ),
+                          ClipOval(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  showDialog(context: context, builder: (context){
+                                    return CommentLoadingWidget();
+                                  },);
+                                  try {
+                                    await Get.find<AuthController>().getUser();
+                                    await Get.toNamed(Routes.PROFILE);
+                                  }catch (e) {
+                                    Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+                                  }
+                                },
+                                child: FadeInImage(
+                                  width: 30,
+                                  height: 30,
+                                  fit: BoxFit.cover,
+                                  image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                                  placeholder: const AssetImage(
+                                      "assets/images/loading.gif"),
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                        "assets/images/user_admin.png",
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.fitWidth);
+                                  },
+                                ),
+                              )
+                          ),
+                        ],
+                      )
                   ),
 
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
+                  bottom: PreferredSize(
+                    preferredSize: Size(Get.width, 120),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          //margin:EdgeInsets.all(10),
+                          height: 150,
+                          decoration: BoxDecoration(
+                              color: Colors.white
+                            //border: Border(bottom: BorderSide(color: interfaceColor))
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: Get.width,
+                                height: 70,
+                                child: TextFormField(
+                                  maxLines: 80,
+                                  decoration: InputDecoration(
+                                    hintText: "What's on your mind?",
+                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+                                    focusedBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+
+                                  ),
+                                  onChanged: (value) {
+                                    controller.postContentController.text = value;
+                                  },
+
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: Get.width/2.2,
+                                    child: BlockButtonWidget(color: interfaceColor, text: Text('Post',
+                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                        onPressed: (){
+                                          controller.noFilter.value = true;
+                                          controller.chooseARegion.value = false;
+                                          controller.chooseADivision.value = false;
+                                          controller.chooseASubDivision.value = false;
+                                          if(controller.post?.sectors != null){
+                                            controller.post?.sectors!.clear();
+                                            controller.emptyArrays();
+                                          }
+
+                                          Get.toNamed(Routes.CREATE_POST);
+
+                                        }),
+                                  ),
+                                  Spacer(),
+                                  SizedBox(
+                                    width: Get.width/2.2,
+                                    child: BlockButtonWidget(color: interfaceColor, text: Text('Create Event',
+                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                        onPressed: (){
+                                          Get.find<EventsController>().noFilter.value = true;
+                                          Get.find<EventsController>().chooseARegion.value = false;
+                                          Get.find<EventsController>().chooseADivision.value = false;
+                                          Get.find<EventsController>().chooseASubDivision.value = false;
+
+                                          if(Get.find<EventsController>().event?.sectors != null){
+                                            Get.find<EventsController>().event?.sectors!.clear();
+                                            Get.find<EventsController>().emptyArrays();
+                                          }
+                                          Get.toNamed(Routes.CREATE_EVENT);
+
+                                        }),
+                                  )
+                                ],
+                              )
+
+
+                            ],),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: backgroundColor
+                            //border: Border(bottom: BorderSide(color: interfaceColor))
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: TextButton.icon(
+                                    icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
+                                    label: Text('Filter by zone', style: TextStyle(color: interfaceColor),),
+                                    onPressed: () {
+
+                                      controller.noFilter.value = false;
+
+                                      showModalBottomSheet(
+                                        //isScrollControlled: true,
+                                        context: context,
+
+                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                        builder: (context) {
+                                          return Container(
+                                              padding: const EdgeInsets.all(20),
+                                              decoration: const BoxDecoration(
+                                                  color: backgroundColor,
+                                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+
+                                              ),
+                                              child: BuildSelectZone()
+                                          );
+                                        },
+                                      );
+
+                                    },),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(5, 10, 10, 10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: TextButton.icon(
+                                    icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
+                                    label: Text('Filter by sector', style: TextStyle(color: interfaceColor)),
+                                    onPressed: () {
+
+                                      controller.noFilter.value = false;
+                                      showModalBottomSheet(context: context,
+
+                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                        builder: (context) {
+                                          return Container(
+                                              padding: const EdgeInsets.all(20),
+                                              decoration: const BoxDecoration(
+                                                  color: backgroundColor,
+                                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+
+                                              ),
+                                              child: BuildSelectSector()
+                                          );
+                                        },
+                                      );
+
+                                    },),
+                                ),
+                              ),
+
+
+                            ],),
+                        ),
+                      ],
+                    )
+
                   ),
 
                 ),
@@ -145,7 +456,7 @@ class CommunityView extends GetView<CommunityController> {
                           :controller.allPosts.isNotEmpty?
                       Obx(() => PostCardWidget(
                         //likeTapped: RxBool(controller.allPosts[index].likeTapped),
-                        content: controller.allPosts[index].content,
+                        content: controller.allPosts[index].content == false?'':controller.allPosts[index].content,
                         zone: controller.allPosts[index].zone != null?controller.allPosts[index].zone['name']: '',
                         publishedDate: controller.allPosts[index].publishedDate,
                         postId: controller.allPosts[index].postId,
@@ -167,17 +478,10 @@ class CommunityView extends GetView<CommunityController> {
                         followWidget: Obx(() =>controller.postFollowed.contains(controller.allPosts[index])&& controller.postFollowedIndex.value == index &&controller.allPosts[index].isFollowing?
                         GestureDetector(
                             onTap: (){
-                              controller.postSelectedIndex.value = index;
-
-                              if( controller.postFollowed.contains(controller.allPosts[index])){
-                                controller.postFollowed.remove(controller.allPosts[index]);
-                                controller.postFollowedIndex.value = index;
-                                controller.unfollowUser(controller.allPosts[index].postId);
-                              }
-                              else{
+                              if( !controller.postFollowed.contains(controller.allPosts[index])){
                                 controller.postFollowed.add(controller.allPosts[index]);
                                 controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId);
+                                controller.followUser(controller.allPosts[index].user.userId,controller.allPosts[index].postId );
                               }
 
 
@@ -194,7 +498,7 @@ class CommunityView extends GetView<CommunityController> {
                               if( !controller.postFollowed.contains(controller.allPosts[index])){
                                 controller.postFollowed.add(controller.allPosts[index]);
                                 controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId);
+                                controller.followUser(controller.allPosts[index].user.userId, controller.allPosts[index].postId );
                               }
 
 
@@ -208,7 +512,7 @@ class CommunityView extends GetView<CommunityController> {
                               if( !controller.postFollowed.contains(controller.allPosts[index])){
                                 controller.postFollowed.add(controller.allPosts[index]);
                                 controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId);
+                                controller.followUser(controller.allPosts[index].user.userId, controller.allPosts[index].postId );
                               }
 
 
@@ -302,6 +606,8 @@ class CommunityView extends GetView<CommunityController> {
                                                controller.createUpdatePosts.value = true;
                                                controller.post = await controller.getAPost(controller.allPosts[index].postId);
 
+                                               controller.postContentController.text = controller.post.content!;
+
                                                for(int i = 0; i <controller.post.sectors!.length; i++) {
 
                                                  controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.post.sectors![i]['id']).toList()[0]);
@@ -391,11 +697,13 @@ class CommunityView extends GetView<CommunityController> {
                                                    controller.unfollowUser(controller.allPosts[index].user.userId);
                                                  }
 
-                                               }, child: Row(children: [
+                                               }, child:  controller.allPosts[index].isFollowing || controller.postFollowed.contains(controller.allPosts[index])?
+                                               Row(children: [
                                                  Icon(FontAwesomeIcons.cancel),
                                                  SizedBox(width: 20,),
                                                  Text('Unfollow', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                                               ],)
+                                               ],):Text('No actions to perform', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
+
 
                                              )
                                              )],
@@ -408,7 +716,7 @@ class CommunityView extends GetView<CommunityController> {
                         ,
 
                         liked: controller.allPosts[index].liked,
-                      ).marginOnly(bottom: 5))
+                      ))
                           :Center(
                         child: SizedBox(
                           height: Get.height/2,
@@ -461,7 +769,25 @@ class CommunityView extends GetView<CommunityController> {
         ),
 
       ),
+
+
     );
 
   }
+
+  Widget buildLoader() {
+    return SizedBox(
+        width: 100,
+        height: 100,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          child: Image.asset(
+            'assets/images/loading.gif',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: 100,
+          ),
+        ));
+  }
+
 }

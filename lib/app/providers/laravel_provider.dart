@@ -11,6 +11,7 @@ import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:mapnrank/app/models/feedback_model.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
@@ -254,8 +255,6 @@ class LaravelApiClient extends GetxService {
 // coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          print("Data is: ${response.data['data']}");
-
           return UserModel.fromJson(response.data['data']);
         } else {
           throw Exception(response.data['message']);
@@ -302,7 +301,6 @@ class LaravelApiClient extends GetxService {
 // coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          print('Finally Logged out');
           return response.data['data'];
         } else {
           throw Exception(response.data['message']);
@@ -439,6 +437,57 @@ class LaravelApiClient extends GetxService {
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
     }
+
+  }
+
+  sendFeedback(FeedbackModel feedbackModel) async {
+    try {
+      var headers = {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}'
+      };
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${GlobalService().baseUrl}api/create-feedback'));
+      request.fields.addAll({
+        'page_link': 'https://feedback-from-mobile-application',
+        'text': feedbackModel.feedbackText!,
+        'rating': feedbackModel.rating!,
+      });
+
+      if (feedbackModel.imageFile != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+            'files', ".${feedbackModel.imageFile!.path}"));
+      }
+
+
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+// coverage:ignore-start
+      if (response.statusCode == 201) {
+        var data = await response.stream.bytesToString();
+        var result = json.decode(data);
+        if (result['status'] == true) {
+          return;
+        } else {
+          throw Exception((result['message']));
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }// coverage:ignore-end
 
   }
 
@@ -999,7 +1048,7 @@ deletePost(int postId) async{
 
 //Handling Events
 
-  Future getAllEvents(int page) async {
+  getAllEvents(int page) async {
     try {
       var headers = {
         'Content-Type': 'application/json',
@@ -1266,6 +1315,7 @@ deletePost(int postId) async{
 // coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
+          print(response.data['data']);
           return response.data['data'];
         } else {
           throw Exception(response.data['message']);

@@ -5,11 +5,15 @@ import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../models/user_model.dart';
+import '../../../services/auth_service.dart';
+
 
 
 
 class DashboardController extends GetxController {
 late WebViewController webViewController;
+final Rx<UserModel> currentUser = Get.find<AuthService>().user;
 
   DashboardController() {
 

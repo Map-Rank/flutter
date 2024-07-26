@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapnrank/app/models/feedback_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
 import 'package:mapnrank/app/repositories/community_repository.dart';
@@ -14,11 +15,14 @@ import 'package:mapnrank/app/repositories/sector_repository.dart';
 import 'package:mapnrank/app/repositories/user_repository.dart';
 import 'package:mapnrank/app/repositories/zone_repository.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
+import 'package:mapnrank/app/services/global_services.dart';
 import 'package:mapnrank/common/ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Im;
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'dart:math' as Math;
 import '../../../models/post_model.dart';
 
@@ -88,6 +92,8 @@ class CommunityController extends GetxController {
 
   var imageFiles = [].obs;
 
+  var isRootFolder = false;
+
   var likeTapped = false.obs;
 
   var selectedPost = [].obs;
@@ -106,6 +112,11 @@ class CommunityController extends GetxController {
   var commentList = [].obs;
 
   TextEditingController commentController = TextEditingController();
+  TextEditingController postContentController = TextEditingController();
+  TextEditingController feedbackController = TextEditingController();
+
+
+  var rating = 0.obs;
 
 
   RxInt? likeCount = 0.obs;
@@ -120,6 +131,10 @@ class CommunityController extends GetxController {
   var inputImage = false.obs;
   var inputSector = false.obs;
   var inputZone = false.obs;
+
+  var picker = ImagePicker();
+  late File feedbackImage = File('assets/images/loading.gif') ;
+  final loadFeedbackImage = false.obs;
 
 
   CommunityController() {
@@ -321,7 +336,7 @@ class CommunityController extends GetxController {
           );
 
           //print(User.fromJson(list[i]['creator']));
-          postList.add(post.isFollowing);
+          postList.add(post);
         }
         loadingPosts.value = false;
         allPosts.value = postList;
@@ -370,7 +385,7 @@ class CommunityController extends GetxController {
             user: user,
             liked: list[i]['liked'],
             likeTapped: list[i]['liked'],
-            sectors: list[i]['sectors'],
+            sectors: list[i]['sectors'], isFollowing: list[i]['is_following'],
 
 
           );
@@ -537,6 +552,101 @@ class CommunityController extends GetxController {
     }
   }
 
+  selectCameraOrGalleryFeedbackImage(){
+    showDialog(
+        context: Get.context!,
+        builder: (_){
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            content: Container(
+                height: 170,
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: ()async{
+                        await feedbackImagePicker('camera');
+                        //Navigator.pop(Get.context);
+
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.camera),
+                      title: Text('Take a picture', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    ),
+                    ListTile(
+                      onTap: ()async{
+                        await feedbackImagePicker('gallery');
+                        //Navigator.pop(Get.context);
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.image),
+                      title: Text('Upload Image', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    )
+                  ],
+                )
+            ),
+          );
+        });
+  }
+  feedbackImagePicker(String source) async {
+    if(source=='camera'){
+      final XFile? pickedImage =
+      await picker.pickImage(source: ImageSource.camera);
+      if (pickedImage != null) {
+        var imageFile = File(pickedImage.path);
+        if(imageFile.lengthSync()>pow(1024, 2)){
+          final tempDir = await getTemporaryDirectory();
+          final path = tempDir.path;
+          int rand = Math.Random().nextInt(10000);
+          Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());
+          var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
+          print('Lenght'+compressedImage.lengthSync().toString());
+          feedbackImage = compressedImage;
+          loadFeedbackImage.value = !loadFeedbackImage.value;
+
+        }
+        else{
+          feedbackImage = File(pickedImage.path);
+          loadFeedbackImage.value = !loadFeedbackImage.value;
+
+        }
+        Navigator.of(Get.context!).pop();
+        //Get.showSnackbar(Ui.SuccessSnackBar(message: "Picture saved successfully".tr));
+        //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();
+      }
+
+    }
+    else{
+      final XFile? pickedImage =
+      await picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        var imageFile = File(pickedImage.path);
+        if(imageFile.lengthSync()>pow(1024, 2)){
+          final tempDir = await getTemporaryDirectory();
+          final path = tempDir.path;
+          int rand = new Math.Random().nextInt(10000);
+          Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());
+          var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
+          print('Lenght'+compressedImage.lengthSync().toString());
+          feedbackImage = compressedImage;
+          currentUser.value.imageFile = feedbackImage;
+          loadFeedbackImage.value = !loadFeedbackImage.value;
+
+        }
+        else{
+          print(pickedImage);
+          feedbackImage = File(pickedImage.path);
+          currentUser.value.imageFile = feedbackImage;
+          loadFeedbackImage.value = !loadFeedbackImage.value;
+
+        }
+        Navigator.of(Get.context!).pop();
+      }
+
+    }
+  }
+
   getSpecificZone(int zoneId){
     try{
       var result = zoneRepository.getSpecificZone(zoneId);
@@ -549,6 +659,7 @@ class CommunityController extends GetxController {
   }
 
   emptyArrays(){
+    //postContentController.clear();
     postFollowed.clear();
     sectorsSelected.clear();
     imageFiles.clear();
@@ -616,7 +727,7 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      selectedPost.clear();
+      selectedPost.remove(selectedPost.where((element) => element.postId == postId));
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
@@ -756,7 +867,7 @@ class CommunityController extends GetxController {
   }
 
 
-  followUser(int userId)async{
+  followUser(int userId, int postId)async{
     try{
       showDialog(context: Get.context!, builder: (context){
         return CommentLoadingWidget();
@@ -767,6 +878,7 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
+      postFollowed.remove(postFollowed.where((element) => element.postId == postId));
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
 
     }
@@ -784,6 +896,52 @@ class CommunityController extends GetxController {
       await userRepository.unfollowUser(userId);
       Navigator.of(Get.context!).pop();
       Get.showSnackbar(Ui.SuccessSnackBar(message: 'You have just unfollowed this user' ));
+
+    }
+    catch (e) {
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+
+    }
+    finally {
+
+    }
+
+  }
+
+
+
+  void launchWhatsApp(String message) async {
+    String url() {
+      if (Platform.isAndroid) {
+        // add the [https]
+        return "https://wa.me/${GlobalService.contactUsNumber}/?text=${Uri.parse(message)}"; // new line
+      } else {
+        // add the [https]
+        return "https://api.whatsapp.com/send?phone=${GlobalService.contactUsNumber}=${Uri.parse(message)}"; // new line
+      }
+    }
+
+    if (await canLaunchUrlString(url())) {
+      await launchUrlString(url());
+    } else {
+      throw 'Could not launch ${url()}';
+    }
+  }
+
+
+  sendFeedback()async{
+    try{
+      showDialog(context: Get.context!, builder: (context){
+        return CommentLoadingWidget();
+      },);
+      await userRepository.sendFeedback(
+          FeedbackModel(
+          feedbackText: feedbackController.text,
+              imageFile: feedbackImage,
+            rating: rating.toString()
+          ));
+      Navigator.of(Get.context!).pop();
+      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Your feedback was sent successfully' ));
 
     }
     catch (e) {

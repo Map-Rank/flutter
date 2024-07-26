@@ -134,9 +134,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                                                       controller.loadingPosts.value = true;
                                                       controller.listAllPosts = await controller.getAllPosts(0);
                                                       controller.allPosts.value = controller.listAllPosts;
-                                                      //controller.allPosts.value = await controller.getAllPosts(0);
-                                                      //controller.filterSearchPostsByRegionZone(controller.regions[index]['id'].toString());
-                                                      //controller.post?.sectors?.remove(controller.sectors[index]['id']);
+
                                                     }
 
                                                   }

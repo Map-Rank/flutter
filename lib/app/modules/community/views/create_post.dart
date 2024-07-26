@@ -12,6 +12,7 @@ import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/ui.dart';
+import '../../root/controllers/root_controller.dart';
 
 class CreatePostView extends GetView<CommunityController> {
   const CreatePostView({super.key});
@@ -31,9 +32,18 @@ class CreatePostView extends GetView<CommunityController> {
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
-            onPressed: () => {
-              controller.emptyArrays(),
-              Navigator.pop(context),
+            onPressed: () async => {
+              if(controller.isRootFolder){
+                await Get.find<RootController>().changePage(0),
+                controller.postContentController,
+                controller.emptyArrays(),
+                controller.isRootFolder = false,
+              }
+              else{
+                controller.emptyArrays(),
+                Navigator.pop(context),
+              }
+
               //Get.back()
             },
           ),
@@ -179,7 +189,7 @@ class CreatePostView extends GetView<CommunityController> {
                             child: SizedBox(
                               height: Get.height*0.2,
                               child: TextFormField(
-                                initialValue: !controller.createUpdatePosts.value?'':controller.post.content,
+                                controller: controller.postContentController,
                                 style: TextStyle(color: Colors.black, fontSize: 20),
                                 cursorColor: Colors.black,
                                 textInputAction:TextInputAction.done ,

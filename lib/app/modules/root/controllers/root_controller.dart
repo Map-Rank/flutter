@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/community/views/community_view.dart';
+import 'package:mapnrank/app/modules/community/views/create_post.dart';
 import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:mapnrank/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
@@ -28,8 +29,9 @@ class RootController extends GetxController {
   }
 
   List<Widget> pages = [
+    const CommunityView(),
      const DashboardView(),
-     const CommunityView(),
+    const CreatePostView(),
     const EventsView(),
      const NotificationView(),
 
@@ -73,17 +75,24 @@ class RootController extends GetxController {
     switch (_index) {
       case 0:
         {
-          await Get.find<DashboardController>().refreshDashboard();
+          if(Get.find<AuthService>().user.value.email != null){
+            await Get.find<CommunityController>().refreshCommunity();
+          }
+
           break;
         }
       case 1:
         {
-          if(Get.find<AuthService>().user.value.email != null){
-            await Get.find<CommunityController>().refreshCommunity();
-          }
+          await Get.find<DashboardController>().refreshDashboard();
           break;
         }
       case 2:
+        {
+          Get.find<CommunityController>().isRootFolder = true;
+          Get.find<CommunityController>().emptyArrays();
+          break;
+        }
+      case 3:
         {
           if(Get.find<AuthService>().user.value.email != null){
             await Get.find<EventsController>().refreshEvents();
@@ -91,7 +100,7 @@ class RootController extends GetxController {
           break;
         }
 
-      case 3:
+      case 4:
         {
           if(Get.find<AuthService>().user.value.email != null){
             await Get.find<NotificationController>().refreshNotification();

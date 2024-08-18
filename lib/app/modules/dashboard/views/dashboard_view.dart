@@ -8,6 +8,10 @@ import 'package:mapnrank/app/services/global_services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
+import '../../../../common/ui.dart';
+import '../../../routes/app_routes.dart';
+import '../../auth/controllers/auth_controller.dart';
+import '../../community/widgets/comment_loading_widget.dart';
 
 
 class DashboardView extends GetView<DashboardController> {
@@ -19,39 +23,70 @@ class DashboardView extends GetView<DashboardController> {
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         backgroundColor: backgroundColor,
-        appBar: AppBar(leading: IconButton(
-          icon: FaIcon(FontAwesomeIcons.bars, color: interfaceColor),
-          onPressed: () => {Scaffold.of(context).openDrawer()},
-        ),
+        appBar: AppBar(
+          leading:  GestureDetector(
+            onTap: (){
+              Scaffold.of(context).openDrawer();
+            },
+            child: Image.asset(
+                "assets/images/logo.png",
+                width: Get.width/6,
+                height: Get.width/6,
+                fit: BoxFit.fitWidth),
+          ),
           //expandedHeight: 200,
           centerTitle: true,
           actions:  [
-            GestureDetector(
-              onTap: (){
-
-              },
-              child: Center(
-                child: ClipOval(
-                    child: FadeInImage(
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                      image:  NetworkImage(Get.find<AuthService>().user.value.avatarUrl.toString(), headers: {}),
-                      placeholder: const AssetImage(
-                          "assets/images/loading.gif"),
-                      imageErrorBuilder:
-                          (context, error, stackTrace) {
-                        return FaIcon(FontAwesomeIcons.solidUserCircle, size: 30, color: interfaceColor,).marginOnly(right: 20,top: 10,bottom: 10);
-                      },
-                    )
-                ),
-              ),
+            ClipOval(
+                child: GestureDetector(
+                  onTap: () async {
+                    showDialog(context: context, builder: (context){
+                      return CommentLoadingWidget();
+                    },);
+                    try {
+                      await Get.find<AuthController>().getUser();
+                      await Get.toNamed(Routes.PROFILE);
+                    }catch (e) {
+                      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+                    }
+                  },
+                  child: FadeInImage(
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                    image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                    placeholder: const AssetImage(
+                        "assets/images/loading.gif"),
+                    imageErrorBuilder:
+                        (context, error, stackTrace) {
+                      return Image.asset(
+                          "assets/images/user_admin.png",
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.fitWidth);
+                    },
+                  ),
+                )
             ),
           ],
-          backgroundColor: backgroundColor,
-          title: Text(
-            GlobalService().appName,
-            style: Get.textTheme.headlineSmall!.merge(TextStyle(color: interfaceColor)),
+          backgroundColor: Colors.white,
+          title: Container(
+            height: 40,
+            width: Get.width/1.6,
+            decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(10)
+
+            ),
+            child: TextFormField(
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide:BorderSide.none,),
+                  hintText: 'Search subdivision',
+                  hintStyle: TextStyle(fontSize: 14),
+                  prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
+              ),
+            ),
           ),),
         body: RefreshIndicator(
             onRefresh: () async {

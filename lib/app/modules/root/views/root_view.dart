@@ -25,12 +25,17 @@ class RootView extends GetView<RootController> {
           },
           children: [
             CustomBottomNavigationItem(
+              icon: FontAwesomeIcons.userGroup,
+              label: 'Community',
+            ),
+            CustomBottomNavigationItem(
               icon: FontAwesomeIcons.home,
               label: 'Dashboard',
             ),
+
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.userGroup,
-              label: 'Community',
+              icon: FontAwesomeIcons.circlePlus,
+              label: 'Post',
             ),
             CustomBottomNavigationItem(
               icon: FontAwesomeIcons.calendar,

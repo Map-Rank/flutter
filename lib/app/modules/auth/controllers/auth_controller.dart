@@ -409,10 +409,10 @@ class AuthController extends GetxController {
         Get.find<AuthService>().user.value.gender = a.gender;
         Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
         Get.find<AuthService>().user.value.email = a.email;
+        Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
 
         update();
-        loading.value = false;
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged in successfully' ));
+
         Get.put(RootController());
         Get.lazyPut(()=>DashboardController());
         Get.lazyPut<CommunityController>(
@@ -424,7 +424,10 @@ class AuthController extends GetxController {
         Get.lazyPut<EventsController>(
               () => EventsController(),
         );
+        loading.value = false;
+        Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged in successfully' ));
         await Get.find<RootController>().changePage(0);
+
 
       }
       catch (e) {

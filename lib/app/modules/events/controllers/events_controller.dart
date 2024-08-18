@@ -487,11 +487,6 @@ class EventsController extends GetxController {
         var list = await eventsRepository.filterEventsByZone(page, query);
         print(list);
         for( var i = 0; i< list.length; i++){
-          UserModel user = UserModel(userId: list[i]['creator'][0]['id'],
-              lastName:list[i]['creator'][0]['last_name'],
-              firstName: list[i]['creator'][0]['first_name'],
-              avatarUrl: list[i]['creator'][0]['avatar']
-          );
           event = Event(
               zone: list[i]['location'],
               eventId: list[i]['id'].toInt(),

@@ -82,7 +82,7 @@ class PostCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 80,
+                height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class PostCardWidget extends StatelessWidget {
                               height: 10,
                               child: Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 20,
+
                                 children: [
                                   const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
                                   SizedBox(

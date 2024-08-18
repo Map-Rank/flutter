@@ -11,6 +11,9 @@ import 'package:mapnrank/app/routes/app_routes.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
+import '../../../../common/ui.dart';
+import '../../../services/global_services.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../community/widgets/comment_loading_widget.dart';
 
 
@@ -23,7 +26,7 @@ class EventsView extends GetView<EventsController> {
     return WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
-        backgroundColor: secondaryColor,
+        backgroundColor: Colors.white,
         floatingActionButton:  FloatingActionButton.extended(
             backgroundColor: interfaceColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -35,6 +38,7 @@ class EventsView extends GetView<EventsController> {
 
               if(controller.event?.sectors != null){
                 controller.event?.sectors!.clear();
+                controller.emptyArrays();
               }
               Get.toNamed(Routes.CREATE_EVENT);
             },
@@ -64,73 +68,166 @@ class EventsView extends GetView<EventsController> {
                     toolbarHeight: 80,
                     leading: Icon(null),
                     centerTitle: true,
-                    backgroundColor: backgroundColor,
+                    backgroundColor: Colors.white,
                     title: Container(
+                      //padding: EdgeInsets.all(10),
+                        //margin: EdgeInsets.only(bottom: 20),
+                        color: Colors.white,
+                        child:
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                Scaffold.of(context).openDrawer();
+                              },
+                              child: Image.asset(
+                                  "assets/images/logo.png",
+                                  width: Get.width/6,
+                                  height: Get.width/6,
+                                  fit: BoxFit.fitWidth),
+                            ),
+                            Container(
+                              height: 40,
+                              width: Get.width/1.6,
+                              decoration: BoxDecoration(
+                                  color: backgroundColor,
+                                  borderRadius: BorderRadius.circular(10)
+
+                              ),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide:BorderSide.none,),
+                                    hintText: 'Search subdivision',
+                                    hintStyle: TextStyle(fontSize: 14),
+                                    prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
+                                ),
+                              ),
+                            ),
+                            ClipOval(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    showDialog(context: context, builder: (context){
+                                      return CommentLoadingWidget();
+                                    },);
+                                    try {
+                                      await Get.find<AuthController>().getUser();
+                                      await Get.toNamed(Routes.PROFILE);
+                                    }catch (e) {
+                                      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+                                    }
+                                  },
+                                  child: FadeInImage(
+                                    width: 30,
+                                    height: 30,
+                                    fit: BoxFit.cover,
+                                    image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                                    placeholder: const AssetImage(
+                                        "assets/images/loading.gif"),
+                                    imageErrorBuilder:
+                                        (context, error, stackTrace) {
+                                      return Image.asset(
+                                          "assets/images/user_admin.png",
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.fitWidth);
+                                    },
+                                  ),
+                                )
+                            ),
+                          ],
+                        )
+                    ),
+
+
+                    // flexibleSpace: FlexibleSpaceBar(
+                    //   collapseMode: CollapseMode.parallax,
+                    //   centerTitle: true,
+                    //   title: ,
+                    // ),
+
+                    bottom: PreferredSize(preferredSize: Size(Get.width, 50),
+                        child: Container(
+                      width: Get.width,
                       decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(color: interfaceColor))
+                          color: backgroundColor
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          TextButton.icon(
-                            icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                            label: Text('Filter by sector', style: TextStyle(color: interfaceColor)),
-                            onPressed: () {
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: TextButton.icon(
+                                icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
+                                label: Text('Filter by zone', style: TextStyle(color: interfaceColor),),
+                                onPressed: () {
 
-                              controller.noFilter.value = false;
-                              showModalBottomSheet(context: context,
+                                  controller.noFilter.value = false;
+                                  showModalBottomSheet(context: context,
 
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                                builder: (context) {
-                                  return Container(
-                                      padding: const EdgeInsets.all(20),
-                                      decoration: const BoxDecoration(
-                                          color: backgroundColor,
-                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                    builder: (context) {
+                                      return Container(
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
+                                              color: backgroundColor,
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
 
-                                      ),
-                                      child: ListView(children: [BuildSelectSector()])
+                                          ),
+                                          child: BuildSelectZone()
+                                      );
+                                    },
                                   );
-                                },
-                              );
 
-                            },),
-                          SizedBox(
-                            height: 30,
-                            child:  VerticalDivider(color: interfaceColor, thickness: 4, ),
+                                },),
+                            ),
                           ),
 
-                          TextButton.icon(
-                            icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                            label: Text('Filter by zone', style: TextStyle(color: interfaceColor),),
-                            onPressed: () {
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: TextButton.icon(
+                                icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
+                                label: Text('Filter by sector', style: TextStyle(color: interfaceColor)),
+                                onPressed: () {
 
-                              controller.noFilter.value = false;
-                              showModalBottomSheet(context: context,
+                                  controller.noFilter.value = false;
+                                  showModalBottomSheet(context: context,
 
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                                builder: (context) {
-                                  return Container(
-                                      padding: const EdgeInsets.all(20),
-                                      decoration: const BoxDecoration(
-                                          color: backgroundColor,
-                                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                    builder: (context) {
+                                      return Container(
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
+                                              color: backgroundColor,
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
 
-                                      ),
-                                      child: ListView(children:[BuildSelectZone()] )
+                                          ),
+                                          child: BuildSelectSector()
+                                      );
+                                    },
                                   );
-                                },
-                              );
 
-                            },),
+                                },),
+                            ),
+                          ),
+
+
 
                         ],),
-                    ),
-
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.parallax,
-                    ),
+                    )),
 
                   ),
 

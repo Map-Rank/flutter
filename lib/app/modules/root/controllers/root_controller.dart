@@ -11,6 +11,7 @@ import 'package:mapnrank/app/modules/events/views/events_view.dart';
 import 'package:mapnrank/app/modules/notifications/views/notification_view.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import '../../../routes/app_routes.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../notifications/controllers/notification_controller.dart';
 
 
@@ -30,10 +31,10 @@ class RootController extends GetxController {
 
   List<Widget> pages = [
     const CommunityView(),
-     const DashboardView(),
+    Container(),
     const CreatePostView(),
     const EventsView(),
-     const NotificationView(),
+     //const NotificationView(),
 
   ];
 
@@ -45,6 +46,7 @@ class RootController extends GetxController {
     } else {
       currentIndex.value = _index;
       await refreshPage(_index);
+      Get.find<AuthController>().loading.value = false;
     }
   }
 
@@ -75,6 +77,7 @@ class RootController extends GetxController {
     switch (_index) {
       case 0:
         {
+          await Get.find<AuthController>().getUser();
           if(Get.find<AuthService>().user.value.email != null){
             await Get.find<CommunityController>().refreshCommunity();
           }
@@ -83,7 +86,11 @@ class RootController extends GetxController {
         }
       case 1:
         {
-          await Get.find<DashboardController>().refreshDashboard();
+          //await Get.find<DashboardController>().refreshDashboard();
+          showModalBottomSheet(context: Get.context!,
+            isScrollControlled: true,
+            builder: (context) => DashboardView(),);
+
           break;
         }
       case 2:
@@ -100,13 +107,13 @@ class RootController extends GetxController {
           break;
         }
 
-      case 4:
-        {
-          if(Get.find<AuthService>().user.value.email != null){
-            await Get.find<NotificationController>().refreshNotification();
-          }
-          break;
-        }
+      // case 4:
+      //   {
+      //     if(Get.find<AuthService>().user.value.email != null){
+      //       await Get.find<NotificationController>().refreshNotification();
+      //     }
+      //     break;
+      //   }
     }
   }
 

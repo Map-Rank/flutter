@@ -11,6 +11,7 @@ import '../../../../color_constants.dart';
 import '../../../models/setting_model.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/auth_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginView extends GetView<AuthController> {
   final Setting _settings = Get.find<SettingsService>().setting.value;
@@ -46,9 +47,9 @@ class LoginView extends GetView<AuthController> {
 
                 ),
               ).marginOnly(left: 20, right: 20, bottom: 20),
-              const Align(
+               Align(
                   alignment:Alignment.center,
-                  child: Text('WELCOME BACK!', style: TextStyle(fontSize: 30, color: Colors.black, ), )).marginOnly(bottom: 20),
+                  child: Text(AppLocalizations.of(context).welcome_back, style: TextStyle(fontSize: 30, color: Colors.black, ), )).marginOnly(bottom: 20),
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -58,7 +59,7 @@ class LoginView extends GetView<AuthController> {
                     TextFieldWidget(
                       isFirst: true,
                       readOnly: false,
-                      labelText: 'Email',
+                      labelText: AppLocalizations.of(context).email,
                       hintText: "johndoe@gmail.com",
                       keyboardType: TextInputType.emailAddress,
                       onSaved: (input) => controller.currentUser.value.email = input,
@@ -66,7 +67,7 @@ class LoginView extends GetView<AuthController> {
                         controller.currentUser.value.email = value
                       },
                       validator: (input) {
-                        return !input!.contains('@') ? 'Enter a valid email address' : null;
+                        return !input!.contains('@') ?  AppLocalizations.of(context).enter_valid_email_address : null;
                       },
                       prefixIcon: Image.asset("assets/icons/email.png", width: 22, height: 22),
                       iconData: Icons.mail_outline, 
@@ -75,7 +76,7 @@ class LoginView extends GetView<AuthController> {
                     Obx(() {
                       return TextFieldWidget(
                         isFirst: true,
-                        labelText: 'Password',
+                        labelText: AppLocalizations.of(context).password,
                         hintText: "••••••••••••",
                         readOnly: false,
                         //initialValue: controller.password.value,
@@ -85,7 +86,7 @@ class LoginView extends GetView<AuthController> {
                            controller.currentUser.value.password = value
                         },
                         validator: (input) {
-                          return input!.length < 6 ? " Enter at least 6 characters" : null;
+                          return input!.length < 6 ? AppLocalizations.of(context).enter_six_characters : null;
 
                         },
                         obscureText: controller.hidePassword.value,
@@ -111,7 +112,7 @@ class LoginView extends GetView<AuthController> {
                           }
                           Get.toNamed(Routes.FORGOT_PASSWORD);
                         },
-                        child: const Text("Forgot password?",
+                        child:  Text("${AppLocalizations.of(context).forgot_password}?",
                           style: TextStyle(fontFamily: "poppins",fontSize: 14,
                             color: interfaceColor,
                           ),
@@ -131,7 +132,7 @@ class LoginView extends GetView<AuthController> {
                       },
                       color: Get.theme.colorScheme.secondary,
                       text: Text(
-                        'Login',
+                        AppLocalizations.of(context).login,
                         style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                       )
                     ).paddingSymmetric(vertical: 10, horizontal: 20)
@@ -147,12 +148,12 @@ class LoginView extends GetView<AuthController> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("You don't have an account",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
+                        Text(AppLocalizations.of(context).no_account,style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
                         TextButton(
                           onPressed: () {
                             Get.offAllNamed(Routes.REGISTER);
                           },
-                          child: Text(key: Key('signup'), 'Sign up',style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
+                          child: Text(key: Key('signup'), AppLocalizations.of(context).sign_up,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
                         ),
                       ],
                     ).paddingSymmetric(vertical: 50),

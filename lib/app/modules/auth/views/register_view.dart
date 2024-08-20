@@ -12,8 +12,11 @@ import 'package:mapnrank/common/helper.dart';
 import 'package:mapnrank/common/ui.dart';
 import '../../../../color_constants.dart';
 import '../../../models/setting_model.dart';
+import '../../global_widgets/sector_item_widget.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/auth_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class RegisterView extends GetView<AuthController> {
   final Setting _settings = Get.find<SettingsService>().setting.value;
@@ -44,16 +47,16 @@ class RegisterView extends GetView<AuthController> {
               ).marginOnly(left: 20, right: 20, bottom: 20),
 
               Obx(() =>  !controller.registerNext.value?
-              const Align(
+              Align(
                   alignment:Alignment.center,
-                  child: Text('PERSONAL INFORMATION', style: TextStyle(fontSize: 20, color: Colors.black, ), )).marginOnly(bottom: 20)
+                  child: Text(AppLocalizations.of(context).personal_information.toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.black, ), )).marginOnly(bottom: 20)
                   : !controller.registerNextStep1.value?
-              Column(children: const [Text('SPECIFIC INFORMATION', style: TextStyle(fontSize: 20, color: Colors.black, ), ),
-                Text('Fill out company related information')
+              Column(children: [Text(AppLocalizations.of(context).specific_information.toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.black, ), ),
+                Text(AppLocalizations.of(context).fill_company_information)
 
               ],).marginOnly(bottom: 20, top: 20)
-                  :Column(children: const [Text('SPECIFIC INFORMATION', style: TextStyle(fontSize: 20, color: Colors.black, ), ),
-                Text('Fill out location information')
+                  :Column(children: [Text(AppLocalizations.of(context).specific_information.toUpperCase(), style: TextStyle(fontSize: 20, color: Colors.black, ), ),
+                Text(AppLocalizations.of(context).fill_location_information)
 
               ],).marginOnly(bottom: 20, top: 20)
                 ,),
@@ -183,7 +186,7 @@ class RegisterView extends GetView<AuthController> {
             isLast: true,
             readOnly: false,
             textController: controller.firstNameController,
-            labelText: 'First Name',
+            labelText: AppLocalizations.of(context).first_name,
             hintText: "john",
             keyboardType: TextInputType.text,
             onSaved: (input) => controller.currentUser.value.firstName = input,
@@ -191,7 +194,7 @@ class RegisterView extends GetView<AuthController> {
               controller.currentUser.value.firstName = value,
               controller.firstNameController.text = value
             },
-            validator: (input) => input!.length < 3 ? 'Enter at least 3 characters': null,
+            validator: (input) => input!.length < 3 ? AppLocalizations.of(context).enter_three_characters: null,
             iconData: Icons.person, key: null,
             suffixIcon: const Icon(null), suffix: Icon(null),
             prefixIcon: Image.asset("assets/icons/user.png", width: 22, height: 22),
@@ -201,7 +204,7 @@ class RegisterView extends GetView<AuthController> {
             isFirst: true,
             readOnly: false,
             textController: controller.lastNameController,
-            labelText: 'Last Name',
+            labelText: AppLocalizations.of(context).last_name,
             hintText: "Doe",
             keyboardType: TextInputType.text,
             onSaved: (input) => controller.currentUser.value.lastName = input,
@@ -209,7 +212,7 @@ class RegisterView extends GetView<AuthController> {
               controller.currentUser.value.lastName = value,
               controller.lastNameController.text = value,
             },
-            validator: (input) => input!.length < 3 ? 'Enter at least 3 characters': null,
+            validator: (input) => input!.length < 3 ? AppLocalizations.of(context).enter_three_characters: null,
             iconData: Icons.person, key: null,
             suffixIcon: const Icon(null),
             prefixIcon: Image.asset("assets/icons/user.png", width: 22, height: 22),
@@ -220,7 +223,7 @@ class RegisterView extends GetView<AuthController> {
             isFirst: true,
             readOnly: false,
             textController: controller.emailController,
-            labelText: 'Email',
+            labelText: AppLocalizations.of(context).email,
             hintText: "johndoe@gmail.com",
             keyboardType: TextInputType.emailAddress,
             onSaved: (input) => controller.currentUser.value.email = input,
@@ -229,7 +232,7 @@ class RegisterView extends GetView<AuthController> {
               controller.emailController.text = value
             },
             validator: (input){
-              return !input!.contains('@') ? 'Enter a valid email address': null;
+              return !input!.contains('@') ? AppLocalizations.of(context).enter_valid_email_address: null;
             },
             iconData: Icons.mail_outline, key: null,
             suffixIcon: const Icon(null), suffix: const Icon(null),
@@ -240,7 +243,7 @@ class RegisterView extends GetView<AuthController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Phone Number',
+                AppLocalizations.of(context).phone_number,
                 style: Get.textTheme.labelMedium,
                 textAlign:TextAlign.start,
               ).paddingOnly(left: 10, right: 20),
@@ -249,9 +252,9 @@ class RegisterView extends GetView<AuthController> {
                 validator: (phone) {
                   // Check if the field is empty and return null to skip validation
                   if (phone!.completeNumber.isEmpty) {
-                    return 'Input a phone number';
+                    return AppLocalizations.of(context).input_phone_number;
                   }
-                  return 'Input a phone number';
+                  return  AppLocalizations.of(context).input_phone_number;
 
                 },
 
@@ -263,7 +266,7 @@ class RegisterView extends GetView<AuthController> {
                     color: Colors.white,
                   ),
                   hintText: '677777777',
-                  labelText: 'Phone Number',
+                  labelText:  AppLocalizations.of(context).phone_number,
                   suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
                 ),
                 initialCountryCode: 'CM',
@@ -281,7 +284,7 @@ class RegisterView extends GetView<AuthController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Gender'.tr, style: Get.textTheme.labelMedium
+              Text( AppLocalizations.of(context).gender, style: Get.textTheme.labelMedium
               ).marginOnly(left: 10),
               Stack(
                   children: <Widget>[
@@ -297,7 +300,7 @@ class RegisterView extends GetView<AuthController> {
                         child: DropdownButtonFormField(
 
                           validator: (value) {
-                            return value == 'Select  your gender'? 'Please select a gender':null;
+                            return value ==  AppLocalizations.of(context).select_gender? AppLocalizations.of(context).please_select_gender:null;
                           },
                           dropdownColor: Colors.white,
                           decoration: const InputDecoration.collapsed(
@@ -362,12 +365,12 @@ class RegisterView extends GetView<AuthController> {
                       isFirst: true,
                       isLast: true,
                       readOnly: true,
-                      labelText: 'Birth Date',
+                      labelText: AppLocalizations.of(context).date_of_birth,
                       textController: controller.birthDateDisplay,
                       //hintText: "01/01/2024",
                       //initialValue: controller.birthDateDisplay.value,
                       keyboardType: TextInputType.text,
-                      validator: (input) => input =="--/--/--" ? 'Please select a birthday': null,
+                      validator: (input) => input =="--/--/--" ? AppLocalizations.of(context).please_select_date_of_birth: null,
                       iconData: Icons.person, key: null,
                       suffixIcon: const Icon(null), suffix: Icon(null),
                       prefixIcon: Image.asset("assets/icons/calendar_age.png", width: 22, height: 22),
@@ -382,7 +385,7 @@ class RegisterView extends GetView<AuthController> {
             return TextFieldWidget(
               isFirst: true,
               isLast: true,
-              labelText: 'Password',
+              labelText: AppLocalizations.of(context).password,
               hintText: "••••••••••••",
               readOnly: false,
               textController: TextEditingController(text: controller.currentUser.value.password),
@@ -392,7 +395,7 @@ class RegisterView extends GetView<AuthController> {
                 controller.currentUser.value.password = value
               },
               validator: (input) {
-                return input!.length < 6 ? " Enter at least 6 characters" : null;
+                return input!.length < 6 ? AppLocalizations.of(context).enter_six_characters : null;
               },
               obscureText: controller.hidePassword.value,
               iconData: Icons.lock_outline,
@@ -411,7 +414,7 @@ class RegisterView extends GetView<AuthController> {
           Obx(() {
             return TextFieldWidget(
               isFirst: true,
-              labelText: 'Confirm Password',
+              labelText: AppLocalizations.of(context).confirm_password,
               hintText: "••••••••••••",
               readOnly: false,
               textController: TextEditingController(text: controller.confirmPassword),
@@ -421,7 +424,7 @@ class RegisterView extends GetView<AuthController> {
                 controller.confirmPassword = value
               },
               validator: (input) {
-                return input!.length < 6 ? " Enter at least 6 characters" : null;
+                return input!.length < 6 ? AppLocalizations.of(context).enter_six_characters : null;
               },
               obscureText: controller.hidePassword.value,
               iconData: Icons.lock_outline,
@@ -451,9 +454,9 @@ class RegisterView extends GetView<AuthController> {
 
                   if (controller.registerFormKey.currentState!.validate()) {
                     controller.registerFormKey.currentState!.save();
-                    if(controller.selectedGender.value != 'Select  your gender'){
+                    if(controller.selectedGender.value != AppLocalizations.of(context).gender){
                       if(controller.birthDate.value == "--/--/--"){
-                        Get.showSnackbar(Ui.warningSnackBar(message: "please input a birthdate".tr));
+                        Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_date_of_birth.tr));
                       }
                       else{
                         print(controller.confirmPassword );
@@ -462,12 +465,12 @@ class RegisterView extends GetView<AuthController> {
                           controller.registerNext.value = !controller.registerNext.value;
                         }
                         else{
-                          Get.showSnackbar(Ui.warningSnackBar(message: "password and confirm password are not the same".tr));
+                          Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).password_not_same.tr));
                         }
                       }
                     }
                     else{
-                      Get.showSnackbar(Ui.warningSnackBar(message: "please select a gender".tr));
+                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_gender.tr));
                     }
 
 
@@ -477,7 +480,7 @@ class RegisterView extends GetView<AuthController> {
                 },
                 color: Get.theme.colorScheme.secondary,
                 text: !controller.loading.value? Text(
-                  'Next',
+                  AppLocalizations.of(context).next,
                   style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
@@ -487,12 +490,12 @@ class RegisterView extends GetView<AuthController> {
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [ const Text("Already have an account?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
+            children: [Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
               TextButton(
                 onPressed: () {
                   Get.offAllNamed(Routes.LOGIN);
                 },
-                child: const Text('Sign in',style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
+                child:Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
               ),
             ],
           ).paddingSymmetric(vertical: 20),
@@ -508,7 +511,7 @@ class RegisterView extends GetView<AuthController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Profile Image',
+          Text(AppLocalizations.of(context).profile_picture,
             style: Get.textTheme.labelMedium,
             textAlign: TextAlign.start,
           ).marginOnly(left: 20),
@@ -552,7 +555,7 @@ class RegisterView extends GetView<AuthController> {
 
           TextFieldWidget(
             readOnly: false,
-            labelText: 'Profession',
+            labelText: AppLocalizations.of(context).occupation,
             hintText: "Agricultor",
             keyboardType: TextInputType.text,
             onSaved: (input) => controller.currentUser.value.profession = input,
@@ -561,7 +564,7 @@ class RegisterView extends GetView<AuthController> {
               // controller.currentUser.value.email = controller.email.value
             },
             validator: (input) {
-              input!.length < 3 ? 'Enter at least 3 letters' : null;
+              input!.length < 3 ? AppLocalizations.of(context).enter_three_characters : null;
             },
             isFirst: true,
             iconData: Icons.person, key: null, suffixIcon: Icon(null), suffix: Icon(null),
@@ -572,7 +575,7 @@ class RegisterView extends GetView<AuthController> {
             crossAxisAlignment:  CrossAxisAlignment.start,
             children: [
 
-              Text('Select a Sector ', style:  Get.textTheme.labelMedium,).marginOnly(left: 10, bottom: 20),
+              Text(AppLocalizations.of(context).select_sector_title, style:  Get.textTheme.labelMedium,).marginOnly(left: 10, bottom: 20),
               GestureDetector(
                 onTap: (){
                   showDialog(context: context,
@@ -587,7 +590,7 @@ class RegisterView extends GetView<AuthController> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               TextFieldWidget(
-                                labelText: 'Select a sector',
+                                labelText: AppLocalizations.of(context).select_sector_title,
                                 onCancelTapped: (){
                                   Navigator.of(context).pop();
                                 },
@@ -595,10 +598,10 @@ class RegisterView extends GetView<AuthController> {
                                 isFirst: true,
                                 readOnly: false,
                                 keyboardType: TextInputType.text,
-                                validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                 iconData: FontAwesomeIcons.search,
                                 style: const TextStyle(color: labelColor),
-                                hintText: 'Select or search by sector name',
+                                hintText: AppLocalizations.of(context).select_search_sector,
                                 onChanged: (value)=>{
                                   controller.filterSearchSectors(value)
                                 },
@@ -659,8 +662,8 @@ class RegisterView extends GetView<AuthController> {
 
 
                                             },
-                                            child: Obx(() => LocationWidget(
-                                              regionName: controller.sectors[index]['name'],
+                                            child: Obx(() => SectorItemWidget(
+                                              sectorName: controller.sectors[index]['name'],
                                               selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
                                             ).marginOnly(bottom: 5))
                                         );
@@ -688,7 +691,7 @@ class RegisterView extends GetView<AuthController> {
                             // crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Obx(() => controller.sectorsSelected.isEmpty?
-                              Text('Choose a sector', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)):
+                              Text(AppLocalizations.of(context).choose_sector, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)):
                               RichText(text: TextSpan(
                                   children:[
                                     for(var sector in controller.sectorsSelected)...[
@@ -721,7 +724,7 @@ class RegisterView extends GetView<AuthController> {
                 },
                 color: Get.theme.colorScheme.secondary,
                 text: !controller.loading.value? Text(
-                  'Prev',
+                  AppLocalizations.of(context).previous,
                   style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
@@ -729,7 +732,7 @@ class RegisterView extends GetView<AuthController> {
               BlockButtonWidget(
                   onPressed: () {
                     if(controller.sectorsSelected.isEmpty){
-                      Get.showSnackbar(Ui.warningSnackBar(message: 'Please select at least one sector'));
+                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_one_sector));
                     }
                     else{
                       controller.registerNextStep1.value = !controller.registerNextStep1.value;
@@ -738,7 +741,7 @@ class RegisterView extends GetView<AuthController> {
                   },
                   color: Get.theme.colorScheme.secondary,
                   text: Text(
-                    'Next',
+                    AppLocalizations.of(context).next,
                     style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                   )
               ),
@@ -748,12 +751,12 @@ class RegisterView extends GetView<AuthController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Already have an account?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
+              Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
               TextButton(
                 onPressed: () {
                   Get.offAllNamed(Routes.LOGIN);
                 },
-                child: const Text('Sign in',style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
+                child: Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
               ),
             ],
           ).paddingSymmetric(vertical: 20),
@@ -774,8 +777,8 @@ class RegisterView extends GetView<AuthController> {
               crossAxisAlignment:  CrossAxisAlignment.start,
               children: [
                 RichText(text: TextSpan(children: [
-                  TextSpan(text: 'Select a Region ', style:  Get.textTheme.labelMedium,),
-                  TextSpan(text: '(mandatory)', style: TextStyle(color: Colors.red))
+                  TextSpan(text: AppLocalizations.of(context).choose_your_region, style:  Get.textTheme.labelMedium,),
+                  TextSpan(text: '(${AppLocalizations.of(context).mandatory})', style: TextStyle(color: Colors.red))
                 ])).marginOnly(left: 10, bottom: 20),
                 GestureDetector(
                   onTap: (){
@@ -786,7 +789,7 @@ class RegisterView extends GetView<AuthController> {
                           child: Column(
                             children: [
                               TextFieldWidget(
-                                labelText: "Select a region",
+                                labelText: AppLocalizations.of(context).choose_your_region,
                                 isFirst: true,
                                 selection: true,
                                 onCancelTapped: (){
@@ -799,7 +802,7 @@ class RegisterView extends GetView<AuthController> {
                                 //labelText: "Research receiver".tr,
                                 iconData: FontAwesomeIcons.search,
                                 style: const TextStyle(color: Colors.black),
-                                hintText: 'Search by region name',
+                                hintText: AppLocalizations.of(context).search_region_name,
                                 onChanged: (value)=>{
                                   controller.filterSearchRegions(value)
                                 },
@@ -826,6 +829,7 @@ class RegisterView extends GetView<AuthController> {
                                 ],
                               ) :
                               Container(
+                                height: Get.height*0.7,
                                   margin: const EdgeInsetsDirectional.only(end: 10, start: 10, ),
                                   // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                   decoration: BoxDecoration(
@@ -838,7 +842,7 @@ class RegisterView extends GetView<AuthController> {
 
                                   child: ListView.builder(
                                     //physics: AlwaysScrollableScrollPhysics(),
-                                      itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
+                                      itemCount: controller.regions.length,
                                       shrinkWrap: true,
                                       primary: false,
                                       itemBuilder: (context, index) {
@@ -893,7 +897,7 @@ class RegisterView extends GetView<AuthController> {
                       children: [
                         Obx(() => controller.regionSelectedValue.isNotEmpty?
                         Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,)
-                            :Text('Choose a region', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
+                            :Text(AppLocalizations.of(context).choose_your_region, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
                         ),
                         FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                       ],
@@ -908,13 +912,13 @@ class RegisterView extends GetView<AuthController> {
               crossAxisAlignment:  CrossAxisAlignment.start,
               children: [
                 RichText(text: TextSpan(children: [
-                  TextSpan(text: 'Select a Division ', style:  Get.textTheme.labelMedium,),
-                  TextSpan(text: '(Optional...)', style: TextStyle(color: Colors.grey.shade600))
+                  TextSpan(text: AppLocalizations.of(context).choose_your_division, style:  Get.textTheme.labelMedium,),
+                  TextSpan(text: '(${AppLocalizations.of(context).optional}...)', style: TextStyle(color: Colors.grey.shade600))
                 ])).marginOnly(left: 10, bottom: 20),
                 GestureDetector(
                   onTap: (){
                     if(controller.regionSelectedValue.isEmpty){
-                      Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a region first'));
+                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).select_region_first));
                     }
                     else{
                       showDialog(context: context, builder: (context) {
@@ -929,7 +933,7 @@ class RegisterView extends GetView<AuthController> {
                                           TextFieldWidget(
                                             isFirst: true,
                                             isLast:true,
-                                            labelText: 'Select a division',
+                                            labelText: AppLocalizations.of(context).choose_your_division,
                                             readOnly: false,
                                             selection: true,
                                             onCancelTapped: (){
@@ -937,12 +941,12 @@ class RegisterView extends GetView<AuthController> {
 
                                             },
                                             keyboardType: TextInputType.text,
-                                            validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                            validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                             //onChanged: (input) => controller.selectUser.value = input,
                                             //labelText: "Research receiver".tr,
                                             iconData: FontAwesomeIcons.search,
                                             style: const TextStyle(color: Colors.black),
-                                            hintText: 'Search by division name',
+                                            hintText: AppLocalizations.of(context).search_division_name,
                                             onChanged: (value)=>{
                                               controller.filterSearchDivisions(value)
                                             },
@@ -969,6 +973,7 @@ class RegisterView extends GetView<AuthController> {
                                             ],
                                           ) :
                                           Container(
+                                              height: Get.height*0.68,
                                               margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
                                               // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                               decoration: BoxDecoration(
@@ -981,7 +986,7 @@ class RegisterView extends GetView<AuthController> {
 
                                               child: ListView.builder(
                                                 //physics: AlwaysScrollableScrollPhysics(),
-                                                  itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
+                                                  itemCount: controller.divisions.length,
                                                   shrinkWrap: true,
                                                   primary: false,
                                                   itemBuilder: (context, index) {
@@ -1036,7 +1041,7 @@ class RegisterView extends GetView<AuthController> {
                       children: [
                         Obx(() => controller.divisionSelectedValue.isNotEmpty?
                         Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,):
-                        Text('Choose a Division', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
+                        Text(AppLocalizations.of(context).choose_your_division, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
 
                         FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                       ],
@@ -1051,13 +1056,13 @@ class RegisterView extends GetView<AuthController> {
               crossAxisAlignment:  CrossAxisAlignment.start,
               children: [
                 RichText(text: TextSpan(children: [
-                  TextSpan(text: 'Select a Subdivision ', style:  Get.textTheme.labelMedium,),
-                  TextSpan(text: '(Optional...)', style: TextStyle(color: Colors.grey.shade600))
+                  TextSpan(text: AppLocalizations.of(context).choose_your_subdivision, style:  Get.textTheme.labelMedium,),
+                  TextSpan(text: '(${AppLocalizations.of(context).optional}...)', style: TextStyle(color: Colors.grey.shade600))
                 ])).marginOnly(left: 10, bottom: 20),
                 GestureDetector(
                   onTap: (){
                     if(controller.divisionSelectedValue.isEmpty){
-                      Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a region, then a division  first'));
+                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).select_region_division_first));
                     }
                     else{
                       showDialog(context: context, builder: (context) {
@@ -1068,19 +1073,19 @@ class RegisterView extends GetView<AuthController> {
                               children: [
                                 TextFieldWidget(
                                   isFirst: true,
-                                  labelText: 'Select a Subdivision',
+                                  labelText: AppLocalizations.of(context).subdivision,
                                   readOnly: false,
                                   selection: true,
                                   onCancelTapped: (){
                                     Navigator.of(context).pop();
                                   },
                                   keyboardType: TextInputType.text,
-                                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                   //onChanged: (input) => controller.selectUser.value = input,
                                   //labelText: "Research receiver".tr,
                                   iconData: FontAwesomeIcons.search,
                                   style: const TextStyle(color: labelColor),
-                                  hintText: 'Search by sub-division name',
+                                  hintText: AppLocalizations.of(context).search_subdivision_name,
                                   onChanged: (value)=>{
                                     controller.filterSearchSubdivisions(value)
                                   },
@@ -1107,6 +1112,7 @@ class RegisterView extends GetView<AuthController> {
                                   ],
                                 ) :
                                 Container(
+                                    height: Get.height*0.7,
                                     margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
                                     // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                     decoration: BoxDecoration(
@@ -1119,7 +1125,7 @@ class RegisterView extends GetView<AuthController> {
 
                                     child: ListView.builder(
                                       //physics: AlwaysScrollableScrollPhysics(),
-                                        itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
+                                        itemCount:  controller.subdivisions.length,
                                         shrinkWrap: true,
                                         primary: false,
                                         itemBuilder: (context, index) {
@@ -1173,7 +1179,7 @@ class RegisterView extends GetView<AuthController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Obx(() => controller.subdivisionSelectedValue.isEmpty?
-                        Text('Choose a Subdivision', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
+                        Text(AppLocalizations.of(context).choose_your_subdivision, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
                         Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headlineMedium,),)
                         ,
                         FaIcon(FontAwesomeIcons.angleDown, size: 10,)
@@ -1198,8 +1204,7 @@ class RegisterView extends GetView<AuthController> {
                 )),
                 SizedBox(
                     width: Get.width/1.3,
-                    child: Text("By clicking Agree & Join, you agree to the Map&Rank User , "
-                        "Privacy Policy",style: TextStyle(fontFamily: "poppins",fontSize: 15, color: Colors.grey.shade800))),
+                    child: Text(AppLocalizations.of(context).accept_terms_of_service,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: Colors.grey.shade800))),
                 //Spacer(),
               ],
             ).paddingSymmetric(horizontal: 10),
@@ -1216,7 +1221,7 @@ class RegisterView extends GetView<AuthController> {
                     },
                     color: Get.theme.colorScheme.secondary,
                     text:Text(
-                      'Prev',
+                      AppLocalizations.of(context).previous,
                       style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                     )
                 ),
@@ -1225,21 +1230,21 @@ class RegisterView extends GetView<AuthController> {
                       //controller.login(),
                       //controller.registerNext.value = !controller.registerNext.value;
                       if(controller.regionSelectedValue.isEmpty){
-                        Get.showSnackbar(Ui.warningSnackBar(message: 'Please select a zone'));
+                        Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_location));
                       }
                       else{
                         if(controller.isConfidentialityChecked.value){
                           controller.register();
                         }
                         else{
-                          Get.showSnackbar(Ui.warningSnackBar(message: 'Please agree to the terms and conditions to create your account'));
+                          Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_accept_terms));
                         }
                       }
 
                     },
                     color: Get.theme.colorScheme.secondary,
                     text: Obx(() => !controller.loading.value? Text(
-                      'Create account',
+                      AppLocalizations.of(context).create_account,
                       style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                     ): const SizedBox(height: 30,
                         child: SpinKitThreeBounce(color: Colors.white, size: 20)),)
@@ -1251,12 +1256,12 @@ class RegisterView extends GetView<AuthController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
+                Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
                 TextButton(
                   onPressed: () {
                     Get.offAllNamed(Routes.LOGIN);
                   },
-                  child: const Text('Sign in',style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
+                  child:Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
                 ),
               ],
             ).paddingSymmetric(vertical: 20),

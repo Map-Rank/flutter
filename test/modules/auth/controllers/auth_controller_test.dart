@@ -28,10 +28,20 @@ import 'package:mapnrank/app/repositories/zone_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'auth_controller_test.mocks.dart';
 import 'package:image/image.dart' as Im;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 // Generate mocks using generateMocks utility
 @GenerateMocks([UserRepository, ZoneRepository, SectorRepository])
+
+class MockAppLocalizations implements AppLocalizations {
+  @override
+  String get select_language => 'Select Language';
+
+  // Implement other members of AppLocalizations if needed
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 class MockAuthService extends GetxService with Mock implements AuthService {
   final user = Rx<UserModel>(UserModel(email: 'test@example.com',

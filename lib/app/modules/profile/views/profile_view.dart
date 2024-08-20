@@ -11,6 +11,7 @@ import 'package:mapnrank/color_constants.dart';
 import '../../../../common/helper.dart';
 import '../../../services/global_services.dart';
 import '../../auth/controllers/auth_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -21,20 +22,19 @@ class ProfileView extends GetView<ProfileController> {
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: backgroundColor,
+          backgroundColor: Colors.white,
           elevation: 0,
-
+          surfaceTintColor: Colors.white,
           centerTitle: false,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
             onPressed: () => {
               Navigator.pop(context),
-              Navigator.pop(context),
               //Get.back()
             },
           ),
-        title: const Text(
-          'Profile',
+        title: Text(
+          AppLocalizations.of(context).profile,
           style: TextStyle(color: Colors.black87, fontSize: 30.0),
         ),
         ),
@@ -116,7 +116,7 @@ class ProfileView extends GetView<ProfileController> {
                                     Padding(
                                       padding: EdgeInsets.only(top: 8.0),
                                       child: Text(
-                                        'Posts',
+                                        AppLocalizations.of(context).posts_count,
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14.0),
@@ -137,7 +137,7 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.toNamed(Routes.ARTICLES);
+                                Get.toNamed(Routes.MY_EVENTS);
                               },
                               child: SizedBox(
                                 child: Column(
@@ -151,7 +151,7 @@ class ProfileView extends GetView<ProfileController> {
                                     Padding(
                                       padding: EdgeInsets.only(top: 8.0),
                                       child: Text(
-                                        'Events',
+                                        AppLocalizations.of(context).events,
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14.0),
@@ -174,11 +174,11 @@ class ProfileView extends GetView<ProfileController> {
                               onTap: () {
                                 Get.toNamed(Routes.FOLLOWERS);
                               },
-                              child: const SizedBox(
+                              child: SizedBox(
                                 child: Column(
                                   children: [
                                     Text(
-                                      '50',
+                                      '0',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16.0),
@@ -186,7 +186,7 @@ class ProfileView extends GetView<ProfileController> {
                                     Padding(
                                       padding: EdgeInsets.only(top: 8.0),
                                       child: Text(
-                                        'Followers',
+                                        AppLocalizations.of(context).followers_count,
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14.0),
@@ -224,10 +224,10 @@ class ProfileView extends GetView<ProfileController> {
                         color: Colors.black,
                       ),
                     ),
-                    title: const Padding(
+                    title: Padding(
                       padding: EdgeInsets.only(bottom: 6.0),
                       child: Text(
-                        'General',
+                        AppLocalizations.of(context).general,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
@@ -235,8 +235,8 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                       ),
                     ),
-                    subtitle: const Text(
-                      'Account',
+                    subtitle:Text(
+                      AppLocalizations.of(context).account,
                       style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                     trailing: const Icon(
@@ -271,10 +271,10 @@ class ProfileView extends GetView<ProfileController> {
                         color: Colors.black,
                       ),
                     ),
-                    title: const Padding(
+                    title: Padding(
                       padding: EdgeInsets.only(bottom: 6.0),
                       child: Text(
-                        'Contact us',
+                        AppLocalizations.of(context).contact_us,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
@@ -283,7 +283,7 @@ class ProfileView extends GetView<ProfileController> {
                       ),
                     ),
                     subtitle: const Text(
-                      'whatsapp, telegram',
+                      'whatsapp, via application',
                       style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                     trailing: const Icon(
@@ -297,25 +297,70 @@ class ProfileView extends GetView<ProfileController> {
               const SizedBox(
                 height: 16,
               ),
+
+              GestureDetector(
+                onTap: (() {
+                 Get.toNamed(Routes.SETTINGS_LANGUAGE);
+                }),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(.03),
+                      borderRadius: BorderRadius.circular(14.0)),
+                  child: ListTile(
+                    leading: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(.05)),
+                      child: const Icon(
+                        Icons.call,
+                        size: 26,
+                        color: Colors.black,
+                      ),
+                    ),
+                    title:  Padding(
+                      padding: EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                          AppLocalizations.of(context).language,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${AppLocalizations.of(context).en}, ${AppLocalizations.of(context).fr}',
+                      style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                    ),
+                    trailing: const Icon(
+                      Icons.navigate_next_rounded,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
               GestureDetector(
                 onTap: (() {
                   showDialog(context: context,
                     builder: (context) => AlertDialog(
                       insetPadding: EdgeInsets.all(20),
                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),
-                      title:  Text('Log out'),
-                      content: Obx(() =>  !Get.find<AuthController>().loading.value ?Text('Are you sure you want to exit the application?', textAlign: TextAlign.justify, style: TextStyle(),)
+                      title:  Text(AppLocalizations.of(context).logout),
+                      content: Obx(() =>  !Get.find<AuthController>().loading.value ?Text(AppLocalizations.of(context).sign_out_warning, textAlign: TextAlign.justify, style: TextStyle(),)
                           : SizedBox(height: 30,
                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),
                       actions: [
                         TextButton(onPressed: (){
                           Get.find<AuthController>().logout();
                           Get.lazyPut(()=>AuthController());
-                        }, child: Text('Exit', style: TextStyle(color: Colors.red),)),
+                        }, child: Text(AppLocalizations.of(context).exit, style: TextStyle(color: Colors.red),)),
 
                         TextButton(onPressed: (){
                           Navigator.of(context).pop();
-                        }, child: Text('Cancel', style: TextStyle(color: interfaceColor),)),
+                        }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),
 
                       ],
 
@@ -338,10 +383,10 @@ class ProfileView extends GetView<ProfileController> {
                         color: Colors.black,
                       ),
                     ),
-                    title: const Padding(
+                    title: Padding(
                       padding: EdgeInsets.only(bottom: 6.0),
                       child: Text(
-                        'Sign out',
+                        AppLocalizations.of(context).sign_out,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
@@ -349,8 +394,8 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                       ),
                     ),
-                    subtitle: const Text(
-                      'log out of the app',
+                    subtitle: Text(
+                      AppLocalizations.of(context).logout_of_app,
                       style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                     trailing: const Icon(
@@ -360,6 +405,9 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 16,
               ),
               const SizedBox(
                 height: 60,

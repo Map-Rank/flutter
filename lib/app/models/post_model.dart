@@ -17,10 +17,10 @@ class Post extends Model {
   int? commentCount;
   int? shareCount;
   int? likeCount;
-  bool? likeTapped;
+  RxBool? likeTapped;
   bool? commentTapped;
   bool? shareTapped;
-  bool? isFollowing;
+  RxBool? isFollowing;
   UserModel? user;
   bool? liked;
   List? imagesFilePaths;

@@ -47,26 +47,18 @@ class CommentWidget extends StatelessWidget {
                   color: Colors.grey.shade200,
                   //borderRadius: BorderRadius.circular(20)
               ),
-              height: 80,
+              //height: 150,
+              width: Get.width,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                      //height: 40,
-                      //width: Get.width/2.5,
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                child: Text(user, style: Get.textTheme.headlineSmall?.merge(TextStyle(fontSize: 14, fontWeight: FontWeight.w600))!, overflow: TextOverflow.ellipsis,)
-                            )
-                          ]
-                      )
-                  ).marginOnly(bottom: 10),
-                  Expanded(
-                      child: SizedBox(
-                        width: Get.width,
-                      child: Text(comment, overflow: TextOverflow.ellipsis, style: Get.textTheme.bodyMedium,))),
+                  Text(user, style: Get.textTheme.headlineSmall?.merge(TextStyle(fontSize: 14, fontWeight: FontWeight.w600))!,).marginOnly(bottom: 10),
+                  Wrap(
+                    children: [
+                      Text(comment, style: Get.textTheme.bodyMedium,)
+                    ],
+                  )
                 ],
 
               ),

@@ -9,6 +9,7 @@ import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
 import 'package:mapnrank/color_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../services/global_services.dart';
 
@@ -32,8 +33,8 @@ class AccountView extends GetView<ProfileController> {
             //Get.back()
           },
         ),
-        title: const Text(
-          'General',
+        title:Text(
+          AppLocalizations.of(context).general,
           style: TextStyle(color: Colors.black87, fontSize: 30.0),
         ),
       ),
@@ -110,8 +111,8 @@ class AccountView extends GetView<ProfileController> {
                   TextFieldWidget(
                     textController: controller.firstNameController,
                     readOnly: false,
-                    labelText: 'First Name',
-                    hintText: "Kamdem",
+                    labelText: AppLocalizations.of(context).first_name,
+                    hintText: "John",
                     //initialValue: '',
                     keyboardType: TextInputType.text,
                     // onSaved: (input) =>
@@ -121,7 +122,7 @@ class AccountView extends GetView<ProfileController> {
                       controller.currentUser.value.firstName = controller.firstNameController.text,
                     },
                     validator: (input) => input!.length < 3
-                        ? 'Enter at least 3 characters'
+                        ? AppLocalizations.of(context).enter_three_characters
                         : null,
                     iconData: Icons.person,
                     key: null,
@@ -134,8 +135,8 @@ class AccountView extends GetView<ProfileController> {
                     textController: controller.lastNameController,
                     isFirst: true,
                     readOnly: false,
-                    labelText: 'Last Name',
-                    hintText: "Flanklin Junior",
+                    labelText: AppLocalizations.of(context).last_name,
+                    hintText: "Doe",
                     //initialValue: '',
                     keyboardType: TextInputType.text,
                     // onSaved: (input) =>
@@ -145,7 +146,7 @@ class AccountView extends GetView<ProfileController> {
                       controller.currentUser.value.lastName = controller.lastNameController.text,
                     },
                     validator: (input) => input!.length < 3
-                        ? 'Enter at least 3 characters'
+                        ? AppLocalizations.of(context).enter_three_characters
                         : null,
                     iconData: Icons.person,
                     key: null,
@@ -157,8 +158,8 @@ class AccountView extends GetView<ProfileController> {
                   TextFieldWidget(
                     textController: controller.emailController,
                     readOnly: true,
-                    labelText: 'Email',
-                    hintText: "kamdemj21@gmail.com",
+                    labelText: AppLocalizations.of(context).email,
+                    hintText: "johndoe@gmail.com",
                     //initialValue: '',
                     keyboardType: TextInputType.emailAddress,
                     // onSaved: (input) =>
@@ -167,7 +168,7 @@ class AccountView extends GetView<ProfileController> {
                     //     {controller.currentUser.value.email = value},
                     validator: (input) {
                       return !input!.contains('@')
-                          ? 'Enter a valid email address'
+                          ? AppLocalizations.of(context).enter_valid_email_address
                           : null;
                     },
                     iconData: Icons.alternate_email,
@@ -180,7 +181,7 @@ class AccountView extends GetView<ProfileController> {
                   TextFieldWidget(
                     textController: controller.birthdateController,
                     readOnly: false,
-                    labelText: 'Birth date',
+                    labelText: AppLocalizations.of(context).date_of_birth,
                     //hintText: "Male",
                     //initialValue: '',
                     keyboardType: TextInputType.number,
@@ -199,7 +200,7 @@ class AccountView extends GetView<ProfileController> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Phone Number',
+                        AppLocalizations.of(context).phone_number,
                         style: Get.textTheme.labelMedium,
                         textAlign:TextAlign.start,
                       ).paddingOnly(left: 10, right: 20),
@@ -209,9 +210,9 @@ class AccountView extends GetView<ProfileController> {
                         validator: (phone) {
                           // Check if the field is empty and return null to skip validation
                           if (phone!.completeNumber.isEmpty) {
-                            return 'Input a phone number';
+                            return AppLocalizations.of(context).input_phone_number;
                           }
-                          return 'Input a phone number';
+                          return AppLocalizations.of(context).input_phone_number;
 
                         },
 
@@ -223,7 +224,7 @@ class AccountView extends GetView<ProfileController> {
                             color: Colors.white,
                           ),
                           hintText: '677777777',
-                          labelText: 'Phone Number',
+                          labelText: AppLocalizations.of(context).phone_number,
                           suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
                         ),
                         //initialCountryCode: 'CM',
@@ -242,7 +243,7 @@ class AccountView extends GetView<ProfileController> {
                   TextFieldWidget(
                     textController: controller.genderController,
                     readOnly: true,
-                    labelText: 'Gender',
+                    labelText: AppLocalizations.of(context).gender,
                     hintText: "Male",
                     //initialValue: '',
                     keyboardType: TextInputType.number,
@@ -268,7 +269,7 @@ class AccountView extends GetView<ProfileController> {
                 },
                 color: Get.theme.colorScheme.secondary,
                 text: Text(
-                  'Update Information',
+                  AppLocalizations.of(context).update_information,
                   style: TextStyle(
                     color: Get.theme.primaryColor,
                     fontSize: 20.0,

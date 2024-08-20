@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 import '../../../color_constants.dart';
 
 
-class LocationWidget extends StatelessWidget{
-  LocationWidget({Key? key,
-    required this.regionName,
+class SectorItemWidget extends StatelessWidget{
+  SectorItemWidget({Key? key,
+    required this.sectorName,
     required this.selected,
   }) : super(key: key);
 
-  final String regionName;
+  final String sectorName;
   final bool selected;
 
 
@@ -20,16 +20,16 @@ class LocationWidget extends StatelessWidget{
     return Container(
         height: 80,
         decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.black38, width: 0.5)),
-            //border: selected? Border.all(color: interfaceColor,width: 2) : null,
-            //borderRadius: const BorderRadius.all(Radius.circular(10))
+          border: Border(bottom: BorderSide(color: Colors.black38, width: 0.5)),
+          //border: selected? Border.all(color: interfaceColor,width: 2) : null,
+          //borderRadius: const BorderRadius.all(Radius.circular(10))
 
         ),
         padding: const EdgeInsets.only(top: 10, right: 10, bottom: 10),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              selected? const Icon(FontAwesomeIcons.dotCircle, color: interfaceColor,): const Icon(FontAwesomeIcons.circle),
+              selected? const Icon(FontAwesomeIcons.squareCheck, color: interfaceColor,): const Icon(FontAwesomeIcons.square),
 
               SizedBox(
 
@@ -40,7 +40,7 @@ class LocationWidget extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Expanded(
-                            child: Text(regionName, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
+                            child: Text(sectorName, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 13, color: buttonColor)), overflow: TextOverflow.ellipsis,)
                         )
                       ]
                   )

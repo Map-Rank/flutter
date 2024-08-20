@@ -12,6 +12,7 @@ import '../../services/auth_service.dart';
 import '../../services/global_services.dart';
 import '../root/controllers/root_controller.dart' show RootController;
 import 'drawer_link_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainDrawerWidget extends StatelessWidget {
 
@@ -86,7 +87,7 @@ class MainDrawerWidget extends StatelessWidget {
             DrawerLinkWidget(
                 special: false,
                 icon: FontAwesomeIcons.userGroup,
-                text: 'Community',
+                text: AppLocalizations.of(context).community,
                 drawer: true,
                 onTap: (e) async {
                   Get.back();
@@ -96,7 +97,7 @@ class MainDrawerWidget extends StatelessWidget {
             DrawerLinkWidget(
                 special: false,
                 icon: FontAwesomeIcons.calendar,
-                text: 'Events',
+                text: AppLocalizations.of(context).events,
                 drawer: true,
                 onTap: (e) async {
                   Get.back();
@@ -111,25 +112,25 @@ class MainDrawerWidget extends StatelessWidget {
                 special: true,
                 drawer: false,
                 icon: Icons.logout,
-                text: 'Logout',
+                text: AppLocalizations.of(context).logout,
                 onTap: (e) async {
                   showDialog(context: context,
                     builder: (context) => AlertDialog(
                       insetPadding: EdgeInsets.all(20),
                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),
-                      title:  Text('Log out'),
-                      content: Obx(() =>  !Get.find<AuthController>().loading.value ?Text('Are you sure you want to exit the application?', textAlign: TextAlign.justify, style: TextStyle(),)
+                      title:  Text(AppLocalizations.of(context).logout),
+                      content: Obx(() =>  !Get.find<AuthController>().loading.value ?Text(AppLocalizations.of(context).sign_out_warning, textAlign: TextAlign.justify, style: TextStyle(),)
                           : SizedBox(height: 30,
                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),
                       actions: [
                         TextButton(onPressed: (){
                           Get.find<AuthController>().logout();
                           Get.lazyPut(()=>AuthController());
-                        }, child: Text('Exit', style: TextStyle(color: Colors.red),)),
+                        }, child: Text(AppLocalizations.of(context).exit, style: TextStyle(color: Colors.red),)),
 
                         TextButton(onPressed: (){
                           Navigator.of(context).pop();
-                        }, child: Text('Cancel', style: TextStyle(color: interfaceColor),)),
+                        }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),
 
                       ],
 

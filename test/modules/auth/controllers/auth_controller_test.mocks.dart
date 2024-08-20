@@ -3,12 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
-import 'package:mapnrank/app/models/user_model.dart' as _i2;
-import 'package:mapnrank/app/repositories/sector_repository.dart' as _i6;
-import 'package:mapnrank/app/repositories/user_repository.dart' as _i3;
-import 'package:mapnrank/app/repositories/zone_repository.dart' as _i5;
+import 'package:mapnrank/app/models/feedback_model.dart' as _i5;
+import 'package:mapnrank/app/models/user_model.dart' as _i4;
+import 'package:mapnrank/app/repositories/sector_repository.dart' as _i7;
+import 'package:mapnrank/app/repositories/user_repository.dart' as _i2;
+import 'package:mapnrank/app/repositories/zone_repository.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -24,78 +25,116 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeUserModel_0 extends _i1.SmartFake implements _i2.UserModel {
-  _FakeUserModel_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [UserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserRepository extends _i1.Mock implements _i3.UserRepository {
+class MockUserRepository extends _i1.Mock implements _i2.UserRepository {
   MockUserRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<dynamic> login(_i2.UserModel? user) => (super.noSuchMethod(
+  _i3.Future<dynamic> login(_i4.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #login,
           [user],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<dynamic> logout<int>() => (super.noSuchMethod(
+  _i3.Future<dynamic> logout<int>() => (super.noSuchMethod(
         Invocation.method(
           #logout,
           [],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<_i2.UserModel> register(_i2.UserModel? user) =>
-      (super.noSuchMethod(
+  _i3.Future<dynamic> register(_i4.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #register,
           [user],
         ),
-        returnValue: _i4.Future<_i2.UserModel>.value(_FakeUserModel_0(
-          this,
-          Invocation.method(
-            #register,
-            [user],
-          ),
-        )),
-      ) as _i4.Future<_i2.UserModel>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<dynamic> signOut() => (super.noSuchMethod(
+  _i3.Future<dynamic> getUser() => (super.noSuchMethod(
+        Invocation.method(
+          #getUser,
+          [],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> updateUser(_i4.UserModel? user) => (super.noSuchMethod(
+        Invocation.method(
+          #updateUser,
+          [user],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> signOut() => (super.noSuchMethod(
         Invocation.method(
           #signOut,
           [],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> resetPassword(String? email) => (super.noSuchMethod(
+        Invocation.method(
+          #resetPassword,
+          [email],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> followUser(int? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #followUser,
+          [userId],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> unfollowUser(int? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #unfollowUser,
+          [userId],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> sendFeedback(_i5.FeedbackModel? feedbackModel) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendFeedback,
+          [feedbackModel],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 }
 
 /// A class which mocks [ZoneRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockZoneRepository extends _i1.Mock implements _i5.ZoneRepository {
+class MockZoneRepository extends _i1.Mock implements _i6.ZoneRepository {
   MockZoneRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<dynamic> getAllRegions(
+  _i3.Future<dynamic> getAllRegions(
     int? levelId,
     int? parentId,
   ) =>
@@ -107,11 +146,11 @@ class MockZoneRepository extends _i1.Mock implements _i5.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<dynamic> getAllDivisions(
+  _i3.Future<dynamic> getAllDivisions(
     int? levelId,
     int? parentId,
   ) =>
@@ -123,11 +162,11 @@ class MockZoneRepository extends _i1.Mock implements _i5.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 
   @override
-  _i4.Future<dynamic> getAllSubdivisions(
+  _i3.Future<dynamic> getAllSubdivisions(
     int? levelId,
     int? parentId,
   ) =>
@@ -139,24 +178,33 @@ class MockZoneRepository extends _i1.Mock implements _i5.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+
+  @override
+  _i3.Future<dynamic> getSpecificZone(int? zoneId) => (super.noSuchMethod(
+        Invocation.method(
+          #getSpecificZone,
+          [zoneId],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 }
 
 /// A class which mocks [SectorRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSectorRepository extends _i1.Mock implements _i6.SectorRepository {
+class MockSectorRepository extends _i1.Mock implements _i7.SectorRepository {
   MockSectorRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<dynamic> getAllSectors() => (super.noSuchMethod(
+  _i3.Future<dynamic> getAllSectors() => (super.noSuchMethod(
         Invocation.method(
           #getAllSectors,
           [],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 }

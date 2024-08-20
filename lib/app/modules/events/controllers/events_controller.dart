@@ -23,15 +23,14 @@ import 'dart:math' as Math;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../color_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class EventsController extends GetxController {
 
   Rx<UserModel> currentUser = Get.find<AuthService>().user;
   var startingDate = "--/--/--".obs;
-  var startingDateDisplay = "--/--/--".obs;
   var endingDate = "--/--/--".obs;
-  var endingDateDisplay = "--/--/--".obs;
   late EventsRepository eventsRepository ;
   var allEvents = [].obs;
   var imageFiles = [].obs;
@@ -94,6 +93,10 @@ class EventsController extends GetxController {
 
   TextEditingController eventLocation = TextEditingController();
 
+  TextEditingController startingDateDisplay = TextEditingController();
+
+  TextEditingController endingDateDisplay = TextEditingController();
+
 
 
   EventsController(){
@@ -104,6 +107,8 @@ class EventsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    startingDateDisplay.text = "--/--/--";
+    endingDateDisplay.text = "--/--/--";
     event = Event();
 
     scrollbarController = ScrollController()..addListener(_scrollListener);
@@ -124,8 +129,8 @@ class EventsController extends GetxController {
     var boxRegions = box.read("allRegions");
 
     if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Regions...'),
+      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(Get.context!).loading_regions),
         duration: Duration(seconds: 3),
       ));
 
@@ -150,8 +155,8 @@ class EventsController extends GetxController {
 
     if(boxSectors == null){
 
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Sectors...'),
+      ScaffoldMessenger.of(Get.context!).showSnackBar( SnackBar(
+        content: Text(AppLocalizations.of(Get.context!).loading_sectors),
         duration: Duration(seconds: 3),
       ));
 
@@ -285,7 +290,7 @@ class EventsController extends GetxController {
         context: Get.context!,
         initialTime: TimeOfDay.now(),
       );
-      startingDateDisplay.value = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      startingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
       startingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
       event.startDate = startingDate.value;
 
@@ -318,7 +323,7 @@ class EventsController extends GetxController {
         initialTime: TimeOfDay.now(),
       );
       //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      endingDateDisplay.value = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      endingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
       endingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
       event.endDate = endingDate.value;
     }
@@ -327,7 +332,7 @@ class EventsController extends GetxController {
   void _scrollListener() async{
     print('extent is ${scrollbarController.position.extentAfter}');
     if (scrollbarController.position.extentAfter < 10) {
-      var event = await getAllEvents(page++);
+      var event = await getAllEvents(++page);
       allEvents.addAll(event);
       listAllEvents.addAll(event);
     }
@@ -622,6 +627,7 @@ class EventsController extends GetxController {
     try{
 
       var list = await eventsRepository.getAllEvents(page);
+      print('List is: $list');
 
       for( var i = 0; i< list.length; i++) {
         var event = Event(
@@ -631,7 +637,7 @@ class EventsController extends GetxController {
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['image'],
             title: list[i]['title'],
-            eventCreatorId: int.parse(list[i]['user_id']),
+            eventCreatorId: list[i]['user_id'],
             organizer: list[i]['organized_by'],
             eventSectors: list[i]['sector'],
             startDate: list[i]['date_debut'],
@@ -709,7 +715,7 @@ class EventsController extends GetxController {
       listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;
       createEvents.value = true;
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event created successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_created_successful ));
       Navigator.pop(Get.context!);
 
     }
@@ -733,7 +739,7 @@ class EventsController extends GetxController {
       loadingEvents.value = true;
       listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event updated successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_updated_successful ));
       emptyArrays();
       Navigator.pop(Get.context!);
 
@@ -754,7 +760,7 @@ class EventsController extends GetxController {
   deleteEvent(int eventId)async{
     try{
       await eventsRepository.deleteEvent(eventId);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event deleted successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_deleted_successful ));
       loadingEvents.value = true;
       listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;

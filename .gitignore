@@ -42,3 +42,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#files containing api keys
+/android/app/google-services.json
+
+# exclude all .env.dev files from source control
+*.env
+.env.dev
+lib/env/env.g.dart

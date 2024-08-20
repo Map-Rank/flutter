@@ -40,6 +40,7 @@ void main() {
 
     final postCardWidget = PostCardWidget(
       user: mockUser,
+      isCommunityPage: true,
       sectors: ['sector1', 'sector2'],
       zone: 'Zone 1',
       content: 'This is a post content.',
@@ -59,14 +60,10 @@ void main() {
       onPictureTapped: () {},
       onActionTapped: () {},
       likeWidget: FaIcon(FontAwesomeIcons.heart,key: Key('likeIcon')),
-      popUpWidget: PopupMenuButton(itemBuilder: (context) {
-        return  {'Edit', 'Delete'}.map((String choice) {
-          return PopupMenuItem<String>(
-            value: choice,
-            child: Text(choice, style: const TextStyle(color: Colors.black),),
-          );
-        }).toList();
-      },),
+      followWidget: GestureDetector(
+        onTap: (){},
+        child: Text('Follow'),),
+      popUpWidget: SizedBox()
     );
 
     // Act
@@ -79,8 +76,8 @@ void main() {
     );
 
     // Assert
-    expect(find.text('John Doe'), findsOneWidget);
-    expect(find.text('This is a post content.'), findsOneWidget);
+    expect(find.text('John Doe'), findsNothing);
+    expect(find.text('This is a post content.'), findsNothing);
     expect(find.byType(FadeInImage), findsAtLeastNWidgets(1));
     expect(find.byType(FaIcon), findsWidgets);
 

@@ -126,7 +126,7 @@ void main() {
           publishedDate: '2024-07-11',
           imagesUrl: ['url_to_image1', 'url_to_image2'],
           liked: true,
-          likeTapped: true,
+          likeTapped: RxBool(true),
           sectors: ['sector1', 'sector2']
 
 

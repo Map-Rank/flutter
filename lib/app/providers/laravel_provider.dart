@@ -212,7 +212,7 @@ class LaravelApiClient extends GetxService {
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
+// coverage:ignore-start
     if (response.statusCode == 200) {
       var data = await response.stream.bytesToString();
       var result = json.decode(data);
@@ -542,7 +542,7 @@ Future getSpecificZone(int zoneId)async {
           headers: headers,
         ),
       );
-
+// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -1070,6 +1070,7 @@ deletePost(int postId) async{
 // coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
+          print(response.data['data']);
           return response.data['data'];
         } else {
           throw Exception(response.data['message']);

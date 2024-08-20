@@ -7,11 +7,11 @@ import 'package:mapnrank/color_constants.dart';
 void main() {
   group('Color Constants', () {
     test('primaryColor', () {
-      expect(primaryColor, const Color(0xff6e9546));
+      expect(primaryColor, const Color(0xff7aa64e));
     });
 
     test('secondaryColor', () {
-      expect(secondaryColor, const Color(0xFF242424));
+      expect(secondaryColor, const Color(0xff021d40));
     });
 
     test('hinTextColor', () {
@@ -87,15 +87,15 @@ void main() {
     });
 
     test('interfaceColor', () {
-      expect(interfaceColor, const Color(0xff6e9546));
+      expect(interfaceColor, const Color(0xff7aa64e));
     });
 
     test('backgroundColor', () {
-      expect(backgroundColor, const Color(0xFFF9F9FB));
+      expect(backgroundColor, const Color(0xffe6e8ec));
     });
 
     test('background', () {
-      expect(background, const Color(0xFFF9F9FB));
+      expect(background, const Color(0xfff9f9fb));
     });
 
     test('textFieldColor', () {

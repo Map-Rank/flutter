@@ -26,6 +26,7 @@ import '../../../providers/laravel_provider.dart';
 import '../../community/controllers/community_controller.dart';
 import '../../dashboard/controllers/dashboard_controller.dart';
 import '../../notifications/controllers/notification_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class AuthController extends GetxController {
@@ -46,6 +47,8 @@ class AuthController extends GetxController {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+
+
 
 
   var loadingRegions = true.obs;
@@ -90,15 +93,24 @@ class AuthController extends GetxController {
   late UserRepository userRepository ;
   late ZoneRepository zoneRepository ;
   late SectorRepository sectorRepository ;
-
-  var selectedGender = 'Select  your gender'.obs;
+// coverage:ignore-start
+  var selectedGender = AppLocalizations.of(Get.context!).select_gender.obs;
 
   var genderList = [
-    'Select  your gender',
-    'Male',
-    'Female',
-    'Other'
+  AppLocalizations.of(Get.context!).select_gender,
+  AppLocalizations.of(Get.context!).male,
+  AppLocalizations.of(Get.context!).female,
+  AppLocalizations.of(Get.context!).other
   ].obs;
+
+  var selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
+
+  var languageList = [
+    AppLocalizations.of(Get.context!).select_language,
+    AppLocalizations.of(Get.context!).en,
+    AppLocalizations.of(Get.context!).fr,
+
+  ].obs;// coverage:ignore-end
 
 
   AuthController(){
@@ -137,6 +149,110 @@ class AuthController extends GetxController {
 
     var box = GetStorage();
 
+    if(box.read('language')==null){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await showDialog(context: Get.context!,
+          barrierDismissible: false,
+          builder: (context) =>
+              Dialog(
+                insetPadding: EdgeInsets.symmetric(
+                    vertical: Get.height /3.2, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(AppLocalizations
+                        .of(context)
+                        .choose_language, style: Get.textTheme.labelMedium
+                    ).marginOnly(left: 10),
+                    Stack(
+                        children: <Widget>[
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius
+                                      .circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Get.theme.focusColor.withOpacity(
+                                            0.1),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 5)),
+                                  ],
+                                  border: Border.all(color: Get.theme.focusColor
+                                      .withOpacity(0.5))
+                              ),
+                              child: DropdownButtonFormField(
+                                dropdownColor: Colors.white,
+                                decoration: const InputDecoration.collapsed(
+                                  hintText: '',
+
+                                ),
+
+                                isExpanded: true,
+                                alignment: Alignment.bottomCenter,
+
+                                style: const TextStyle(color: labelColor),
+                                value: selectedLanguage.value,
+                                // Down Arrow Icon
+                                icon: const Icon(Icons.keyboard_arrow_down,
+                                  color: Colors.black,),
+
+                                // Array list of items
+                                items: languageList.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Text(items,
+                                      style: Get.textTheme.headlineMedium,
+                                      textAlign: TextAlign.center,),
+                                  );
+                                }).toList(),
+                                // After selecting the desired option,it will
+                                // change button value to selected value
+                                onChanged: (String? newValue) {
+                                  selectedLanguage.value = newValue!;
+                                  if (selectedLanguage.value == "French" ||
+                                      selectedLanguage.value == "Français") {
+                                    box.write("language", 'fr');
+                                    Get.updateLocale(const Locale('fr'));
+                                  }
+                                  else if (selectedLanguage.value == "English" ||
+                                      selectedLanguage.value == "Anglais") {
+                                    box.write("language", 'en');
+                                    Get.updateLocale(const Locale('en'));
+                                  }
+                                },)
+                                  .marginOnly(left: 50, right: 20,)
+                                  .paddingOnly(top: 10, bottom: 10)
+                          ).paddingOnly(top: 10, bottom: 20
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 20.0, left: 10.0),
+                            child: Image.asset(
+                                "assets/images/flag.png", width: 22,
+                                height: 22),
+                          ),
+                        ]),
+
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(onPressed: () {
+                        if(selectedLanguage.value == 'Select language' || selectedLanguage.value == 'Sélectionnez la langue' ){
+                          Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_language));
+                        }
+                        else{
+                          Navigator.of(context).pop();
+                        }
+
+                      }, child: Text('Save', style: TextStyle(color: interfaceColor),)),
+                    )
+
+                  ],).paddingAll(20),
+              )
+          ,);
+      });
+
+    }
+
     var boxRegions = box.read("allRegions");
 
     if(boxRegions == null){
@@ -159,8 +275,8 @@ class AuthController extends GetxController {
     var boxSectors = box.read("allSectors");
 
     if(boxSectors == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Sectors...'),
+      ScaffoldMessenger.of(Get.context!).showSnackBar( SnackBar(
+        content: Text(AppLocalizations.of(Get.context!).loading_sectors),
         duration: Duration(seconds: 3),
       ));
 
@@ -182,6 +298,7 @@ class AuthController extends GetxController {
 
 
     super.onInit();
+
   }
 
   getAllRegions() async{
@@ -302,7 +419,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text('Take a picture', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                      title: Text(AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     ),
                     ListTile(
                       onTap: ()async{
@@ -311,7 +428,7 @@ class AuthController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.image),
-                      title: Text('Upload Image', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                      title: Text(AppLocalizations.of(Get.context!).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     )
                   ],
                 )
@@ -386,7 +503,7 @@ class AuthController extends GetxController {
       currentUser.value = await userRepository.register(currentUser.value);
       Get.find<AuthService>().user.value = currentUser.value;
       await Get.find<RootController>().changePage(0);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Your account was created successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).account_created_successfully ));
     }
     catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
@@ -424,8 +541,8 @@ class AuthController extends GetxController {
         Get.lazyPut<EventsController>(
               () => EventsController(),
         );
-        loading.value = false;
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged in successfully' ));
+        //loading.value = false;
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
         await Get.find<RootController>().changePage(0);
 
 
@@ -454,7 +571,7 @@ class AuthController extends GetxController {
       Get.find<AuthService>().user.value = currentUser.value;
       print('my podt : ${currentUser.value.myPosts}');
       //await Get.find<RootController>().changePage(0);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'User Profile info retrieved successfully' ));
+      //Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).profile_info_successful ));
     }
     catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
@@ -466,7 +583,7 @@ class AuthController extends GetxController {
       try {
         loading.value = true;
         await userRepository.logout();
-        Get.showSnackbar(Ui.SuccessSnackBar(message: 'User logged out successfully' ));
+        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).logout_successful ));
         loading.value = false;
         await Get.toNamed(Routes.LOGIN);
 

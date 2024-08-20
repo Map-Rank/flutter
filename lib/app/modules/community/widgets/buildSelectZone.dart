@@ -8,6 +8,7 @@ import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/common/ui.dart';
 import '../../../../color_constants.dart';
 import '../../../services/global_services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BuildSelectZone extends GetView<CommunityController> {
   BuildSelectZone({Key? key,
@@ -19,42 +20,43 @@ class BuildSelectZone extends GetView<CommunityController> {
   Widget build(BuildContext context) {
     Get.lazyPut(()=>EventsController());
     return ListView(
-      padding: EdgeInsets.all(20),
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Select a Zone',
-              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor, fontSize: 18)),
+            Text(AppLocalizations.of(context).select_location_title,
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
               textAlign: TextAlign.start,
             ),
-
             TextButton(onPressed: (){
               Navigator.of(context).pop();
-            }, child: Text('Ok/Cancel'))
+            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
+          ],
+        ).marginOnly(bottom: 20),
 
-          ],).marginOnly(bottom: 20),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text('Select a region'),
+          children: [Text(AppLocalizations.of(context).select_a_region),
             GestureDetector(
               onTap: (){
                 showDialog(context: context,
                   builder:  (context) => Dialog(
+                      insetPadding: EdgeInsets.all(20),
                       child:  ListView(
                         padding: EdgeInsets.all(20),
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Select a region',
+                              Text(AppLocalizations.of(context).choose_your_region,
                                 style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
                                 textAlign: TextAlign.start,
                               ),
                               TextButton(onPressed: (){
                                 Navigator.of(context).pop();
-                              }, child: Text('Ok/Cancel'))
+                              }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
                             ],
                           ),
 
@@ -64,12 +66,12 @@ class BuildSelectZone extends GetView<CommunityController> {
                                   TextFieldWidget(
                                     readOnly: false,
                                     keyboardType: TextInputType.text,
-                                    validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                    validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                     //onChanged: (input) => controller.selectUser.value = input,
                                     //labelText: "Research receiver".tr,
                                     iconData: FontAwesomeIcons.search,
                                     style: const TextStyle(color: labelColor),
-                                    hintText: 'Search by region name',
+                                    hintText: AppLocalizations.of(context).search_region_name,
                                     onChanged: (value)=>{
                                       controller.filterSearchRegions(value)
                                     },
@@ -108,7 +110,7 @@ class BuildSelectZone extends GetView<CommunityController> {
 
                                       child: ListView.builder(
                                         //physics: AlwaysScrollableScrollPhysics(),
-                                          itemCount: controller.regions.length > 5 ? 5 : controller.regions.length,
+                                          itemCount: controller.regions.length,
                                           shrinkWrap: true,
                                           primary: false,
                                           itemBuilder: (context, index) {
@@ -193,7 +195,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                   children: [
                     Obx(() => controller.regionSelectedValue.isNotEmpty?
                     Text(controller.regionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,)
-                        :Text('Choose a region', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
+                        :Text(AppLocalizations.of(context).choose_your_region, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),)),
                     ),
                     FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                   ],
@@ -207,12 +209,12 @@ class BuildSelectZone extends GetView<CommunityController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select a division'),
+            Text(AppLocalizations.of(context).select_a_division),
             GestureDetector(
               onTap: (){
                 controller.chooseADivision.value = true;
                 if(controller.regionSelectedValue.isEmpty) {
-                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a region first"));
+                  Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).select_region_first));
                 }
                 else{
                   showDialog(context: context, builder: (context) => Dialog(
@@ -223,13 +225,13 @@ class BuildSelectZone extends GetView<CommunityController> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Select a division',
+                            Text(AppLocalizations.of(context).choose_your_subdivision,
                               style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
                               textAlign: TextAlign.start,
                             ),
                             TextButton(onPressed: (){
                               Navigator.of(context).pop();
-                            }, child: Text('Ok/Cancel'))
+                            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
                           ],
                         ),
 
@@ -239,12 +241,12 @@ class BuildSelectZone extends GetView<CommunityController> {
                                 TextFieldWidget(
                                   readOnly: false,
                                   keyboardType: TextInputType.text,
-                                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                   //onChanged: (input) => controller.selectUser.value = input,
                                   //labelText: "Research receiver".tr,
                                   iconData: FontAwesomeIcons.search,
                                   style: const TextStyle(color: labelColor),
-                                  hintText: 'Search by division name',
+                                  hintText: AppLocalizations.of(context).search_division_name,
                                   onChanged: (value)=>{
                                     controller.filterSearchDivisions(value)
                                   },
@@ -283,7 +285,7 @@ class BuildSelectZone extends GetView<CommunityController> {
 
                                     child: ListView.builder(
                                       //physics: AlwaysScrollableScrollPhysics(),
-                                        itemCount: controller.divisions.length > 5 ? 5 : controller.divisions.length,
+                                        itemCount: controller.divisions.length,
                                         shrinkWrap: true,
                                         primary: false,
                                         itemBuilder: (context, index) {
@@ -365,7 +367,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                   children: [
                     Obx(() => controller.divisionSelectedValue.isNotEmpty?
                     Text(controller.divisionSelectedValue[0]['name'], style: Get.textTheme.headlineMedium,):
-                    Text('Choose a Division', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
+                    Text(AppLocalizations.of(context).choose_your_division, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18),))),
 
                     FaIcon(FontAwesomeIcons.angleDown, size: 10,)
                   ],
@@ -374,21 +376,19 @@ class BuildSelectZone extends GetView<CommunityController> {
             ),
           ],
         ).marginOnly(bottom: 20),
-
-
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select a subdivision'),
+            Text(AppLocalizations.of(context).select_a_subdivision),
             GestureDetector(
               onTap: (){
                 controller.chooseASubDivision.value = true;
                 if(controller.regionSelectedValue.isEmpty) {
-                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a region first then a division"));
+                  Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).select_region_division_first));
                 }
                 else if(controller.divisionSelectedValue.isEmpty) {
-                  Get.showSnackbar(Ui.warningSnackBar(message: "Please Choose a division first"));
+                  Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).select_division_first));
                 }
                 else{
                   showDialog(context: context, builder: (context) => Dialog(
@@ -399,13 +399,13 @@ class BuildSelectZone extends GetView<CommunityController> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Select a subdivision',
+                            Text(AppLocalizations.of(context).choose_your_subdivision,
                               style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
                               textAlign: TextAlign.start,
                             ),
                             TextButton(onPressed: (){
                               Navigator.of(context).pop();
-                            }, child: Text('Ok/Cancel'))
+                            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
                           ],
                         ),
                         Obx(() =>
@@ -414,12 +414,12 @@ class BuildSelectZone extends GetView<CommunityController> {
                                 TextFieldWidget(
                                   readOnly: false,
                                   keyboardType: TextInputType.text,
-                                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                   //onChanged: (input) => controller.selectUser.value = input,
                                   //labelText: "Research receiver".tr,
                                   iconData: FontAwesomeIcons.search,
                                   style: const TextStyle(color: labelColor),
-                                  hintText: 'Search by sub-division name',
+                                  hintText: AppLocalizations.of(context).search_subdivision_name,
                                   onChanged: (value)=>{
                                     controller.filterSearchSubdivisions(value)
                                   },
@@ -458,7 +458,7 @@ class BuildSelectZone extends GetView<CommunityController> {
 
                                     child: ListView.builder(
                                       //physics: AlwaysScrollableScrollPhysics(),
-                                        itemCount: controller.subdivisions.length > 5 ? 5 : controller.subdivisions.length,
+                                        itemCount: controller.subdivisions.length,
                                         shrinkWrap: true,
                                         primary: false,
                                         itemBuilder: (context, index) {
@@ -538,7 +538,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Obx(() => controller.subdivisionSelectedValue.isEmpty?
-                    Text('Choose a Subdivision', style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
+                    Text(AppLocalizations.of(context).choose_your_subdivision, style: Get.theme.textTheme.headlineMedium!.merge(TextStyle(color: Colors.grey, fontSize: 18))):
                     Text(controller.subdivisionSelectedValue[0]['name'], style: Get.theme.textTheme.headlineMedium,),)
                     ,
                     FaIcon(FontAwesomeIcons.angleDown, size: 10,)
@@ -548,7 +548,6 @@ class BuildSelectZone extends GetView<CommunityController> {
             ),
           ],
         ).marginOnly(bottom: 20),
-
 
 
       ],

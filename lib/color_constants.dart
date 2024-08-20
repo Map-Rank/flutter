@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
-const primaryColor = Color(0xff6e9546);
+const primaryColor = Color(0xff7aa64e);
 const secondaryColor = Color(0xff021d40);
 Color hinTextColor = Colors.grey.shade700;
 const bgColor = Color(0xFF212121);
@@ -22,10 +22,10 @@ const doneStatus = Color(0xFF411DA0);
 const newStatus = Color.fromRGBO(91,152,253,1);
 const buttonColor = Color.fromRGBO(26,25,31, 1);
 const pendingStatus = CupertinoColors.activeOrange;
-const interfaceColor = Color(0xff6e9546);
+const interfaceColor = Color(0xff7aa64e);
 
 //const backgroundColor = Color(0xF5F5F5F5);
-const backgroundColor = Color(0xFFF9F9FB);
+const backgroundColor = Color(0xFFe6e8ec);
 const background = Color(0xFFF9F9FB);
 const defaultPadding = 16.0;
 const double defaultBorderRadius = 15;

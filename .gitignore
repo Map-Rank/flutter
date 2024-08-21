@@ -48,5 +48,5 @@ app.*.map.json
 
 # exclude all .env.dev files from source control
 *.env
-.env.dev
+*.env.dev
 lib/env/env.g.dart

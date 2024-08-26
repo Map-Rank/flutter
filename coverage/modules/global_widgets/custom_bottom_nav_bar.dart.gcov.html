@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-07-18 18:04:41</td>
+            <td class="headerValue">2024-08-23 14:57:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -115,42 +115,43 @@
 <a name="53"><span class="lineNum">      53 </span><span class="lineCov">          1 :               margin: EdgeInsets.only(top: 10, bottom: 10),</span></a>
 <a name="54"><span class="lineNum">      54 </span>            :               alignment: Alignment.center,</a>
 <a name="55"><span class="lineNum">      55 </span><span class="lineCov">          6 :               decoration: BoxDecoration(color: widget.currentIndex == index ? color.withOpacity(0.2) : Colors.transparent, borderRadius: BorderRadius.circular(10)),</span></a>
-<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          1 :               child: Row(</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          1 :               child: Column(</span></a>
 <a name="57"><span class="lineNum">      57 </span>            :                 mainAxisAlignment: MainAxisAlignment.spaceAround,</a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :                 children: &lt;Widget&gt;[</span></a>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          1 :                   Icon(</span></a>
-<a name="60"><span class="lineNum">      60 </span>            :                     icon,</a>
-<a name="61"><span class="lineNum">      61 </span>            :                     size: 20,</a>
-<a name="62"><span class="lineNum">      62 </span><span class="lineCov">          3 :                     color: widget.currentIndex == index ? color : inactive,</span></a>
-<a name="63"><span class="lineNum">      63 </span>            :                   ),</a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">          3 :                   widget.currentIndex == index</span></a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          1 :                       ? Expanded(</span></a>
-<a name="66"><span class="lineNum">      66 </span>            :                           flex: 2,</a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          1 :                           child: Text(</span></a>
-<a name="68"><span class="lineNum">      68 </span>            :                             label ?? '',</a>
-<a name="69"><span class="lineNum">      69 </span>            :                             overflow: TextOverflow.ellipsis,</a>
-<a name="70"><span class="lineNum">      70 </span>            :                             textAlign: TextAlign.center,</a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          4 :                             style: TextStyle(color: widget.currentIndex == index ? color : color.withOpacity(0.5)),</span></a>
-<a name="72"><span class="lineNum">      72 </span>            :                           ),</a>
-<a name="73"><span class="lineNum">      73 </span>            :                         )</a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          1 :                       : Container()</span></a>
-<a name="75"><span class="lineNum">      75 </span>            :                 ],</a>
-<a name="76"><span class="lineNum">      76 </span>            :               ),</a>
-<a name="77"><span class="lineNum">      77 </span>            :             ),</a>
-<a name="78"><span class="lineNum">      78 </span>            :           );</a>
-<a name="79"><span class="lineNum">      79 </span><span class="lineCov">          1 :         }).toList(),</span></a>
-<a name="80"><span class="lineNum">      80 </span>            :       ),</a>
-<a name="81"><span class="lineNum">      81 </span>            :     );</a>
-<a name="82"><span class="lineNum">      82 </span>            :   }</a>
-<a name="83"><span class="lineNum">      83 </span>            : }</a>
-<a name="84"><span class="lineNum">      84 </span>            : </a>
-<a name="85"><span class="lineNum">      85 </span>            : class CustomBottomNavigationItem {</a>
-<a name="86"><span class="lineNum">      86 </span>            :   final IconData? icon;</a>
-<a name="87"><span class="lineNum">      87 </span>            :   final String? label;</a>
-<a name="88"><span class="lineNum">      88 </span>            :   final Color? color;</a>
-<a name="89"><span class="lineNum">      89 </span>            : </a>
-<a name="90"><span class="lineNum">      90 </span><span class="lineCov">          1 :   CustomBottomNavigationItem({@required this.icon, @required this.label, this.color});</span></a>
-<a name="91"><span class="lineNum">      91 </span>            : }</a>
+<a name="58"><span class="lineNum">      58 </span>            :                 crossAxisAlignment: CrossAxisAlignment.center,</a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          1 :                 children: &lt;Widget&gt;[</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineCov">          1 :                   Icon(</span></a>
+<a name="61"><span class="lineNum">      61 </span>            :                     icon,</a>
+<a name="62"><span class="lineNum">      62 </span>            :                     size: 20,</a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineCov">          3 :                     color: widget.currentIndex == index ? color : inactive,</span></a>
+<a name="64"><span class="lineNum">      64 </span>            :                   ),</a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          3 :                   widget.currentIndex == index</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          1 :                       ? Expanded(</span></a>
+<a name="67"><span class="lineNum">      67 </span>            :                           flex: 2,</a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineCov">          1 :                           child: Text(</span></a>
+<a name="69"><span class="lineNum">      69 </span>            :                             label ?? '',</a>
+<a name="70"><span class="lineNum">      70 </span>            :                             overflow: TextOverflow.ellipsis,</a>
+<a name="71"><span class="lineNum">      71 </span>            :                             textAlign: TextAlign.center,</a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          4 :                             style: TextStyle(color: widget.currentIndex == index ? color : color.withOpacity(0.5)),</span></a>
+<a name="73"><span class="lineNum">      73 </span>            :                           ),</a>
+<a name="74"><span class="lineNum">      74 </span>            :                         )</a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          1 :                       : Container()</span></a>
+<a name="76"><span class="lineNum">      76 </span>            :                 ],</a>
+<a name="77"><span class="lineNum">      77 </span>            :               ),</a>
+<a name="78"><span class="lineNum">      78 </span>            :             ),</a>
+<a name="79"><span class="lineNum">      79 </span>            :           );</a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">          1 :         }).toList(),</span></a>
+<a name="81"><span class="lineNum">      81 </span>            :       ),</a>
+<a name="82"><span class="lineNum">      82 </span>            :     );</a>
+<a name="83"><span class="lineNum">      83 </span>            :   }</a>
+<a name="84"><span class="lineNum">      84 </span>            : }</a>
+<a name="85"><span class="lineNum">      85 </span>            : </a>
+<a name="86"><span class="lineNum">      86 </span>            : class CustomBottomNavigationItem {</a>
+<a name="87"><span class="lineNum">      87 </span>            :   final IconData? icon;</a>
+<a name="88"><span class="lineNum">      88 </span>            :   final String? label;</a>
+<a name="89"><span class="lineNum">      89 </span>            :   final Color? color;</a>
+<a name="90"><span class="lineNum">      90 </span>            : </a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">          1 :   CustomBottomNavigationItem({@required this.icon, @required this.label, this.color});</span></a>
+<a name="92"><span class="lineNum">      92 </span>            : }</a>
 </pre>
       </td>
     </tr>

@@ -15,6 +15,9 @@ import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/loading_cards.dart';
 import 'package:mapnrank/app/modules/global_widgets/post_card_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
+import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
+import 'package:mapnrank/app/modules/profile/views/profile_view.dart';
+import 'package:mapnrank/app/modules/root/controllers/root_controller.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
@@ -265,8 +268,12 @@ class CommunityView extends GetView<CommunityController> {
                           ClipOval(
                               child: GestureDetector(
                                 onTap: () async {
+                                    //await Get.find<RootController>().changePage(0);
+                                  Get.lazyPut<ProfileController>(
+                                        () => ProfileController(),
+                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
 
-                                    await Get.toNamed(Routes.PROFILE);
                                 },
                                 child: FadeInImage(
                                   width: 30,

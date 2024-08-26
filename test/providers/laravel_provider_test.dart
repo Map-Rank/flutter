@@ -163,7 +163,8 @@ void main() {
     //when(mockHttpClient.send(any)).thenAnswer((_) async => failureResponse);
 
     // Call the register method and expect an exception
-    expect(() async => await laravelApiClient.register(testUser), throwsException);
+    expect(() async => await laravelApiClient.register(testUser),
+        throwsA(isA<String>()));
 
     // Verify the HttpClient request was made with correct URL, headers, and data
     //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
@@ -195,7 +196,8 @@ void main() {
     //when(mockHttpClient.send(any)).thenAnswer((_) async => errorResponse);
 
     // Call the register method and expect an exception
-    expect(() async => await laravelApiClient.register(testUser), throwsException);
+    expect(() async => await laravelApiClient.register(testUser),
+        throwsA(isA<String>()));
 
     // Verify the HttpClient request was made with correct URL, headers, and data
     //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
@@ -267,7 +269,8 @@ void main() {
     )).thenAnswer((_) async => failureResponse);
 
     // Call the login method and expect an exception
-    expect(() async => await laravelApiClient.login(testUser), throwsException);
+    expect(() async => await laravelApiClient.login(testUser),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL, headers, and data
     // verify(mockDio.request(
@@ -306,7 +309,8 @@ void main() {
     )).thenAnswer((_) async => failureResponse);
 
     // Call the login method and expect an exception
-    expect(() async => await laravelApiClient.login(testUser), throwsException);
+    expect(() async => await laravelApiClient.login(testUser),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL, headers, and data
     // verify(mockDio.request(
@@ -344,7 +348,8 @@ void main() {
     ));
 
     // Call the login method and expect an exception
-    expect(() async => await laravelApiClient.login(testUser), throwsException);
+    expect(() async => await laravelApiClient.login(testUser),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL, headers, and data
     // verify(mockDio.request(
@@ -401,7 +406,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the logout and expect an exception
-    expect(() async => await laravelApiClient.logout(), throwsException);
+    expect(() async => await laravelApiClient.logout(),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -424,7 +430,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the logout and expect an exception
-    expect(() async => await laravelApiClient.logout(), throwsException);
+    expect(() async => await laravelApiClient.logout(),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -485,7 +492,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the getAllZones request and expect an exception
-    expect(()async => await laravelApiClient.getAllZones(0, 0), throwsException);
+    expect(() async => await laravelApiClient.getAllZones(0, 0),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -510,7 +518,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the getAllZones request and expect an exception
-    expect(() async => await laravelApiClient.getAllZones(0, 0), throwsException);
+    expect(() async => await laravelApiClient.getAllZones(0, 0),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -570,7 +579,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the getAllSectors request and expect an exception
-    expect(()async => await laravelApiClient.getAllSectors(), throwsException);
+    expect(() async => await laravelApiClient.getAllSectors(),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -595,7 +605,8 @@ void main() {
     )).thenAnswer((_) async => response);
 
     // Perform the getAllSectors request and expect an exception
-    expect(() async => await laravelApiClient.getAllSectors(), throwsException);
+    expect(() async => await laravelApiClient.getAllSectors(),
+        throwsA(isA<String>()));
 
     // Verify the request was made
     // verify(mockDio.request(
@@ -644,7 +655,8 @@ void main() {
       options: anyNamed('options'),
     )).thenAnswer((_) async => response);
 
-    expect(() async => await laravelApiClient.getAllPosts(0), throwsException);
+    expect(() async => await laravelApiClient.getAllPosts(0),
+        throwsA(isA<String>()));
   });
 
   test('getAllPosts fails with client error', () async {
@@ -661,7 +673,9 @@ void main() {
       options: anyNamed('options'),
     )).thenAnswer((_) async => response);
 
-    expect(() async => await laravelApiClient.getAllPosts(0), throwsException);
+
+    expect(() async => await laravelApiClient.getAllPosts(0),
+        throwsA(isA<String>()));
   });
 
 
@@ -715,7 +729,8 @@ void main() {
     );
 
     // Call the method and expect it to throw an exception
-    expect(() async => await laravelApiClient.createPost(post), throwsException);
+    expect(() async => await laravelApiClient.createPost(post),
+        throwsA(isA<String>()));
   });
 
   test('createPost throws exception on server error', () async {
@@ -741,7 +756,8 @@ void main() {
     );
 
     // Call the method and expect it to throw an exception
-    expect(() async => await laravelApiClient.createPost(post), throwsException);
+    expect(() async => await laravelApiClient.createPost(post),
+        throwsA(isA<String>()));
   });
 
 
@@ -815,7 +831,8 @@ void main() {
     //when(http.MultipartRequest(any, any)).thenReturn(mockRequest);
 
     // Call the updatePost method and expect an exception
-    expect(() async => await laravelApiClient.updatePost(post), throwsException);
+    expect(() async => await laravelApiClient.updatePost(post),
+        throwsA(isA<String>()));
 
     // Verify the HTTP request details
     // verify(mockRequest.headers.addAll(any));
@@ -880,7 +897,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/likeunlikepost'),));
 
     // Call the likeUnlikePost method and expect an exception
-    expect(() async => await laravelApiClient.likeUnlikePost(postId), throwsException);
+    expect(() async => await laravelApiClient.likeUnlikePost(postId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -951,7 +969,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the getAPost method and expect an exception
-    expect(() async => await laravelApiClient.getAPost(postId), throwsException);
+    expect(() async => await laravelApiClient.getAPost(postId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -985,7 +1004,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the getAPost method and expect an exception
-    expect(() async => await laravelApiClient.getAPost(postId), throwsException);
+    expect(() async => await laravelApiClient.getAPost(postId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1060,7 +1080,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the commentPost method and expect an exception
-    expect(() async => await laravelApiClient.commentPost(postId, comment), throwsException);
+    expect(() async => await laravelApiClient.commentPost(postId, comment),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL, headers, and data
     // verify(mockDio.request(
@@ -1131,7 +1152,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the sharePost method and expect an exception
-    expect(() async => await laravelApiClient.sharePost(postId), throwsException);
+    expect(() async => await laravelApiClient.sharePost(postId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1201,7 +1223,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the deletePost method and expect an exception
-    expect(() async => await laravelApiClient.deletePost(postId), throwsException);
+    expect(() async => await laravelApiClient.deletePost(postId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1278,7 +1301,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the filterPostsByZone method and expect an exception
-    expect(() async => await laravelApiClient.filterPostsByZone(page, zoneId), throwsException);
+    expect(() async => await laravelApiClient.filterPostsByZone(page, zoneId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1351,7 +1375,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getPost')));
 
     // Call the filterPostsBySectors method and expect an exception
-    expect(() async => await laravelApiClient.filterPostsBySectors(page, sectors), throwsException);
+    expect(() async => await laravelApiClient.filterPostsBySectors(page, sectors),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1405,8 +1430,9 @@ void main() {
       any,
       options: anyNamed('options'),
     )).thenAnswer((_) async => response);
+    expect(() async => await laravelApiClient.getAllEvents(0),
+        throwsA(isA<String>()));
 
-    expect(() async => await laravelApiClient.getAllEvents(0), throwsException);
   });
 
   test('createEvent succeeds with valid response', () async {
@@ -1469,7 +1495,9 @@ void main() {
     );
 
     // Call the method and expect it to throw an exception
-    expect(() async => await laravelApiClient.createEvent(event), throwsException);
+    expect(() async => await laravelApiClient.createEvent(event),
+        throwsA(isA<String>()));
+
   });
 
   test('createEvent fails with Invalid Data', () async {
@@ -1505,7 +1533,8 @@ void main() {
     );
 
     // Call the method and expect it to throw an exception
-    expect(() async => await laravelApiClient.createEvent(event), throwsException);
+    expect(() async => await laravelApiClient.createEvent(event),
+        throwsA(isA<String>()));
   });
 
   test('getAnEvent success', () async {
@@ -1562,7 +1591,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getEvent')));
 
     // Call the getAPost method and expect an exception
-    expect(() async => await laravelApiClient.getAnEvent(eventId), throwsException);
+    expect(() async => await laravelApiClient.getAnEvent(eventId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1596,7 +1626,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getEvent')));
 
     // Call the getAPost method and expect an exception
-    expect(() async => await laravelApiClient.getAnEvent(eventId), throwsException);
+    expect(() async => await laravelApiClient.getAnEvent(eventId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1666,7 +1697,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/deleteEvent')));
 
     // Call the deletePost method and expect an exception
-    expect(() async => await laravelApiClient.deleteEvent(eventId), throwsException);
+    expect(() async => await laravelApiClient.deleteEvent(eventId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1740,7 +1772,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getEvents')));
 
     // Call the filterPostsByZone method and expect an exception
-    expect(() async => await laravelApiClient.filterEventsByZone(page, zoneId), throwsException);
+    expect(() async => await laravelApiClient.filterEventsByZone(page, zoneId),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(
@@ -1813,7 +1846,8 @@ void main() {
         requestOptions: RequestOptions(path: 'http://example.com/api/getEvents')));
 
     // Call the filterPostsBySectors method and expect an exception
-    expect(() async => await laravelApiClient.filterEventsBySectors(page, sectors), throwsException);
+    expect(() async => await laravelApiClient.filterEventsBySectors(page, sectors),
+        throwsA(isA<String>()));
 
     // Verify the Dio request was made with correct URL and headers
     // verify(mockDio.request(

@@ -18,6 +18,9 @@ import '../../auth/controllers/auth_controller.dart';
 import '../../community/widgets/comment_loading_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../profile/controllers/profile_controller.dart';
+import '../../profile/views/profile_view.dart';
+
 
 class EventsView extends GetView<EventsController> {
   const EventsView({super.key});
@@ -113,7 +116,10 @@ class EventsView extends GetView<EventsController> {
                                 child: GestureDetector(
                                   onTap: () async {
 
-                                      await Get.toNamed(Routes.PROFILE);
+                                    Get.lazyPut<ProfileController>(
+                                          () => ProfileController(),
+                                    );
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
 
                                   },
                                   child: FadeInImage(

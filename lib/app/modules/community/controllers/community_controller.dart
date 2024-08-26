@@ -336,9 +336,9 @@ class CommunityController extends GetxController {
             imagesUrl: list[i]['images'],
             user: user,
             liked: list[i]['liked'],
-            likeTapped: list[i]['liked'],
+            likeTapped: RxBool(list[i]['liked']),
             sectors: list[i]['sectors'],
-            isFollowing: list[i]['is_following']
+            isFollowing: RxBool(list[i]['is_following'])
 
 
           );
@@ -392,8 +392,9 @@ class CommunityController extends GetxController {
             imagesUrl: list[i]['images'],
             user: user,
             liked: list[i]['liked'],
-            likeTapped: list[i]['liked'],
-            sectors: list[i]['sectors'], isFollowing: list[i]['is_following'],
+            likeTapped: RxBool(list[i]['liked']),
+            sectors: list[i]['sectors'], 
+            isFollowing: RxBool(list[i]['is_following']),
 
 
           );

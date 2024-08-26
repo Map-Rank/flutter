@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/models/setting_model.dart';
@@ -19,6 +20,7 @@ import 'package:mapnrank/app/services/settings_services.dart';
 import 'package:mapnrank/common/ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 @GenerateMocks([FormState])
 class MockAuthService extends GetxService with Mock implements AuthService {
@@ -112,7 +114,21 @@ void main() {
     await tester.pumpWidget(
       GetMaterialApp(
         home: Scaffold(
-          body: LoginView(),
+          body: Localizations(
+            delegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale('en'),
+
+            child: Builder(
+                builder: (BuildContext context) {
+                  return LoginView();
+                }
+
+            ),),
         ),
       ),
     );
@@ -128,7 +144,21 @@ void main() {
     await tester.pumpWidget(
       GetMaterialApp(
         home: Scaffold(
-          body: LoginView(),
+          body: Localizations(
+            delegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale('en'),
+
+            child: Builder(
+                builder: (BuildContext context) {
+                  return LoginView();
+                }
+
+            ),),
         ),
       ),
     );
@@ -150,7 +180,21 @@ void main() {
       GetMaterialApp(
 
         home: Scaffold(
-          body: LoginView(),
+          body: Localizations(
+            delegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale('en'),
+
+            child: Builder(
+                builder: (BuildContext context) {
+                  return LoginView();
+                }
+
+            ),),
         ),
       ),
     );
@@ -207,7 +251,21 @@ void main() {
           );
         },
         home: Scaffold(
-          body: LoginView(),
+          body: Localizations(
+            delegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale('en'),
+
+            child: Builder(
+                builder: (BuildContext context) {
+                  return LoginView();
+                }
+
+            ),),
         ),
       ),
     );
@@ -226,7 +284,21 @@ void main() {
       GetMaterialApp(
         initialRoute: Routes.LOGIN,
         home: Scaffold(
-          body: LoginView(),
+          body: Localizations(
+            delegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: Locale('en'),
+
+            child: Builder(
+                builder: (BuildContext context) {
+                  return LoginView();
+                }
+
+            ),),
         ),
         onUnknownRoute: (settings) {
           // Optionally, navigate to a specific error page or handle it gracefully

@@ -10,6 +10,8 @@ import '../../../common/ui.dart';
 import '../../routes/app_routes.dart';
 import '../../services/auth_service.dart';
 import '../../services/global_services.dart';
+import '../profile/controllers/profile_controller.dart';
+import '../profile/views/profile_view.dart';
 import '../root/controllers/root_controller.dart' show RootController;
 import 'drawer_link_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,15 +32,10 @@ class MainDrawerWidget extends StatelessWidget {
           Obx(() {
               return GestureDetector(
                 onTap: () async {
-                  showDialog(context: context, builder: (context){
-                    return CommentLoadingWidget();
-                  },);
-                  try {
-                    await Get.find<AuthController>().getUser();
-                    await Get.toNamed(Routes.PROFILE);
-                  }catch (e) {
-                    Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-                  }
+                  Get.lazyPut<ProfileController>(
+                        () => ProfileController(),
+                  );
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
                 },
                 child: UserAccountsDrawerHeader(
                   decoration: BoxDecoration(

@@ -499,7 +499,7 @@ class EventsController extends GetxController {
               publishedDate: list[i]['humanize_date_creation'],
               imagesUrl: list[i]['image'],
               title: list[i]['title'],
-              eventCreatorId: int.parse(list[i]['user_id']),
+              eventCreatorId: list[i]['user_id'],
               organizer: list[i]['organized_by'],
               eventSectors: list[i][''],
               startDate: list[i]['date_debut'],

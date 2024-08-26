@@ -1,20 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
-import 'package:mapnrank/common/helper.dart';
-
 import '../../../../color_constants.dart';
-import '../../../models/user_model.dart';
 import '../../../routes/app_routes.dart';
 import '../../community/widgets/comment_loading_widget.dart';
 import '../../global_widgets/event_card_widget.dart';
-import '../../global_widgets/loading_cards.dart';
-import '../../global_widgets/post_card_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyEventsView extends GetView<ProfileController> {
@@ -170,7 +163,7 @@ class MyEventsView extends GetView<ProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FaIcon(FontAwesomeIcons.folderOpen, size: 30,),
-                  Text(AppLocalizations.of(context).no_posts_found)
+                  Text(AppLocalizations.of(context).no_events_found)
                 ],
               ),
             ),

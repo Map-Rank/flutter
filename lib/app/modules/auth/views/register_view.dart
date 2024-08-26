@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
@@ -26,6 +28,7 @@ class RegisterView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     controller.registerFormKey = GlobalKey<FormState>();
+    print(controller.phoneNumber);
     return WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
@@ -249,12 +252,13 @@ class RegisterView extends GetView<AuthController> {
               ).paddingOnly(left: 10, right: 20),
               SizedBox(height: 10,),
               IntlPhoneField(
+                autovalidateMode: AutovalidateMode.always,
                 validator: (phone) {
-                  // Check if the field is empty and return null to skip validation
-                  if (phone!.completeNumber.isEmpty) {
+                  // Check if the field is empty and return null to skip validatio
+                  if (phone!.number.isEmpty ) {
                     return AppLocalizations.of(context).input_phone_number;
                   }
-                  return  AppLocalizations.of(context).input_phone_number;
+                  //return  AppLocalizations.of(context).input_phone_number;
 
                 },
 
@@ -356,11 +360,11 @@ class RegisterView extends GetView<AuthController> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               InkWell(
-                  onTap: ()=>{ controller.birthDatePicker(context, Get.height/2) },
+                  onTap: ()=>{birthDatePicker(context, Get.height/2) },
                   child: Container(
                     child: TextFieldWidget(
                       onTap: (){
-                        controller.birthDatePicker(context, Get.height/2);
+                        birthDatePicker(context, Get.height/2);
                       },
                       isFirst: true,
                       isLast: true,
@@ -538,7 +542,7 @@ class RegisterView extends GetView<AuthController> {
               GestureDetector(
                 onTap: () async {
 
-                  await controller.selectCameraOrGalleryProfileImage();
+                  await selectCameraOrGalleryProfileImage(context);
                   controller.loadProfileImage.value = false;
 
                 },
@@ -1283,5 +1287,69 @@ class RegisterView extends GetView<AuthController> {
             height: 100,
           ),
         ));
+  }
+  birthDatePicker(BuildContext context, double height) async {
+    DateTime? pickedDate = await showRoundedDatePicker(
+
+      context: context,
+      theme: ThemeData.light().copyWith(
+          primaryColor: buttonColor
+      ),
+      height: height,
+      initialDate: DateTime.now().subtract(const Duration(days: 365,)),
+      firstDate: DateTime(1950),
+      lastDate: DateTime(DateTime.now().year),
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+          textStyleYearButton: const TextStyle(
+            fontSize: 52,
+            color: Colors.white,
+          )
+      ),
+      borderRadius: 16,
+      //selectableDayPredicate: disableDate
+    );
+    if (pickedDate != null ) {
+      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
+      controller.birthDateDisplay.text = DateFormat('dd-MM-yyyy').format(pickedDate);
+      controller.birthDate.value =DateFormat('yyyy-MM-dd').format(pickedDate);
+      controller.currentUser.value.birthdate = controller.birthDate.value;
+    }
+  }
+  selectCameraOrGalleryProfileImage(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (_){
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            content: Container(
+                height: 170,
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: ()async{
+                        await controller.profileImagePicker('camera');
+                        //Navigator.pop(Get.context);
+
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.camera),
+                      title: Text(AppLocalizations.of(context).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    ),
+                    ListTile(
+                      onTap: ()async{
+                        await controller.profileImagePicker('gallery');
+                        //Navigator.pop(Get.context);
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.image),
+                      title: Text(AppLocalizations.of(context).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    )
+                  ],
+                )
+            ),
+          );
+        });
   }
 }

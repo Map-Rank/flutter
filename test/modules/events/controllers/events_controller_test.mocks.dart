@@ -302,6 +302,15 @@ class MockUserRepository extends _i1.Mock implements _i8.UserRepository {
       ) as _i5.Future<dynamic>);
 
   @override
+  _i5.Future<dynamic> deleteAccount<int>() => (super.noSuchMethod(
+        Invocation.method(
+          #deleteAccount,
+          [],
+        ),
+        returnValue: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
+
+  @override
   _i5.Future<dynamic> register(_i4.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #register,

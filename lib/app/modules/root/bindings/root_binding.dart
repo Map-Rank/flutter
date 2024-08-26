@@ -24,7 +24,7 @@ class RootBinding extends Bindings {
           () => DashboardController(),
     );
     Get.lazyPut<CommunityController>(
-          () => CommunityController(),
+          () => CommunityController(), fenix: true
     );
     Get.lazyPut<NotificationController>(
           () => NotificationController(),

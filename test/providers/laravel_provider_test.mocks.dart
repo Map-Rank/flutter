@@ -962,15 +962,6 @@ class MockGlobalService extends _i1.Mock implements _i13.GlobalService {
   }
 
   @override
-  String get baseUrl => (super.noSuchMethod(
-        Invocation.getter(#baseUrl),
-        returnValue: _i14.dummyValue<String>(
-          this,
-          Invocation.getter(#baseUrl),
-        ),
-      ) as String);
-
-  @override
   String get apiPath => (super.noSuchMethod(
         Invocation.getter(#apiPath),
         returnValue: _i14.dummyValue<String>(

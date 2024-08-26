@@ -146,7 +146,7 @@ void main() {
       expect(result[0].publishedDate, equals('2024-07-11'));
       expect(result[0].imagesUrl, equals(['url_to_image1', 'url_to_image2']));
       expect(result[0].liked, equals(true));
-      expect(result[0].likeTapped, equals(true));
+      expect(result[0].likeTapped, equals(RxBool(true)));
       expect(result[0].sectors, equals(['sector1', 'sector2']));
     });
 

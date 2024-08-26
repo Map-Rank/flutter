@@ -73,9 +73,13 @@ class ProfileController extends GetxController {
     phoneNumberController.text = currentUser.value.phoneNumber!;
     genderController.text = currentUser.value.gender!;
     birthdateController.text = currentUser.value.gender!;
+    Get.find<CommunityController>().listAllPosts.clear();
+    Get.find<CommunityController>().allPosts.clear();
     Get.find<CommunityController>().listAllPosts = await getAllMyPosts();
     Get.find<CommunityController>().allPosts.value =  Get.find<CommunityController>().listAllPosts;
 
+    Get.find<EventsController>().listAllEvents.clear();
+    Get.find<EventsController>().allEvents.clear();
     Get.find<EventsController>().listAllEvents = await getAllMyEvents();
     Get.find<EventsController>().allEvents.value = Get.find<EventsController>().listAllEvents;
 

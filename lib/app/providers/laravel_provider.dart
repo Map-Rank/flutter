@@ -239,9 +239,14 @@ class LaravelApiClient extends GetxService {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       };
-      var data = json.encode({
+      var data = user.email!=null?
+      json.encode({
         "email": user.email,
         "password": user.password
+      }):
+      json.encode({
+        "email": user.phoneNumber,
+        "password": user.phoneNumber
       });
       var dio = Dio();
       var response = await dio.request(
@@ -276,11 +281,6 @@ class LaravelApiClient extends GetxService {
 
   Future logout() async {
     try {
-      print(Get
-          .find<AuthService>()
-          .user
-          .value
-          .authToken);
       var headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -295,6 +295,43 @@ class LaravelApiClient extends GetxService {
         '${GlobalService().baseUrl}api/logout',
         options: Options(
           method: 'POST',
+          headers: headers,
+        ),
+      );
+// coverage:ignore-start
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }// coverage:ignore-end
+  }
+
+
+  Future deleteAccount() async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}'
+      };
+      var dio = Dio();
+      var response = await dio.request(
+        '${GlobalService().baseUrl}api/delete-user',
+        options: Options(
+          method: 'DELETE',
           headers: headers,
         ),
       );

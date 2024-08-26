@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
 import 'package:mapnrank/app/services/settings_services.dart';
@@ -56,6 +57,8 @@ class LoginView extends GetView<AuthController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+
+                    Obx(() => !controller.loginWithPhoneNumber.value?
                     TextFieldWidget(
                       isFirst: true,
                       readOnly: false,
@@ -70,9 +73,74 @@ class LoginView extends GetView<AuthController> {
                         return !input!.contains('@') ?  AppLocalizations.of(context).enter_valid_email_address : null;
                       },
                       prefixIcon: Image.asset("assets/icons/email.png", width: 22, height: 22),
-                      iconData: Icons.mail_outline, 
+                      iconData: Icons.mail_outline,
                       key: null, suffixIcon: const Icon(null), suffix: Icon(null),
+                    )
+                        :Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).phone_number,
+                          style: Get.textTheme.labelMedium,
+                          textAlign:TextAlign.start,
+                        ).paddingOnly(left: 10, right: 20),
+                        SizedBox(height: 10,),
+                        IntlPhoneField(
+                          validator: (phone) {
+                            // Check if the field is empty and return null to skip validation
+                            if (phone!.completeNumber.isEmpty) {
+                              return AppLocalizations.of(context).input_phone_number;
+                            }
+                            return  AppLocalizations.of(context).input_phone_number;
+
+                          },
+
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            border:OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            contentPadding: EdgeInsets.all(10),
+                            labelStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                            hintText: '677777777',
+                            labelText:  AppLocalizations.of(context).phone_number,
+                            suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
+                          ),
+                          initialCountryCode: 'CM',
+                          style:  Get.textTheme.headlineMedium,
+                          onSaved: (phone) {
+                            controller.currentUser.value.phoneNumber = phone?.completeNumber;
+                          },
+                          onChanged:(value) => {
+                            controller.currentUser.value.phoneNumber = value.completeNumber,
+                          },
+                        ),
+                      ],
+                    ),),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+
+                            controller.loginWithPhoneNumber.value = !controller.loginWithPhoneNumber.value;
+                        },
+                        child:  Obx(() => !controller.loginWithPhoneNumber.value?
+                        Text(AppLocalizations.of(context).login_with_number,
+                          style: TextStyle(fontFamily: "poppins",fontSize: 14,
+                            color: interfaceColor,
+                          ),
+                          overflow: TextOverflow.fade,
+                        )
+                            :Text(AppLocalizations.of(context).login_with_email,
+                          style: TextStyle(fontFamily: "poppins",fontSize: 14,
+                            color: interfaceColor,
+                          ),
+                          overflow: TextOverflow.fade,
+                        ),)
+                      ),
                     ),
+
                     Obx(() {
                       return TextFieldWidget(
                         isFirst: true,

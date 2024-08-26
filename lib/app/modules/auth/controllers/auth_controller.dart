@@ -86,6 +86,8 @@ class AuthController extends GetxController {
   var chooseRegion = false.obs;
   var chooseDivision = false.obs;
   var chooseSubdivision = false.obs;
+  var loginWithPhoneNumber = false.obs;
+  var phoneNumber;
 
 
   var confirmPassword='';
@@ -93,27 +95,18 @@ class AuthController extends GetxController {
   late UserRepository userRepository ;
   late ZoneRepository zoneRepository ;
   late SectorRepository sectorRepository ;
-// coverage:ignore-start
-  var selectedGender = AppLocalizations.of(Get.context!).select_gender.obs;
 
-  var genderList = [
-  AppLocalizations.of(Get.context!).select_gender,
-  AppLocalizations.of(Get.context!).male,
-  AppLocalizations.of(Get.context!).female,
-  AppLocalizations.of(Get.context!).other
-  ].obs;
+  var selectedGender = ''.obs;
 
-  var selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
+  RxList<String> genderList = RxList();
 
-  var languageList = [
-    AppLocalizations.of(Get.context!).select_language,
-    AppLocalizations.of(Get.context!).en,
-    AppLocalizations.of(Get.context!).fr,
+  var selectedLanguage = ''.obs;
 
-  ].obs;// coverage:ignore-end
+  RxList<String> languageList = RxList();
 
 
   AuthController(){
+
     Get.lazyPut(()=>RootController());
     Get.lazyPut<AuthService>(
           () => AuthService(),
@@ -141,6 +134,20 @@ class AuthController extends GetxController {
 
   @override
   void onInit() async {
+    selectedGender = AppLocalizations.of(Get.context!).select_gender.obs;
+    genderList = [
+      AppLocalizations.of(Get.context!).select_gender,
+      AppLocalizations.of(Get.context!).male,
+      AppLocalizations.of(Get.context!).female,
+      AppLocalizations.of(Get.context!).other
+    ].obs;
+    languageList = [
+      AppLocalizations.of(Get.context!).select_language,
+      AppLocalizations.of(Get.context!).en,
+      AppLocalizations.of(Get.context!).fr,
+
+    ].obs;// cover
+    selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
     birthDateDisplay.text = "--/--/--";
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
@@ -372,70 +379,6 @@ class AuthController extends GetxController {
     }
   }
 
-  birthDatePicker(BuildContext context, double height) async {
-    DateTime? pickedDate = await showRoundedDatePicker(
-
-      context: context,
-      theme: ThemeData.light().copyWith(
-          primaryColor: buttonColor
-      ),
-      height: height,
-      initialDate: DateTime.now().subtract(const Duration(days: 365,)),
-      firstDate: DateTime(1950),
-      lastDate: DateTime(DateTime.now().year),
-      styleDatePicker: MaterialRoundedDatePickerStyle(
-          textStyleYearButton: const TextStyle(
-            fontSize: 52,
-            color: Colors.white,
-          )
-      ),
-      borderRadius: 16,
-      //selectableDayPredicate: disableDate
-    );
-    if (pickedDate != null ) {
-      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      birthDateDisplay.text = DateFormat('dd-MM-yyyy').format(pickedDate);
-      birthDate.value =DateFormat('yyyy-MM-dd').format(pickedDate);
-      currentUser.value.birthdate = birthDate.value;
-    }
-  }
-  selectCameraOrGalleryProfileImage(){
-    showDialog(
-        context: Get.context!,
-        builder: (_){
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            content: Container(
-                height: 170,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: ()async{
-                        await profileImagePicker('camera');
-                        //Navigator.pop(Get.context);
-
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text(AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    ),
-                    ListTile(
-                      onTap: ()async{
-                        await profileImagePicker('gallery');
-                        //Navigator.pop(Get.context);
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.image),
-                      title: Text(AppLocalizations.of(Get.context!).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    )
-                  ],
-                )
-            ),
-          );
-        });
-  }
   profileImagePicker(String source) async {
     if(source=='camera'){
       final XFile? pickedImage =
@@ -533,7 +476,7 @@ class AuthController extends GetxController {
         Get.put(RootController());
         Get.lazyPut(()=>DashboardController());
         Get.lazyPut<CommunityController>(
-              () => CommunityController(),
+              () => CommunityController(),fenix: true
         );
         Get.lazyPut<NotificationController>(
               () => NotificationController(),
@@ -594,6 +537,27 @@ class AuthController extends GetxController {
       } finally {
         loading.value = false;
       }
+
+
+
+
+  }
+
+  deleteAccount() async {
+    try {
+      loading.value = true;
+      await userRepository.deleteAccount();
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).delete_account_successful));
+      loading.value = false;
+      await Get.toNamed(Routes.LOGIN);
+
+    }
+    catch (e) {
+      loading.value = false;
+      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+    } finally {
+      loading.value = false;
+    }
 
 
 

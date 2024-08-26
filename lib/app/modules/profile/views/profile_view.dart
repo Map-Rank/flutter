@@ -13,6 +13,12 @@ import '../../../services/global_services.dart';
 import '../../auth/controllers/auth_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../community/controllers/community_controller.dart';
+import '../../dashboard/controllers/dashboard_controller.dart';
+import '../../events/controllers/events_controller.dart';
+import '../../notifications/controllers/notification_controller.dart';
+import '../../root/controllers/root_controller.dart';
+
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
@@ -28,9 +34,11 @@ class ProfileView extends GetView<ProfileController> {
           centerTitle: false,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
-            onPressed: () => {
-              Navigator.pop(context),
-              //Get.back()
+            onPressed: () async => {
+
+              Get.find<CommunityController>().refreshCommunity(),
+              Get.find<EventsController>().refreshEvents(),
+              Get.toNamed(Routes.ROOT),
             },
           ),
         title: Text(
@@ -344,6 +352,7 @@ class ProfileView extends GetView<ProfileController> {
               ),
               GestureDetector(
                 onTap: (() {
+                  Get.find<AuthController>().loading.value = false;
                   showDialog(context: context,
                     builder: (context) => AlertDialog(
                       insetPadding: EdgeInsets.all(20),
@@ -396,6 +405,74 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                     subtitle: Text(
                       AppLocalizations.of(context).logout_of_app,
+                      style: TextStyle(color: Colors.grey, fontSize: 14.0),
+                    ),
+                    trailing: const Icon(
+                      Icons.navigate_next_rounded,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              GestureDetector(
+                onTap: (() {
+                  Get.find<AuthController>().loading.value = false;
+                  showDialog(context: context,
+                    builder: (context) => AlertDialog(
+                      insetPadding: EdgeInsets.all(20),
+                      icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),
+                      title:  Text(AppLocalizations.of(context).delete_account),
+                      content: Obx(() =>  !Get.find<AuthController>().loading.value ?Text(AppLocalizations.of(context).delete_account_warning, textAlign: TextAlign.justify, style: TextStyle(),)
+                          : SizedBox(height: 30,
+                          child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),
+                      actions: [
+                        TextButton(onPressed: (){
+                          Get.find<AuthController>().deleteAccount();
+                          Get.lazyPut(()=>AuthController());
+                        }, child: Text(AppLocalizations.of(context).delete, style: TextStyle(color: Colors.red),)),
+
+                        TextButton(onPressed: (){
+                          Navigator.of(context).pop();
+                        }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),
+
+                      ],
+
+                    ),);
+                }),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(.03),
+                      borderRadius: BorderRadius.circular(14.0)),
+                  child: ListTile(
+                    leading: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(.05)),
+                      child: const Icon(
+                        Icons.delete_forever,
+                        size: 27,
+                        color: Colors.black,
+                      ),
+                    ),
+                    title: Padding(
+                      padding: EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                        AppLocalizations.of(context).delete_account,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                    subtitle: Text(
+                      AppLocalizations.of(context).delete_account_of_app,
                       style: TextStyle(color: Colors.grey, fontSize: 14.0),
                     ),
                     trailing: const Icon(

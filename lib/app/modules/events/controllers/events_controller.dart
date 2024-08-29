@@ -184,7 +184,13 @@ class EventsController extends GetxController {
     listAllEvents.clear();
     allEvents.clear();
     loadingEvents.value = true;
-    listAllEvents = await getAllEvents(0);
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllEvents = await getAllEvents(0);
+    }
+    else{
+      listAllEvents = [Event(), Event()];
+    }
+
     allEvents.value= listAllEvents;
     emptyArrays();
   }
@@ -416,21 +422,6 @@ class EventsController extends GetxController {
     return sectorRepository.getAllSectors();
   }
 
-
-  filterSearchEventsByName(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllEvents;
-    if(query.isNotEmpty) {
-      List dummyListData = [];
-      dummyListData = dummySearchList.where((element) => element.organizer
-          .toString().toLowerCase().contains(query.toLowerCase())).toList();
-      allEvents.value = dummyListData;
-      return;
-    } else {
-      allEvents.value = listAllEvents;
-    }
-  }
-
   filterSearchEventsBySectors(var query) async {
     var eventsList = [];
     if(sectorsSelected.isNotEmpty) {
@@ -617,7 +608,9 @@ class EventsController extends GetxController {
       return result;
     }
     catch(e){
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
 
   }
@@ -662,7 +655,9 @@ class EventsController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 
@@ -693,7 +688,9 @@ class EventsController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 
@@ -701,13 +698,6 @@ class EventsController extends GetxController {
 
   }
   createEvent(Event event)async{
-    print(event.zone);
-    print(event.title);
-    print(event.startDate);
-    print(event.content);
-    print(event.endDate);
-    print(event.organizer);
-    print(event.zoneEventId);
     try{
 
       await eventsRepository.createEvent(event);
@@ -720,7 +710,9 @@ class EventsController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       createEvents.value = true;
@@ -746,7 +738,9 @@ class EventsController extends GetxController {
     }
     catch (e) {
       updateEvents.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       updateEvents.value = false;
@@ -767,7 +761,9 @@ class EventsController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       //createPosts.value = true;

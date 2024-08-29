@@ -48,7 +48,7 @@ class LoginView extends GetView<AuthController> {
 
                 ),
               ).marginOnly(left: 20, right: 20, bottom: 20),
-               Align(
+              Align(
                   alignment:Alignment.center,
                   child: Text(AppLocalizations.of(context).welcome_back, style: TextStyle(fontSize: 30, color: Colors.black, ), )).marginOnly(bottom: 20),
 
@@ -121,23 +121,23 @@ class LoginView extends GetView<AuthController> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
+                          onPressed: () {
 
                             controller.loginWithPhoneNumber.value = !controller.loginWithPhoneNumber.value;
-                        },
-                        child:  Obx(() => !controller.loginWithPhoneNumber.value?
-                        Text(AppLocalizations.of(context).login_with_number,
-                          style: TextStyle(fontFamily: "poppins",fontSize: 14,
-                            color: interfaceColor,
-                          ),
-                          overflow: TextOverflow.fade,
-                        )
-                            :Text(AppLocalizations.of(context).login_with_email,
-                          style: TextStyle(fontFamily: "poppins",fontSize: 14,
-                            color: interfaceColor,
-                          ),
-                          overflow: TextOverflow.fade,
-                        ),)
+                          },
+                          child:  Obx(() => !controller.loginWithPhoneNumber.value?
+                          Text(AppLocalizations.of(context).login_with_number,
+                            style: TextStyle(fontFamily: "poppins",fontSize: 14,
+                              color: interfaceColor,
+                            ),
+                            overflow: TextOverflow.fade,
+                          )
+                              :Text(AppLocalizations.of(context).login_with_email,
+                            style: TextStyle(fontFamily: "poppins",fontSize: 14,
+                              color: interfaceColor,
+                            ),
+                            overflow: TextOverflow.fade,
+                          ),)
                       ),
                     ),
 
@@ -151,7 +151,7 @@ class LoginView extends GetView<AuthController> {
                         textController: TextEditingController(text: controller.currentUser.value.password),
                         onSaved: (input) => controller.currentUser.value.password = input,
                         onChanged: (value) => {
-                           controller.currentUser.value.password = value
+                          controller.currentUser.value.password = value
                         },
                         validator: (input) {
                           return input!.length < 6 ? AppLocalizations.of(context).enter_six_characters : null;
@@ -193,18 +193,20 @@ class LoginView extends GetView<AuthController> {
                     SizedBox(height: 20),
                     Obx(() =>
                     !controller.loading.value?BlockButtonWidget(
-                      key: Key('loginButton'),
-                      onPressed: () async {
-                        await controller.login();
+                        key: Key('loginButton'),
+                        onPressed: () async {
+                          if (controller.loginFormKey.currentState!.validate()) {
+                            controller.loginFormKey.currentState!.save();
+                            await controller.login();
 
-                      },
-                      color: Get.theme.colorScheme.secondary,
-                      text: Text(
-                        AppLocalizations.of(context).login,
-                        style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
-                      )
+                          }},
+                        color: Get.theme.colorScheme.secondary,
+                        text: Text(
+                          AppLocalizations.of(context).login,
+                          style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
+                        )
                     ).paddingSymmetric(vertical: 10, horizontal: 20)
-                      :BlockButtonWidget(
+                        :BlockButtonWidget(
                       onPressed: () async {
 
                       },

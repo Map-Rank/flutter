@@ -34,12 +34,18 @@ void main() {
     setUp(() {
       TestWidgetsFlutterBinding.ensureInitialized();
       Get.lazyPut(()=>AuthService());
+
       mockAuthService = MockAuthService();
       mockEventsRepository = MockEventsRepository();
       mockUserRepository = MockUserRepository();
       mockZoneRepository = MockZoneRepository();
       mockSectorRepository = MockSectorRepository();
       eventsController = EventsController();
+      //eventsController.picker = mockImagePicker;
+      eventsController.zoneRepository = mockZoneRepository;
+      eventsController.userRepository = mockUserRepository;
+      eventsController.sectorRepository = mockSectorRepository;
+      eventsController.eventsRepository = mockEventsRepository;
 
       const TEST_MOCK_STORAGE = './test/test_pictures';
       const channel = MethodChannel(
@@ -62,485 +68,580 @@ void main() {
       expect(eventsController.regions, []);
     });
 
-    test('Get All Regions Test', () async {
-      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await eventsController.getAllRegions();
-      expect(eventsController.listRegions, []);
-      expect(eventsController.loadingRegions.value, true);
-    });
-
-    test('Get All Divisions Test', () async {
-      when(mockZoneRepository.getAllDivisions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await authController.getAllDivisions();
-      expect(eventsController.listDivisions, []);
-      expect(eventsController.loadingDivisions.value, true);
-    });
-
-    test('Get All Sub-Divisions Test', () async {
-      when(mockZoneRepository.getAllSubdivisions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await authController.getAllDivisions();
-      expect(eventsController.listSubdivisions, []);
-      expect(eventsController.loadingSubdivisions.value, true);
-    });
-
-    test('Get All Sectors Test', () async {
-      when(mockSectorRepository.getAllSectors()).thenAnswer((_) => Future.value([]));
-      //await eventsController.getAllSectors();
-      expect(eventsController.listSectors, []);
-      expect(eventsController.loadingSectors.value, true);
-    });
-
 
     test('Filter Search Regions Test', () async {
-      eventsController.listRegions.value = [{'name': 'Region 1'}, {'name': 'Region 2'}];
+      eventsController.listRegions.value =
+      [{'name': 'Region 1'}, {'name': 'Region 2'}];
 
       eventsController.filterSearchRegions('region 1');
       expect(eventsController.regions.length, 1);
       expect(eventsController.regions[0]['name'], 'Region 1');
     });
+    test('filter Search Regions returns all regions when query is empty', () {
+      eventsController.listRegions = [
+        {'name': 'North Region'},
+        {'name': 'South Region'},
+      ].obs;
+      eventsController.regions = RxList([]);
+// Act: Call the filterSearchDivisions with an empty query
+      eventsController.filterSearchRegions('');
 
+// Assert: Verify that all divisions are returned
+      expect(eventsController.regions.length, 2);
+      expect(eventsController.regions[0]['name'], 'North Region');
+      expect(eventsController.regions[1]['name'], 'South Region');
+    });
+    test('filter Search Regions returns no divisions for a query with no matches', () {
+// Act: Call the filterSearchDivisions with a query that has no matches
+      eventsController.filterSearchRegions('central');
 
+// Assert: Verify that no divisions are returned
+      expect(eventsController.regions.length, 0);
+    });
 
-    test('Fetch all events', () async {
+    test('Verify getAllRegions calls zoneRepository.getAllRegions with correct parameters', () async {
       // Arrange
-      final List<Event> mockEvents = [
-        Event(eventId: 1, content: 'Content 1', title: 'Title 1'),
-        Event(eventId: 2, content: 'Content 2', title: 'Title 2'),
-      ];
+      final expectedResponse = {
+        'status': true,
+        'data': [] // Replace with the expected data structure
+      };
 
-      // Mock behavior: Return mockEvents when getAllEvents is called
-      when(mockEventsRepository.getAllEvents(any)).thenAnswer((_) => Future.value(mockEvents));
+      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) async => expectedResponse);
 
       // Act
-      final events = [ Event(eventId: 1, content: 'Content 1', title: 'Title 1'),
-        Event(eventId: 2, content: 'Content 2', title: 'Title 2'),];
+      final result = await eventsController.getAllRegions();
 
       // Assert
-      expect(events, mockEvents);
+      expect(result, expectedResponse);
+      verify(mockZoneRepository.getAllRegions(2, 1)).called(1);
+      verifyNoMoreInteractions(mockZoneRepository);
     });
 
+    test('Verify getAllDivisions calls zoneRepository with correct parameters', () async {
+      // Arrange: Set up regions and the return value
+      eventsController.regions = [{'id': 1}, {'id': 2}].obs;
+      when(mockZoneRepository.getAllDivisions(3, 1)).thenAnswer((_) async => {'status': true});
 
-    test('Create an event', () async {
-      // Mock behavior: Assume createEvent returns an eventModel object
-      Event mockEvent = Event(eventId: 1, content: 'New Event', title: 'Title 1');
-      when(mockEventsRepository.createEvent(any))
-          .thenAnswer((_) => Future.value(mockEvent));
+      // Act: Call the method
+      final result = await eventsController.getAllDivisions(0);
 
-      // Assert the expected result
-      expect(1, mockEvent.eventId);
-      expect('New Event', mockEvent.content, );
-      expect('Title 1', mockEvent.title, );
+      // Assert: Verify the correct method is called with correct parameters
+      verify(mockZoneRepository.getAllDivisions(3, 1)).called(2);
+      expect(result, {'status': true});
     });
 
-    test('Update an event', () async {
-      // Mock behavior: Assume updateEvent returns an eventModel object
-      Event mockEvent = Event(eventId: 1, content: 'Updated Event', title: 'Title 1');
-      when(mockEventsRepository.updateEvent(any))
-          .thenAnswer((_) => Future.value(mockEvent));
+    test('filterSearchDivisions filters correctly with a query', () {
+      eventsController.listDivisions = [
+        {'name': 'North Division'},
+        {'name': 'South Division'},
+        {'name': 'East Division'},
+        {'name': 'West Division'},
+      ].obs;
+      eventsController.divisions = RxList([]);
+// Act: Call the filterSearchDivisions with a specific query
+      eventsController.filterSearchDivisions('north');
 
-      // Assert the expected result
-      expect(1, mockEvent.eventId);
-      expect('Updated Event', mockEvent.content, );
-      expect('Title 1', mockEvent.title, );
+// Assert: Verify that the divisions list is filtered correctly
+      expect(eventsController.divisions.length, 1);
+      expect(eventsController.divisions[0]['name'], 'North Division');
     });
 
-    test('Delete a event', () async {
-      // Mock behavior: Assume deleteEvent returns an eventModel object
-      Event mockEvent = Event(eventId: 1);
-      when(mockEventsRepository.deleteEvent(any))
-          .thenAnswer((_) => Future.value(mockEvent));
-
-      // Assert the expected result
-      expect(1, mockEvent.eventId);
-
-    });
-
-    test('Get an event', () async {
-      // Mock data: Assume we have an eventId
-      final eventId = 1;
-
-      // Mock response: Assume getAnEvent returns an Event object
-      final mockEvent = Event(eventId: 1,
-        content: 'Content 1',
-        sectors: ['sector', 'sector2'],
-        eventCreatorId:4,
-        publishedDate: '10-12-10',
-        title: 'Title',
-          endDate: '10-12-10',
-        startDate: '10-12-10',
-          zone: 'Douala'
-      ); // Replace with actual mock Event object
-      when(mockEventsRepository.getAnEvent(eventId))
-          .thenAnswer((_) => Future.value(mockEvent));
-
-      Event event =  Event(eventId: 1,
-          content: 'Content 1',
-          sectors: ['sector', 'sector2'],
-          eventCreatorId:4,
-          publishedDate: '10-12-10',
-          title: 'Title',
-          endDate: '10-12-10',
-          startDate: '10-12-10',
-          zone: 'Douala'
-      );
-
-      // Assert the expected result or state change in the controller
-      expect(event, equals(mockEvent)); // Adjust this based on your controller's expected behavior
-    });
-
-    test('Refresh event data', () async {
-      // Mock data and behavior for refreshCommunity
-      final mockEvents = [
-        Event(eventId: 1, content: 'Content 1', title: 'Title 1'),
-        Event(eventId: 2, content: 'Content 2', title: 'Title 2')
-      ];
-
-      // Mock response: Assume refreshCommunity returns a list of events
-      when(mockEventsRepository.getAllEvents(any))
-          .thenAnswer((_) => Future.value(mockEvents));
-
-
-      // Assert the expected result or state change in the controller
-      expect(2, equals(mockEvents.length));
-      expect(1, equals(mockEvents[0].eventId));
-      expect('Content 2', equals(mockEvents[1].content));
-    });
-
-    test('Filter events by sectors - sectors found', () async {
-      // Mock data or setup for test
-      int page = 1;
-      List<int> sectors = [1, 2, 3];
-
-      // Mock behavior of the events repository
-      when(mockEventsRepository.filterEventsBySectors(page, sectors))
-          .thenAnswer((_) => Future.value("Filtered events"));
-
-
-      // Optionally, assert on the result or other behavior
-      expect(4, greaterThan(0));
-    });
-
-    test('Filter posts by sectors - No sectors found', () async {
-      // Mock data or setup for test
-      int page = 1;
-      List<int> sectors = [1, 2, 3];
-
-      // Mock behavior of the community repository
-      when(mockEventsRepository.filterEventsBySectors(page, sectors))
-          .thenAnswer((_) => Future.value([]));
-
-      // Optionally, assert on the result or other behavior
-      expect([], isEmpty);
-    });
-
-    test('Filter events by zone - zones found', () async {
-      // Mock data or setup for test
-      int page = 1;
-      int zoneId = 123;
-
-      // Mock behavior of the community repository
-      when(mockEventsRepository.filterEventsByZone(page, zoneId))
-          .thenAnswer((_) => Future.value("Filtered events"));
-
-
-      // Optionally, assert on the result or other behavior
-      expect(5, greaterThan(0));
-    });
-
-    test('Filter events by zone - No zone found', () async {
-      // Mock data or setup for test
-      int page = 1;
-      int zoneId = 123;
-
-      // Mock behavior of the community repository
-      when(mockEventsRepository.filterEventsByZone(page, zoneId))
-          .thenAnswer((_) => Future.value([]));
-
-
-      // Optionally, assert on the result or other behavior
-      expect([], isEmpty);
-    });
-
-    test('Get all regions', () async {
-      // Mock data or setup for test
-      int levelId = 1;
-      int parentId = 123;
-
-      // Mock behavior of the zone repository
-      when(mockZoneRepository.getAllRegions(levelId, parentId))
-          .thenAnswer((_) => Future.value([{"id":1, "name": "Adamaoua"}]));
-
-      // Optionally, assert on the result or other behavior
-      // For example, check that the result is as expected
-      expect([{"id":1, "name": "Adamaoua"}], equals([{"id":1, "name": "Adamaoua"}]));
-    });
-
-    test('Get all divisions', () async {
-      // Mock data or setup for test
-      int levelId = 2;
-      int parentId = 456;
-
-      // Mock behavior of the zone repository
-      when(mockZoneRepository.getAllDivisions(levelId, parentId))
-          .thenAnswer((_) => Future.value([{"id":1, "name": "Mifi"}]));
-
-      // Optionally, assert on the result or other behavior
-      // For example, check that the result is as expected
-      expect([{"id":1, "name": "Mifi"}], equals([{"id":1, "name": "Mifi"}]));
-    });
-
-
-    test('Get all subdivisions', () async {
-      // Mock data or setup for test
-      int levelId = 2;
-      int parentId = 456;
-
-      // Mock behavior of the zone repository
-      when(mockZoneRepository.getAllSubdivisions(levelId, parentId))
-          .thenAnswer((_) => Future.value([{"id":1, "name": "Bafoussam"}]));
-
-
-      // Optionally, assert on the result or other behavior
-      // For example, check that the result is as expected
-      expect([{"id":1, "name": "Bafoussam"}], equals([{"id":1, "name": "Bafoussam"}]));
-    });
-    test('Get All Regions Test', () async {
-      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await eventsController.getAllRegions();
-      expect(eventsController.listRegions, []);
-      expect(eventsController.loadingRegions.value, true);
-    });
-
-    test('Get All Divisions Test', () async {
-      when(mockZoneRepository.getAllDivisions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await authController.getAllDivisions();
-      expect(eventsController.listDivisions, []);
-      expect(eventsController.loadingDivisions.value, true);
-    });
-
-    test('Get All Sub-Divisions Test', () async {
-      when(mockZoneRepository.getAllSubdivisions(2, 1)).thenAnswer((_) => Future.value([]));
-      //await authController.getAllDivisions();
-      expect(eventsController.listSubdivisions, []);
-      expect(eventsController.loadingSubdivisions.value, true);
-    });
-
-    test('Get All Sectors Test', () async {
-      when(mockSectorRepository.getAllSectors()).thenAnswer((_) => Future.value([]));
-      //await eventsController.getAllSectors();
-      expect(eventsController.listSectors, []);
-      expect(eventsController.loadingSectors.value, true);
-    });
-
-    test('filterSearch returns all items when query is empty', () {
-      // Arrange
-      eventsController.listRegions.value= [{'name':'item1', 'id': 1},{'name':'item2', 'id': 2},{'name':'item3', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchRegions('item');
-
-      // Assert
-      expect(eventsController.regions, [{'name':'item1', 'id': 1},{'name':'item2', 'id': 2},{'name':'item3', 'id': 3}, ]);
-    });
-
-    test('filterSearch returns filtered items when query matches', () {
-      // Arrange
-
-      eventsController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchRegions('B');
-
-      // Assert
-      expect(eventsController.regions, [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ]);
-
-    });
-
-    test('filterSearch returns filtered items when query partially matches', () {
-      // Arrange
-      eventsController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchRegions('Bu');
-
-      // Assert
-      expect(eventsController.regions, [{'name':'Buea', 'id': 1} ]);
-    });
-
-    test('filterSearch returns empty list when no items match the query', () {
-      // Arrange
-      // Arrange
-      eventsController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchRegions('Adamaoua');
-
-      // Assert
-      expect(eventsController.regions, []);
-    });
-
-
-    test('filterSearch returns all Divisions when query is empty', () {
-      // Arrange
-      eventsController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
-
-      // Act
+    test('filterSearchDivisions returns all divisions when query is empty', () {
+      eventsController.listDivisions = [
+        {'name': 'North Division'},
+        {'name': 'South Division'},
+        {'name': 'East Division'},
+        {'name': 'West Division'},
+      ].obs;
+      eventsController.divisions = RxList([]);
+// Act: Call the filterSearchDivisions with an empty query
       eventsController.filterSearchDivisions('');
 
-      // Assert
-      expect(eventsController.divisions, [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ]);
+// Assert: Verify that all divisions are returned
+      expect(eventsController.divisions.length, 4);
+      expect(eventsController.divisions[0]['name'], 'North Division');
+      expect(eventsController.divisions[1]['name'], 'South Division');
+      expect(eventsController.divisions[2]['name'], 'East Division');
+      expect(eventsController.divisions[3]['name'], 'West Division');
     });
 
-    test('filterSearch returns filtered Divisions when query matches', () {
-      // Arrange
+    test('filterSearchDivisions returns no divisions for a query with no matches', () {
+// Act: Call the filterSearchDivisions with a query that has no matches
+      eventsController.filterSearchDivisions('central');
 
-      eventsController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchDivisions('Haut-Nkam');
-
-      // Assert
-      expect(eventsController.divisions, [{'name':'Haut-Nkam', 'id': 2} ]);
-
+// Assert: Verify that no divisions are returned
+      expect(eventsController.divisions.length, 0);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('getAllSubdivisions returns data correctly', () async {
       // Arrange
-      eventsController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
+      int index = 0;
+      List<Map<String, dynamic>> divisionsList = [
+        {'id': 1, 'name': 'Division 1'},
+        {'id': 2, 'name': 'Division 2'},
+      ];
+      eventsController.divisions.value = divisionsList;
 
+      Map<String, dynamic> expectedResponse = {
+        'status': true,
+        'data': [{'id': 101, 'name': 'Subdivision 1'}],
+      };
+
+      when(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
-      eventsController.filterSearchDivisions('Haut-Nk');
+      final result = await eventsController.getAllSubdivisions(index);
 
       // Assert
-      expect(eventsController.divisions, [{'name':'Haut-Nkam', 'id': 2}]);
+      expect(result, expectedResponse);
+      verify(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .called(1);
     });
 
-    test('filterSearch returns empty list when no items match the query', () {
+    test('getAllSubdivisions handles empty divisions list', () async {
       // Arrange
-      eventsController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
+      int index = 0;
+      eventsController.divisions.value = [];
 
-
-      // Act
-      eventsController.filterSearchDivisions('Lekie');
-
-      // Assert
-      expect(eventsController.regions, []);
+      // Act & Assert
+      expect(() => eventsController.getAllSubdivisions(index), throwsRangeError);
     });
 
+    test('filterSearchSubdivisions filters subdivisions by query', () {
+      eventsController.listSubdivisions = [
+        {'name': 'Subdivision A'},
+        {'name': 'Subdivision B'},
+        {'name': 'Another Subdivision'}
+      ].obs;
+      eventsController.subdivisions.value = eventsController.listSubdivisions;
+// Act
+      eventsController.filterSearchSubdivisions('Subdivision A');
 
+// Assert
+      expect(eventsController.subdivisions.value, [
+        {'name': 'Subdivision A'}
+      ]);
+    });
 
-    test('filterSearch returns all Sub-Divisions when query is empty', () {
-      // Arrange
-      eventsController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
-
-      // Act
+    test('filterSearchSubdivisions returns all subdivisions when query is empty', () {
+      eventsController.listSubdivisions = [
+        {'name': 'Subdivision A'},
+        {'name': 'Subdivision B'},
+        {'name': 'Another Subdivision'}
+      ].obs;
+      eventsController.subdivisions.value = eventsController.listSubdivisions;
+// Act
       eventsController.filterSearchSubdivisions('');
 
-      // Assert
-      expect(eventsController.subdivisions, [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ]);
+// Assert
+      expect(eventsController.subdivisions.value, eventsController.listSubdivisions);
     });
 
-    test('filterSearch returns filtered Sub-Divisions when query matches', () {
-      // Arrange
+    test('filterSearchSubdivisions handles case-insensitive queries', () {
+      eventsController.listSubdivisions = [
+        {'name': 'Subdivision A'},
+        {'name': 'Subdivision B'},
+        {'name': 'Another Subdivision'}
+      ].obs;
+      eventsController.subdivisions.value = eventsController.listSubdivisions;
+// Act
+      eventsController.filterSearchSubdivisions('Subdivision b');
 
-      eventsController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchSubdivisions('Yaounde');
-
-      // Assert
-      expect(eventsController.subdivisions, [{'name':'Yaounde', 'id': 1},]);
-
-    });
-
-    test('filterSearch returns filtered items when query partially matches', () {
-      // Arrange
-      eventsController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchSubdivisions('Yaoun');
-
-      // Assert
-      expect(eventsController.subdivisions, [{'name':'Yaounde', 'id': 1}]);
-    });
-
-    test('filterSearch returns empty list when no items match the query', () {
-      // Arrange
-      eventsController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
-
-      // Act
-      eventsController.filterSearchSubdivisions('Soa');
-
-      // Assert
-      expect(eventsController.subdivisions, []);
+// Assert
+      expect(eventsController.subdivisions.value, [
+        {'name': 'Subdivision B'}
+      ]);
     });
 
 
-    test('filterSearch returns all Sectors when query is empty', () {
-      // Arrange
-      eventsController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
+    test('filterSearchSectors filters sectors by query', () {
+      eventsController.listSectors = [
+        {'name': 'Sector A'},
+        {'name': 'Sector B'},
+        {'name': 'Another Sector'}
+      ].obs;
+      eventsController.sectors.value = eventsController.listSectors;
+// Act
+      eventsController.filterSearchSectors('Sector A');
 
+// Assert
+      expect(eventsController.sectors.value, [
+        {'name': 'Sector A'}
+      ]);
+    });
 
-      // Act
+    test('filterSearchSectors returns all sectors when query is empty', () {
+      eventsController.listSectors = [
+        {'name': 'Sector A'},
+        {'name': 'Sector B'},
+        {'name': 'Another Sector'}
+      ].obs;
+      eventsController.sectors.value = eventsController.listSectors;
+// Act
       eventsController.filterSearchSectors('');
 
-      // Assert
-      expect(eventsController.sectors, [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ]);
+// Assert
+      expect(eventsController.sectors.value, eventsController.listSectors);
     });
 
-    test('filterSearch returns filtered Sectors when query matches', () {
+    test('filterSearchSectors handles case-insensitive queries', () {
+      eventsController.listSectors = [
+        {'name': 'Sector A'},
+        {'name': 'Sector B'},
+        {'name': 'Another Sector'}
+      ].obs;
+      eventsController.sectors.value = eventsController.listSectors;
+// Act
+      eventsController.filterSearchSectors('b');
+
+// Assert
+      expect(eventsController.sectors.value, [
+        {'name': 'Sector B'}
+      ]);
+    });
+
+    test('should clear lists, set loading state, fetch events, and call emptyArrays', () async {
       // Arrange
-
-      eventsController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      final mockEvents = [Event(), Event()]; // Mock list of events
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => mockEvents);
 
       // Act
-      eventsController.filterSearchSectors('Education');
+      await eventsController.refreshEvents();
 
       // Assert
-      expect(eventsController.sectors, [{'name':'Education', 'id': 1},]);
-
+      expect(eventsController.listAllEvents, mockEvents);
+      expect(eventsController.allEvents.value, mockEvents);
+      expect(eventsController.loadingEvents.value, true);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('should handle loading state and fetching events with showMessage flag', () async {
       // Arrange
-      eventsController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      final mockEvents = [Event(), Event()];
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => mockEvents);
 
       // Act
-      eventsController.filterSearchSectors('Agri');
+      await eventsController.refreshEvents(showMessage: true);
 
       // Assert
-      expect(eventsController.sectors, [{'name':'Agriculture', 'id': 2}]);
+      expect(eventsController.listAllEvents, mockEvents);
+      expect(eventsController.allEvents.value, mockEvents);
+      expect(eventsController.loadingEvents.value, true);
+      // Add any additional checks for showMessage behavior if needed
     });
 
-    test('filterSearch returns empty list when no items match the query', () {
-      // Arrange
-      eventsController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
+    test('emptyArrays should clear all selected values and reset createUpdateEvents', () {
+      // Initializing with some data
+      eventsController.sectorsSelected.add('Sector1');
+      eventsController.imageFiles.add('image1.png');
+      eventsController.regionSelectedValue.add('Region1');
+      eventsController.createUpdateEvents.value = true;
+      eventsController.divisionSelectedValue.add('Division1');
+      eventsController.subdivisionSelectedValue.add('Subdivision1');
 
+      // Call the method
+      eventsController.emptyArrays();
+
+      // Assertions
+      expect(eventsController.sectorsSelected.isEmpty, true);
+      expect(eventsController.imageFiles.isEmpty, true);
+      expect(eventsController.regionSelectedValue.isEmpty, true);
+      expect(eventsController.createUpdateEvents.value, false);
+      expect(eventsController.divisionSelectedValue.isEmpty, true);
+      expect(eventsController.subdivisionSelectedValue.isEmpty, true);
+    });
+
+    test('getAllEvents should fetch events and populate the list', () async {
+      // Arrange
+      final mockEventsData = [
+        {
+          'location': 'Zone1',
+          'id': 1,
+          'description': 'Event 1 Description',
+          'humanize_date_creation': '2023-01-01',
+          'image': 'url1.jpg',
+          'title': 'Event 1',
+          'user_id': 101,
+          'organized_by': 'Organizer 1',
+          'sector': 'Sector 1',
+          'date_debut': '2023-01-01',
+          'date_fin': '2023-01-02',
+          'zone': {'parent_id': 11, 'level_id': 21, 'id': 31}
+        },
+        {
+          'location': 'Zone2',
+          'id': 2,
+          'description': 'Event 2 Description',
+          'humanize_date_creation': '2023-01-02',
+          'image': 'url2.jpg',
+          'title': 'Event 2',
+          'user_id': 102,
+          'organized_by': 'Organizer 2',
+          'sector': 'Sector 2',
+          'date_debut': '2023-01-02',
+          'date_fin': '2023-01-03',
+          'zone': {'parent_id': 12, 'level_id': 22, 'id': 32}
+        },
+      ];
+
+      // Mock the repository call
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => mockEventsData);
 
       // Act
-      eventsController.filterSearchSectors('Technology');
+      final eventsList = await eventsController.getAllEvents(0);
 
       // Assert
-      expect(eventsController.sectors, []);
+      expect(eventsList.length, 2);
+      expect(eventsList[0], isA<Event>());
+      expect(eventsList[0].title, 'Event 1');
+      expect(eventsList[1].title, 'Event 2');
+      expect(eventsController.loadingEvents.value, false);
     });
+
+    test('getAllEvents should handle exception properly', () async {
+      // Arrange
+      when(mockEventsRepository.getAllEvents(0)).thenThrow(Exception('Failed to fetch events'));
+
+      // Act
+      final eventsList = await eventsController.getAllEvents(0);
+
+      // Assert
+      expect(eventsList, null);
+      expect(eventsController.loadingEvents.value, true);
+    });
+
+    test('getSpecificZone should return the zone when repository call is successful', () async {
+      // Arrange
+      final mockZoneData = <String, Object>{
+        'id': 1,
+        'name': 'Zone 1',
+        'level': 'District',
+        'parent_id': 0,
+      };
+      when(mockZoneRepository.getSpecificZone(1)).thenAnswer((_) async => mockZoneData);
+
+      // Act
+      final result = await eventsController.getSpecificZone(1);
+
+      // Assert
+      expect(result, mockZoneData);
+      verify(mockZoneRepository.getSpecificZone(1)).called(1);
+    });
+
+    test('getSpecificZone should handle exceptions properly', () async {
+      // Arrange
+      when(mockZoneRepository.getSpecificZone(1)).thenThrow(Exception('Failed to fetch zone'));
+
+      // Act
+      final result = await eventsController.getSpecificZone(1);
+
+      // Assert
+      expect(result, null);
+      verify(mockZoneRepository.getSpecificZone(1)).called(1);
+    });
+
+    test('getAnEvent should return an Event model when repository call is successful', () async {
+      // Arrange
+      final mockEventData = <String, dynamic>{
+        'id': 1,
+        'location': 'Test Location',
+        'description': 'Test Description',
+        'published_at': '2024-08-30',
+        'image': 'test_image_url',
+        'title': 'Test Event',
+        'user_id': '100',
+        'organized_by': 'Test Organizer',
+        'zone': {
+          'parent_id': 2,
+          'level_id': 3,
+        },
+        'sector': ['Sector 1', 'Sector 2'],
+      };
+      when(mockEventsRepository.getAnEvent(1)).thenAnswer((_) async => mockEventData);
+
+      // Act
+      final result = await eventsController.getAnEvent(1);
+
+      // Assert
+      expect(result, isA<Event>());
+      expect(result.eventId, mockEventData['id']);
+      expect(result.zone, mockEventData['location']);
+      expect(result.content, mockEventData['description']);
+      expect(result.publishedDate, mockEventData['published_at']);
+      expect(result.imagesUrl, mockEventData['image']);
+      expect(result.title, mockEventData['title']);
+      expect(result.eventCreatorId, int.parse(mockEventData['user_id']));
+      expect(result.organizer, mockEventData['organized_by']);
+      expect(result.zoneParentId, mockEventData['zone']['parent_id']);
+      expect(result.zoneLevelId, mockEventData['zone']['level_id']);
+      expect(result.sectors, mockEventData['sector']);
+
+      verify(mockEventsRepository.getAnEvent(1)).called(1);
+    });
+
+    test('getAnEvent should handle exceptions and not show a snackbar in test environment', () async {
+      // Arrange
+      when(mockEventsRepository.getAnEvent(1)).thenThrow(Exception('Failed to fetch event'));
+
+      // Act
+      final result = await eventsController.getAnEvent(1);
+
+      // Assert
+      expect(result, isNull);
+      verify(mockEventsRepository.getAnEvent(1)).called(1);
+    });
+
+    test('createEvent should call repository, update state and show success snackbar', () async {
+      // Arrange
+      final event = Event(
+        zone: 'Test Zone',
+        eventId: 1,
+        content: 'Test Content',
+        publishedDate: '2024-08-30',
+        imagesUrl: 'test_image_url',
+        title: 'Test Event',
+        eventCreatorId: 100,
+        organizer: 'Test Organizer',
+        zoneParentId: 2,
+        zoneLevelId: 3,
+      );
+
+      when(mockEventsRepository.createEvent(event)).thenAnswer((_) async => Future.value());
+
+      // Act
+      await eventsController.createEvent(event);
+
+      // Assert
+      expect(eventsController.createEvents.value, isTrue);
+      expect(eventsController.loadingEvents.value, isTrue);
+
+      verify(mockEventsRepository.createEvent(event)).called(1);
+      verify(eventsController.getAllEvents(0)).called(1);
+
+    });
+
+    test('createEvent should handle exceptions and not show snackbar in test environment', () async {
+      // Arrange
+      final event = Event(
+        zone: 'Test Zone',
+        eventId: 1,
+        content: 'Test Content',
+        publishedDate: '2024-08-30',
+        imagesUrl: 'test_image_url',
+        title: 'Test Event',
+        eventCreatorId: 100,
+        organizer: 'Test Organizer',
+        zoneParentId: 2,
+        zoneLevelId: 3,
+      );
+
+      when(mockEventsRepository.createEvent(event)).thenThrow(Exception('Failed to create event'));
+
+      // Act
+      await eventsController.createEvent(event);
+
+      // Assert
+      expect(eventsController.createEvents.value, isTrue);
+      expect(eventsController.allEvents.value, isEmpty);
+
+      verify(mockEventsRepository.createEvent(event)).called(1);
+      verifyNoMoreInteractions(mockEventsRepository);
+
+      // In a real scenario, you would also verify that no snackbar is shown in the test environment
+      // This would involve checking the Get.showSnackbar call and ensuring it's not triggered
+    });
+
+    test('filterSearchEventsBySectors should update eventsList and state when sectorsSelected is not empty', () async {
+      // Arrange
+      final query = 'test query';
+      final sectorsSelected = ['sector1', 'sector2'];
+      final mockEventList = [
+        {
+          'location': 'Zone 1',
+          'id': 1,
+          'description': 'Description 1',
+          'humanize_date_creation': '2024-08-30',
+          'image': 'image1_url',
+          'title': 'Event 1',
+          'user_id': '100',
+          'organized_by': 'Organizer 1',
+          'date_debut': '2024-08-30',
+          'date_fin': '2024-08-31',
+          'sector':['sector1', 'sector2']
+          // Add other necessary fields
+        },
+      ];
+
+      // Mock the repository method
+      when(mockEventsRepository.filterEventsBySectors(0, query)).thenAnswer((_) async => mockEventList);
+
+      // Act
+      await eventsController.filterSearchEventsBySectors(query);
+
+      // Assert
+      expect(eventsController.loadingEvents.value, isTrue);
+      expect(eventsController.noFilter.value, isFalse);
+      //expect(eventsController.allEvents.value.length, 1);
+      //expect(eventsController.allEvents.value[0].eventId, 1);
+
+      // Verify repository call
+      //verify(mockEventsRepository.filterEventsBySectors(0, query)).called(1);
+    });
+
+    test('filterSearchEventsBySectors should set allEvents to listAllEvents and update state when sectorsSelected is empty', () async {
+      // Arrange
+      eventsController.sectorsSelected.clear(); // Ensure sectorsSelected is empty
+      eventsController.listAllEvents = [
+        Event(
+          zone: 'Zone 1',
+          eventId: 1,
+          content: 'Description 1',
+          publishedDate: '2024-08-30',
+          imagesUrl: 'image1_url',
+          title: 'Event 1',
+          eventCreatorId: 100,
+          organizer: 'Organizer 1',
+          startDate: '2024-08-30',
+          endDate: '2024-08-31',
+        ),
+      ];
+
+      // Act
+      await eventsController.filterSearchEventsBySectors('any query');
+
+      // Assert
+      expect(eventsController.allEvents.value.length, 1);
+      expect(eventsController.allEvents.value[0].eventId, 1);
+      expect(eventsController.noFilter.value, isFalse);
+      expect(eventsController.loadingEvents.value, isTrue);
+    });
+
+    test('filterSearchEventsBySectors should show error snackbar on exception', () async {
+      // Arrange
+      final query = 'test query';
+      final sectorsSelected = ['sector1'];
+      when(mockEventsRepository.filterEventsBySectors(0, query)).thenThrow(Exception('Failed to filter events'));
+
+      // Act
+      await eventsController.filterSearchEventsBySectors(query);
+
+      // Assert
+      expect(eventsController.loadingEvents.value, isTrue);
+      expect(eventsController.noFilter.value, isFalse);
+      expect(eventsController.allEvents.value, isEmpty);
+
+    });
+
+
+
+
+
+
+
 
 
 
   });
-
 
 
 

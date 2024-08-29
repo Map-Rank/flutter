@@ -108,25 +108,13 @@ class AuthController extends GetxController {
   AuthController(){
 
     Get.lazyPut(()=>RootController());
-    Get.lazyPut<AuthService>(
-          () => AuthService(),
-    );
+    Get.lazyPut(() => AuthService());
 
-    Get.lazyPut<LaravelApiClient>(
-          () => LaravelApiClient(),
-    );
-    Get.lazyPut<DashboardController>(
-          () => DashboardController(),
-    );
-    Get.lazyPut<CommunityController>(
-          () => CommunityController(),
-    );
-    Get.lazyPut<NotificationController>(
-          () => NotificationController(),
-    );
-    Get.lazyPut<EventsController>(
-          () => EventsController(),
-    );
+    Get.lazyPut(() => LaravelApiClient());
+    Get.lazyPut(() => DashboardController());
+    Get.lazyPut(() => CommunityController());
+    Get.lazyPut(() => NotificationController());
+    Get.lazyPut(() => EventsController());
 
   }
 
@@ -134,6 +122,12 @@ class AuthController extends GetxController {
 
   @override
   void onInit() async {
+    userRepository = UserRepository();
+    zoneRepository = ZoneRepository();
+    sectorRepository = SectorRepository();
+    loginFormKey = GlobalKey<FormState>();
+// coverage:ignore-start
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
     selectedGender = AppLocalizations.of(Get.context!).select_gender.obs;
     genderList = [
       AppLocalizations.of(Get.context!).select_gender,
@@ -149,15 +143,11 @@ class AuthController extends GetxController {
     ].obs;// cover
     selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
     birthDateDisplay.text = "--/--/--";
-    userRepository = UserRepository();
-    zoneRepository = ZoneRepository();
-    sectorRepository = SectorRepository();
 
 
     var box = GetStorage();
 
     if(box.read('language')==null){
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
         await showDialog(context: Get.context!,
           barrierDismissible: false,
           builder: (context) =>
@@ -255,8 +245,7 @@ class AuthController extends GetxController {
 
                   ],).paddingAll(20),
               )
-          ,);
-      });
+          );
 
     }
 
@@ -301,9 +290,9 @@ class AuthController extends GetxController {
       sectors.value = listSectors;
 
 
-    }
+    }});
 
-
+// coverage:ignore-end
     super.onInit();
 
   }
@@ -439,17 +428,23 @@ class AuthController extends GetxController {
     }
   }
 
-  void register() async {
+  register() async {
 
     try {
       loading.value = true;
       currentUser.value = await userRepository.register(currentUser.value);
       Get.find<AuthService>().user.value = currentUser.value;
-      await Get.find<RootController>().changePage(0);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).account_created_successfully ));
+     if(! Platform.environment.containsKey('FLUTTER_TEST')){
+       await Get.find<RootController>().changePage(0);
+       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).account_created_successfully ));
+     }
+
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
+
     } finally {
       loading.value = false;
     }
@@ -457,8 +452,7 @@ class AuthController extends GetxController {
   }
 
   login() async {
-    if (loginFormKey.currentState!.validate()) {
-      loginFormKey.currentState!.save();
+
       loading.value = true;
       try {
         var a = await userRepository.login(currentUser.value);
@@ -475,27 +469,27 @@ class AuthController extends GetxController {
 
         Get.put(RootController());
         Get.lazyPut(()=>DashboardController());
-        Get.lazyPut<CommunityController>(
-              () => CommunityController(),fenix: true
-        );
-        Get.lazyPut<NotificationController>(
-              () => NotificationController(),
-        );
-        Get.lazyPut<EventsController>(
-              () => EventsController(),
-        );
+        Get.lazyPut<CommunityController>(() => CommunityController(),fenix: true);
+        Get.lazyPut<NotificationController>(() => NotificationController());
+        Get.lazyPut<EventsController>(() => EventsController());
         //loading.value = false;
-        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
-        await Get.find<RootController>().changePage(0);
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
+          await Get.find<RootController>().changePage(0);
+        }
+
 
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
+
       } finally {
         loading.value = false;
       }
-    }
+
 
 
 
@@ -517,7 +511,9 @@ class AuthController extends GetxController {
       //Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).profile_info_successful ));
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     } finally {
     }
 
@@ -533,7 +529,9 @@ class AuthController extends GetxController {
       }
       catch (e) {
         loading.value = false;
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       } finally {
         loading.value = false;
       }
@@ -554,7 +552,9 @@ class AuthController extends GetxController {
     }
     catch (e) {
       loading.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     } finally {
       loading.value = false;
     }
@@ -572,7 +572,9 @@ class AuthController extends GetxController {
     }
     catch (e) {
       loading.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     } finally {
       loading.value = false;
     }

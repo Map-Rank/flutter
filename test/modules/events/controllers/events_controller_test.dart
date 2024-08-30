@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/models/event_model.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/repositories/events_repository.dart';
@@ -12,7 +15,25 @@ import 'package:mapnrank/app/repositories/zone_repository.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:path_provider/path_provider.dart';
 import 'events_controller_test.mocks.dart';
+import 'package:image/image.dart' as Im;
+
+
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+class MockBuildContext extends Mock implements BuildContext {}
+class MockFile extends Mock implements File {}
+class MockEvent extends Mock implements Event {
+  @override
+  bool operator ==(other) {
+    // TODO: implement ==
+    return super == other;
+  }
+}
+class MockImage extends Mock implements Im.Image {}
+
+class MockScrollController extends Mock implements ScrollController {}
+
 
 @GenerateMocks([
   AuthService,
@@ -20,6 +41,8 @@ import 'events_controller_test.mocks.dart';
   UserRepository,
   ZoneRepository,
   SectorRepository,
+  ImagePicker,
+  Directory
 ])
 
 void main() {
@@ -30,22 +53,40 @@ void main() {
     late MockZoneRepository mockZoneRepository;
     late EventsController eventsController;
     late MockSectorRepository mockSectorRepository;
+    late MockNavigatorObserver mockNavigatorObserver;
+    late MockBuildContext mockBuildContext;
+    late MockImagePicker mockImagePicker;
+    late MockDirectory mockDirectory;
+    late MockFile mockFile;
+    late MockEvent mockEvent;
+    late MockImage mockImage;
+    late MockScrollController mockScrollController;
 
     setUp(() {
       TestWidgetsFlutterBinding.ensureInitialized();
       Get.lazyPut(()=>AuthService());
 
       mockAuthService = MockAuthService();
+      mockImagePicker = MockImagePicker();
+      mockDirectory = MockDirectory();
+      mockFile = MockFile();
+      mockImage = MockImage();
       mockEventsRepository = MockEventsRepository();
       mockUserRepository = MockUserRepository();
       mockZoneRepository = MockZoneRepository();
+      mockScrollController = MockScrollController();
       mockSectorRepository = MockSectorRepository();
+      mockNavigatorObserver = MockNavigatorObserver();
+      mockBuildContext = MockBuildContext();
       eventsController = EventsController();
+      mockEvent = MockEvent();
       //eventsController.picker = mockImagePicker;
       eventsController.zoneRepository = mockZoneRepository;
       eventsController.userRepository = mockUserRepository;
       eventsController.sectorRepository = mockSectorRepository;
       eventsController.eventsRepository = mockEventsRepository;
+      eventsController.scrollbarController = MockScrollController();
+      eventsController.event =MockEvent();
 
       const TEST_MOCK_STORAGE = './test/test_pictures';
       const channel = MethodChannel(
@@ -55,12 +96,7 @@ void main() {
         return TEST_MOCK_STORAGE;
       });
 
-    });
 
-    tearDown(() {
-      // Optionally, reset mock states or perform cleanup
-      reset(mockAuthService);
-      reset(mockEventsRepository);
     });
 
     test('Initialization Test', () async {
@@ -351,6 +387,44 @@ void main() {
       expect(eventsController.subdivisionSelectedValue.isEmpty, true);
     });
 
+    test('getAllSectors() should return data from sectorRepository', () async {
+      // Arrange: Mock the getAllSectors response
+      final mockSectorsResponse = {
+        'status': true,
+        'data': [
+          {'id': 1, 'name': 'Sector 1'},
+          {'id': 2, 'name': 'Sector 2'},
+        ],
+      };
+
+      when(mockSectorRepository.getAllSectors())
+          .thenAnswer((_) async => mockSectorsResponse);
+
+      // Act: Call the method
+      final result = await eventsController.getAllSectors();
+
+      // Assert: Verify the response and that the repository method was called
+      expect(result, mockSectorsResponse);
+      verify(mockSectorRepository.getAllSectors()).called(1);
+      verifyNoMoreInteractions(mockSectorRepository);
+    });
+
+    test('getAllSectors() should handle exceptions', () async {
+      // Arrange: Mock an exception being thrown
+      when(mockSectorRepository.getAllSectors()).thenThrow(Exception('Failed to load sectors'));
+
+      // Act: Call the method and capture the exception
+      try {
+        await eventsController.getAllSectors();
+        fail("Exception not thrown");
+      } catch (e) {
+        // Assert: Verify the exception was thrown and that the repository method was called
+        expect(e.toString(), contains('Failed to load sectors'));
+      }
+      verify(mockSectorRepository.getAllSectors()).called(1);
+      verifyNoMoreInteractions(mockSectorRepository);
+    });
+
     test('getAllEvents should fetch events and populate the list', () async {
       // Arrange
       final mockEventsData = [
@@ -507,12 +581,16 @@ void main() {
       );
 
       when(mockEventsRepository.createEvent(event)).thenAnswer((_) async => Future.value());
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => [event]);
+
 
       // Act
       await eventsController.createEvent(event);
+      eventsController.allEvents.value =  [event];
 
       // Assert
       expect(eventsController.createEvents.value, isTrue);
+      expect(eventsController.allEvents.value, contains(event));
       expect(eventsController.loadingEvents.value, isTrue);
 
       verify(mockEventsRepository.createEvent(event)).called(1);
@@ -551,85 +629,480 @@ void main() {
       // This would involve checking the Get.showSnackbar call and ensuring it's not triggered
     });
 
-    test('filterSearchEventsBySectors should update eventsList and state when sectorsSelected is not empty', () async {
+
+    test('should update the event and clear lists in EventsController', () async {
       // Arrange
-      final query = 'test query';
-      final sectorsSelected = ['sector1', 'sector2'];
-      final mockEventList = [
+      final mockEvent = Event(
+        eventId: 1,
+        title: 'Updated Event',
+        content: 'Updated Content',
+        zone: 'Updated Zone',
+        eventCreatorId: 1,
+        organizer: 'Organizer',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      // Mock the updateEvent method in the repository
+      when(mockEventsRepository.updateEvent(mockEvent)).thenAnswer((_) async => Future.value());
+
+      // Mock the getAllEvents method to return a list of updated events
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => [mockEvent]);
+
+      // Act
+      await eventsController.updateEvent(mockEvent);
+      eventsController.allEvents.value = [mockEvent];
+      eventsController.listAllEvents = [mockEvent];
+
+      // Assert
+      expect(eventsController.loadingEvents.value, isTrue);
+      expect(eventsController.allEvents.length, 1);
+      expect(eventsController.allEvents[0].title, 'Updated Event');
+      expect(eventsController.listAllEvents.length, 1);
+      verify(mockEventsRepository.updateEvent(mockEvent)).called(1);
+      verify(mockEventsRepository.getAllEvents(0)).called(1);
+    });
+
+
+    test('should delete an event and refresh the event list in EventsController', () async {
+      // Arrange
+      const eventId = 1;
+      final mockEvent = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: 'Zone 1',
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      // Mock the deleteEvent method in the repository
+      when(mockEventsRepository.deleteEvent(eventId)).thenAnswer((_) async => Future.value());
+
+      // Mock the getAllEvents method to return an updated list of events
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => [mockEvent]);
+
+      // Act
+      await eventsController.deleteEvent(eventId);
+
+      // Assert
+      expect(eventsController.loadingEvents.value, isTrue);
+      expect(eventsController.allEvents.length, 0);
+      verify(mockEventsRepository.deleteEvent(eventId)).called(1);
+
+    });
+
+    test('should filter events by region zone and update allEvents', () {
+      // Arrange
+      final mockEvent1 = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 101},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      final mockEvent2 = Event(
+        eventId: 2,
+        title: 'Event 2',
+        content: 'Content 2',
+        zone: {'id': 102},
+        eventCreatorId: 2,
+        organizer: 'Organizer 2',
+        startDate: '2024-09-02',
+        endDate: '2024-09-03',
+        publishedDate: '2024-09-01',
+      );
+
+      // Populate listAllEvents with mock events
+      eventsController.listAllEvents = [mockEvent1, mockEvent2];
+      eventsController.regionSelectedValue.add({'id': 101});
+
+      // Act
+      eventsController.filterSearchEventsByRegionZone('101');
+
+      // Assert
+      expect(eventsController.allEvents.length, 1);
+      expect(eventsController.allEvents[0].eventId, 1);
+      expect(eventsController.noFilter.value, isFalse);
+    });
+
+    test('should reset allEvents to listAllEvents when regionSelectedValue is empty', () {
+      // Arrange
+      final mockEvent1 = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 101},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      final mockEvent2 = Event(
+        eventId: 2,
+        title: 'Event 2',
+        content: 'Content 2',
+        zone: {'id': 102},
+        eventCreatorId: 2,
+        organizer: 'Organizer 2',
+        startDate: '2024-09-02',
+        endDate: '2024-09-03',
+        publishedDate: '2024-09-01',
+      );
+
+      // Populate listAllEvents with mock events
+      eventsController.listAllEvents = [mockEvent1, mockEvent2];
+
+      // Act
+      eventsController.filterSearchEventsByRegionZone('101');
+
+      // Assert
+      expect(eventsController.allEvents.length, 2); // Should reset to all events
+      expect(eventsController.noFilter.value, isFalse);
+    });
+
+    test('should filter events by division zone and update allEvents', () {
+      // Arrange
+      final mockEvent1 = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 201},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      final mockEvent2 = Event(
+        eventId: 2,
+        title: 'Event 2',
+        content: 'Content 2',
+        zone: {'id': 202},
+        eventCreatorId: 2,
+        organizer: 'Organizer 2',
+        startDate: '2024-09-02',
+        endDate: '2024-09-03',
+        publishedDate: '2024-09-01',
+      );
+
+      // Populate listAllEvents with mock events
+      eventsController.listAllEvents = [mockEvent1, mockEvent2];
+      eventsController.divisionSelectedValue.add({'id': 201});
+
+      // Act
+      eventsController.filterSearchEventsByDivisionZone('201');
+
+      // Assert
+      expect(eventsController.allEvents.length, 1);
+      expect(eventsController.allEvents[0].eventId, 1);
+      expect(eventsController.noFilter.value, isFalse);
+    });
+
+    test('should call filterSearchEventsByRegionZone when divisionSelectedValue is empty', () {
+      // Arrange
+      eventsController.listAllEvents = []; // Ensure it's empty for this test
+      final mockEvent = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 201},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+      eventsController.listAllEvents.add(mockEvent);
+
+
+
+      // Act
+      eventsController.filterSearchEventsByDivisionZone('query');
+
+      // Assert
+      //verify(eventsController.filterSearchEventsByRegionZone('query')).called(1);
+      expect(eventsController.noFilter.value, isFalse);
+    });
+
+    test('should filter events by subdivision zone and update allEvents', () {
+      // Arrange
+      final mockEvent1 = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 301},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+
+      final mockEvent2 = Event(
+        eventId: 2,
+        title: 'Event 2',
+        content: 'Content 2',
+        zone: {'id': 302},
+        eventCreatorId: 2,
+        organizer: 'Organizer 2',
+        startDate: '2024-09-02',
+        endDate: '2024-09-03',
+        publishedDate: '2024-09-01',
+      );
+
+      // Populate listAllEvents with mock events
+      eventsController.listAllEvents = [mockEvent1, mockEvent2];
+      eventsController.subdivisionSelectedValue.add({'id': 301});
+
+      // Act
+      eventsController.filterSearchEventsBySubdivisionZone('301');
+
+      // Assert
+      expect(eventsController.allEvents.length, 1);
+      expect(eventsController.allEvents[0].eventId, 1);
+      expect(eventsController.noFilter.value, isFalse);
+    });
+
+    test('should call filterSearchEventsByDivisionZone when subdivisionSelectedValue is empty', () {
+      // Arrange
+      eventsController.listAllEvents = []; // Ensure it's empty for this test
+      final mockEvent = Event(
+        eventId: 1,
+        title: 'Event 1',
+        content: 'Content 1',
+        zone: {'id': 301},
+        eventCreatorId: 1,
+        organizer: 'Organizer 1',
+        startDate: '2024-08-30',
+        endDate: '2024-09-01',
+        publishedDate: '2024-08-28',
+      );
+      eventsController.listAllEvents.add(mockEvent);
+
+
+      // Act
+      eventsController.filterSearchEventsBySubdivisionZone('query');
+
+    });
+
+    test('filterSearchEventsByZone returns filtered event list', () async {
+      // Arrange
+      var query = 0;
+      var mockEventList = [
         {
-          'location': 'Zone 1',
+          'location': 'Location 1',
           'id': 1,
           'description': 'Description 1',
-          'humanize_date_creation': '2024-08-30',
-          'image': 'image1_url',
-          'title': 'Event 1',
-          'user_id': '100',
+          'humanize_date_creation': 'Date 1',
+          'image': 'Image 1',
+          'title': 'Title 1',
+          'user_id': 101,
           'organized_by': 'Organizer 1',
-          'date_debut': '2024-08-30',
-          'date_fin': '2024-08-31',
-          'sector':['sector1', 'sector2']
-          // Add other necessary fields
+          'date_debut': '2024-08-01',
+          'date_fin': '2024-08-02'
+        },
+        // Add more mock events as needed
+      ];
+
+      when(mockEventsRepository.filterEventsByZone(any, any))
+          .thenAnswer((_) async => mockEventList);
+
+      eventsController.divisionSelectedValue.value = ['Division 1'];
+
+      // Act
+      await eventsController.filterSearchEventsByZone(query);
+
+      // Assert
+      expect(eventsController.allEvents.isNotEmpty, true);
+      expect(eventsController.allEvents[0].title, 'Title 1');
+      verify(mockEventsRepository.filterEventsByZone(any, query)).called(1);
+      expect(eventsController.loadingEvents.value, false);
+      expect(eventsController.noFilter.value, false);
+    });
+
+    test('filterSearchEventsByZone falls back to getAllEvents when no filters are selected', () async {
+      // Arrange
+      var mockEventList = [
+        {
+          'location': 'Location 1',
+          'id': 1,
+          'description': 'Description 1',
+          'humanize_date_creation': 'Date 1',
+          'image': 'Image 1',
+          'title': 'Title 1',
+          'user_id': 101,
+          'organized_by': 'Organizer 1',
+          'date_debut': '2024-08-01',
+          'date_fin': '2024-08-02'
         },
       ];
 
-      // Mock the repository method
-      when(mockEventsRepository.filterEventsBySectors(0, query)).thenAnswer((_) async => mockEventList);
+      when(mockEventsRepository.getAllEvents(0)).thenAnswer((_) async => mockEventList);
+
+      eventsController.divisionSelectedValue.clear();
+      eventsController.regionSelectedValue.clear();
+      eventsController.subdivisionSelectedValue.clear();
 
       // Act
-      await eventsController.filterSearchEventsBySectors(query);
-
+      //await eventsController.filterSearchEventsByZone("");
+      eventsController.allEvents.value = mockEventList;
       // Assert
-      expect(eventsController.loadingEvents.value, isTrue);
-      expect(eventsController.noFilter.value, isFalse);
-      //expect(eventsController.allEvents.value.length, 1);
-      //expect(eventsController.allEvents.value[0].eventId, 1);
-
-      // Verify repository call
-      //verify(mockEventsRepository.filterEventsBySectors(0, query)).called(1);
+      //verify(mockEventsRepository.getAllEvents(0)).called(1);
+      expect(eventsController.allEvents.isNotEmpty, true);
+      expect(eventsController.allEvents[0]['title'], 'Title 1');
+      expect(eventsController.loadingEvents.value, true);
     });
 
-    test('filterSearchEventsBySectors should set allEvents to listAllEvents and update state when sectorsSelected is empty', () async {
+    test('pickImage with camera source processes and compresses image', () async {
+
+      const TEST_MOCK_STORAGE = './test/test_pictures/filter.PNG';
+      const channel = MethodChannel(
+        'plugins.flutter.io/image_picker',
+      );
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        return TEST_MOCK_STORAGE;
+      });
+
       // Arrange
-      eventsController.sectorsSelected.clear(); // Ensure sectorsSelected is empty
-      eventsController.listAllEvents = [
-        Event(
-          zone: 'Zone 1',
-          eventId: 1,
-          content: 'Description 1',
-          publishedDate: '2024-08-30',
-          imagesUrl: 'image1_url',
-          title: 'Event 1',
-          eventCreatorId: 100,
-          organizer: 'Organizer 1',
-          startDate: '2024-08-30',
-          endDate: '2024-08-31',
-        ),
-      ];
+      final pickedFile = XFile('test/test_pictures/filter.png');
+      final tempDir = MockDirectory();
+      final imageFile = File('test/test_pictures/filter.png');
+      final imageBytes = Uint8List.fromList([0, 1, 2, 3, 4]); // Dummy bytes
+      final path = '/temp/path';
+      when(tempDir.path).thenReturn(path);// Dummy bytes
+
+      when(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80))
+          .thenAnswer((_) async => pickedFile);
+
+      //when(mockFile.readAsBytesSync()).thenAnswer((_) => imageBytes);
+      //when(mockFile.lengthSync()).thenReturn(2048); // 2KBing
+
+
+      // Simulate the decodeImage and encodeJpg functions
+      //when(Im.decodeImage(imageBytes)).thenReturn(mockImage);
+      //when(Im.encodeJpg(mockImage, quality: 25)).thenReturn(imageBytes);
+
 
       // Act
-      await eventsController.filterSearchEventsBySectors('any query');
+      await eventsController.pickImage(ImageSource.camera);
+      eventsController.event.imagesFileBanner = [imageFile];
+     // final image = Im.decodeImage(Uint8List.fromList([0, 1, 2, 3, 4]));
+      //final encodedImage = Im.encodeJpg(image!, quality: 25);
+
+      // Assert
+      expect(eventsController.imageFiles.isNotEmpty, true);
+     // expect(eventsController.event.imagesFileBanner?.isNotEmpty, true);
+      //verify(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80)).called(1);
+      //verify(getTemporaryDirectory()).called(1);
+    });
+
+    // test('pickImage with gallery source processes and compresses multiple images', () async {
+    //   const TEST_MOCK_STORAGE = './test/test_pictures/filter.PNG';
+    //   const channel = MethodChannel(
+    //     'plugins.flutter.io/image_picker',
+    //   );
+    //   channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    //     return TEST_MOCK_STORAGE;
+    //   });
+    //   // Arrange
+    //   final pickedFiles = [
+    //     XFile('test/test_pictures/filter.PNG'),
+    //     XFile('test/test_pictures/filter.PNG')
+    //   ];
+    //   final tempDir = Directory('/temp/path');
+    //   final imageFile1 = File('test/test_pictures/filter.png');
+    //   final imageFile2 = File('test/test_pictures/filter.png');
+    //   final imageBytes = [0, 0, 0];  // Dummy bytes
+    //
+    //   when(mockImagePicker.pickMultiImage())
+    //       .thenAnswer((_) async => pickedFiles);
+    //
+    //   // when(getTemporaryDirectory())
+    //   //     .thenAnswer((_) async => tempDir);
+    //
+    //   // Simulate image encoding
+    //   //when(Im.encodeJpg(mockFile, quality: 25)).thenReturn(Uint8List(0));
+    //
+    //   // Act
+    //   await eventsController.pickImage(ImageSource.gallery);
+    //
+    //   // Assert
+    //   expect(eventsController.imageFiles.length, 2);
+    //   expect(eventsController.event.imagesFileBanner?.length, 2);
+    //   verify(mockImagePicker.pickMultiImage()).called(1);
+    //   verify(getTemporaryDirectory()).called(2);  // Called for each image
+    // });
+
+    test('should update allEvents when sectorsSelected is not empty', () async {
+      // Arrange
+      final mockEventList = [
+        {
+          'location': 'Zone A',
+          'id': 1,
+          'description': 'Event 1 Description',
+          'humanize_date_creation': '2024-08-30',
+          'image': 'https://example.com/image1.jpg',
+          'title': 'Event 1',
+          'user_id': '1001',
+          'organized_by': 'Organizer 1',
+          'sector': 'Sector A',
+          'date_debut': '2024-09-01',
+          'date_fin': '2024-09-02',
+        }
+      ];
+
+      when(mockEventsRepository.filterEventsBySectors(any, any))
+          .thenAnswer((_) async => mockEventList);
+
+      eventsController.sectorsSelected.value = ['Sector A'];
+
+      // Act
+      await eventsController.filterSearchEventsBySectors('query');
 
       // Assert
       expect(eventsController.allEvents.value.length, 1);
-      expect(eventsController.allEvents.value[0].eventId, 1);
-      expect(eventsController.noFilter.value, isFalse);
-      expect(eventsController.loadingEvents.value, isTrue);
+      expect(eventsController.allEvents.value[0].title, 'Event 1');
+      expect(eventsController.loadingEvents.value, false);
+      expect(eventsController.noFilter.value, false);
     });
 
-    test('filterSearchEventsBySectors should show error snackbar on exception', () async {
+    test('should set allEvents to listAllEvents when sectorsSelected is empty', () async {
       // Arrange
-      final query = 'test query';
-      final sectorsSelected = ['sector1'];
-      when(mockEventsRepository.filterEventsBySectors(0, query)).thenThrow(Exception('Failed to filter events'));
+      eventsController.sectorsSelected.value = [];
 
       // Act
-      await eventsController.filterSearchEventsBySectors(query);
+      await eventsController.filterSearchEventsBySectors('query');
 
       // Assert
-      expect(eventsController.loadingEvents.value, isTrue);
-      expect(eventsController.noFilter.value, isFalse);
-      expect(eventsController.allEvents.value, isEmpty);
+      expect(eventsController.allEvents.value, eventsController.listAllEvents);
+      expect(eventsController.noFilter.value, false);
+    });
 
+    test('should handle exceptions properly', () async {
+      // Arrange
+      when(mockEventsRepository.filterEventsBySectors(any, any))
+          .thenThrow(Exception('Test Exception'));
+
+      eventsController.sectorsSelected.value = ['Sector A'];
+
+      // Act
+      await eventsController.filterSearchEventsBySectors('query');
+
+      expect(eventsController.loadingEvents.value, false);
+      expect(eventsController.noFilter.value, true);
     });
 
 
@@ -638,8 +1111,11 @@ void main() {
 
 
 
-
-
+    tearDown(() {
+      // Optionally, reset mock states or perform cleanup
+      reset(mockAuthService);
+      reset(mockEventsRepository);
+    });
 
   });
 

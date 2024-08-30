@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/events/widgets/buildSelectSector.dart';
@@ -320,4 +322,6 @@ class EventsView extends GetView<EventsController> {
       ),
     );
   }
+
+
 }

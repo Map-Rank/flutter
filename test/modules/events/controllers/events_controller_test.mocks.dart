@@ -3,18 +3,23 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i7;
+import 'dart:io' as _i5;
 
 import 'package:get/get.dart' as _i2;
-import 'package:mapnrank/app/models/event_model.dart' as _i7;
-import 'package:mapnrank/app/models/feedback_model.dart' as _i9;
-import 'package:mapnrank/app/models/user_model.dart' as _i4;
-import 'package:mapnrank/app/repositories/events_repository.dart' as _i6;
-import 'package:mapnrank/app/repositories/sector_repository.dart' as _i11;
-import 'package:mapnrank/app/repositories/user_repository.dart' as _i8;
-import 'package:mapnrank/app/repositories/zone_repository.dart' as _i10;
+import 'package:image_picker/image_picker.dart' as _i14;
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart'
+    as _i4;
+import 'package:mapnrank/app/models/event_model.dart' as _i9;
+import 'package:mapnrank/app/models/feedback_model.dart' as _i11;
+import 'package:mapnrank/app/models/user_model.dart' as _i6;
+import 'package:mapnrank/app/repositories/events_repository.dart' as _i8;
+import 'package:mapnrank/app/repositories/sector_repository.dart' as _i13;
+import 'package:mapnrank/app/repositories/user_repository.dart' as _i10;
+import 'package:mapnrank/app/repositories/zone_repository.dart' as _i12;
 import 'package:mapnrank/app/services/auth_service.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i15;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -60,6 +65,58 @@ class _FakeAuthService_2 extends _i1.SmartFake implements _i3.AuthService {
         );
 }
 
+class _FakeLostDataResponse_3 extends _i1.SmartFake
+    implements _i4.LostDataResponse {
+  _FakeLostDataResponse_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeUri_4 extends _i1.SmartFake implements Uri {
+  _FakeUri_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeDirectory_5 extends _i1.SmartFake implements _i5.Directory {
+  _FakeDirectory_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeFileSystemEntity_6 extends _i1.SmartFake
+    implements _i5.FileSystemEntity {
+  _FakeFileSystemEntity_6(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeFileStat_7 extends _i1.SmartFake implements _i5.FileStat {
+  _FakeFileStat_7(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -69,16 +126,16 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
   }
 
   @override
-  _i2.Rx<_i4.UserModel> get user => (super.noSuchMethod(
+  _i2.Rx<_i6.UserModel> get user => (super.noSuchMethod(
         Invocation.getter(#user),
-        returnValue: _FakeRx_0<_i4.UserModel>(
+        returnValue: _FakeRx_0<_i6.UserModel>(
           this,
           Invocation.getter(#user),
         ),
-      ) as _i2.Rx<_i4.UserModel>);
+      ) as _i2.Rx<_i6.UserModel>);
 
   @override
-  set user(_i2.Rx<_i4.UserModel>? _user) => super.noSuchMethod(
+  set user(_i2.Rx<_i6.UserModel>? _user) => super.noSuchMethod(
         Invocation.setter(
           #user,
           _user,
@@ -123,37 +180,37 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
       ) as bool);
 
   @override
-  _i5.Future<_i3.AuthService> init() => (super.noSuchMethod(
+  _i7.Future<_i3.AuthService> init() => (super.noSuchMethod(
         Invocation.method(
           #init,
           [],
         ),
-        returnValue: _i5.Future<_i3.AuthService>.value(_FakeAuthService_2(
+        returnValue: _i7.Future<_i3.AuthService>.value(_FakeAuthService_2(
           this,
           Invocation.method(
             #init,
             [],
           ),
         )),
-      ) as _i5.Future<_i3.AuthService>);
+      ) as _i7.Future<_i3.AuthService>);
 
   @override
-  _i5.Future<dynamic> getCurrentUser() => (super.noSuchMethod(
+  _i7.Future<dynamic> getCurrentUser() => (super.noSuchMethod(
         Invocation.method(
           #getCurrentUser,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> removeCurrentUser() => (super.noSuchMethod(
+  _i7.Future<dynamic> removeCurrentUser() => (super.noSuchMethod(
         Invocation.method(
           #removeCurrentUser,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
   void onInit() => super.noSuchMethod(
@@ -195,7 +252,7 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
 /// A class which mocks [EventsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEventsRepository extends _i1.Mock implements _i6.EventsRepository {
+class MockEventsRepository extends _i1.Mock implements _i8.EventsRepository {
   MockEventsRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -207,7 +264,7 @@ class MockEventsRepository extends _i1.Mock implements _i6.EventsRepository {
       ));
 
   @override
-  _i5.Future<dynamic> filterEventsByZone(
+  _i7.Future<dynamic> filterEventsByZone(
     int? page,
     int? zoneId,
   ) =>
@@ -219,11 +276,11 @@ class MockEventsRepository extends _i1.Mock implements _i6.EventsRepository {
             zoneId,
           ],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> filterEventsBySectors(
+  _i7.Future<dynamic> filterEventsBySectors(
     int? page,
     dynamic sectors,
   ) =>
@@ -235,165 +292,165 @@ class MockEventsRepository extends _i1.Mock implements _i6.EventsRepository {
             sectors,
           ],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> createEvent(_i7.Event? event) => (super.noSuchMethod(
+  _i7.Future<dynamic> createEvent(_i9.Event? event) => (super.noSuchMethod(
         Invocation.method(
           #createEvent,
           [event],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> updateEvent(_i7.Event? event) => (super.noSuchMethod(
+  _i7.Future<dynamic> updateEvent(_i9.Event? event) => (super.noSuchMethod(
         Invocation.method(
           #updateEvent,
           [event],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> deleteEvent(int? eventId) => (super.noSuchMethod(
+  _i7.Future<dynamic> deleteEvent(int? eventId) => (super.noSuchMethod(
         Invocation.method(
           #deleteEvent,
           [eventId],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> getAnEvent(int? eventId) => (super.noSuchMethod(
+  _i7.Future<dynamic> getAnEvent(int? eventId) => (super.noSuchMethod(
         Invocation.method(
           #getAnEvent,
           [eventId],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 }
 
 /// A class which mocks [UserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserRepository extends _i1.Mock implements _i8.UserRepository {
+class MockUserRepository extends _i1.Mock implements _i10.UserRepository {
   MockUserRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<dynamic> login(_i4.UserModel? user) => (super.noSuchMethod(
+  _i7.Future<dynamic> login(_i6.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #login,
           [user],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> logout<int>() => (super.noSuchMethod(
+  _i7.Future<dynamic> logout<int>() => (super.noSuchMethod(
         Invocation.method(
           #logout,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> deleteAccount<int>() => (super.noSuchMethod(
+  _i7.Future<dynamic> deleteAccount<int>() => (super.noSuchMethod(
         Invocation.method(
           #deleteAccount,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> register(_i4.UserModel? user) => (super.noSuchMethod(
+  _i7.Future<dynamic> register(_i6.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #register,
           [user],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> getUser() => (super.noSuchMethod(
+  _i7.Future<dynamic> getUser() => (super.noSuchMethod(
         Invocation.method(
           #getUser,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> updateUser(_i4.UserModel? user) => (super.noSuchMethod(
+  _i7.Future<dynamic> updateUser(_i6.UserModel? user) => (super.noSuchMethod(
         Invocation.method(
           #updateUser,
           [user],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> signOut() => (super.noSuchMethod(
+  _i7.Future<dynamic> signOut() => (super.noSuchMethod(
         Invocation.method(
           #signOut,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> resetPassword(String? email) => (super.noSuchMethod(
+  _i7.Future<dynamic> resetPassword(String? email) => (super.noSuchMethod(
         Invocation.method(
           #resetPassword,
           [email],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> followUser(int? userId) => (super.noSuchMethod(
+  _i7.Future<dynamic> followUser(int? userId) => (super.noSuchMethod(
         Invocation.method(
           #followUser,
           [userId],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> unfollowUser(int? userId) => (super.noSuchMethod(
+  _i7.Future<dynamic> unfollowUser(int? userId) => (super.noSuchMethod(
         Invocation.method(
           #unfollowUser,
           [userId],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> sendFeedback(_i9.FeedbackModel? feedbackModel) =>
+  _i7.Future<dynamic> sendFeedback(_i11.FeedbackModel? feedbackModel) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendFeedback,
           [feedbackModel],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 }
 
 /// A class which mocks [ZoneRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockZoneRepository extends _i1.Mock implements _i10.ZoneRepository {
+class MockZoneRepository extends _i1.Mock implements _i12.ZoneRepository {
   MockZoneRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<dynamic> getAllRegions(
+  _i7.Future<dynamic> getAllRegions(
     int? levelId,
     int? parentId,
   ) =>
@@ -405,11 +462,11 @@ class MockZoneRepository extends _i1.Mock implements _i10.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> getAllDivisions(
+  _i7.Future<dynamic> getAllDivisions(
     int? levelId,
     int? parentId,
   ) =>
@@ -421,11 +478,11 @@ class MockZoneRepository extends _i1.Mock implements _i10.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> getAllSubdivisions(
+  _i7.Future<dynamic> getAllSubdivisions(
     int? levelId,
     int? parentId,
   ) =>
@@ -437,33 +494,475 @@ class MockZoneRepository extends _i1.Mock implements _i10.ZoneRepository {
             parentId,
           ],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 
   @override
-  _i5.Future<dynamic> getSpecificZone(int? zoneId) => (super.noSuchMethod(
+  _i7.Future<dynamic> getSpecificZone(int? zoneId) => (super.noSuchMethod(
         Invocation.method(
           #getSpecificZone,
           [zoneId],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 }
 
 /// A class which mocks [SectorRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSectorRepository extends _i1.Mock implements _i11.SectorRepository {
+class MockSectorRepository extends _i1.Mock implements _i13.SectorRepository {
   MockSectorRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<dynamic> getAllSectors() => (super.noSuchMethod(
+  _i7.Future<dynamic> getAllSectors() => (super.noSuchMethod(
         Invocation.method(
           #getAllSectors,
           [],
         ),
-        returnValue: _i5.Future<dynamic>.value(),
-      ) as _i5.Future<dynamic>);
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
+}
+
+/// A class which mocks [ImagePicker].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImagePicker extends _i1.Mock implements _i14.ImagePicker {
+  MockImagePicker() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i7.Future<_i4.XFile?> pickImage({
+    required _i4.ImageSource? source,
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    _i4.CameraDevice? preferredCameraDevice = _i4.CameraDevice.rear,
+    bool? requestFullMetadata = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pickImage,
+          [],
+          {
+            #source: source,
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #preferredCameraDevice: preferredCameraDevice,
+            #requestFullMetadata: requestFullMetadata,
+          },
+        ),
+        returnValue: _i7.Future<_i4.XFile?>.value(),
+      ) as _i7.Future<_i4.XFile?>);
+
+  @override
+  _i7.Future<List<_i4.XFile>> pickMultiImage({
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    int? limit,
+    bool? requestFullMetadata = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pickMultiImage,
+          [],
+          {
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #limit: limit,
+            #requestFullMetadata: requestFullMetadata,
+          },
+        ),
+        returnValue: _i7.Future<List<_i4.XFile>>.value(<_i4.XFile>[]),
+      ) as _i7.Future<List<_i4.XFile>>);
+
+  @override
+  _i7.Future<_i4.XFile?> pickMedia({
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    bool? requestFullMetadata = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pickMedia,
+          [],
+          {
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #requestFullMetadata: requestFullMetadata,
+          },
+        ),
+        returnValue: _i7.Future<_i4.XFile?>.value(),
+      ) as _i7.Future<_i4.XFile?>);
+
+  @override
+  _i7.Future<List<_i4.XFile>> pickMultipleMedia({
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    int? limit,
+    bool? requestFullMetadata = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pickMultipleMedia,
+          [],
+          {
+            #maxWidth: maxWidth,
+            #maxHeight: maxHeight,
+            #imageQuality: imageQuality,
+            #limit: limit,
+            #requestFullMetadata: requestFullMetadata,
+          },
+        ),
+        returnValue: _i7.Future<List<_i4.XFile>>.value(<_i4.XFile>[]),
+      ) as _i7.Future<List<_i4.XFile>>);
+
+  @override
+  _i7.Future<_i4.XFile?> pickVideo({
+    required _i4.ImageSource? source,
+    _i4.CameraDevice? preferredCameraDevice = _i4.CameraDevice.rear,
+    Duration? maxDuration,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #pickVideo,
+          [],
+          {
+            #source: source,
+            #preferredCameraDevice: preferredCameraDevice,
+            #maxDuration: maxDuration,
+          },
+        ),
+        returnValue: _i7.Future<_i4.XFile?>.value(),
+      ) as _i7.Future<_i4.XFile?>);
+
+  @override
+  _i7.Future<_i4.LostDataResponse> retrieveLostData() => (super.noSuchMethod(
+        Invocation.method(
+          #retrieveLostData,
+          [],
+        ),
+        returnValue:
+            _i7.Future<_i4.LostDataResponse>.value(_FakeLostDataResponse_3(
+          this,
+          Invocation.method(
+            #retrieveLostData,
+            [],
+          ),
+        )),
+      ) as _i7.Future<_i4.LostDataResponse>);
+
+  @override
+  bool supportsImageSource(_i4.ImageSource? source) => (super.noSuchMethod(
+        Invocation.method(
+          #supportsImageSource,
+          [source],
+        ),
+        returnValue: false,
+      ) as bool);
+}
+
+/// A class which mocks [Directory].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDirectory extends _i1.Mock implements _i5.Directory {
+  MockDirectory() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get path => (super.noSuchMethod(
+        Invocation.getter(#path),
+        returnValue: _i15.dummyValue<String>(
+          this,
+          Invocation.getter(#path),
+        ),
+      ) as String);
+
+  @override
+  Uri get uri => (super.noSuchMethod(
+        Invocation.getter(#uri),
+        returnValue: _FakeUri_4(
+          this,
+          Invocation.getter(#uri),
+        ),
+      ) as Uri);
+
+  @override
+  _i5.Directory get absolute => (super.noSuchMethod(
+        Invocation.getter(#absolute),
+        returnValue: _FakeDirectory_5(
+          this,
+          Invocation.getter(#absolute),
+        ),
+      ) as _i5.Directory);
+
+  @override
+  bool get isAbsolute => (super.noSuchMethod(
+        Invocation.getter(#isAbsolute),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i5.Directory get parent => (super.noSuchMethod(
+        Invocation.getter(#parent),
+        returnValue: _FakeDirectory_5(
+          this,
+          Invocation.getter(#parent),
+        ),
+      ) as _i5.Directory);
+
+  @override
+  _i7.Future<_i5.Directory> create({bool? recursive = false}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #create,
+          [],
+          {#recursive: recursive},
+        ),
+        returnValue: _i7.Future<_i5.Directory>.value(_FakeDirectory_5(
+          this,
+          Invocation.method(
+            #create,
+            [],
+            {#recursive: recursive},
+          ),
+        )),
+      ) as _i7.Future<_i5.Directory>);
+
+  @override
+  void createSync({bool? recursive = false}) => super.noSuchMethod(
+        Invocation.method(
+          #createSync,
+          [],
+          {#recursive: recursive},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i7.Future<_i5.Directory> createTemp([String? prefix]) => (super.noSuchMethod(
+        Invocation.method(
+          #createTemp,
+          [prefix],
+        ),
+        returnValue: _i7.Future<_i5.Directory>.value(_FakeDirectory_5(
+          this,
+          Invocation.method(
+            #createTemp,
+            [prefix],
+          ),
+        )),
+      ) as _i7.Future<_i5.Directory>);
+
+  @override
+  _i5.Directory createTempSync([String? prefix]) => (super.noSuchMethod(
+        Invocation.method(
+          #createTempSync,
+          [prefix],
+        ),
+        returnValue: _FakeDirectory_5(
+          this,
+          Invocation.method(
+            #createTempSync,
+            [prefix],
+          ),
+        ),
+      ) as _i5.Directory);
+
+  @override
+  _i7.Future<String> resolveSymbolicLinks() => (super.noSuchMethod(
+        Invocation.method(
+          #resolveSymbolicLinks,
+          [],
+        ),
+        returnValue: _i7.Future<String>.value(_i15.dummyValue<String>(
+          this,
+          Invocation.method(
+            #resolveSymbolicLinks,
+            [],
+          ),
+        )),
+      ) as _i7.Future<String>);
+
+  @override
+  String resolveSymbolicLinksSync() => (super.noSuchMethod(
+        Invocation.method(
+          #resolveSymbolicLinksSync,
+          [],
+        ),
+        returnValue: _i15.dummyValue<String>(
+          this,
+          Invocation.method(
+            #resolveSymbolicLinksSync,
+            [],
+          ),
+        ),
+      ) as String);
+
+  @override
+  _i7.Future<_i5.Directory> rename(String? newPath) => (super.noSuchMethod(
+        Invocation.method(
+          #rename,
+          [newPath],
+        ),
+        returnValue: _i7.Future<_i5.Directory>.value(_FakeDirectory_5(
+          this,
+          Invocation.method(
+            #rename,
+            [newPath],
+          ),
+        )),
+      ) as _i7.Future<_i5.Directory>);
+
+  @override
+  _i5.Directory renameSync(String? newPath) => (super.noSuchMethod(
+        Invocation.method(
+          #renameSync,
+          [newPath],
+        ),
+        returnValue: _FakeDirectory_5(
+          this,
+          Invocation.method(
+            #renameSync,
+            [newPath],
+          ),
+        ),
+      ) as _i5.Directory);
+
+  @override
+  _i7.Future<_i5.FileSystemEntity> delete({bool? recursive = false}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #delete,
+          [],
+          {#recursive: recursive},
+        ),
+        returnValue:
+            _i7.Future<_i5.FileSystemEntity>.value(_FakeFileSystemEntity_6(
+          this,
+          Invocation.method(
+            #delete,
+            [],
+            {#recursive: recursive},
+          ),
+        )),
+      ) as _i7.Future<_i5.FileSystemEntity>);
+
+  @override
+  void deleteSync({bool? recursive = false}) => super.noSuchMethod(
+        Invocation.method(
+          #deleteSync,
+          [],
+          {#recursive: recursive},
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i7.Stream<_i5.FileSystemEntity> list({
+    bool? recursive = false,
+    bool? followLinks = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #list,
+          [],
+          {
+            #recursive: recursive,
+            #followLinks: followLinks,
+          },
+        ),
+        returnValue: _i7.Stream<_i5.FileSystemEntity>.empty(),
+      ) as _i7.Stream<_i5.FileSystemEntity>);
+
+  @override
+  List<_i5.FileSystemEntity> listSync({
+    bool? recursive = false,
+    bool? followLinks = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listSync,
+          [],
+          {
+            #recursive: recursive,
+            #followLinks: followLinks,
+          },
+        ),
+        returnValue: <_i5.FileSystemEntity>[],
+      ) as List<_i5.FileSystemEntity>);
+
+  @override
+  _i7.Future<bool> exists() => (super.noSuchMethod(
+        Invocation.method(
+          #exists,
+          [],
+        ),
+        returnValue: _i7.Future<bool>.value(false),
+      ) as _i7.Future<bool>);
+
+  @override
+  bool existsSync() => (super.noSuchMethod(
+        Invocation.method(
+          #existsSync,
+          [],
+        ),
+        returnValue: false,
+      ) as bool);
+
+  @override
+  _i7.Future<_i5.FileStat> stat() => (super.noSuchMethod(
+        Invocation.method(
+          #stat,
+          [],
+        ),
+        returnValue: _i7.Future<_i5.FileStat>.value(_FakeFileStat_7(
+          this,
+          Invocation.method(
+            #stat,
+            [],
+          ),
+        )),
+      ) as _i7.Future<_i5.FileStat>);
+
+  @override
+  _i5.FileStat statSync() => (super.noSuchMethod(
+        Invocation.method(
+          #statSync,
+          [],
+        ),
+        returnValue: _FakeFileStat_7(
+          this,
+          Invocation.method(
+            #statSync,
+            [],
+          ),
+        ),
+      ) as _i5.FileStat);
+
+  @override
+  _i7.Stream<_i5.FileSystemEvent> watch({
+    int? events = 15,
+    bool? recursive = false,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #watch,
+          [],
+          {
+            #events: events,
+            #recursive: recursive,
+          },
+        ),
+        returnValue: _i7.Stream<_i5.FileSystemEvent>.empty(),
+      ) as _i7.Stream<_i5.FileSystemEvent>);
 }

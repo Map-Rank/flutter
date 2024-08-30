@@ -287,7 +287,9 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       loadingPosts.value = false;
@@ -296,20 +298,6 @@ class CommunityController extends GetxController {
     }
 
   }
-  // filterSearchPostsByName(String query){
-  //   List dummySearchList = [];
-  //   dummySearchList = listAllPosts;
-  //   if(query.isNotEmpty) {
-  //     List dummyListData = [];
-  //     dummyListData = dummySearchList.where((element) => element.user.firstName
-  //         .toString().toLowerCase().contains(query.toLowerCase()) || element.user.lastName
-  //         .toString().toLowerCase().contains(query.toLowerCase())).toList();
-  //     allPosts.value = dummyListData;
-  //     return;
-  //   } else {
-  //     allPosts.value = listAllPosts;
-  //   }
-  // }
 
   filterSearchPostsBySectors(var query)async{
     var postList = [];
@@ -481,8 +469,6 @@ class CommunityController extends GetxController {
       subdivisions.value = listSubdivisions;
     }
   }
-
-
 
   void filterSearchSectors(String query) {
     List dummySearchList = [];
@@ -815,7 +801,9 @@ class CommunityController extends GetxController {
     }
     catch (e) {
       loadingAPost.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 

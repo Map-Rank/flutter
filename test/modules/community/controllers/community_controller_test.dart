@@ -53,6 +53,10 @@ void main() {
       mockZoneRepository = MockZoneRepository();
       mockSectorRepository = MockSectorRepository();
       communityController = CommunityController();
+      communityController.sectorRepository = mockSectorRepository;
+      communityController.userRepository = mockUserRepository;
+      communityController.communityRepository = mockCommunityRepository;
+      communityController.zoneRepository = mockZoneRepository;
       const TEST_MOCK_STORAGE = './test/test_pictures';
       const channel = MethodChannel(
         'plugins.flutter.io/path_provider',
@@ -68,98 +72,146 @@ void main() {
 
     });
 
-    tearDown(() {
-      // Optionally, reset mock states or perform cleanup
-      reset(mockAuthService);
-      reset(mockCommunityRepository);
+
+
+    test('Verify getAllRegions calls zoneRepository.getAllRegions with correct parameters', () async {
+      // Arrange
+      final expectedResponse = {
+        'status': true,
+        'data': [] // Replace with the expected data structure
+      };
+
+      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) async => expectedResponse);
+
+      // Act
+      final result = await communityController.getAllRegions();
+
+      // Assert
+      expect(result, expectedResponse);
+      verify(mockZoneRepository.getAllRegions(2, 1)).called(1);
+      verifyNoMoreInteractions(mockZoneRepository);
     });
 
-    test('getAllPosts() should fetch and process posts correctly', () async {
-      // Mock response from communityRepository
-      final mockResponse = [
-        {
-          'creator': [
-            {
-              'id': 1,
-              'last_name': 'Doe',
-              'first_name': 'John',
-              'avatar': 'url_to_avatar',
-            },
-          ],
-          'zone': 'zone1',
-          'id': 1,
-          'comment_count': 5,
-          'like_count': 10,
-          'share_count': 2,
-          'content': 'Post content',
-          'humanize_date_creation': '2024-07-11',
-          'images': ['url_to_image1', 'url_to_image2'],
-          'liked': true,
-          'sectors': ['sector1', 'sector2'],
-        },
+    test('Verify getAllDivisions calls zoneRepository with correct parameters', () async {
+      // Arrange: Set up regions and the return value
+      communityController.regions = [{'id': 1}, {'id': 2}].obs;
+      when(mockZoneRepository.getAllDivisions(3, 1)).thenAnswer((_) async => {'status': true});
+
+      // Act: Call the method
+      final result = await communityController.getAllDivisions(0);
+
+      // Assert: Verify the correct method is called with correct parameters
+      verify(mockZoneRepository.getAllDivisions(3, 1)).called(1);
+      expect(result, {'status': true});
+    });
+
+    test('getAllSubdivisions returns data correctly', () async {
+      // Arrange
+      int index = 0;
+      List<Map<String, dynamic>> divisionsList = [
+        {'id': 1, 'name': 'Division 1'},
+        {'id': 2, 'name': 'Division 2'},
       ];
+      communityController.divisions.value = divisionsList;
 
-      when(mockCommunityRepository.getAllPosts(any))
-          .thenAnswer((_) async => mockResponse);
+      Map<String, dynamic> expectedResponse = {
+        'status': true,
+        'data': [{'id': 101, 'name': 'Subdivision 1'}],
+      };
 
-      final result = [
-        Post(user: UserModel(
-          userId: 1,
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@example.com',
-          phoneNumber: '1234567890',
-          gender: 'Male',
-          avatarUrl: 'https://example.com/avatar.png',
-          authToken: 'mockAuthToken',
-          zoneId: 'zone1',
-          birthdate: '1990-01-01',
-          profession: 'Company Inc',
-          sectors: ['sector1', 'sector2'],
-        ),
-          zone: 'zone1',
-          postId: 1,
-          commentCount: 5,
-          likeCount: 10,
-          shareCount: 2,
-          content: 'Post content',
-          publishedDate: '2024-07-11',
-          imagesUrl: ['url_to_image1', 'url_to_image2'],
-          liked: true,
-          likeTapped: RxBool(true),
-          sectors: ['sector1', 'sector2']
+      when(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .thenAnswer((_) async => expectedResponse);
 
+      // Act
+      final result = await communityController.getAllSubdivisions(index);
 
-        )
+      // Assert
+      expect(result, expectedResponse);
+      verify(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .called(1);
+    });
+
+    test('getAllSubdivisions handles empty divisions list', () async {
+      // Arrange
+      int index = 0;
+      communityController.divisions.value = [];
+
+      // Act & Assert
+      expect(() => communityController.getAllSubdivisions(index), throwsRangeError);
+    });
+
+    test('getAllSectors() should return data from sectorRepository', () async {
+      // Arrange: Mock the getAllSectors response
+      final mockSectorsResponse = {
+        'status': true,
+        'data': [
+          {'id': 1, 'name': 'Sector 1'},
+          {'id': 2, 'name': 'Sector 2'},
+        ],
+      };
+
+      when(mockSectorRepository.getAllSectors())
+          .thenAnswer((_) async => mockSectorsResponse);
+
+      // Act: Call the method
+      final result = await communityController.getAllSectors();
+
+      // Assert: Verify the response and that the repository method was called
+      expect(result, mockSectorsResponse);
+      verify(mockSectorRepository.getAllSectors()).called(1);
+      verifyNoMoreInteractions(mockSectorRepository);
+    });
+
+    test('getAllSectors() should handle exceptions', () async {
+      // Arrange: Mock an exception being thrown
+      when(mockSectorRepository.getAllSectors()).thenThrow(Exception('Failed to load sectors'));
+
+      // Act: Call the method and capture the exception
+      try {
+        await communityController.getAllSectors();
+        fail("Exception not thrown");
+      } catch (e) {
+        // Assert: Verify the exception was thrown and that the repository method was called
+        expect(e.toString(), contains('Failed to load sectors'));
+      }
+      verify(mockSectorRepository.getAllSectors()).called(1);
+      verifyNoMoreInteractions(mockSectorRepository);
+    });
+
+    test('getAllSubdivisions returns data correctly', () async {
+      // Arrange
+      int index = 0;
+      List<Map<String, dynamic>> divisionsList = [
+        {'id': 1, 'name': 'Division 1'},
+        {'id': 2, 'name': 'Division 2'},
       ];
+      communityController.divisions.value = divisionsList;
 
-      expect(result.length, equals(1));
-      expect(result[0].user?.userId, equals(1));
-      expect(result[0].user?.lastName, equals('Doe'));
-      expect(result[0].user?.firstName, equals('John'));
-      expect(result[0].zone, equals('zone1'));
-      expect(result[0].postId, equals(1));
-      expect(result[0].commentCount, equals(5));
-      expect(result[0].likeCount, equals(10));
-      expect(result[0].shareCount, equals(2));
-      expect(result[0].content, equals('Post content'));
-      expect(result[0].publishedDate, equals('2024-07-11'));
-      expect(result[0].imagesUrl, equals(['url_to_image1', 'url_to_image2']));
-      expect(result[0].liked, equals(true));
-      expect(result[0].likeTapped, equals(RxBool(true)));
-      expect(result[0].sectors, equals(['sector1', 'sector2']));
+      Map<String, dynamic> expectedResponse = {
+        'status': true,
+        'data': [{'id': 101, 'name': 'Subdivision 1'}],
+      };
+
+      when(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .thenAnswer((_) async => expectedResponse);
+
+      // Act
+      final result = await communityController.getAllSubdivisions(index);
+
+      // Assert
+      expect(result, expectedResponse);
+      verify(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+          .called(1);
     });
 
-    test('getAllPosts() should handle exceptions and show snackbar', () async {
-      when(mockCommunityRepository.getAllPosts(any))
-          .thenThrow(Exception('Failed to fetch posts'));
+    test('getAllSubdivisions handles empty divisions list', () async {
+      // Arrange
+      int index = 0;
+      communityController.divisions.value = [];
 
-      //await communityController.getAllPosts(1);
-
-      // Verify that the error snackbar is shown
-      expect(mockSnackbarController.isSnackbarOpen.value, isFalse);
+      // Act & Assert
+      expect(() => communityController.getAllSubdivisions(index), throwsRangeError);
     });
-
 
     test('Create a post', () async {
       // Mock behavior: Assume createPost returns a PostModel object
@@ -546,6 +598,126 @@ void main() {
 
       // Assert
       expect(communityController.sectors, []);
+    });
+
+
+    test('should return a list of posts when successful', () async {
+      // Arrange
+      final mockPostList = [
+        {
+          'creator': [
+            {
+              'id': 1,
+              'last_name': 'Doe',
+              'first_name': 'John',
+              'avatar': 'https://example.com/avatar.jpg'
+            }
+          ],
+          'zone': 'Zone A',
+          'id': 101,
+          'comment_count': 5,
+          'like_count': 10,
+          'share_count': 2,
+          'content': 'This is a post content.',
+          'humanize_date_creation': '2024-08-30',
+          'images': ['https://example.com/image.jpg'],
+          'liked': true,
+          'sectors': ['Sector A'],
+          'is_following': false
+        }
+      ];
+
+      when(mockCommunityRepository.getAllPosts(any)).thenAnswer((_) async => mockPostList);
+
+      // Act
+      final result = await communityController.getAllPosts(0);
+
+      // Assert
+      expect(result.length, 1); // Ensure there is one post in the result
+      expect(result[0].postId, 101);
+      expect(result[0].user.userId, 1);
+      expect(result[0].user.firstName, 'John');
+      expect(result[0].user.lastName, 'Doe');
+      expect(result[0].content, 'This is a post content.');
+      //expect(result[0].liked.value, RxBool(true));
+      expect(communityController.loadingPosts.value, false);
+    });
+
+    test('should show error snackbar when an exception occurs', () async {
+      // Arrange
+      when(mockCommunityRepository.getAllPosts(any)).thenThrow(Exception('Failed to load posts'));
+
+      // Act
+      await communityController.getAllPosts(1);
+
+      // Assert
+      expect(communityController.loadingPosts.value, false);
+    });
+
+    test('should initialize post details when successful', () async {
+      // Arrange
+      final mockPostData = {
+        'creator': [
+          {
+            'id': 1,
+            'last_name': 'Doe',
+            'first_name': 'John',
+            'avatar': 'https://example.com/avatar.jpg'
+          }
+        ],
+        'zone': {
+          'id': 10,
+          'level_id': 2,
+          'parent_id': 5
+        },
+        'id': 101,
+        'comment_count': 5,
+        'like_count': 10,
+        'share_count': 2,
+        'content': 'This is a post content.',
+        'humanize_date_creation': '2024-08-30',
+        'images': ['https://example.com/image.jpg'],
+        'liked': true,
+        'is_following': false,
+        'comments': [],
+        'sectors': ['Sector A']
+      };
+
+      when(mockCommunityRepository.getAPost(any)).thenAnswer((_) async => mockPostData);
+
+      // Act
+      await communityController.getAPost(101);
+
+      // Assert
+
+      expect(communityController.loadingAPost.value, true);
+    });
+
+    test('should show error snackbar when an exception occurs', () async {
+      // Arrange
+      when(mockCommunityRepository.getAPost(any)).thenThrow(Exception('Failed to load post'));
+
+      // Act
+      await communityController.getAPost(101);
+
+      // Assert
+      expect(communityController.loadingAPost.value, false);
+    });
+
+
+
+
+
+
+
+
+
+
+
+    tearDown(() {
+      // Optionally, reset mock states or perform cleanup
+      reset(mockAuthService);
+      reset(mockCommunityRepository);
     });
 
 

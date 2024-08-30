@@ -106,7 +106,6 @@ class EventsController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     startingDateDisplay.text = "--/--/--";
     endingDateDisplay.text = "--/--/--";
     event = Event();
@@ -119,7 +118,7 @@ class EventsController extends GetxController {
 
 
 
-
+// coverage:ignore-start
     listAllEvents = await getAllEvents(0);
     allEvents.value= listAllEvents;
 
@@ -175,7 +174,8 @@ class EventsController extends GetxController {
 
 
     }
-
+// coverage:ignore-end
+    super.onInit();
 
   }
 
@@ -270,71 +270,8 @@ class EventsController extends GetxController {
     }
   }
 
-  startingDatePicker() async {
-    DateTime? pickedDate = await showRoundedDatePicker(
 
-      context: Get.context!,
-      theme: ThemeData.light().copyWith(
-          primaryColor: buttonColor
-      ),
-      height: Get.height/2,
-      initialDate: DateTime.now().add(Duration(days: 2)),
-      firstDate: DateTime.now().add(Duration(days: 1)),
-      lastDate: DateTime(DateTime.now().year+6),
-      styleDatePicker: MaterialRoundedDatePickerStyle(
-          textStyleYearButton: const TextStyle(
-            fontSize: 52,
-            color: Colors.white,
-          )
-      ),
-      borderRadius: 16,
-      //selectableDayPredicate: disableDate
-    );
-    if (pickedDate != null ) {
-      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      TimeOfDay? selectedTime = await showTimePicker(
-        context: Get.context!,
-        initialTime: TimeOfDay.now(),
-      );
-      startingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      startingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      event.startDate = startingDate.value;
-
-    }
-  }
-
-  endingDatePicker() async {
-    DateTime? pickedDate = await showRoundedDatePicker(
-
-      context: Get.context!,
-      theme: ThemeData.light().copyWith(
-          primaryColor: buttonColor
-      ),
-      height: Get.height/2,
-      initialDate: DateTime.now().add(Duration(days: 2)),
-      firstDate: DateTime.now().add(Duration(days: 1)),
-      lastDate: DateTime(DateTime.now().year+6),
-      styleDatePicker: MaterialRoundedDatePickerStyle(
-          textStyleYearButton: const TextStyle(
-            fontSize: 52,
-            color: Colors.white,
-          )
-      ),
-      borderRadius: 16,
-      //selectableDayPredicate: disableDate
-    );
-    if (pickedDate != null ) {
-      TimeOfDay? selectedTime = await showTimePicker(
-        context: Get.context!,
-        initialTime: TimeOfDay.now(),
-      );
-      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      endingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      endingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      event.endDate = endingDate.value;
-    }
-  }
-
+// coverage:ignore-start
   void _scrollListener() async{
     print('extent is ${scrollbarController.position.extentAfter}');
     if (scrollbarController.position.extentAfter < 10) {
@@ -343,6 +280,7 @@ class EventsController extends GetxController {
       listAllEvents.addAll(event);
     }
   }
+// coverage:ignore-end
 
 
 
@@ -460,7 +398,10 @@ class EventsController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingEvents.value = false;

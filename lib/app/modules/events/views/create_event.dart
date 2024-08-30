@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/events/widgets/buildSelectSector.dart';
@@ -225,11 +227,11 @@ class CreateEventView extends GetView<EventsController> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           InkWell(
-                              onTap: ()=>{ controller.startingDatePicker()},
+                              onTap: ()=>{ startingDatePicker(context)},
                               child: Container(
                                 child: TextFieldWidget(
                                   onTap: (){
-                                    controller.startingDatePicker();
+                                    startingDatePicker(context);
                                   },
                                   isFirst: true,
                                   isLast: true,
@@ -253,11 +255,11 @@ class CreateEventView extends GetView<EventsController> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           InkWell(
-                              onTap: ()=>{ controller.endingDatePicker()},
+                              onTap: ()=>{ endingDatePicker(context)},
                               child: Container(
                                 child: TextFieldWidget(
                                   onTap: (){
-                                    controller.endingDatePicker();
+                                    endingDatePicker(context);
                                   },
                                   isFirst: true,
                                   isLast: true,
@@ -1042,5 +1044,70 @@ class CreateEventView extends GetView<EventsController> {
             height: Get.height/4,
           ),
         ));
+  }
+
+  startingDatePicker(BuildContext context) async {
+    DateTime? pickedDate = await showRoundedDatePicker(
+
+      context: context,
+      theme: ThemeData.light().copyWith(
+          primaryColor: buttonColor
+      ),
+      height: Get.height/2,
+      initialDate: DateTime.now().add(Duration(days: 2)),
+      firstDate: DateTime.now().add(Duration(days: 1)),
+      lastDate: DateTime(DateTime.now().year+6),
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+          textStyleYearButton: const TextStyle(
+            fontSize: 52,
+            color: Colors.white,
+          )
+      ),
+      borderRadius: 16,
+      //selectableDayPredicate: disableDate
+    );
+    if (pickedDate != null ) {
+      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: Get.context!,
+        initialTime: TimeOfDay.now(),
+      );
+      controller.startingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      controller.startingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      controller.event.startDate =  controller.startingDate.value;
+
+    }
+  }
+
+  endingDatePicker(BuildContext context) async {
+    DateTime? pickedDate = await showRoundedDatePicker(
+
+      context: context,
+      theme: ThemeData.light().copyWith(
+          primaryColor: buttonColor
+      ),
+      height: Get.height/2,
+      initialDate: DateTime.now().add(Duration(days: 2)),
+      firstDate: DateTime.now().add(Duration(days: 1)),
+      lastDate: DateTime(DateTime.now().year+6),
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+          textStyleYearButton: const TextStyle(
+            fontSize: 52,
+            color: Colors.white,
+          )
+      ),
+      borderRadius: 16,
+      //selectableDayPredicate: disableDate
+    );
+    if (pickedDate != null ) {
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: Get.context!,
+        initialTime: TimeOfDay.now(),
+      );
+      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
+      controller.endingDateDisplay.text = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      controller.endingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
+      controller.event.endDate =  controller.endingDate.value;
+    }
   }
 }

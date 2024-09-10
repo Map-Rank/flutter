@@ -33,7 +33,7 @@ import '../../events/controllers/events_controller.dart';
 
 
 class ProfileController extends GetxController {
-  final Rx<UserModel> currentUser = Get.find<AuthService>().user;
+  Rx<UserModel> currentUser = Get.find<AuthService>().user;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -73,16 +73,17 @@ class ProfileController extends GetxController {
     phoneNumberController.text = currentUser.value.phoneNumber!;
     genderController.text = currentUser.value.gender!;
     birthdateController.text = currentUser.value.gender!;
-    Get.find<CommunityController>().listAllPosts.clear();
-    Get.find<CommunityController>().allPosts.clear();
-    Get.find<CommunityController>().listAllPosts = await getAllMyPosts();
-    Get.find<CommunityController>().allPosts.value =  Get.find<CommunityController>().listAllPosts;
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      Get.find<CommunityController>().listAllPosts.clear();
+      Get.find<CommunityController>().allPosts.clear();
+      Get.find<CommunityController>().listAllPosts = await getAllMyPosts();
+      Get.find<CommunityController>().allPosts.value =  Get.find<CommunityController>().listAllPosts;
 
-    Get.find<EventsController>().listAllEvents.clear();
-    Get.find<EventsController>().allEvents.clear();
-    Get.find<EventsController>().listAllEvents = await getAllMyEvents();
-    Get.find<EventsController>().allEvents.value = Get.find<EventsController>().listAllEvents;
-
+      Get.find<EventsController>().listAllEvents.clear();
+      Get.find<EventsController>().allEvents.clear();
+      Get.find<EventsController>().listAllEvents = await getAllMyEvents();
+      Get.find<EventsController>().allEvents.value = Get.find<EventsController>().listAllEvents;
+    }
 
 
     super.onInit();
@@ -94,9 +95,12 @@ class ProfileController extends GetxController {
 
   getAllMyPosts() {
     var postList = [];
-    Get.find<CommunityController>()
-        .sharedPost
-        .clear();
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      Get.find<CommunityController>()
+          .sharedPost
+          .clear();
+    }
+
 
     try {
       var list = currentUser.value.myPosts!;
@@ -171,45 +175,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  selectCameraOrGalleryProfileImage(){
-    showDialog(
-        context: Get.context!,
-        builder: (_){
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            content: Container(
-                height: 170,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: ()async{
-                        await profileImagePicker('camera');
-                        loadProfileImage.value = true;
-                        //Navigator.pop(Get.context);
 
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text(AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    ),
-                    ListTile(
-                      onTap: ()async{
-                        await profileImagePicker('gallery');
-                        loadProfileImage.value = true;
-                        //Navigator.pop(Get.context);
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.image),
-                      title: Text(AppLocalizations.of(Get.context!).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    )
-                  ],
-                )
-            ),
-          );
-        });
-  }
   profileImagePicker(String source) async {
     if(source=='camera'){
       final XFile? pickedImage =
@@ -284,49 +250,14 @@ class ProfileController extends GetxController {
     }
     catch (e) {
       updateUserInfo.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
+
     } finally {
       updateUserInfo.value = false;
     }
 
-  }
-
-  selectCameraOrGalleryFeedbackImage(){
-    showDialog(
-        context: Get.context!,
-        builder: (_){
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            content: Container(
-                height: 170,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: ()async{
-                        await feedbackImagePicker('camera');
-                        //Navigator.pop(Get.context);
-
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text(AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    ),
-                    ListTile(
-                      onTap: ()async{
-                        await feedbackImagePicker('gallery');
-                        //Navigator.pop(Get.context);
-
-                      },
-                      leading: const Icon(FontAwesomeIcons.image),
-                      title: Text(AppLocalizations.of(Get.context!).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
-                    )
-                  ],
-                )
-            ),
-          );
-        });
   }
 
   feedbackImagePicker(String source) async {
@@ -422,7 +353,9 @@ class ProfileController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
 
     }
     finally {

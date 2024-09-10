@@ -818,6 +818,7 @@ class CreatePostView extends GetView<CommunityController> {
 
 
 
+
   Widget buildInputImages(BuildContext context){
     return Column(
       children: [
@@ -962,18 +963,4 @@ class CreatePostView extends GetView<CommunityController> {
      ;
   }
 
-  Widget buildLoader() {
-    return Container(
-        width: 100,
-        height: 100,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          child: Image.asset(
-            'assets/img/loading.gif',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: 100,
-          ),
-        ));
-  }
 }

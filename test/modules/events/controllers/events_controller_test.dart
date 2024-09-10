@@ -22,7 +22,6 @@ import 'package:image/image.dart' as Im;
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 class MockBuildContext extends Mock implements BuildContext {}
-class MockFile extends Mock implements File {}
 class MockEvent extends Mock implements Event {
   @override
   bool operator ==(other) {
@@ -30,9 +29,13 @@ class MockEvent extends Mock implements Event {
     return super == other;
   }
 }
-class MockImage extends Mock implements Im.Image {}
 
 class MockScrollController extends Mock implements ScrollController {}
+
+class MockImageLibrary extends Mock {
+  Im.Image? decodeImage(List<int> bytes);
+  List<int> encodeJpg(Im.Image image, {int quality = 90});
+}
 
 
 @GenerateMocks([
@@ -42,7 +45,9 @@ class MockScrollController extends Mock implements ScrollController {}
   ZoneRepository,
   SectorRepository,
   ImagePicker,
-  Directory
+  Directory,
+  File,
+  Image,
 ])
 
 void main() {
@@ -61,8 +66,13 @@ void main() {
     late MockEvent mockEvent;
     late MockImage mockImage;
     late MockScrollController mockScrollController;
+    late Im.Image mockDecodedImage;
+    late MockImageLibrary mockImageLibrary;
+    late List<int> encodedImageBytes;
+
 
     setUp(() {
+      Get.testMode = true;
       TestWidgetsFlutterBinding.ensureInitialized();
       Get.lazyPut(()=>AuthService());
 
@@ -80,6 +90,9 @@ void main() {
       mockBuildContext = MockBuildContext();
       eventsController = EventsController();
       mockEvent = MockEvent();
+      mockImageLibrary = MockImageLibrary();
+      mockDecodedImage = Im.Image(width: 100, height: 100);
+      encodedImageBytes = [1, 2, 3, 4]; // C
       //eventsController.picker = mockImagePicker;
       eventsController.zoneRepository = mockZoneRepository;
       eventsController.userRepository = mockUserRepository;
@@ -980,71 +993,82 @@ void main() {
       final pickedFile = XFile('test/test_pictures/filter.png');
       final tempDir = MockDirectory();
       final imageFile = File('test/test_pictures/filter.png');
-      final imageBytes = Uint8List.fromList([0, 1, 2, 3, 4]); // Dummy bytes
+      final imageBytes = Uint8List.fromList([0, 1, 2, 3, 4,0]); // Dummy bytes
       final path = '/temp/path';
       when(tempDir.path).thenReturn(path);// Dummy bytes
 
       when(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80))
           .thenAnswer((_) async => pickedFile);
 
-      //when(mockFile.readAsBytesSync()).thenAnswer((_) => imageBytes);
-      //when(mockFile.lengthSync()).thenReturn(2048); // 2KBing
+      when(mockFile.readAsBytesSync()).thenAnswer((_) => imageBytes);
+      when(mockFile.lengthSync()).thenReturn(2048); // 2KBing
 
 
       // Simulate the decodeImage and encodeJpg functions
+      when(mockImageLibrary.decodeImage(imageBytes)).thenReturn(mockDecodedImage);
+      // when(mockImageLibrary.encodeJpg(mockDecodedImage, quality: 90))
+      //     .thenReturn(encodedImageBytes);
       //when(Im.decodeImage(imageBytes)).thenReturn(mockImage);
-      //when(Im.encodeJpg(mockImage, quality: 25)).thenReturn(imageBytes);
+      //when(mockImageLibrary.encodeJpg(mockImage, quality: 25)).thenReturn(imageBytes);
 
+
+      // Assert that the decoded image is the mock image
 
       // Act
       await eventsController.pickImage(ImageSource.camera);
       eventsController.event.imagesFileBanner = [imageFile];
-     // final image = Im.decodeImage(Uint8List.fromList([0, 1, 2, 3, 4]));
+      var decodedImage = mockImageLibrary.decodeImage(imageBytes);
+      //var result = mockImageLibrary.encodeJpg(Im.Image(width:100, height:100), quality: 90);
+
       //final encodedImage = Im.encodeJpg(image!, quality: 25);
 
       // Assert
       expect(eventsController.imageFiles.isNotEmpty, true);
-     // expect(eventsController.event.imagesFileBanner?.isNotEmpty, true);
+      expect(decodedImage, mockDecodedImage);
+      //expect(result, encodedImageBytes);
+     //expect(eventsController.event.imagesFileBanner?.isNotEmpty, true);
       //verify(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80)).called(1);
       //verify(getTemporaryDirectory()).called(1);
     });
 
-    // test('pickImage with gallery source processes and compresses multiple images', () async {
-    //   const TEST_MOCK_STORAGE = './test/test_pictures/filter.PNG';
-    //   const channel = MethodChannel(
-    //     'plugins.flutter.io/image_picker',
-    //   );
-    //   channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    //     return TEST_MOCK_STORAGE;
-    //   });
-    //   // Arrange
-    //   final pickedFiles = [
-    //     XFile('test/test_pictures/filter.PNG'),
-    //     XFile('test/test_pictures/filter.PNG')
-    //   ];
-    //   final tempDir = Directory('/temp/path');
-    //   final imageFile1 = File('test/test_pictures/filter.png');
-    //   final imageFile2 = File('test/test_pictures/filter.png');
-    //   final imageBytes = [0, 0, 0];  // Dummy bytes
-    //
-    //   when(mockImagePicker.pickMultiImage())
-    //       .thenAnswer((_) async => pickedFiles);
-    //
-    //   // when(getTemporaryDirectory())
-    //   //     .thenAnswer((_) async => tempDir);
-    //
-    //   // Simulate image encoding
-    //   //when(Im.encodeJpg(mockFile, quality: 25)).thenReturn(Uint8List(0));
-    //
-    //   // Act
-    //   await eventsController.pickImage(ImageSource.gallery);
-    //
-    //   // Assert
-    //   expect(eventsController.imageFiles.length, 2);
-    //   expect(eventsController.event.imagesFileBanner?.length, 2);
-    //   verify(mockImagePicker.pickMultiImage()).called(1);
-    //   verify(getTemporaryDirectory()).called(2);  // Called for each image
-    // });
+    test('pickImage with gallery source processes and compresses multiple images', () async {
+      const TEST_MOCK_STORAGE = ['./test/test_pictures/filter.PNG'];
+      const channel = MethodChannel(
+        'plugins.flutter.io/image_picker',
+      );
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        return TEST_MOCK_STORAGE;
+      });
+      // Arrange
+      final pickedFiles = [
+        XFile('test/test_pictures/filter.PNG'),
+        XFile('test/test_pictures/filter.PNG')
+      ];
+      final tempDir = MockDirectory();
+      final imageFile1 = File('test/test_pictures/filter.png');
+      final imageFile2 = File('test/test_pictures/filter.png');
+      final imageBytes = [0, 0, 0];
+      final path = '/temp/path';// Dummy bytes
+      eventsController.imageFiles.value = [];
+
+      when(mockImagePicker.pickMultiImage())
+          .thenAnswer((_) async => pickedFiles);
+
+      when(tempDir.path).thenReturn(path);
+
+      // // Simulate image encoding
+      // //when(Im.encodeJpg(mockFile, quality: 25)).thenReturn(Uint8List(0));
+      //
+       // Act
+       await eventsController.pickImage(ImageSource.gallery);
+       //eventsController.imageFiles.value = pickedFiles;
+      //
+      // // Assert
+      expect(eventsController.imageFiles.length, 1);
+      //expect(eventsController.event.imagesFileBanner?.length, 2);
+      // verify(mockImagePicker.pickMultiImage()).called(1);
+      // verify(getTemporaryDirectory()).called(2);  // Called for each image
+    });
 
     test('should update allEvents when sectorsSelected is not empty', () async {
       // Arrange

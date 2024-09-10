@@ -108,6 +108,7 @@ void main() {
 
 
     Get.put<AuthService>(mockAuthService);
+
     authController = AuthController();
     authController.picker = mockImagePicker;
     authController.loginFormKey = GlobalKey<FormState>(); // Initialize here
@@ -117,6 +118,7 @@ void main() {
     mockImage = MockImage();
     authController.genderList=['Select gender', 'Male', 'Female', 'Other'].obs;
     authController.languageList=['Select language', 'English', 'French'].obs;
+    authController.loginOrRegister = RxBool(true);
     final directory = await getTemporaryDirectory();
     final path = '${directory.path}/filter.png';
 

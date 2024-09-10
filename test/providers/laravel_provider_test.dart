@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mapnrank/app/exceptions/network_exceptions.dart';
 import 'package:mapnrank/app/models/event_model.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
@@ -1862,6 +1863,7 @@ void main() {
     //   ),
     // ));
   });
+
 
 
 

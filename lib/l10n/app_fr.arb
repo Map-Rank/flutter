@@ -13,6 +13,7 @@
   "email": "Email",
   "register": "S''inscrire",
   "login": "Connexion",
+  "register_institution": "S'' enregistrer comme une institution",
   "sign_out": "Déconnexion",
   "delete_account": "Supprimer compte",
   "delete_account_of_app": "Supprimer votre compte de l'' application",

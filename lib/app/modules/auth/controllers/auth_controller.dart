@@ -76,6 +76,7 @@ class AuthController extends GetxController {
   var subdivisionsSet ={};
 
   var loadingSectors = true.obs;
+  var loginOrRegister = true.obs;
   var sectors = [].obs;
   var sectorsSelected = [].obs;
   var selectedIndex = 0.obs;

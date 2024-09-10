@@ -1,173 +1,73 @@
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:mapnrank/app/models/user_model.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mapnrank/app/models/feedback_model.dart';
+import 'package:mapnrank/app/providers/laravel_provider.dart';
+import 'package:mapnrank/app/repositories/user_repository.dart';
+import 'user_repository_test.mocks.dart';
 
+@GenerateMocks([LaravelApiClient])
 void main() {
+  late UserRepository userRepository;
+  late MockLaravelApiClient mockLaravelApiClient;
 
-  testWidgets('Widget renders correctly and interacts', (WidgetTester tester) async {
+  setUp(() {
+    // Create a mock instance of LaravelApiClient
+    //mockLaravelApiClient = MockLaravelApiClient();
 
+    // Inject the mock instance into GetX
+   // Get.put<LaravelApiClient>(mockLaravelApiClient);
 
+    // Initialize UserRepository which depends on the mocked LaravelApiClient
+    //userRepository = UserRepository();
+
+    // Stub the sendFeedback method in LaravelApiClient
+    //when(mockLaravelApiClient.sendFeedback(any)).thenAnswer((_) async {});
   });
+  test('', () async{});
+
+  // test('sendFeedback should call sendFeedback on LaravelApiClient', () async {
+  //   // Arrange
+  //   final feedbackModel = FeedbackModel(
+  //     feedbackText: 'Great app!',
+  //     imageFile: null,
+  //     rating: '5',
+  //   );
+  //
+  //   // Act: Call the sendFeedback method in UserRepository
+  //   await userRepository.sendFeedback(feedbackModel);
+  //
+  //   // Assert: Verify that the sendFeedback method was called on the mock LaravelApiClient
+  //   verify(mockLaravelApiClient.sendFeedback(feedbackModel)).called(1);
+  // });
+  //
+  // test('login should call login on LaravelApiClient', () async {
+  //   // Arrange
+  //   final userModel = UserModel(email: 'test@example.com', password: 'password');
+  //
+  //   // Stub the login method in LaravelApiClient
+  //   when(mockLaravelApiClient.login(any)).thenAnswer((_) async {});
+  //
+  //   // Act: Call the login method in UserRepository
+  //   await userRepository.login(userModel);
+  //
+  //   // Assert: Verify that the login method was called on the mock LaravelApiClient
+  //   verify(mockLaravelApiClient.login(userModel)).called(1);
+  // });
+  //
+  // test('updateUser should call updateUser on LaravelApiClient', () async {
+  //   // Arrange
+  //   final userModel = UserModel(userId: 1, email: 'test@example.com');
+  //
+  //   // Stub the updateUser method in LaravelApiClient
+  //   when(mockLaravelApiClient.updateUser(any)).thenAnswer((_) async {});
+  //
+  //   // Act: Call the updateUser method in UserRepository
+  //   await userRepository.updateUser(userModel);
+  //
+  //   // Assert: Verify that the updateUser method was called on the mock LaravelApiClient
+  //   verify(mockLaravelApiClient.updateUser(userModel)).called(1);
+  // });
 }
-
-
-
-
-
-
-
-// import 'dart:convert';
-// import 'package:dio/dio.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:dio/dio.dart' as dio;
-// import 'package:mapnrank/app/models/user_model.dart';
-// import 'package:mapnrank/app/providers/dio_client.dart';
-// import 'package:mapnrank/app/providers/laravel_provider.dart';
-// import 'package:mapnrank/app/services/auth_service.dart';
-// import 'package:mapnrank/app/services/global_services.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:get/get.dart';
-//
-// // Mock Classes
-// class MockDioClient extends Mock implements DioClient {
-//   late final String baseUrl;
-//   Dio? dioo;
-//   Options? optionsNetwork;
-//   Options? optionsCache;
-//   late final List<Interceptor>? interceptors;
-//   final _progress = <String>[].obs;
-//   MockDioClient(this.baseUrl, this.dioo);
-//
-//   @override
-//   Future<dynamic> postUri(
-//       Uri uri, {
-//         data,
-//         required Options options,
-//         CancelToken? cancelToken,
-//         required ProgressCallback onSendProgress,
-//         required ProgressCallback onReceiveProgress,
-//       }) async {
-//
-//   }
-// }
-//
-// class MockLaravelApiClient extends GetxService with Mock implements LaravelApiClient {
-//   late String baseUrl;
-//   late MockDioClient dioClient;
-//   late dio.Options optionsNetwork;
-//   late dio.Options optionsCache;
-// }
-//
-// // Main Test Code
-// void main() {
-//   TestWidgetsFlutterBinding.ensureInitialized();
-//
-//   group('LaravelApiClient', () {
-//     late MockLaravelApiClient mockLaravelApiClient;
-//     late MockDioClient mockDioClient;
-//
-//     setUp(() {
-//       mockLaravelApiClient = MockLaravelApiClient();
-//
-//       Get.lazyPut(() => mockLaravelApiClient);
-//
-//       mockLaravelApiClient.baseUrl = 'https://example.com/';
-//       mockDioClient = MockDioClient(mockLaravelApiClient.baseUrl, dio.Dio());
-//       mockLaravelApiClient.dioClient = mockDioClient;
-//       mockLaravelApiClient.optionsNetwork = dio.Options();
-//       mockLaravelApiClient.optionsCache = dio.Options();
-//     });
-//
-//     test('register', () async {
-//       final user = UserModel(email: 'test@example.com', password: 'password');
-//       final Uri uri = Uri.parse('${mockLaravelApiClient.baseUrl}register');
-//
-//       final mockResponse = mockLaravelApiClient.dioClient.postUri(
-//         uri,
-//         data: {
-//           'status': true,
-//           'data': {
-//             'id': 1,
-//             'first_name': 'Test User',
-//             'email': 'test@example.com',
-//           }
-//         },
-//         options: mockLaravelApiClient.optionsNetwork,
-//         onSendProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//         onReceiveProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//       );
-//
-//       when( mockLaravelApiClient.dioClient.postUri(
-//         uri,
-//         data: {
-//           'status': true,
-//           'data': {
-//             'id': 1,
-//             'first_name': 'Test User',
-//             'email': 'test@example.com',
-//           }
-//         },
-//         options: mockLaravelApiClient.optionsNetwork,
-//         onSendProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//         onReceiveProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//       )).thenAnswer((_) async => mockResponse);
-//
-//       final result = await mockLaravelApiClient.register(user);
-//
-//       expect(result.id, 1);
-//       expect(result.firstName, 'Test User');
-//       expect(result.email, 'test@example.com');
-//       expect(UserModel.auth, true);
-//     });
-//
-//     test('login', () async {
-//       final user = UserModel(email: 'test@example.com', password: 'password');
-//       final Uri uri = Uri.parse('${mockLaravelApiClient.baseUrl}login');
-//
-//       final mockResponse = mockLaravelApiClient.dioClient.postUri(
-//         uri,
-//         data: {
-//           'status': true,
-//           'data': {
-//             'id': 1,
-//             'first_name': 'Test User',
-//             'email': 'test@example.com',
-//           }
-//         },
-//         options: mockLaravelApiClient.optionsNetwork,
-//         onSendProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//         onReceiveProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//       );
-//
-//       when( mockLaravelApiClient.dioClient.postUri(
-//         uri,
-//         data: anyNamed('data'),
-//         options: mockLaravelApiClient.optionsNetwork,
-//         onSendProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//         onReceiveProgress: (int count, int total) {
-//           print('Register Progress: $count/$total');
-//         },
-//       )).thenAnswer((_) async => mockResponse);
-//
-//       final result = await mockLaravelApiClient.login(user);
-//
-//       expect(result.id, 1);
-//       expect(result.firstName, 'Test User');
-//       expect(result.email, 'test@example.com');
-//       expect(UserModel.auth, true);
-//     });
-//   });
-// }

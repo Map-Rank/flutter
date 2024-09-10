@@ -13,6 +13,7 @@
   "email": "Email",
   "register": "Register",
   "login": "Login",
+  "register_institution": "Register as an institution",
   "sign_out": "Sign out",
   "delete_account": "Delete Account",
   "delete_account_of_app": "Delete Account from the app",

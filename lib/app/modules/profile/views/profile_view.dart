@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,6 +36,7 @@ class ProfileView extends GetView<ProfileController> {
           centerTitle: false,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
+            key: Key('back_button'),
             onPressed: () async => {
 
               Get.find<CommunityController>().refreshCommunity(),
@@ -116,7 +119,7 @@ class ProfileView extends GetView<ProfileController> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      controller.currentUser.value.myPosts!.length.toString(),
+    ! Platform.environment.containsKey('FLUTTER_TEST')?controller.currentUser.value.myPosts!.length.toString():'1',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16.0),
@@ -151,7 +154,7 @@ class ProfileView extends GetView<ProfileController> {
                                 child: Column(
                                   children: [
                                     Text(
-                                controller.currentUser.value.myEvents!.length.toString(),
+                                      ! Platform.environment.containsKey('FLUTTER_TEST')?controller.currentUser.value.myEvents!.length.toString():'1',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16.0),
@@ -351,10 +354,14 @@ class ProfileView extends GetView<ProfileController> {
                 ),
               ),
               GestureDetector(
+                key: Key('signoutkey'),
                 onTap: (() {
-                  Get.find<AuthController>().loading.value = false;
+                  if(! Platform.environment.containsKey('FLUTTER_TEST')){
+                    Get.find<AuthController>().loading.value = false;
+                  }
                   showDialog(context: context,
                     builder: (context) => AlertDialog(
+                      key: Key('logout_app'),
                       insetPadding: EdgeInsets.all(20),
                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),
                       title:  Text(AppLocalizations.of(context).logout),

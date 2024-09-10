@@ -43,6 +43,8 @@ class MockAuthController extends GetxController with Mock implements AuthControl
   late GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   late final MockAuthService authService;
   var loginWithPhoneNumber = false.obs;
+  var loginOrRegister = false.obs;
+
 
   @override
   login() async {

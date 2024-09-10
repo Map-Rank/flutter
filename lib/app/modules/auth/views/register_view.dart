@@ -44,10 +44,50 @@ class RegisterView extends GetView<AuthController> {
                   'assets/images/logo.png',
                   //fit: BoxFit.cover,
                   width: 150,
-                  height: 150,
+                  height: 130,
 
                 ),
-              ).marginOnly(left: 20, right: 20, bottom: 20),
+              ).marginOnly(left: 20, right: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                        onTap: (){
+                          controller.loginOrRegister.value = !controller.loginOrRegister.value;
+                          Get.offAllNamed(Routes.LOGIN);
+                        },
+                        child: Obx(() => Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: controller.loginOrRegister.value?interfaceColor:Colors.white,
+                              border: Border.all(width: 1, color: interfaceColor)
+                          ),
+                          child: Text(AppLocalizations.of(context).login, textAlign: TextAlign.center,
+                            style: TextStyle(color: controller.loginOrRegister.value?Colors.white:Colors.black),),),)
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: (){
+                        controller.loginOrRegister.value = !controller.loginOrRegister.value;
+                        Get.offAllNamed(Routes.REGISTER);
+                      },
+                      child: Obx(() => Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: controller.loginOrRegister.value?Colors.white:interfaceColor,
+                            border: Border.all(width: 1, color: interfaceColor)
+                        ),
+                        child: Text(AppLocalizations.of(context).register,textAlign: TextAlign.center,
+                          style: TextStyle(color: !controller.loginOrRegister.value?Colors.white:Colors.black),),),),
+                    ),
+                  )
+
+
+                ],
+              ).marginOnly(left: 10, right: 10, bottom: 20),
 
               Obx(() =>  !controller.registerNext.value?
               Align(
@@ -445,64 +485,49 @@ class RegisterView extends GetView<AuthController> {
             );
           }),
           const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(width: 60,),
-              Obx(() => BlockButtonWidget(
-                onPressed: () {
-                  // if(controller.password.value==controller.confirmPassword.value)
-                  // {
-                  //   controller.register();
-                  // }
+          Obx(() => BlockButtonWidget(
+            onPressed: () {
+              // if(controller.password.value==controller.confirmPassword.value)
+              // {
+              //   controller.register();
+              // }
 
-                  if (controller.registerFormKey.currentState!.validate()) {
-                    controller.registerFormKey.currentState!.save();
-                    if(controller.selectedGender.value != AppLocalizations.of(context).gender){
-                      if(controller.birthDate.value == "--/--/--"){
-                        Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_date_of_birth.tr));
-                      }
-                      else{
-                        print(controller.confirmPassword );
-                        print(controller.currentUser.value.password);
-                        if(controller.confirmPassword == controller.currentUser.value.password){
-                          controller.registerNext.value = !controller.registerNext.value;
-                        }
-                        else{
-                          Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).password_not_same.tr));
-                        }
-                      }
+              if (controller.registerFormKey.currentState!.validate()) {
+                controller.registerFormKey.currentState!.save();
+                if(controller.selectedGender.value != AppLocalizations.of(context).gender){
+                  if(controller.birthDate.value == "--/--/--"){
+                    Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_date_of_birth.tr));
+                  }
+                  else{
+                    print(controller.confirmPassword );
+                    print(controller.currentUser.value.password);
+                    if(controller.confirmPassword == controller.currentUser.value.password){
+                      controller.registerNext.value = !controller.registerNext.value;
                     }
                     else{
-                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_gender.tr));
+                      Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).password_not_same.tr));
                     }
-
-
                   }
+                }
+                else{
+                  Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_select_gender.tr));
+                }
 
 
-                },
-                color: Get.theme.colorScheme.secondary,
-                text: !controller.loading.value? Text(
-                  AppLocalizations.of(context).next,
-                  style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
-                ): const SizedBox(height: 30,
-                    child: SpinKitThreeBounce(color: Colors.white, size: 20)),
-              ).paddingSymmetric(vertical: 40, horizontal: 20),),
-            ],),
+              }
 
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
-              TextButton(
-                onPressed: () {
-                  Get.offAllNamed(Routes.LOGIN);
-                },
-                child:Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
-              ),
-            ],
-          ).paddingSymmetric(vertical: 20),
+            },
+            color: Get.theme.colorScheme.secondary,
+            text: !controller.loading.value? Text(
+              AppLocalizations.of(context).next,
+              style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
+            ): const SizedBox(height: 30,
+                child: SpinKitThreeBounce(color: Colors.white, size: 20)),
+          ).paddingSymmetric(vertical: 40, horizontal: 20),),
+
+
+        Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
         ],
       ),
 
@@ -752,18 +777,7 @@ class RegisterView extends GetView<AuthController> {
             ],).paddingSymmetric(vertical: 40, horizontal: 20),
 
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
-              TextButton(
-                onPressed: () {
-                  Get.offAllNamed(Routes.LOGIN);
-                },
-                child: Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
-              ),
-            ],
-          ).paddingSymmetric(vertical: 20),
+    Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)..paddingSymmetric(vertical: 20),
         ],
       ),
 
@@ -1257,18 +1271,7 @@ class RegisterView extends GetView<AuthController> {
               ],
             ).paddingSymmetric(vertical: 40, horizontal: 20),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("${AppLocalizations.of(context).already_account}?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
-                TextButton(
-                  onPressed: () {
-                    Get.offAllNamed(Routes.LOGIN);
-                  },
-                  child:Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
-                ),
-              ],
-            ).paddingSymmetric(vertical: 20),
+        Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
           ],
 
         ));

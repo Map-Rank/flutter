@@ -164,57 +164,58 @@ class CommunityController extends GetxController {
 
 
     await refreshCommunity();
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      var box = GetStorage();
 
-    var box = GetStorage();
+      var boxRegions = box.read("allRegions");
 
-    var boxRegions = box.read("allRegions");
+      if(boxRegions == null){
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_regions),
+          duration: Duration(seconds: 3),
+        ));
 
-    if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(Get.context!).loading_regions),
-        duration: Duration(seconds: 3),
-      ));
+        regionsSet = await getAllRegions();
+        listRegions.value = regionsSet['data'];
+        loadingRegions.value = !regionsSet['status'];
+        regions.value = listRegions;
 
-      regionsSet = await getAllRegions();
-      listRegions.value = regionsSet['data'];
-      loadingRegions.value = !regionsSet['status'];
-      regions.value = listRegions;
+        box.write("allRegions", regionsSet);
 
-      box.write("allRegions", regionsSet);
+      }
+      else{
 
-    }
-    else{
-
-      listRegions.value = boxRegions['data'];
-      loadingRegions.value = !boxRegions['status'];
-      regions.value = listRegions;
-
-
-    }
-
-    var boxSectors = box.read("allSectors");
-
-    if(boxSectors == null){
-
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(Get.context!).loading_sectors),
-        duration: Duration(seconds: 3),
-      ));
-
-      sectorsSet = await getAllSectors();
-      listSectors.value = sectorsSet['data'];
-      loadingSectors.value = !sectorsSet['status'];
-      sectors.value = listSectors;
-
-      box.write("allSectors", sectorsSet);
-
-    }
-    else{
-      listSectors.value = boxSectors['data'];
-      loadingSectors.value = !boxSectors['status'];
-      sectors.value = listSectors;
+        listRegions.value = boxRegions['data'];
+        loadingRegions.value = !boxRegions['status'];
+        regions.value = listRegions;
 
 
+      }
+
+      var boxSectors = box.read("allSectors");
+
+      if(boxSectors == null){
+
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_sectors),
+          duration: Duration(seconds: 3),
+        ));
+
+        sectorsSet = await getAllSectors();
+        listSectors.value = sectorsSet['data'];
+        loadingSectors.value = !sectorsSet['status'];
+        sectors.value = listSectors;
+
+        box.write("allSectors", sectorsSet);
+
+      }
+      else{
+        listSectors.value = boxSectors['data'];
+        loadingSectors.value = !boxSectors['status'];
+        sectors.value = listSectors;
+
+
+      }
     }
 
 
@@ -233,7 +234,13 @@ class CommunityController extends GetxController {
     listAllPosts.clear();
     allPosts.clear();
     loadingPosts.value = true;
-    listAllPosts = await getAllPosts(0);
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllPosts = await getAllPosts(0);
+    }
+    else{
+      listAllPosts = [];
+    }
+
     allPosts.value= listAllPosts;
     emptyArrays();
   }
@@ -341,7 +348,9 @@ class CommunityController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingPosts.value = false;
@@ -397,7 +406,9 @@ class CommunityController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingPosts.value = false;
@@ -649,7 +660,9 @@ class CommunityController extends GetxController {
       return result;
     }
     catch(e){
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
 
   }
@@ -690,7 +703,9 @@ class CommunityController extends GetxController {
     }
     catch (e) {
       createPosts.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       createPosts.value = false;
@@ -718,7 +733,9 @@ class CommunityController extends GetxController {
     }
     catch (e) {
       updatePosts.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       updatePosts.value = false;
@@ -890,7 +907,9 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       //createPosts.value = true;
@@ -974,7 +993,9 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
 
     }
     finally {

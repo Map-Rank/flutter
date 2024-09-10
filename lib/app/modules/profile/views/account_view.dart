@@ -81,8 +81,7 @@ class AccountView extends GetView<ProfileController> {
                       right: 3,
                       child: GestureDetector(
                         onTap: () async {
-
-                          controller.selectCameraOrGalleryProfileImage();
+                          selectCameraOrGalleryProfileImage(context);
 
                         },
                         child: Container(
@@ -286,5 +285,45 @@ class AccountView extends GetView<ProfileController> {
         ),
       ),
     );
+  }
+
+  selectCameraOrGalleryProfileImage(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (_){
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            content: Container(
+                height: 170,
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: ()async{
+                        await controller.profileImagePicker('camera');
+                        controller.loadProfileImage.value = true;
+                        //Navigator.pop(Get.context);
+
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.camera),
+                      title: Text(AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    ),
+                    ListTile(
+                      onTap: ()async{
+                        await controller.profileImagePicker('gallery');
+                        controller.loadProfileImage.value = true;
+                        //Navigator.pop(Get.context);
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.image),
+                      title: Text(AppLocalizations.of(Get.context!).upload_image, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    )
+                  ],
+                )
+            ),
+          );
+        });
   }
 }

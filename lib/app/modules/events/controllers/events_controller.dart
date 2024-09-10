@@ -106,15 +106,16 @@ class EventsController extends GetxController {
 
   @override
   void onInit() async {
+    eventsRepository = EventsRepository();
+    userRepository = UserRepository();
+    zoneRepository = ZoneRepository();
+    sectorRepository = SectorRepository();
     startingDateDisplay.text = "--/--/--";
     endingDateDisplay.text = "--/--/--";
     event = Event();
 
     scrollbarController = ScrollController()..addListener(_scrollListener);
-    eventsRepository = EventsRepository();
-    userRepository = UserRepository();
-    zoneRepository = ZoneRepository();
-    sectorRepository = SectorRepository();
+
 
 
 

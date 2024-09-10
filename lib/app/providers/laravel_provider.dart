@@ -171,7 +171,14 @@ class LaravelApiClient extends GetxService {
       );
 
       if (response.statusCode == 200) {
-        print(json.encode(response.data));
+        if (response.data['status'] == true) {
+          var user = UserModel.fromJson(response.data['data']);
+          user.myPosts = response.data['data']['my_posts'];
+          user.myEvents = response.data['data']['events'];
+          return user;
+        } else {
+          throw Exception(response.data['message']);
+        }
       }
     } on SocketException catch (e) {
       throw SocketException(e.toString());

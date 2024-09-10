@@ -9,8 +9,6 @@ import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/community/widgets/buildSelectSector.dart';
 import 'package:mapnrank/app/modules/community/widgets/buildSelectZone.dart';
-import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
-import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/loading_cards.dart';
 import 'package:mapnrank/app/modules/global_widgets/post_card_widget.dart';

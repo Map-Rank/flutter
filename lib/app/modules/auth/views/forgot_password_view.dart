@@ -11,6 +11,7 @@ import '../../../../color_constants.dart';
 import '../../../models/setting_model.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/auth_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPasswordView extends GetView<AuthController> {
   final Setting _settings = Get.find<SettingsService>().setting.value;
@@ -45,20 +46,20 @@ class ForgotPasswordView extends GetView<AuthController> {
 
               ),
             ).marginOnly(left: 20, right: 20, bottom: 20, top: Get.height/10),
-            const Align(
+            Align(
                 alignment:Alignment.center,
-                child: Text('Reset Password!', style: TextStyle(fontSize: 30, color: Colors.black, ), )).marginOnly(bottom: 20),
+                child: Text('${AppLocalizations.of(context).reset_password}!', style: TextStyle(fontSize: 30, color: Colors.black, ), )).marginOnly(bottom: 20),
 
             Align(
               alignment: Alignment.center,
-              child: Text('Enter your email address we will send you a mail that will help you to reset your password',
+              child: Text(AppLocalizations.of(context).reset_password_explanation,
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 16, color: Colors.black45),),
             ).marginOnly(bottom: 40),
 
             TextFieldWidget(
               isFirst: true,
               readOnly: false,
-              labelText: 'Email',
+              labelText: AppLocalizations.of(context).email,
               textController: controller.emailController,
               hintText: "johndoe@gmail.com",
               keyboardType: TextInputType.emailAddress,
@@ -67,7 +68,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                 controller.emailController.text = value
               },
               validator: (input) {
-                return !input!.contains('@') ? 'Enter a valid email address' : null;
+                return !input!.contains('@') ? AppLocalizations.of(context).enter_valid_email_address : null;
               },
               prefixIcon: Image.asset("assets/icons/email.png", width: 22, height: 22),
               iconData: Icons.mail_outline,
@@ -88,7 +89,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                 },
                 color: Get.theme.colorScheme.secondary,
                 text:Text(
-                  'Submit',
+                  AppLocalizations.of(context).submit,
                   style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                 )
             )).marginOnly(top: 40),
@@ -96,12 +97,12 @@ class ForgotPasswordView extends GetView<AuthController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("You remember your password?",style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
+                Text(AppLocalizations.of(context).remember_password,style: TextStyle(fontFamily: "poppins", fontSize: 15, color: Colors.black, fontWeight: FontWeight.normal)),
                 TextButton(
                   onPressed: () {
                     Get.offAllNamed(Routes.LOGIN);
                   },
-                  child: const Text('Sign in',style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
+                  child: Text(AppLocalizations.of(context).sign_in,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor)),
                 ),
               ],
             ).paddingSymmetric(vertical: 20).marginOnly(top: Get.height/20),

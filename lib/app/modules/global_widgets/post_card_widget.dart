@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/models/user_model.dart';
+import 'package:mapnrank/app/modules/global_widgets/read_more_text.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../color_constants.dart';
 import '../community/controllers/community_controller.dart';
 import '../community/widgets/comment_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PostCardWidget extends StatelessWidget {
   PostCardWidget({Key? key,
@@ -33,6 +34,7 @@ class PostCardWidget extends StatelessWidget {
     this.onActionTapped,
     this.popUpWidget,
     this.followWidget,
+    this.isCommunityPage,
   }) : super(key: key);
 
   final List? sectors;
@@ -58,6 +60,7 @@ class PostCardWidget extends StatelessWidget {
   Widget? likeWidget;
   Widget? popUpWidget;
   Widget? followWidget;
+  bool? isCommunityPage;
 
 
 
@@ -82,6 +85,7 @@ class PostCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
+                //width: Get.width,
                 height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -144,63 +148,65 @@ class PostCardWidget extends StatelessWidget {
                           )
                       ),
                     ),
-                    const SizedBox(width: 15,),
+                    const SizedBox(width: 5,),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          //height: 10,
-                          child: Wrap(
-                            spacing: Get.width*0.20,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            alignment: WrapAlignment.spaceBetween,
-                            runAlignment: WrapAlignment.spaceBetween,
+                          width: Get.width*0.81,
+                          child: Row(
+                            //crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                width: Get.width/3.4,
-
-                                child: Wrap(children: [
-                                  Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
-                                      //overflow:TextOverflow.ellipsis ,
-                                      style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4))),
-                                ],)
+                                width: Get.width*0.45,
+                                child: Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
+                                    overflow:TextOverflow.ellipsis ,
+                                    style: Get.textTheme.titleSmall),
                               ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                  child: followWidget!)
+                              Spacer(),
+
+
+                              isCommunityPage!?
+                              followWidget!:
+                                SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: popUpWidget!),
+
 
                             ],
                           ),
                         ),
 
-                        Expanded(
-                            child: SizedBox(
-                              height: 10,
-                              child: Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
+                        SizedBox(
+                          height: 10,
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
 
-                                children: [
-                                  const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
-                                  SizedBox(
-                                      //width: Get.width/4,
-                                      child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
-                                  const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
-                                  SizedBox(
-                                     //width: Get.width/4,
-                                      child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
+                            children: [
+                              const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
+                              SizedBox(
+                                  //width: Get.width/4,
+                                  child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
+                              const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
+                              SizedBox(
+                                 //width: Get.width/4,
+                                  child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
 
 
-                                  //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
-                                ],
-                              ),
-                            )
+                              //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    const Spacer(),
 
-                    popUpWidget!,
+
+
+
+
 
 
                   ],
@@ -208,17 +214,13 @@ class PostCardWidget extends StatelessWidget {
 
                 ),
               ),
-              Wrap(
-                children: [
-                  Text( content!, maxLines: 3, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black87, letterSpacing: 0.1),),
-                  (content!.length +1) > 3?
-                  Text('See more', style: TextStyle(color: Colors.grey))
-                  :SizedBox()
 
-                ]
-               
-                    
-                  ).marginOnly(bottom: 20),
+        ReadMoreText(
+            content == null? '':content?.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ''),
+            maxLines: 2,
+            trimMode: TrimMode.line,
+            textStyle: Get.textTheme.displayMedium!)
+            .marginOnly(bottom: 20),
               if(images!.isNotEmpty)...[
                 if( images!.length == 1)...[
                   GestureDetector(
@@ -226,10 +228,10 @@ class PostCardWidget extends StatelessWidget {
                     child: ClipRect(
                         child: FadeInImage(
                           width: Get.width,
-                          height: Get.height/3,
+                          height: 375,
                           fit: BoxFit.cover,
-                          image:  NetworkImage('${GlobalService().baseUrl}'
-                              '${images![0]['url'].substring(1,images![0]['url'].length)}',
+                          image:  NetworkImage(
+                              '${images![0]['url']}',
                               headers: GlobalService.getTokenHeaders()
                           ),
                           placeholder: const AssetImage(
@@ -239,8 +241,8 @@ class PostCardWidget extends StatelessWidget {
                             return Image.asset(
                                 "assets/images/loading.gif",
                                 width: Get.width,
-                                height: Get.height/4,
-                                fit: BoxFit.fitWidth);
+                                height: 375,
+                                fit: BoxFit.fitHeight);
                           },
                         )
 
@@ -249,7 +251,7 @@ class PostCardWidget extends StatelessWidget {
                 ]
                 else...[
                   SizedBox(
-                    height: Get.height/4,
+                    height: 375,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: images?.length,
@@ -258,21 +260,20 @@ class PostCardWidget extends StatelessWidget {
                           onTap: onPictureTapped,
                           child: FadeInImage(
                             width: Get.width-50,
-                            height: Get.height/4,
+                            height: 375,
                             fit: BoxFit.cover,
-                            image:  NetworkImage('${GlobalService().baseUrl}'
-                                '${images![index]['url'].substring(1,images![index]['url'].length)}',
+                            image: NetworkImage('${images![index]['url']}',
                                 headers: GlobalService.getTokenHeaders()
                             ),
                             placeholder: const AssetImage(
-                                "assets/images/loading.gif"),
+                                "assets/images/loading.gif",),
                             imageErrorBuilder:
                                 (context, error, stackTrace) {
                               return Image.asset(
                                   "assets/images/loading.gif",
                                   width: Get.width,
-                                  height: Get.height/4,
-                                  fit: BoxFit.fitWidth);
+                                  height: 375,
+                                  fit: BoxFit.fitHeight);
                             },
                           ).marginOnly(right: 10),
                         );
@@ -288,29 +289,29 @@ class PostCardWidget extends StatelessWidget {
 
               Obx(() => Row(
                 children: [
-                  Obx(() => FaIcon(FontAwesomeIcons.heart, color: likeCount!.value>0! ? interfaceColor: null),),
+                  Obx(() => likeCount!.value>0?FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor):FaIcon(FontAwesomeIcons.heart, color: null)),
                   const SizedBox(width: 10,),
                   if(likeCount!.value <= 1)...[
-                    Obx(() => Text('${likeCount!.value} like'),)
+                    Obx(() => Text('${likeCount!.value} ${AppLocalizations.of(context).like}'),)
                   ]
                   else...[
-                    Obx(() => Text('${likeCount!.value} likes'),)
+                    Obx(() => Text('${likeCount!.value}  ${AppLocalizations.of(context).like}s'),)
                   ],
 
 
                   const Spacer(),
                   if(commentCount! <= 1)...[
-                    Text(' ${commentCount!} Comment'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}'),
                   ]
                   else...[
-                    Text(' ${commentCount!} Comments'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}s'),
                   ],
                   if(shareCount! <= 1)...[
-                    Obx(() =>  Text(' . ${shareCount!} Share'),),
+                    Obx(() =>  Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}'),),
 
                   ]
                   else...[
-                    Obx(() =>Text(' . ${shareCount!} Shares'), )
+                    Obx(() =>Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}s'), )
 
                   ],
 
@@ -335,25 +336,25 @@ class PostCardWidget extends StatelessWidget {
 
                         likeWidget!,
 
-                        const Text('Like')
+                         Text(AppLocalizations.of(context).like_verb)
                       ],
                     ),
                   ),
                   GestureDetector(
                     onTap: onCommentTapped,
                     child: Column(
-                      children: const [
+                      children: [
                         FaIcon(FontAwesomeIcons.comment),
-                        Text('Comment')
+                        Text(AppLocalizations.of(context).comment_verb)
                       ],
                     ),
                   ),
                   GestureDetector(
                     onTap: onSharedTapped,
                     child: Column(
-                      children: const [
+                      children:[
                         FaIcon(FontAwesomeIcons.shareFromSquare, key: Key('shareIcon'),),
-                        Text('Share'),
+                        Text(AppLocalizations.of(context).share_verb),
                       ],
                     ),
                   ),

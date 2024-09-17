@@ -37,7 +37,7 @@ class Event extends Model {
     this.startDate,
     this.endDate,
     this.zoneParentId,
-    this.zoneLevelId
+    this.zoneLevelId,
   });
 
   Event.fromJson(Map<String, dynamic> json) {

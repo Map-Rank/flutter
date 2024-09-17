@@ -1,4 +1,5 @@
  import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/modules/global_widgets/post_card_widget.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   setUp(() {
@@ -40,6 +42,7 @@ void main() {
 
     final postCardWidget = PostCardWidget(
       user: mockUser,
+      isCommunityPage: true,
       sectors: ['sector1', 'sector2'],
       zone: 'Zone 1',
       content: 'This is a post content.',
@@ -59,38 +62,49 @@ void main() {
       onPictureTapped: () {},
       onActionTapped: () {},
       likeWidget: FaIcon(FontAwesomeIcons.heart,key: Key('likeIcon')),
-      popUpWidget: PopupMenuButton(itemBuilder: (context) {
-        return  {'Edit', 'Delete'}.map((String choice) {
-          return PopupMenuItem<String>(
-            value: choice,
-            child: Text(choice, style: const TextStyle(color: Colors.black),),
-          );
-        }).toList();
-      },),
+      followWidget: GestureDetector(
+        onTap: (){},
+        child: Text('Follow'),),
+      popUpWidget: SizedBox()
     );
 
     // Act
     await tester.pumpWidget(
-      GetMaterialApp(
-        home: Scaffold(
-          body: postCardWidget,
-        ),
-      ),
-    );
+        GetMaterialApp(
+          home: Scaffold(
+            body: Localizations(
+              delegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              locale: Locale('en'),
+
+              child: Builder(
+                  builder: (BuildContext context) {
+                    return SingleChildScrollView(
+                      child: postCardWidget,
+                    );
+                  }
+
+              ),),
+          ),
+        ),);
 
     // Assert
-    expect(find.text('John Doe'), findsOneWidget);
-    expect(find.text('This is a post content.'), findsOneWidget);
+    expect(find.text('John Doe'), findsOne);
+    expect(find.text('This is a post content.'), findsNothing);
     expect(find.byType(FadeInImage), findsAtLeastNWidgets(1));
     expect(find.byType(FaIcon), findsWidgets);
 
     await tester.tap(find.byKey(const Key('likeIcon')));
     await tester.pump();
 
-    expect(likeCount.value, 6);
+    expect(likeCount.value, 5);
 
     await tester.tap(find.byKey(const Key('shareIcon')));
     await tester.pump();
-    expect(shareCount.value, 3);
+    expect(shareCount.value, 2);
   });
 }

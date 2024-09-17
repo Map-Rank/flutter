@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/models/feedback_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
+import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
 import 'package:mapnrank/app/repositories/community_repository.dart';
 import 'package:mapnrank/app/repositories/sector_repository.dart';
 import 'package:mapnrank/app/repositories/user_repository.dart';
@@ -25,6 +27,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'dart:math' as Math;
 import '../../../models/post_model.dart';
+import '../../root/controllers/root_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 
@@ -33,6 +37,7 @@ class CommunityController extends GetxController {
 
   final Rx<UserModel> currentUser = Get.find<AuthService>().user;
   var floatingActionButtonTapped = false.obs;
+  var loadingAPost = false.obs;
   late CommunityRepository communityRepository ;
   var allPosts = [].obs;
   var listAllPosts = [];
@@ -44,8 +49,7 @@ class CommunityController extends GetxController {
   var noFilter = true.obs;
   var createPostNotEvent = true.obs;
   late Post post;
-  Post postDetails = Post();
-
+  Rx<Post> postDetails = Post().obs;
   var loadingRegions = true.obs;
   var regions = [].obs;
   var regionSelected = false.obs;
@@ -74,6 +78,7 @@ class CommunityController extends GetxController {
   var sectors = [].obs;
   var sectorsSelected = [].obs;
   var postFollowed = [].obs;
+  var postUnFollowed = [].obs;
   var selectedIndex = 0.obs;
   var listSectors = [].obs;
   var sectorsSet ={};
@@ -98,9 +103,11 @@ class CommunityController extends GetxController {
 
   var selectedPost = [].obs;
 
+  var unlikedPost = [].obs;
+
   var sharedPost = [].obs;
 
-  var postSelectedIndex = 0.obs;
+  var postSelectedIndex = 0.5.obs;
 
   var postFollowedIndex = 0.obs;
 
@@ -146,6 +153,7 @@ class CommunityController extends GetxController {
     super.onInit();
 
     post = Post();
+    print('Post from init: ${post.content}' );
 
     scrollbarController = ScrollController()..addListener(_scrollListener);
     communityRepository = CommunityRepository();
@@ -155,59 +163,105 @@ class CommunityController extends GetxController {
 
 
 
-    listAllPosts = await getAllPosts(0);
-    allPosts.value= listAllPosts;
+    await refreshCommunity();
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      var box = GetStorage();
 
-    var box = GetStorage();
+      var boxRegions = box.read("allRegions");
 
-    var boxRegions = box.read("allRegions");
+      if(boxRegions == null){
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_regions),
+          duration: Duration(seconds: 3),
+        ));
 
-    if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Regions...'),
-        duration: Duration(seconds: 3),
-      ));
+        regionsSet = await getAllRegions();
+        listRegions.value = regionsSet['data'];
+        loadingRegions.value = !regionsSet['status'];
+        regions.value = listRegions;
 
-      regionsSet = await getAllRegions();
-      listRegions.value = regionsSet['data'];
-      loadingRegions.value = !regionsSet['status'];
-      regions.value = listRegions;
+        box.write("allRegions", regionsSet);
 
-      box.write("allRegions", regionsSet);
+      }
+      else{
 
+        listRegions.value = boxRegions['data'];
+        loadingRegions.value = !boxRegions['status'];
+        regions.value = listRegions;
+
+
+      }
+
+      var boxSectors = box.read("allSectors");
+
+      if(boxSectors == null){
+
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_sectors),
+          duration: Duration(seconds: 3),
+        ));
+
+        sectorsSet = await getAllSectors();
+        listSectors.value = sectorsSet['data'];
+        loadingSectors.value = !sectorsSet['status'];
+        sectors.value = listSectors;
+
+        box.write("allSectors", sectorsSet);
+
+      }
+      else{
+        listSectors.value = boxSectors['data'];
+        loadingSectors.value = !boxSectors['status'];
+        sectors.value = listSectors;
+
+
+      }
     }
     else{
+      allPosts = [Post(
+        content: 'Test post content',
+        zone: {'name': 'Test Zone'},
+        publishedDate: DateTime.now().toString(),
+        postId: 1,
+        imagesUrl: [
+            {'url': ''}
+          ],
+        user: UserModel(
+          firstName: 'Test',
+          lastName: 'User',
+          avatarUrl: 'https://example.com/avatar.png',
+        ),
+        commentCount: 5,
+        shareCount: 10,
+        likeCount: 100,
+        likeTapped: false.obs,
+        isFollowing: false.obs,
 
-      listRegions.value = boxRegions['data'];
-      loadingRegions.value = !boxRegions['status'];
-      regions.value = listRegions;
+      )].obs;
 
+      loadingPosts = false.obs;
+      createUpdatePosts = true.obs;
+      post = Post(
+        content: 'Test post content',
+        zone: {'name': 'Test Zone'},
+        publishedDate: DateTime.now().toString(),
+        postId: 1,
+        imagesUrl: [
+          {'url': 'testUrl'}
+        ],
+        user: UserModel(
+          firstName: 'Test',
+          lastName: 'User',
+          avatarUrl: 'https://example.com/avatar.png',
+        ),
+        commentCount: 5,
+        shareCount: 10,
+        likeCount: 100,
+        likeTapped: false.obs,
+        isFollowing: false.obs,
 
-    }
-
-    var boxSectors = box.read("allSectors");
-
-    if(boxSectors == null){
-
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Sectors...'),
-        duration: Duration(seconds: 3),
-      ));
-
-      sectorsSet = await getAllSectors();
-      listSectors.value = sectorsSet['data'];
-      loadingSectors.value = !sectorsSet['status'];
-      sectors.value = listSectors;
-
-      box.write("allSectors", sectorsSet);
-
-    }
-    else{
-      listSectors.value = boxSectors['data'];
-      loadingSectors.value = !boxSectors['status'];
-      sectors.value = listSectors;
-
-
+      );
+      //imageFiles = [];
     }
 
 
@@ -226,7 +280,13 @@ class CommunityController extends GetxController {
     listAllPosts.clear();
     allPosts.clear();
     loadingPosts.value = true;
-    listAllPosts = await getAllPosts(0);
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllPosts = await getAllPosts(0);
+    }
+    else{
+      listAllPosts = [];
+    }
+
     allPosts.value= listAllPosts;
     emptyArrays();
   }
@@ -234,13 +294,14 @@ class CommunityController extends GetxController {
   void _scrollListener() async{
     print('extent is ${scrollbarController.position.extentAfter}');
     if (scrollbarController.position.extentAfter < 10) {
-      var posts = await getAllPosts(page++);
+      var posts = await getAllPosts(++page);
         allPosts.addAll(posts);
       listAllPosts.addAll(posts);
     }
   }
 
   getAllPosts(int page)async{
+    print('page is :${page}');
     var postList = [];
     sharedPost.clear();
 
@@ -253,7 +314,7 @@ class CommunityController extends GetxController {
             firstName: list[i]['creator'][0]['first_name'],
             avatarUrl: list[i]['creator'][0]['avatar']
         );
-        post = Post(
+        var post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
             commentCount:list[i] ['comment_count'],
@@ -264,14 +325,14 @@ class CommunityController extends GetxController {
             imagesUrl: list[i]['images'],
             user: user,
             liked: list[i]['liked'],
-            likeTapped: list[i]['liked'],
+            likeTapped: RxBool(list[i]['liked']),
             sectors: list[i]['sectors'],
-            isFollowing: list[i]['is_following']
+            isFollowing: RxBool(list[i]['is_following'])
 
 
         );
 
-        //print(User.fromJson(list[i]['creator']));
+        print(list[i]['liked']);
         postList.add(post);
       }
       loadingPosts.value = false;
@@ -279,7 +340,9 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       loadingPosts.value = false;
@@ -288,20 +351,6 @@ class CommunityController extends GetxController {
     }
 
   }
-  // filterSearchPostsByName(String query){
-  //   List dummySearchList = [];
-  //   dummySearchList = listAllPosts;
-  //   if(query.isNotEmpty) {
-  //     List dummyListData = [];
-  //     dummyListData = dummySearchList.where((element) => element.user.firstName
-  //         .toString().toLowerCase().contains(query.toLowerCase()) || element.user.lastName
-  //         .toString().toLowerCase().contains(query.toLowerCase())).toList();
-  //     allPosts.value = dummyListData;
-  //     return;
-  //   } else {
-  //     allPosts.value = listAllPosts;
-  //   }
-  // }
 
   filterSearchPostsBySectors(var query)async{
     var postList = [];
@@ -328,9 +377,9 @@ class CommunityController extends GetxController {
             imagesUrl: list[i]['images'],
             user: user,
             liked: list[i]['liked'],
-            likeTapped: list[i]['liked'],
+            likeTapped: RxBool(list[i]['liked']),
             sectors: list[i]['sectors'],
-            isFollowing: list[i]['is_following']
+            isFollowing: RxBool(list[i]['is_following'])
 
 
           );
@@ -345,7 +394,9 @@ class CommunityController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingPosts.value = false;
@@ -384,8 +435,9 @@ class CommunityController extends GetxController {
             imagesUrl: list[i]['images'],
             user: user,
             liked: list[i]['liked'],
-            likeTapped: list[i]['liked'],
-            sectors: list[i]['sectors'], isFollowing: list[i]['is_following'],
+            likeTapped: RxBool(list[i]['liked']),
+            sectors: list[i]['sectors'], 
+            isFollowing: RxBool(list[i]['is_following']),
 
 
           );
@@ -400,7 +452,9 @@ class CommunityController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingPosts.value = false;
@@ -472,8 +526,6 @@ class CommunityController extends GetxController {
       subdivisions.value = listSubdivisions;
     }
   }
-
-
 
   void filterSearchSectors(String query) {
     List dummySearchList = [];
@@ -572,7 +624,7 @@ class CommunityController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.camera),
-                      title: Text('Take a picture', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                      title: Text( AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     ),
                     ListTile(
                       onTap: ()async{
@@ -581,7 +633,8 @@ class CommunityController extends GetxController {
 
                       },
                       leading: const Icon(FontAwesomeIcons.image),
-                      title: Text('Upload Image', style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                      title: Text( AppLocalizations.of(Get.context!).upload_image
+                          , style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
                     )
                   ],
                 )
@@ -653,7 +706,9 @@ class CommunityController extends GetxController {
       return result;
     }
     catch(e){
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
 
   }
@@ -661,6 +716,7 @@ class CommunityController extends GetxController {
   emptyArrays(){
     //postContentController.clear();
     postFollowed.clear();
+    postUnFollowed.clear();
     sectorsSelected.clear();
     imageFiles.clear();
     regionSelectedValue.clear();
@@ -679,12 +735,23 @@ class CommunityController extends GetxController {
       listAllPosts = await getAllPosts(0);
       allPosts.value = listAllPosts;
       createPosts.value = false;
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post created successfully' ));
-      Navigator.pop(Get.context!);
+      Get.showSnackbar(Ui.SuccessSnackBar(message:  AppLocalizations.of(Get.context!).post_created_successful ));
+      if(isRootFolder){
+        await Get.find<RootController>().changePage(0);
+        postContentController.clear();
+        emptyArrays();
+        isRootFolder = false;
+    }
+      else{
+        Navigator.pop(Get.context!);
+      }
+
     }
     catch (e) {
       createPosts.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       createPosts.value = false;
@@ -700,7 +767,7 @@ class CommunityController extends GetxController {
     try{
       updatePosts.value = true;
       await communityRepository.updatePost(post);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post updated successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message:  AppLocalizations.of(Get.context!).post_updated_successful ));
       listAllPosts.clear();
       allPosts.clear();
       loadingPosts.value = true;
@@ -712,7 +779,9 @@ class CommunityController extends GetxController {
     }
     catch (e) {
       updatePosts.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       updatePosts.value = false;
@@ -721,13 +790,16 @@ class CommunityController extends GetxController {
 
   }
 
-  likeUnlikePost(int postId)async{
+  likeUnlikePost(int postId, int index,)async{
     try{
       await communityRepository.likeUnlikePost(postId);
+      print('ok');
 
     }
     catch (e) {
-      selectedPost.remove(selectedPost.where((element) => element.postId == postId));
+        allPosts.elementAt(index).likeTapped.value = !allPosts.elementAt(index).likeTapped.value;
+
+
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
     finally {
@@ -735,9 +807,30 @@ class CommunityController extends GetxController {
     }
 
   }
+  
+  initializePostDetails(Post post){
+    postDetails.value.content = post.content;
+    postDetails.value.zone = post.zone;
+    postDetails.value.postId = post.postId;
+    postDetails.value.commentCount = post.commentCount;
+    postDetails.value.likeCount = post.likeCount;
+    postDetails.value.shareCount = post.shareCount;
+    postDetails.value.publishedDate = post.publishedDate;
+    postDetails.value.imagesUrl = post.imagesUrl;
+    postDetails.value.user = post.user;
+    postDetails.value.liked = post.liked;
+    postDetails.value.likeTapped = post.likeTapped;
+    postDetails.value.isFollowing = post.isFollowing;
+    postDetails.value.commentList = post.commentList;
+    postDetails.value.sectors = post.sectors;
+    postDetails.value.zonePostId = post.zonePostId;
+    postDetails.value.zoneLevelId = post.zoneLevelId;
+    postDetails.value.zoneParentId = post.zoneParentId;
+  }
 
   getAPost(int postId)async{
     try{
+      loadingAPost.value = false;
       var result= await communityRepository.getAPost(postId);
       print("Result is : ${result}");
       UserModel user = UserModel(userId: result['creator'][0]['id'],
@@ -756,22 +849,24 @@ class CommunityController extends GetxController {
         imagesUrl: result['images'],
         user: user,
         liked: result['liked'],
-        likeTapped: result['liked'],
+        likeTapped: RxBool(result['liked']),
+        isFollowing: RxBool(result['is_following']),
         commentList: result['comments'],
         sectors: result['sectors'],
         zonePostId: result['zone']['id'],
         zoneLevelId: result['zone']['level_id'],
         zoneParentId: result['zone']['parent_id']
 
-
-
-
       );
-      return postModel;
+      loadingAPost.value = true;
+      initializePostDetails(postModel);
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      loadingAPost.value = false;
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 
@@ -783,7 +878,7 @@ class CommunityController extends GetxController {
     try{
       sendComment.value = true;
       var result= await communityRepository.commentPost(postId, comment);
-      print("Result is : ${result}");
+      print("Result again : ${result}");
       UserModel user = UserModel(userId: result['creator'][0]['id'],
           lastName:result['creator'][0]['last_name'],
           firstName: result['creator'][0]['first_name'],
@@ -800,7 +895,7 @@ class CommunityController extends GetxController {
           imagesUrl: result['images'],
           user: user,
           liked: result['liked'],
-          likeTapped: result['liked'],
+          likeTapped: RxBool(result['liked']),
           commentList: result['comments']
 
       );
@@ -849,7 +944,7 @@ class CommunityController extends GetxController {
     print(postId);
     try{
       await communityRepository.deletePost(postId);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Post deleted successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message:  AppLocalizations.of(Get.context!).post_deleted_successful ));
       listAllPosts.clear();
       allPosts.clear();
       loadingPosts.value = true;
@@ -858,7 +953,9 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       //createPosts.value = true;
@@ -867,18 +964,16 @@ class CommunityController extends GetxController {
   }
 
 
-  followUser(int userId, int postId)async{
+  followUser(int userId, int index)async{
     try{
-      showDialog(context: Get.context!, builder: (context){
-        return CommentLoadingWidget();
-      },);
+
       await userRepository.followUser(userId);
-      Navigator.of(Get.context!).pop();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'You are now following this user' ));
+     // Navigator.of(Get.context!).pop();
+      //Get.showSnackbar(Ui.SuccessSnackBar(message: 'You are now following this user' ));
 
     }
     catch (e) {
-      postFollowed.remove(postFollowed.where((element) => element.postId == postId));
+      allPosts.elementAt(index).isFollowing.value = !allPosts.elementAt(index).isFollowing.value;
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
 
     }
@@ -888,17 +983,16 @@ class CommunityController extends GetxController {
 
   }
 
-  unfollowUser(int userId)async{
+  unfollowUser(int userId, int index)async{
     try{
-      showDialog(context: Get.context!, builder: (context){
-        return CommentLoadingWidget();
-      },);
+
       await userRepository.unfollowUser(userId);
-      Navigator.of(Get.context!).pop();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'You have just unfollowed this user' ));
+      //Navigator.of(Get.context!).pop();
+      //Get.showSnackbar(Ui.SuccessSnackBar(message: 'You have just unfollowed this user' ));
 
     }
     catch (e) {
+      allPosts.elementAt(index).isFollowing.value = !allPosts.elementAt(index).isFollowing.value;
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
 
     }
@@ -941,11 +1035,13 @@ class CommunityController extends GetxController {
             rating: rating.toString()
           ));
       Navigator.of(Get.context!).pop();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Your feedback was sent successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).feedback_created_successful ));
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
 
     }
     finally {

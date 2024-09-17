@@ -8,7 +8,8 @@ import '../../common/helper.dart';
 class GlobalService extends GetxService {
 
 
-  String get baseUrl => "https://backoffice-dev.residat.com/";
+  get baseUrl => "https://www.admin.residat.com/";
+  //get baseUrl => "https://backoffice-dev.residat.com/";
   static var logOutToken = '';
   String get apiPath => "api/";
   String get appName => "Residat";
@@ -18,5 +19,5 @@ class GlobalService extends GetxService {
     headers['accept'] = 'application/json';
     return headers;
   }
-  static String contactUsNumber = "+237693306986";
+  static String contactUsNumber = "+237620162316";
 }

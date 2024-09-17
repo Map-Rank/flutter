@@ -9,20 +9,23 @@ import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/community/widgets/buildSelectSector.dart';
 import 'package:mapnrank/app/modules/community/widgets/buildSelectZone.dart';
-import 'package:mapnrank/app/modules/community/widgets/comment_loading_widget.dart';
-import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:mapnrank/app/modules/global_widgets/block_button_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/loading_cards.dart';
 import 'package:mapnrank/app/modules/global_widgets/post_card_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
+import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
+import 'package:mapnrank/app/modules/profile/views/profile_view.dart';
+import 'package:mapnrank/app/modules/root/controllers/root_controller.dart';
 import 'package:mapnrank/app/routes/app_routes.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
 import '../../../../common/ui.dart';
+import '../../../models/post_model.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/global_services.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../events/controllers/events_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class CommunityView extends GetView<CommunityController> {
@@ -51,7 +54,7 @@ class CommunityView extends GetView<CommunityController> {
                 child: ListView(
                   padding: EdgeInsets.all(20),
                   children: [
-                    Text('Send us Your feedback', style: TextStyle(fontSize: 16),).marginOnly(top: 20, bottom: 10),
+                    Text(AppLocalizations.of(context).send_via_whatsapp, style: TextStyle(fontSize: 16),).marginOnly(top: 20, bottom: 10),
                     SizedBox(
                       width: Get.width,
                       height: 70,
@@ -59,7 +62,7 @@ class CommunityView extends GetView<CommunityController> {
                         controller: controller.feedbackController,
                         maxLines: 80,
                         decoration: InputDecoration(
-                            hintText: "Enter your feedback here...",
+                            hintText: AppLocalizations.of(context).enter_feedback_here,
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
                           focusedBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
 
@@ -72,8 +75,8 @@ class CommunityView extends GetView<CommunityController> {
                     ).marginOnly(bottom: 20),
                     RichText(text: TextSpan(
                       children: [
-                        WidgetSpan(child:Text('Input an image', style: TextStyle(fontSize: 16),),),
-                        WidgetSpan(child:Text('  (Optional)', style: TextStyle(fontSize: 12, color: Colors.grey),),),
+                        WidgetSpan(child:Text(AppLocalizations.of(context).input_image, style: TextStyle(fontSize: 16),),),
+                        WidgetSpan(child:Text('  (${AppLocalizations.of(context).optional})', style: TextStyle(fontSize: 12, color: Colors.grey),),),
 
                       ]
                     )).marginOnly(bottom: 20),
@@ -114,7 +117,7 @@ class CommunityView extends GetView<CommunityController> {
                         )
                       ],
                     ).marginOnly(bottom: 20, left: 20),
-                    Text('Rate us', style: TextStyle(fontSize: 16)).marginOnly(top: 10, bottom: 10),
+                    Text(AppLocalizations.of(context).rate_us, style: TextStyle(fontSize: 16)).marginOnly(top: 10, bottom: 10),
                     Obx(() {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -137,7 +140,7 @@ class CommunityView extends GetView<CommunityController> {
                         SizedBox(
                           width: Get.width,
                           child: BlockButtonWidget(color: interfaceColor,
-                              text: Text('Submit', style: TextStyle(color: Colors.white),),
+                              text: Text(AppLocalizations.of(context).submit, style: TextStyle(color: Colors.white),),
                               onPressed: () async{
                             if(controller.feedbackController.text.isNotEmpty){
                               if(controller.rating.value != 0){
@@ -145,12 +148,12 @@ class CommunityView extends GetView<CommunityController> {
                                 Navigator.of(context).pop();
                               }
                               else{
-                                Get.showSnackbar(Ui.warningSnackBar(message: 'Please rate us'));
+                                Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_rate_us));
                               }
 
                             }
                             else{
-                              Get.showSnackbar(Ui.warningSnackBar(message: 'Please write a feedback'));
+                              Get.showSnackbar(Ui.warningSnackBar(message: AppLocalizations.of(context).please_write_feedback));
                             }
 
                               } ),
@@ -166,7 +169,13 @@ class CommunityView extends GetView<CommunityController> {
                           //width: Get.width/2,
                           child: MaterialButton(
                             onPressed: (){
-                              controller.launchWhatsApp(controller.feedbackController.text);
+                              if(controller.feedbackController.text.isNotEmpty){
+                                controller.launchWhatsApp(controller.feedbackController.text);
+                              }
+                              else{
+                                Get.showSnackbar(Ui.warningSnackBar(message: 'Please write a feedback'));
+                              }
+
                             },
                             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                             color: Colors.white,
@@ -177,7 +186,7 @@ class CommunityView extends GetView<CommunityController> {
                               children: [
                                 Icon(FontAwesomeIcons.whatsapp, color: interfaceColor,),
                                 SizedBox(width: 10,),
-                                Text('Send through Whatsapp')
+                                Text(AppLocalizations.of(context).send_via_whatsapp)
                               ],
                             ),
                             elevation: 0,
@@ -193,7 +202,7 @@ class CommunityView extends GetView<CommunityController> {
 
         },
             heroTag: null,
-            label: const Text('Contact us')),
+            label: Text(AppLocalizations.of(context).contact_us)),
         body: RefreshIndicator(
           onRefresh: () async {
             await controller.refreshCommunity(showMessage: true);
@@ -207,11 +216,15 @@ class CommunityView extends GetView<CommunityController> {
               //primary: true,
               shrinkWrap: false,
               slivers: <Widget>[
+                
                 SliverAppBar(
+                  titleSpacing: 0,
+                  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
                   //expandedHeight: 80,
+                  backgroundColor: Colors.white,
                   leadingWidth: 0,
                   floating: true,
-                  toolbarHeight: 140,
+                  toolbarHeight: 190,
                   leading: Icon(null),
                   centerTitle: true,
                   title: Container(
@@ -231,37 +244,34 @@ class CommunityView extends GetView<CommunityController> {
                                 width: Get.width/6,
                                 height: Get.width/6,
                                 fit: BoxFit.fitWidth),
-                          ),
+                          ).marginOnly(left: 10),
                           Container(
                            height: 40,
                             width: Get.width/1.6,
                             decoration: BoxDecoration(
                               color: backgroundColor,
                               borderRadius: BorderRadius.circular(10)
-                              
+
                             ),
                             child: TextFormField(
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide:BorderSide.none,),
-                              hintText: 'Search subdivision',
+                              hintText: AppLocalizations.of(context).search_subdivision,
                               hintStyle: TextStyle(fontSize: 14),
-                              prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
+                              prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,),
                             ),
                                                       ),
                           ),
                           ClipOval(
                               child: GestureDetector(
                                 onTap: () async {
-                                  showDialog(context: context, builder: (context){
-                                    return CommentLoadingWidget();
-                                  },);
-                                  try {
-                                    await Get.find<AuthController>().getUser();
-                                    await Get.toNamed(Routes.PROFILE);
-                                  }catch (e) {
-                                    Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-                                  }
+                                    //await Get.find<RootController>().changePage(0);
+                                  Get.lazyPut<ProfileController>(
+                                        () => ProfileController(),
+                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
+
                                 },
                                 child: FadeInImage(
                                   width: 30,
@@ -280,7 +290,7 @@ class CommunityView extends GetView<CommunityController> {
                                   },
                                 ),
                               )
-                          ),
+                          ).marginOnly(right: 10),
                         ],
                       )
                   ),
@@ -290,81 +300,111 @@ class CommunityView extends GetView<CommunityController> {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(10),
-                          //margin:EdgeInsets.all(10),
-                          height: 150,
                           decoration: BoxDecoration(
-                              color: Colors.white
-                            //border: Border(bottom: BorderSide(color: interfaceColor))
+                            color:backgroundColor,
                           ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: Get.width,
-                                height: 70,
-                                child: TextFormField(
-                                  maxLines: 80,
-                                  decoration: InputDecoration(
-                                    hintText: "What's on your mind?",
-                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
-                                    focusedBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+                          padding: EdgeInsets.only(top: 10),
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                            //margin:EdgeInsets.all(10),
+                            height: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.white
+                              //border: Border(bottom: BorderSide(color: interfaceColor))
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                        child: FadeInImage(
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.cover,
+                                          image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                                          placeholder: const AssetImage(
+                                              "assets/images/loading.gif"),
+                                          imageErrorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Image.asset(
+                                                "assets/images/user_admin.png",
+                                                width: 30,
+                                                height: 30,
+                                                fit: BoxFit.fitWidth);
+                                          },
+                                        )
+                                    ),
+                                    SizedBox(width: 10,),
+                                    SizedBox(
+                                      width: Get.width*0.79,
+                                      height: 50,
+                                      child: TextFormField(
+                                        maxLines: 80,
+                                        decoration: InputDecoration(
+                                          hintText: AppLocalizations.of(context).input_placeholder,
+                                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
+                                          focusedBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide(width: 0.4, color: Colors.grey,)),
 
-                                  ),
-                                  onChanged: (value) {
-                                    controller.postContentController.text = value;
-                                  },
+                                        ),
+                                        onChanged: (value) {
+                                          controller.postContentController.text = value;
+                                        },
 
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(height: 10,),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: Get.width/2.2,
-                                    child: BlockButtonWidget(color: interfaceColor, text: Text('Post',
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                                        onPressed: (){
-                                          controller.noFilter.value = true;
-                                          controller.chooseARegion.value = false;
-                                          controller.chooseADivision.value = false;
-                                          controller.chooseASubDivision.value = false;
-                                          if(controller.post?.sectors != null){
-                                            controller.post?.sectors!.clear();
-                                            controller.emptyArrays();
-                                          }
 
-                                          Get.toNamed(Routes.CREATE_POST);
+                                SizedBox(height: 20,),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: Get.width/2.3,
+                                      child: BlockButtonWidget(color: interfaceColor, text: Text(AppLocalizations.of(context).post,
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                          onPressed: (){
+                                            controller.noFilter.value = true;
+                                            controller.chooseARegion.value = false;
+                                            controller.chooseADivision.value = false;
+                                            controller.chooseASubDivision.value = false;
+                                            if(controller.post?.sectors != null){
+                                              controller.post?.sectors!.clear();
+                                              controller.emptyArrays();
+                                            }
 
-                                        }),
-                                  ),
-                                  Spacer(),
-                                  SizedBox(
-                                    width: Get.width/2.2,
-                                    child: BlockButtonWidget(color: interfaceColor, text: Text('Create Event',
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                                        onPressed: (){
-                                          Get.find<EventsController>().noFilter.value = true;
-                                          Get.find<EventsController>().chooseARegion.value = false;
-                                          Get.find<EventsController>().chooseADivision.value = false;
-                                          Get.find<EventsController>().chooseASubDivision.value = false;
+                                            Get.toNamed(Routes.CREATE_POST);
 
-                                          if(Get.find<EventsController>().event?.sectors != null){
-                                            Get.find<EventsController>().event?.sectors!.clear();
-                                            Get.find<EventsController>().emptyArrays();
-                                          }
-                                          Get.toNamed(Routes.CREATE_EVENT);
+                                          }),
+                                    ),
+                                    Spacer(),
+                                    SizedBox(
+                                      width: Get.width/2.3,
+                                      child: BlockButtonWidget(color: interfaceColor, text: Text(AppLocalizations.of(context).create_event,
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                          onPressed: (){
+                                            Get.find<EventsController>().noFilter.value = true;
+                                            Get.find<EventsController>().chooseARegion.value = false;
+                                            Get.find<EventsController>().chooseADivision.value = false;
+                                            Get.find<EventsController>().chooseASubDivision.value = false;
 
-                                        }),
-                                  )
-                                ],
-                              )
+                                            if(Get.find<EventsController>().event?.sectors != null){
+                                              Get.find<EventsController>().event?.sectors!.clear();
+                                              Get.find<EventsController>().emptyArrays();
+                                            }
+                                            Get.toNamed(Routes.CREATE_EVENT);
+
+                                          }),
+                                    )
+                                  ],
+                                )
 
 
-                            ],),
+                              ],),
+                          ),
                         ),
                         Container(
                           decoration: BoxDecoration(
-                              color: backgroundColor
+                              color: backgroundColor,
                             //border: Border(bottom: BorderSide(color: interfaceColor))
                           ),
                           child: Row(
@@ -372,14 +412,23 @@ class CommunityView extends GetView<CommunityController> {
                             children: [
                               Expanded(
                                 child: Container(
-                                  margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
+                                  margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: <BoxShadow>[BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 20.0,
+                                          offset: Offset(1, 1)
+                                      )]
                                   ),
                                   child: TextButton.icon(
-                                    icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                                    label: Text('Filter by zone', style: TextStyle(color: interfaceColor),),
+                                    icon: Image.asset(
+                                        "assets/images/filter.png",
+                                        width: 20,
+                                        height: 20,
+                                        fit: BoxFit.fitWidth) ,
+                                    label: Text(AppLocalizations.of(context).filter_by_location, style: TextStyle(color: Colors.black),),
                                     onPressed: () {
 
                                       controller.noFilter.value = false;
@@ -393,7 +442,7 @@ class CommunityView extends GetView<CommunityController> {
                                           return Container(
                                               padding: const EdgeInsets.all(20),
                                               decoration: const BoxDecoration(
-                                                  color: backgroundColor,
+                                                  color: Colors.white,
                                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
 
                                               ),
@@ -407,14 +456,23 @@ class CommunityView extends GetView<CommunityController> {
                               ),
                               Expanded(
                                 child: Container(
-                                  margin: EdgeInsets.fromLTRB(5, 10, 10, 10),
+                                  margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
+                                      boxShadow: <BoxShadow>[BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 20.0,
+                                          offset: Offset(1, 1)
+                                      )],
                                       borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: TextButton.icon(
-                                    icon: Icon(Icons.filter_list_rounded, color: interfaceColor) ,
-                                    label: Text('Filter by sector', style: TextStyle(color: interfaceColor)),
+                                    icon: Image.asset(
+                                        "assets/images/filter.png",
+                                        width: 20,
+                                        height: 20,
+                                        fit: BoxFit.fitWidth) ,
+                                    label: Text(AppLocalizations.of(context).filter_by_sector, style: TextStyle(color: Colors.black)),
                                     onPressed: () {
 
                                       controller.noFilter.value = false;
@@ -425,7 +483,7 @@ class CommunityView extends GetView<CommunityController> {
                                           return Container(
                                               padding: const EdgeInsets.all(20),
                                               decoration: const BoxDecoration(
-                                                  color: backgroundColor,
+                                                  color: Colors.white,
                                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
 
                                               ),
@@ -455,265 +513,91 @@ class CommunityView extends GetView<CommunityController> {
                       const LoadingCardWidget()
                           :controller.allPosts.isNotEmpty?
                       Obx(() => PostCardWidget(
+                        key: Key('postCardWidget'),
                         //likeTapped: RxBool(controller.allPosts[index].likeTapped),
                         content: controller.allPosts[index].content == false?'':controller.allPosts[index].content,
                         zone: controller.allPosts[index].zone != null?controller.allPosts[index].zone['name']: '',
                         publishedDate: controller.allPosts[index].publishedDate,
                         postId: controller.allPosts[index].postId,
-                        commentCount: controller.allPosts[index].commentCount,
-                        likeCount: RxInt(controller.selectedPost.contains(controller.allPosts[index])&& controller.postSelectedIndex.value == index &&controller.allPosts[index].likeTapped ?
-                        controller.allPosts[index].likeCount-1:
-                        controller.selectedPost.contains(controller.allPosts[index])&& controller.postSelectedIndex.value == index && !controller.allPosts[index].likeTapped ?
-                        controller.allPosts[index].likeCount+1:
-                        controller.allPosts[index].likeCount,),
-                        shareCount:  RxInt(controller.sharedPost.contains(controller.allPosts[index])&& controller.postSharedIndex.value == index?
-                          controller.sharedPost.where((element) => element.postId == controller.allPosts[index].postId).toList().length + controller.allPosts[index].shareCount:
-                        controller.allPosts[index].shareCount),
                         images: controller.allPosts[index].imagesUrl,
                         user: UserModel(
                             firstName: controller.allPosts[index].user.firstName,
                             lastName: controller.allPosts[index].user.lastName,
                             avatarUrl: controller.allPosts[index].user.avatarUrl
                         ),
-                        followWidget: Obx(() =>controller.postFollowed.contains(controller.allPosts[index])&& controller.postFollowedIndex.value == index &&controller.allPosts[index].isFollowing?
-                        GestureDetector(
-                            onTap: (){
-                              if( !controller.postFollowed.contains(controller.allPosts[index])){
-                                controller.postFollowed.add(controller.allPosts[index]);
-                                controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId,controller.allPosts[index].postId );
-                              }
+                        commentCount: controller.allPosts[index].commentCount,
+                        shareCount: RxInt(controller.allPosts[index].shareCount),
+                        likeCount: RxInt(controller.allPosts[index].likeTapped.value && controller.postSelectedIndex.value == index ?
+                        ++controller.allPosts[index].likeCount:
+                        !controller.allPosts[index].likeTapped.value  && controller.postSelectedIndex.value == index?
+                        --controller.allPosts[index].likeCount:
+                        controller.allPosts[index].likeCount,),
 
-
-
-                            },
-                            child: Text('+ Follow',style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),)):
-                        controller.postFollowed.contains(controller.allPosts[index])&& controller.postFollowedIndex.value == index  &&!controller.allPosts[index].isFollowing?
-                        Text('Following', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),):
-                        !controller.postFollowed.contains(controller.allPosts[index]) && !controller.allPosts[index].isFollowing?
-                        GestureDetector(
-                            onTap: (){
-                              controller.postSelectedIndex.value = index;
-
-                              if( !controller.postFollowed.contains(controller.allPosts[index])){
-                                controller.postFollowed.add(controller.allPosts[index]);
-                                controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId, controller.allPosts[index].postId );
-                              }
-
-
-
-                            }, child: Text('+ Follow', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),)):
-                        !controller.allPosts[index].isFollowing?
-                        GestureDetector(
-                            onTap: (){
-                              controller.postSelectedIndex.value = index;
-
-                              if( !controller.postFollowed.contains(controller.allPosts[index])){
-                                controller.postFollowed.add(controller.allPosts[index]);
-                                controller.postFollowedIndex.value = index;
-                                controller.followUser(controller.allPosts[index].user.userId, controller.allPosts[index].postId );
-                              }
-
-
-
-                            }, child: Text('+ Follow',style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor), )):
-                        Text('Following', style: TextStyle(fontSize: 16,  height: 1.4, color: secondaryColor),),
-                        ),
                         likeWidget:  Obx(() =>
-                        controller.selectedPost.contains(controller.allPosts[index])&& controller.postSelectedIndex.value == index &&controller.allPosts[index].likeTapped?
-                        const FaIcon(FontAwesomeIcons.heart,):
-                        controller.selectedPost.contains(controller.allPosts[index])&& controller.postSelectedIndex.value == index  &&!controller.allPosts[index].likeTapped?
+                        controller.allPosts[index].likeTapped.value && controller.postSelectedIndex.value == index?
                         const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
-                        !controller.allPosts[index].likeTapped?
+                        !controller.allPosts[index].likeTapped.value  && controller.postSelectedIndex.value == index?
                         const FaIcon(FontAwesomeIcons.heart,):
-                        const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,)
-
+                        controller.allPosts[index].likeTapped.value ?
+                        const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
+                        const FaIcon(FontAwesomeIcons.heart,)
 
                           ,),
-
-
                         onLikeTapped: (){
-                          controller.postSelectedIndex.value = index;
+                          controller.postSelectedIndex.value = index.toDouble();
 
-                          if( controller.selectedPost.contains(controller.allPosts[index])){
-                            controller.selectedPost.remove(controller.allPosts[index]);
-                            controller.postSelectedIndex.value = index;
-                            controller.likeUnlikePost(controller.allPosts[index].postId);
-                          }
+                          if(controller.allPosts[index].likeTapped.value){
+                            controller.allPosts[index].likeTapped.value = !controller.allPosts[index].likeTapped.value;
+                              controller.likeUnlikePost(controller.allPosts[index].postId, index);
+                            }
                           else{
-                            controller.selectedPost.add(controller.allPosts[index]);
-                            controller.postSelectedIndex.value = index;
-                            controller.likeUnlikePost(controller.allPosts[index].postId);
+                            controller.allPosts[index].likeTapped.value = !controller.allPosts[index].likeTapped.value;
+                            controller.likeUnlikePost(controller.allPosts[index].postId, index);
                           }
+
 
                         },
                         onCommentTapped: () async{
-                          showDialog(context: context, builder: (context){
-                            return CommentLoadingWidget();
-                          },);
+                          controller.likeTapped.value = false;
+                          Get.toNamed(Routes.COMMENT_VIEW);
+                           await controller.getAPost(controller.allPosts[index].postId);
+                          controller.commentList.value = controller.postDetails.value.commentList!;
+                          controller.likeCount!.value = controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0].likeCount;
 
-                          controller.postDetails = await controller.getAPost(controller.allPosts[index].postId);
-                          controller.commentList.value = controller.postDetails.commentList!;
-                          controller.commentCount!.value =controller.postDetails.commentCount!;
-                          controller.likeCount?.value = controller.postDetails.likeCount!;
-                          controller.shareCount?.value =controller.postDetails.shareCount!;
-                              Navigator.of(context).pop();
-                          Get.toNamed(Routes.COMMENT_VIEW,arguments: {'post': controller.allPosts[index]} );
 
                         },
                         onPictureTapped: () async{
-                          controller.postDetails = controller.allPosts[index];
-                          controller.likeCount?.value = controller.postDetails.likeCount!;
-                          controller.shareCount?.value =controller.postDetails.shareCount!;
-                          print(controller.postDetails.postId);
-                          Get.toNamed(Routes.DETAILS_VIEW, arguments: {'post': controller.allPosts[index]} );
+                          var post = controller.allPosts[index];
+                          controller.initializePostDetails(post);
+                          controller.likeCount!.value = controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0].likeCount;
+                          Get.toNamed(Routes.DETAILS_VIEW);
 
                         },
                         onSharedTapped: ()async{
-                          controller.postSharedIndex.value = index;
-                            controller.sharedPost.add(controller.allPosts[index]);
-                            await controller.sharePost(controller.allPosts[index].postId);
-
-
+                          await controller.sharePost(controller.allPosts[index].postId);
                         },
-                        popUpWidget:
-                            GestureDetector(
-                               onTap: (){
-                                     showModalBottomSheet(context: context, builder: (context) {
-                                       return controller.allPosts[index].user.userId == controller.currentUser.value.userId?
-                                         Container(
-                                           height: Get.height/3,
-                                         child: ListView(
-                                           padding: EdgeInsets.all(20),
-                                           children: [
-                                             GestureDetector(onTap: () async{
-                                               showDialog(context: context, builder: (context){
-                                                 return CommentLoadingWidget();
-                                               },);
-                                               await controller.deletePost(controller.allPosts[index].postId);
-                                               Navigator.of(context).pop();
-                                             }, child: Row(children: [
-                                               Icon(FontAwesomeIcons.trashCan),
-                                               SizedBox(width: 20,),
-                                               Text('Delete', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                                             ],)).marginSymmetric(vertical: 10, ),
+                        isCommunityPage: true,
+                        followWidget:Obx(() => !controller.allPosts[index].isFollowing.value?
+                        GestureDetector(
+                            onTap: (){
 
-                                             GestureDetector(onTap: () async{
-                                               showDialog(context: context, builder: (context){
-                                                 return CommentLoadingWidget();
-                                               },);
-                                               controller.createUpdatePosts.value = true;
-                                               controller.post = await controller.getAPost(controller.allPosts[index].postId);
-
-                                               controller.postContentController.text = controller.post.content!;
-
-                                               for(int i = 0; i <controller.post.sectors!.length; i++) {
-
-                                                 controller.sectorsSelected.add(controller.sectors.where((element) => element['id'] == controller.post.sectors![i]['id']).toList()[0]);
-                                               }
-                                               print('sectors selected : ${controller.sectorsSelected}');
-
-                                               if(controller.post.zoneLevelId == '2'){
-                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, controller.post.zonePostId);
-                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
-                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                                 controller.divisions.value =  controller.listDivisions;
-                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
-
-                                               }
-                                               else if(controller.post.zoneLevelId == '3'){
-
-                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(controller.post.zoneParentId));
-                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
-                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                                 controller.divisions.value =  controller.listDivisions;
-                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.post.zoneParentId).toList()[0]);
-                                                 //controller.regionSelectedValue.add(controller.regions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
-                                                 print('Divisions : ${controller.divisions}');
-                                                 print('Divisions : ${controller.post.zonePostId}');
-
-                                                 controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, controller.post.zonePostId);
-                                                 controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
-                                                 controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
-                                                 controller.subdivisions.value =  controller.listSubdivisions;
-                                                 controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
-                                               }
-                                               else if(controller.post.zoneLevelId == '4'){
-                                                 var region = await controller.getSpecificZone(int.parse(controller.post.zoneParentId));
-                                                 print(region);
-
-                                                 controller.divisionsSet = await controller.zoneRepository.getAllDivisions(3, int.parse(region['parent_id']));
-                                                 controller.listDivisions.value =  controller.divisionsSet['data'];
-                                                 controller.loadingDivisions.value = ! controller.divisionsSet['status'];
-                                                 controller.divisions.value =  controller.listDivisions;
-
-                                                 controller.subdivisionsSet = await controller.zoneRepository.getAllSubdivisions(4, int.parse(controller.post.zoneParentId));
-                                                 controller.listSubdivisions.value =  controller.subdivisionsSet['data'];
-                                                 controller.loadingSubdivisions.value = ! controller.subdivisionsSet['status'];
-                                                 controller.subdivisions.value =  controller.listSubdivisions;
-                                                 controller.divisionSelectedValue.add(controller.divisions.where((element) => element['id'] == int.parse(controller.post.zoneParentId)).toList()[0]);
-
-                                                 print(controller.divisionSelectedValue);
+                                controller.postFollowedIndex.value = index;
+                                controller.allPosts[index].isFollowing.value = !controller.allPosts[index].isFollowing.value;
+                                controller.followUser(controller.allPosts[index].user.userId, index);
 
 
-                                                 controller.regionSelectedValue.add(controller.regions.where((element) => element['id'].toString() == controller.divisionSelectedValue[0]['parent_id']).toList()[0]);
-
-                                                 controller.subdivisionSelectedValue.add(controller.subdivisions.where((element) => element['id'] == controller.post.zonePostId).toList()[0]);
-                                               }
-
-
-                                               Navigator.of(context).pop();
-                                               controller.noFilter.value = true;
-                                               Get.toNamed(Routes.CREATE_POST);
-                                             }, child: Row(
-                                               mainAxisAlignment: MainAxisAlignment.start,
-                                               children: [
-                                               Icon(FontAwesomeIcons.edit),
-                                               SizedBox(width: 20,),
-                                               Text('Edit', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                                             ],))
-                                           ],
-
-                                         ),
-                                       ):
-                                       Container(
-                                         height: Get.height/3,
-                                         child: ListView(
-                                           padding: EdgeInsets.all(20),
-                                           children: [
-                                             Align(
-                                               alignment: Alignment.centerLeft,
-                                               child: GestureDetector(onTap: (){
-                                                 controller.postSelectedIndex.value = index;
-
-                                                 if(controller.postFollowed.contains(controller.allPosts[index])){
-                                                   controller.postFollowed.remove(controller.allPosts[index]);
-                                                   controller.postFollowedIndex.value = index;
-                                                   controller.unfollowUser(controller.allPosts[index].user.userId);
-                                                 }
-                                                 else{
-                                                   controller.postFollowedIndex.value = index;
-                                                   controller.unfollowUser(controller.allPosts[index].user.userId);
-                                                 }
-
-                                               }, child:  controller.allPosts[index].isFollowing || controller.postFollowed.contains(controller.allPosts[index])?
-                                               Row(children: [
-                                                 Icon(FontAwesomeIcons.cancel),
-                                                 SizedBox(width: 20,),
-                                                 Text('Unfollow', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                                               ],):Text('No actions to perform', style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-
-
-                                             )
-                                             )],
-                                         ),
-                                       );
-                                     },);
-
-                               },
-                                child: Icon(FontAwesomeIcons.ellipsisVertical, size: 20,))
-                        ,
+                            },
+                            child: Text('+ ${AppLocalizations.of(context).follow}',style:Get.textTheme.displaySmall,)):
+                        GestureDetector(
+                            onTap: (){
+                              controller.postSelectedIndex.value = index.toDouble();
+                              controller.allPosts[index].isFollowing.value = !controller.allPosts[index].isFollowing.value;
+                              controller.unfollowUser(controller.allPosts[index].user.userId, index);
+                              //}
+                            },
+                            child: Text(AppLocalizations.of(context).following, style: Get.textTheme.displaySmall,textAlign: TextAlign.end,)
+                        ),),
+                        popUpWidget: SizedBox(),
 
                         liked: controller.allPosts[index].liked,
                       ))
@@ -723,9 +607,9 @@ class CommunityView extends GetView<CommunityController> {
                           child: Column(
                             //mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
+                            children: [
                               FaIcon(FontAwesomeIcons.folderOpen, size: 30,),
-                              Text('No posts found')
+                              Text(AppLocalizations.of(context).no_posts_found)
                             ],
                           ),
                         ),
@@ -748,7 +632,7 @@ class CommunityView extends GetView<CommunityController> {
                     children:  [
                       SizedBox(height: Get.height/4),
                     FaIcon(FontAwesomeIcons.folderOpen, size: 30,),
-                  Text('No posts found')
+                  Text(AppLocalizations.of(context).no_posts_found)
                   ],
                 ),
             ),

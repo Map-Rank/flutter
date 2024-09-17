@@ -7,6 +7,9 @@ import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
 import 'package:mapnrank/app/modules/global_widgets/location_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/color_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../global_widgets/sector_item_widget.dart';
 
 class BuildSelectSector extends GetView<EventsController> {
   BuildSelectSector({Key? key,
@@ -23,13 +26,13 @@ class BuildSelectSector extends GetView<EventsController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Select a sector',
+            Text(AppLocalizations.of(context).select_sector_title,
               style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
               textAlign: TextAlign.start,
             ),
             TextButton(onPressed: (){
               Navigator.of(context).pop();
-            }, child: Text('ok/cancel'))
+            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
           ],
         ),
 
@@ -39,10 +42,10 @@ class BuildSelectSector extends GetView<EventsController> {
                 TextFieldWidget(
                   readOnly: false,
                   keyboardType: TextInputType.text,
-                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                   iconData: FontAwesomeIcons.search,
                   style: const TextStyle(color: labelColor),
-                  hintText: 'Select or search by sector name',
+                  hintText: AppLocalizations.of(context).select_search_sector,
                   onChanged: (value)=>{
                     controller.filterSearchSectors(value)
                   },
@@ -131,8 +134,8 @@ class BuildSelectSector extends GetView<EventsController> {
 
                               },
                               // coverage:ignore-end
-                              child: Obx(() => LocationWidget(
-                                regionName: controller.sectors[index]['name'],
+                              child: Obx(() => SectorItemWidget(
+                                sectorName: controller.sectors[index]['name'],
                                 selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
                               ).marginOnly(bottom: 5))
                           );

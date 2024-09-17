@@ -20,16 +20,19 @@ class LocationWidget extends StatelessWidget{
     return Container(
         height: 80,
         decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.black38, width: 0.5)),
             //border: selected? Border.all(color: interfaceColor,width: 2) : null,
-            borderRadius: const BorderRadius.all(Radius.circular(10))
+            //borderRadius: const BorderRadius.all(Radius.circular(10))
+
         ),
         padding: const EdgeInsets.only(top: 10, right: 10, bottom: 10),
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              selected? const Icon(FontAwesomeIcons.check): const Icon(FontAwesomeIcons.square),
+              selected? const Icon(FontAwesomeIcons.dotCircle, color: interfaceColor,): const Icon(FontAwesomeIcons.circle),
 
               SizedBox(
+
                   height: 40,
                   width: Get.width/2.5,
                   child: Row(

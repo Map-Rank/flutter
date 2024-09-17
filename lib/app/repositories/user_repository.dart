@@ -15,6 +15,11 @@ class UserRepository {
      return _laravelApiClient.logout();
    }
 
+   Future deleteAccount<int>() {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.deleteAccount();
+   }
+
 
 
   Future register(UserModel user) {

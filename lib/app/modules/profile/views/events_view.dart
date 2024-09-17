@@ -17,6 +17,7 @@ class MyEventsView extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: Key('event_title'),
         backgroundColor: backgroundColor,
         elevation: 0,
 

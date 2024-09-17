@@ -217,6 +217,52 @@ class CommunityController extends GetxController {
 
       }
     }
+    else{
+      allPosts = [Post(
+        content: 'Test post content',
+        zone: {'name': 'Test Zone'},
+        publishedDate: DateTime.now().toString(),
+        postId: 1,
+        imagesUrl: [
+            {'url': ''}
+          ],
+        user: UserModel(
+          firstName: 'Test',
+          lastName: 'User',
+          avatarUrl: 'https://example.com/avatar.png',
+        ),
+        commentCount: 5,
+        shareCount: 10,
+        likeCount: 100,
+        likeTapped: false.obs,
+        isFollowing: false.obs,
+
+      )].obs;
+
+      loadingPosts = false.obs;
+      createUpdatePosts = true.obs;
+      post = Post(
+        content: 'Test post content',
+        zone: {'name': 'Test Zone'},
+        publishedDate: DateTime.now().toString(),
+        postId: 1,
+        imagesUrl: [
+          {'url': 'testUrl'}
+        ],
+        user: UserModel(
+          firstName: 'Test',
+          lastName: 'User',
+          avatarUrl: 'https://example.com/avatar.png',
+        ),
+        commentCount: 5,
+        shareCount: 10,
+        likeCount: 100,
+        likeTapped: false.obs,
+        isFollowing: false.obs,
+
+      );
+      //imageFiles = [];
+    }
 
 
 

@@ -29,6 +29,8 @@ class EventsView extends GetView<EventsController> {
 
   @override
   Widget build(BuildContext context) {
+    print(controller.loadingEvents.value);
+    print(controller.allEvents);
     Get.lazyPut(()=>CommunityController());
     return WillPopScope(
       onWillPop: Helper().onWillPop,

@@ -513,6 +513,7 @@ class CommunityView extends GetView<CommunityController> {
                       const LoadingCardWidget()
                           :controller.allPosts.isNotEmpty?
                       Obx(() => PostCardWidget(
+                        key: Key('postCardWidget'),
                         //likeTapped: RxBool(controller.allPosts[index].likeTapped),
                         content: controller.allPosts[index].content == false?'':controller.allPosts[index].content,
                         zone: controller.allPosts[index].zone != null?controller.allPosts[index].zone['name']: '',

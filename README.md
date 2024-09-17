@@ -1,4 +1,4 @@
-<h1 style="display: flex; justify-content: space-between; align-items: center;">Welcome to residat-mobile-platform <img src="public/assets/images/Logos/logo-small.svg" alt="Image Description" height="70"></h1>
+<h1 style="display: flex; justify-content: space-between; align-items: center;">Welcome to residat-mobile-platform <img src="https://www.residat.com/assets/logo-small-BUdztiEo.svg" alt="Image Description" height="70"></h1>
 
 [![Version](https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000)](#)
 [![License: AGPL](https://img.shields.io/badge/License-agpl-yellow.svg)](#)
@@ -14,40 +14,37 @@ RESIDAT is a digital platform for sharing place-based information on climate ris
 - Chatroom for community climate realities
 - Sending out mobile notifications by local and regional climate authoritative bodies.
 
-
-Login             |  Dashboard
-:-------------------------:|:-------------------------:
-![Rectangle (2)](https://github.com/Map-Rank/residat-flutter/assets/38427386/c5a4e425-bc86-4f73-89d4-a10ba54e4d23)  |  ![Rectangle (1)](https://github.com/Map-Rank/residat-flutter/assets/38427386/d5f7a1d6-895a-4221-91d6-563ecf3c760f)
-
-
-
-
+|                                      Login                                      |                                                         Community                                                         |
+|:-------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------:|
+| <img src="https://github.com/Map-Rank/residat-flutter/assets/38427386/c5a4e425-bc86-4f73-89d4-a10ba54e4d23" width="200"/> | <img src="https://github.com/Map-Rank/residat-flutter/assets/38427386/d5f7a1d6-895a-4221-91d6-563ecf3c760f" width="200"/> |
 
 ## Table of Contents 📚
 
-1.  [Introduction](#introduction-🌟)
-2.  [Context](#context-💡-)
-3.  [Features](#features-✨)
-4.  [Installation Instruction](#installation-instruction-)
-5.  [Troubleshooting](#troubleshooting-)
-6.  [Testing](#testing-)
-7.  [Code of Conduct](#code-of-conduct-)
-8.  [licence](#licence-)
+1.  [Introduction](#introduction)
+2.  [Context](#context)
+3.  [Features](#features)
+4.  [Installation Instruction](#installation-instruction)
+5.  [Troubleshooting](#troubleshooting)
+6.  [Testing](#testing)
+7.  [Code of Conduct](#code-of-conduct)
+8.  [License](#license)
 
 
-## Introduction 🌟
+## Introduction
 
- <a href="https://dev.residat.com/community">RESIDAT</a> is a digital platform designed to enhance community resilience by providing access to climate risk information in Cameroon. It leverages spatial data and citizen science reports to visualize climate risks through interactive GIS dashboards. The platform offers a suite of features including:
-
+<a href="https://www.residat.com/community">RESIDAT</a> is a digital platform designed to enhance community resilience by providing access to climate risk information in Cameroon. It leverages spatial data and citizen science reports to visualize climate risks through interactive GIS dashboards. The platform offers a suite of features including:
 - Visualization Dashboards: Interactive maps and graphs for understanding local climate risks and stakeholder activities.
 - Community Intelligence: A repository for stakeholders to publish, manage, and interact with climate adaptation reports.
 - Community Chat Rooms: Spaces for real-time discussion and exchange of climate-related information and services..
 
- <a href="https://dev.residat.com/community">RESIDAT</a> serves as a critical tool for local and regional climate authoritative bodies to send out mobile notifications and engage communities in proactive climate risk management.
+<a href="https://dev.residat.com/community">RESIDAT</a> serves as a critical tool for local and regional climate authoritative bodies to send out mobile notifications and engage communities in proactive climate risk management.
 
-## Context 💡
+<a href="https://doc-mobile.residat.com/">Visit this link</a> To access our full documentation and our apis.
 
- <a href="https://dev.residat.com/community">RESIDAT</a> was born from the necessity to mitigate climate risks for communities in Cameroon. It targets the heart of climate vulnerability by providing critical, actionable data through GIS visualizations and real-time reports. The platform's goal is to empower communities and authorities to make informed decisions, enabling proactive and collaborative efforts towards climate resilience. In the face of increasing climate challenges,  <a href="https://dev.residat.com/community">RESIDAT</a> stands as a beacon of innovation and solidarity.
+
+## Context
+
+<a href="https://www.residat.com/community">RESIDAT</a> was born from the necessity to mitigate climate risks for communities in Cameroon. It targets the heart of climate vulnerability by providing critical, actionable data through GIS visualizations and real-time reports. The platform's goal is to empower communities and authorities to make informed decisions, enabling proactive and collaborative efforts towards climate resilience. In the face of increasing climate challenges,  <a href="https://dev.residat.com/community">RESIDAT</a> stands as a beacon of innovation and solidarity.
 
 ### Vision Statement
 "Residat envisions a resilient Cameroon where every community has the knowledge and tools to adapt to climate variability. Our vision is to become a leading platform in climate risk assessment and adaptation strategies, contributing to sustainable development and disaster risk reduction through innovative geospatial technologies."
@@ -61,12 +58,11 @@ Login             |  Dashboard
 ### Licensing Strategy
 "To maximize impact and encourage innovation, Residat will operate under an AGPL License, promoting open-source collaboration. This approach will allow for the free use, modification, and distribution of our resources, ensuring they remain accessible for adaptation to other regions facing similar climate challenges."
 
+## Features
 
-## Features ✨
+<a href="https://www.residat.com/community">RESIDAT</a> offers a powerful suite of features designed to provide stakeholders with comprehensive climate risk data and facilitate community engagement in climate resilience:
 
- <a href="https://dev.residat.com/community">RESIDAT</a> offers a powerful suite of features designed to provide stakeholders with comprehensive climate risk data and facilitate community engagement in climate resilience:
-
-- Interactive GIS Dashboards: Leveraging cutting-edge GIS technology,  <a href="https://dev.residat.com/community">RESIDAT</a> provides dynamic maps and graphs that allow users to visualize and interact with climate risk data specific to their local communities.
+- Interactive GIS Dashboards: Leveraging cutting-edge GIS technology,  <a href="https://www.residat.com/community">RESIDAT</a> provides dynamic maps and graphs that allow users to visualize and interact with climate risk data specific to their local communities.
 
 - Community Intelligence Reports: A dedicated space for stakeholders to publish, manage, and interact with reports on climate adaptation efforts. These reports provide valuable insights into local initiatives and challenges.
 
@@ -74,17 +70,18 @@ Login             |  Dashboard
 
 - Mobile Notifications: Integration with mobile platforms ensures that stakeholders receive timely updates and warnings about climate hazards, enabling swift and informed responses to emerging risks.
 
-- Citizen Science Contributions: Encouraging local community members to contribute data and reports,  <a href="https://dev.residat.com/community">RESIDAT</a> amplifies the reach and accuracy of climate risk information through citizen science.
+- Citizen Science Contributions: Encouraging local community members to contribute data and reports,  <a href="https://www.residat.com/community">RESIDAT</a> amplifies the reach and accuracy of climate risk information through citizen science.
 
-- Data-Driven Insights: By analyzing spatial data and user-contributed reports,  <a href="https://dev.residat.com/community">RESIDAT</a> provides actionable insights that support climate risk management and decision-making processes.
+- Data-Driven Insights: By analyzing spatial data and user-contributed reports,  <a href="https://www.residat.com/community">RESIDAT</a> provides actionable insights that support climate risk management and decision-making processes.
 
 - Stakeholder Engagement Tools: Features designed to enhance collaboration among various actors, including local authorities, NGOs, businesses, and academia, to drive collective action in climate adaptation.
 
 
-## Installation Instruction 
-In order to run and use this project on your devices you need to fufill the prerequisites and dependencies required below.
+## Installation Instruction
 
-### Prerequisites
+In order to run and use this project on your devices you need to fulfill the prerequisites and dependencies required below.
+
+## Prerequisites
 - Get a powerful machine that will allow you to emulate an android, ios  device or both.( <a href="https://docs.flutter.dev/get-started/install/windows/mobile">Visit this link for more enhancement</a>)
 - Set up Android Studio or VScode on your device
 - "Fork" or Clone  this repository from the main page.
@@ -92,22 +89,50 @@ In order to run and use this project on your devices you need to fufill the prer
 ### Dependencies
 - Once you have the project in your development environment, Get all the dependencies of the project by tapping the command: "flutter pub get" at the root of your project in your terminal.
 
+
 ## Troubleshooting
+
 In case your flutter version is 3.16 or posterior to version 3.16, you might be facing issues with your graddle files and your project will not run. <a href ="https://stackoverflow.com/questions/78032396/applying-flutters-app-plugin-loader-gradle-plugin-imperatively-using-the-apply-s)">Follow this link to solve the issue</a>
 After following the instructions on the link above you might need to delete the following from your graddle file because Gradle wrapper already has it:
-task clean(type: Delete) { 
-    delete rootProject.buildDir 
+task clean(type: Delete) {
+delete rootProject.buildDir
 }
 
-## Testing 🧪
+## Testing
 
-Testing is a crucial aspect of the development process, ensuring that the code is robust and behaves as expected. In the Residat project, we employ Vitest for our testing framework, providing an efficient and feature-rich environment for both unit and integration testing. Below is a summary of the current test coverage and details about the testing setup and examples.
+Testing is a crucial aspect of the development process, ensuring that the code is robust and behaves as expected.
+In the Residat project, we employ the native test package designed by the flutter team for our testing framework, providing an efficient and feature-rich environment for both unit and integration testing. Below is a summary of the current test coverage and details about the testing setup and examples.
 
+### Test Setup
+Flutter provides a native library that allows you to run your test; but in order to generate a tangible report of all the lines covered by your test you need to implement the following steps:
+- you need to install the coverage library in your project at the root of your project using the command: flutter pub add coverage
+- To generate the report you may run in your terminal the command **flutter test --coverage**(that report will be generated into a file called lcov.info )
+
+the lcov.info file does not provide ready to exploit information, so we'll be using some commands to generate a html readable report that will allow us to read our report.
+1. On a Windows System
+- Paste the content of your lcov file into .txt file and run the following Python Script
+  reading_file = open("coverage.txt", "r")
+
+new_file_content = ""
+for line in reading_file:
+stripped_line = line.strip()
+new_line = stripped_line.replace("\\", "/")
+new_file_content += new_line +"\n"
+reading_file.close()
+
+writing_file = open("coverage.txt", "w")
+writing_file.write(new_file_content)
+writing_file.close()
+- paste back the content of your .txt file into your lcov.info file
+- run the following command: **wsl genhtml coverage/lcov.info -o coverage/** (Assuming you have a Windows sublinux System installed on your machine)
+
+2. On a Linux System
+- Just directly run the command **genhtml coverage/lcov.info -o coverage/**
 
 ### Test Coverage Summary
+Our test coverage is actually at 57% representing the percentage of lines covered by our test.
 
-
-## Code of Conduct 📜
+## Code of Conduct
 
 ### RESIDAT Contributor Code of Conduct
 
@@ -115,9 +140,9 @@ As contributors and maintainers of the RESIDAT project, we pledge to foster an o
 
 #### Our Principles
 - **Collaborative Ethos**: We create an inclusive space for diverse backgrounds and experiences, fostering a unique vision and product that resonates with the RESIDAT platform users.
-  
+
 - **Harmony through Dialogue**: We promote progress through open discussions, encouraging all community members to share ideas and engage respectfully to achieve consensus and resolve issues.
-  
+
 - **Team Spirit**: Recognizing that we each represent a piece of the RESIDAT puzzle, we value your skills and ask that you respect and value the contributions of others.
 
 #### Our Pledge
@@ -152,18 +177,12 @@ Violations of this Code of Conduct may result in expulsion from the community or
 
 By contributing to RESIDAT, you agree to abide by these principles and behaviors to ensure our community remains welcoming, inspiring, and constructive for all.
 
+## License
+* MapAndRank - Residat is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.
+* MapAndRank - Residat is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with MapAndRank - Residat. If not, see <https://www.gnu.org/licenses/>.
 
-## License ⚖️
- 
- * MapAndRank - Residat is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * MapAndRank - Residat is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with MapAndRank - Residat. If not, see <https://www.gnu.org/licenses/>.
+
+
+
+

@@ -154,7 +154,7 @@ class PostCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: Get.width*0.8,
+                          width: Get.width*0.81,
                           child: Row(
                             //crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

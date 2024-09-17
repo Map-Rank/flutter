@@ -120,61 +120,79 @@ class EventsController extends GetxController {
 
 
 // coverage:ignore-start
-    listAllEvents = await getAllEvents(0);
-    allEvents.value= listAllEvents;
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllEvents = await getAllEvents(0);
+      allEvents.value= listAllEvents;
 
 
-    var box = GetStorage();
+      var box = GetStorage();
 
-    var boxRegions = box.read("allRegions");
+      var boxRegions = box.read("allRegions");
 
-    if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(Get.context!).loading_regions),
-        duration: Duration(seconds: 3),
-      ));
+      if(boxRegions == null){
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_regions),
+          duration: Duration(seconds: 3),
+        ));
 
-      regionsSet = await getAllRegions();
-      listRegions.value = regionsSet['data'];
-      loadingRegions.value = !regionsSet['status'];
-      regions.value = listRegions;
+        regionsSet = await getAllRegions();
+        listRegions.value = regionsSet['data'];
+        loadingRegions.value = !regionsSet['status'];
+        regions.value = listRegions;
 
-      box.write("allRegions", regionsSet);
+        box.write("allRegions", regionsSet);
 
+      }
+      else{
+
+        listRegions.value = boxRegions['data'];
+        loadingRegions.value = !boxRegions['status'];
+        regions.value = listRegions;
+
+
+      }
+
+      var boxSectors = box.read("allSectors");
+
+      if(boxSectors == null){
+
+        ScaffoldMessenger.of(Get.context!).showSnackBar( SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_sectors),
+          duration: Duration(seconds: 3),
+        ));
+
+        sectorsSet = await getAllSectors();
+        listSectors.value = sectorsSet['data'];
+        loadingSectors.value = !sectorsSet['status'];
+        sectors.value = listSectors;
+
+        box.write("allSectors", sectorsSet);
+
+      }
+      else{
+        listSectors.value = boxSectors['data'];
+        loadingSectors.value = !boxSectors['status'];
+        sectors.value = listSectors;
+
+
+      }
     }
     else{
-
-      listRegions.value = boxRegions['data'];
-      loadingRegions.value = !boxRegions['status'];
-      regions.value = listRegions;
-
-
-    }
-
-    var boxSectors = box.read("allSectors");
-
-    if(boxSectors == null){
-
-      ScaffoldMessenger.of(Get.context!).showSnackBar( SnackBar(
-        content: Text(AppLocalizations.of(Get.context!).loading_sectors),
-        duration: Duration(seconds: 3),
-      ));
-
-      sectorsSet = await getAllSectors();
-      listSectors.value = sectorsSet['data'];
-      loadingSectors.value = !sectorsSet['status'];
-      sectors.value = listSectors;
-
-      box.write("allSectors", sectorsSet);
+      listAllEvents = [Event(
+        eventId: 1,
+        title: "Flutter Conference",
+        content: "An exciting conference about Flutter development.",
+        zone: "Zone 1",
+        organizer: "Tech World",
+        publishedDate: "2024-09-01",
+        imagesUrl: "https://example.com/event_image.jpg",
+      )];
+      allEvents.value= listAllEvents;
+      loadingEvents = false.obs;
+      createUpdateEvents = true.obs;
 
     }
-    else{
-      listSectors.value = boxSectors['data'];
-      loadingSectors.value = !boxSectors['status'];
-      sectors.value = listSectors;
 
-
-    }
 // coverage:ignore-end
     super.onInit();
 

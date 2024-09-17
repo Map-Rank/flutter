@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">141</td>
+            <td class="headerCovTableEntry">157</td>
             <td class="headerCovTableEntry">412</td>
-            <td class="headerCovTableEntryLo">34.2 %</td>
+            <td class="headerCovTableEntryLo">38.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-09-10 17:07:48</td>
+            <td class="headerValue">2024-09-13 14:30:53</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -80,7 +80,7 @@
 <a name="18"><span class="lineNum">      18 </span>            : import 'package:flutter_gen/gen_l10n/app_localizations.dart';</a>
 <a name="19"><span class="lineNum">      19 </span>            : </a>
 <a name="20"><span class="lineNum">      20 </span>            : class CreatePostView extends GetView&lt;CommunityController&gt; {</a>
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">         25 :   const CreatePostView({super.key});</span></a>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">         24 :   const CreatePostView({super.key});</span></a>
 <a name="22"><span class="lineNum">      22 </span>            : </a>
 <a name="23"><span class="lineNum">      23 </span>            : </a>
 <a name="24"><span class="lineNum">      24 </span><span class="lineCov">          1 :   @override</span></a>
@@ -894,39 +894,39 @@
 <a name="832"><span class="lineNum">     832 </span>            :               const SizedBox(height: 10),</a>
 <a name="833"><span class="lineNum">     833 </span><span class="lineCov">          2 :               Obx(() =&gt;</span></a>
 <a name="834"><span class="lineNum">     834 </span><span class="lineCov">          3 :               controller.createUpdatePosts.value?</span></a>
-<a name="835"><span class="lineNum">     835 </span><span class="lineNoCov">          0 :               SizedBox(</span></a>
-<a name="836"><span class="lineNum">     836 </span><span class="lineNoCov">          0 :                 height: Get.height/4,</span></a>
-<a name="837"><span class="lineNum">     837 </span><span class="lineNoCov">          0 :                 child: ListView.builder(</span></a>
+<a name="835"><span class="lineNum">     835 </span><span class="lineCov">          1 :               SizedBox(</span></a>
+<a name="836"><span class="lineNum">     836 </span><span class="lineCov">          3 :                 height: Get.height/4,</span></a>
+<a name="837"><span class="lineNum">     837 </span><span class="lineCov">          1 :                 child: ListView.builder(</span></a>
 <a name="838"><span class="lineNum">     838 </span>            :                   scrollDirection: Axis.horizontal,</a>
-<a name="839"><span class="lineNum">     839 </span><span class="lineNoCov">          0 :                   itemCount: controller.post.imagesUrl?.length,</span></a>
-<a name="840"><span class="lineNum">     840 </span><span class="lineNoCov">          0 :                   itemBuilder: (context, index) {</span></a>
-<a name="841"><span class="lineNum">     841 </span><span class="lineNoCov">          0 :                     return GestureDetector(</span></a>
+<a name="839"><span class="lineNum">     839 </span><span class="lineCov">          4 :                   itemCount: controller.post.imagesUrl?.length,</span></a>
+<a name="840"><span class="lineNum">     840 </span><span class="lineCov">          1 :                   itemBuilder: (context, index) {</span></a>
+<a name="841"><span class="lineNum">     841 </span><span class="lineCov">          1 :                     return GestureDetector(</span></a>
 <a name="842"><span class="lineNum">     842 </span>            :                       //onTap: onPictureTapped,</a>
-<a name="843"><span class="lineNum">     843 </span><span class="lineNoCov">          0 :                       child: FadeInImage(</span></a>
-<a name="844"><span class="lineNum">     844 </span><span class="lineNoCov">          0 :                         width: Get.width-50,</span></a>
-<a name="845"><span class="lineNum">     845 </span><span class="lineNoCov">          0 :                         height: Get.height/4,</span></a>
+<a name="843"><span class="lineNum">     843 </span><span class="lineCov">          1 :                       child: FadeInImage(</span></a>
+<a name="844"><span class="lineNum">     844 </span><span class="lineCov">          3 :                         width: Get.width-50,</span></a>
+<a name="845"><span class="lineNum">     845 </span><span class="lineCov">          3 :                         height: Get.height/4,</span></a>
 <a name="846"><span class="lineNum">     846 </span>            :                         fit: BoxFit.cover,</a>
-<a name="847"><span class="lineNum">     847 </span><span class="lineNoCov">          0 :                         image:  NetworkImage('${GlobalService().baseUrl}'</span></a>
-<a name="848"><span class="lineNum">     848 </span><span class="lineNoCov">          0 :                             '${controller.post.imagesUrl![index]['url'].substring(1,controller.post.imagesUrl![index]['url'].length)}',</span></a>
-<a name="849"><span class="lineNum">     849 </span><span class="lineNoCov">          0 :                             headers: GlobalService.getTokenHeaders()</span></a>
+<a name="847"><span class="lineNum">     847 </span><span class="lineCov">          4 :                         image:  NetworkImage('${GlobalService().baseUrl}'</span></a>
+<a name="848"><span class="lineNum">     848 </span><span class="lineCov">         12 :                             '${controller.post.imagesUrl![index]['url'].substring(1,controller.post.imagesUrl![index]['url'].length)}',</span></a>
+<a name="849"><span class="lineNum">     849 </span><span class="lineCov">          1 :                             headers: GlobalService.getTokenHeaders()</span></a>
 <a name="850"><span class="lineNum">     850 </span>            :                         ),</a>
 <a name="851"><span class="lineNum">     851 </span>            :                         placeholder: const AssetImage(</a>
 <a name="852"><span class="lineNum">     852 </span>            :                             &quot;assets/images/loading.gif&quot;),</a>
 <a name="853"><span class="lineNum">     853 </span>            :                         imageErrorBuilder:</a>
-<a name="854"><span class="lineNum">     854 </span><span class="lineNoCov">          0 :                             (context, error, stackTrace) {</span></a>
-<a name="855"><span class="lineNum">     855 </span><span class="lineNoCov">          0 :                           return Image.asset(</span></a>
+<a name="854"><span class="lineNum">     854 </span><span class="lineCov">          1 :                             (context, error, stackTrace) {</span></a>
+<a name="855"><span class="lineNum">     855 </span><span class="lineCov">          1 :                           return Image.asset(</span></a>
 <a name="856"><span class="lineNum">     856 </span>            :                               &quot;assets/images/loading.gif&quot;,</a>
-<a name="857"><span class="lineNum">     857 </span><span class="lineNoCov">          0 :                               width: Get.width,</span></a>
-<a name="858"><span class="lineNum">     858 </span><span class="lineNoCov">          0 :                               height: Get.height/4,</span></a>
+<a name="857"><span class="lineNum">     857 </span><span class="lineCov">          2 :                               width: Get.width,</span></a>
+<a name="858"><span class="lineNum">     858 </span><span class="lineCov">          3 :                               height: Get.height/4,</span></a>
 <a name="859"><span class="lineNum">     859 </span>            :                               fit: BoxFit.fitWidth);</a>
 <a name="860"><span class="lineNum">     860 </span>            :                         },</a>
-<a name="861"><span class="lineNum">     861 </span><span class="lineNoCov">          0 :                       ).marginOnly(right: 10),</span></a>
+<a name="861"><span class="lineNum">     861 </span><span class="lineCov">          1 :                       ).marginOnly(right: 10),</span></a>
 <a name="862"><span class="lineNum">     862 </span>            :                     );</a>
 <a name="863"><span class="lineNum">     863 </span>            : </a>
 <a name="864"><span class="lineNum">     864 </span>            :                   },</a>
 <a name="865"><span class="lineNum">     865 </span>            :                 ),</a>
 <a name="866"><span class="lineNum">     866 </span>            :               )</a>
-<a name="867"><span class="lineNum">     867 </span><span class="lineCov">          1 :                   :SizedBox()</span></a>
+<a name="867"><span class="lineNum">     867 </span><span class="lineNoCov">          0 :                   :SizedBox()</span></a>
 <a name="868"><span class="lineNum">     868 </span>            : </a>
 <a name="869"><span class="lineNum">     869 </span>            :               ),</a>
 <a name="870"><span class="lineNum">     870 </span><span class="lineCov">          6 :               Obx(() =&gt;  controller.imageFiles.length &lt;= 0 ?</span></a>

@@ -36,7 +36,7 @@ class MockHttpClientResponse extends Mock implements HttpClientResponse {}
 
 class MockHttpHeaders extends Mock implements HttpHeaders {}
 
-@GenerateMocks([Dio, AuthService, GlobalService])
+@GenerateMocks([Dio, AuthService, GlobalService, LaravelApiClient])
 void main() {
   late LaravelApiClient laravelApiClient;
   late MockDio mockDio;
@@ -47,6 +47,7 @@ void main() {
   late MockHttpClientResponse mockHttpClientResponse;
   late MockHttpHeaders mockHttpHeaders;
   late MockMultipartRequest mockRequest;
+  late MockLaravelApiClient mocklaravelApiClient;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +60,7 @@ void main() {
     mockHttpClientResponse = MockHttpClientResponse();
     mockHttpHeaders = MockHttpHeaders();
     laravelApiClient = LaravelApiClient();
+    mocklaravelApiClient = MockLaravelApiClient();
     Get.lazyPut(() => AuthService());
     Get.lazyPut(() => GlobalService());
 
@@ -77,20 +79,6 @@ void main() {
     // Mocking necessary data
     when(mockAuthService.user).thenReturn(Rx<UserModel>(UserModel(authToken: 'test_token')));
     when(mockGlobalService.baseUrl).thenReturn('http://example.com/');
-
-    // Mock the HttpClient response with specific arguments
-    // when(mockHttpClient.getUrl(Uri.parse('http://example.com/api/logout')))
-    //     .thenAnswer((_) async => mockHttpClientRequest);
-    // when(mockHttpClientRequest.close()).thenAnswer((_) async => mockHttpClientResponse);
-    // when(mockHttpClientResponse.statusCode).thenReturn(200);
-    // when(mockHttpClientResponse.headers).thenReturn(mockHttpHeaders);
-    // when(mockHttpClientResponse.transform(
-    //   StreamTransformer<List<int>, dynamic>.fromHandlers(
-    //     handleData: (data, sink) {
-    //       sink.add(utf8.encode('{"status": true, "data": "Logged out"}'));
-    //     },
-    //   ),
-    // )).thenAnswer((_) => Stream.fromIterable([utf8.encode('{"status": true, "data": "Logged out"}')]));
 
   });
 
@@ -1863,6 +1851,73 @@ void main() {
     //   ),
     // ));
   });
+
+  // test('Should return UserModel when API call is successful from method get Another user profile', () async {
+  //   // Mock the Dio response
+  //   final mockResponse = {
+  //     'status': true,
+  //     'data': {
+  //       'id': 1,
+  //       'name': 'John Doe',
+  //       'my_posts': [],
+  //       'events': [],
+  //     }
+  //   };
+  //
+  //
+  //   when(mockDio.request(
+  //     any, // Mock the URL or match with specific URL if needed
+  //     options: anyNamed('options'),
+  //     data: anyNamed('data')
+  //   )).thenAnswer((realInvocation) async => Response(
+  //     requestOptions: RequestOptions(path: ''),
+  //     statusCode: 200,
+  //     data: mockResponse, // This should be structured properly
+  //   ));
+  //
+  //   // Call the method and verify the result
+  //   final user = await laravelApiClient.getAnotherUserProfileInfo(1);
+  //   expect(user, isA<UserModel>());
+  //   expect(user.firstName, equals('Test'));
+  //   expect(user.myPosts, isEmpty);
+  //   expect(user.myEvents, isEmpty);
+  // });
+
+  // test('Should throw SocketException when there is a socket error when using get another user profile', () async {
+  //   when(mockDio.request(
+  //     any,
+  //     options: anyNamed('options'),
+  //   )).thenThrow(SocketException('No Internet connection'));
+  //
+  //   expect(
+  //         () async => await laravelApiClient.getAnotherUserProfileInfo(1),
+  //     throwsA(isA<SocketException>()),
+  //   );
+  // });
+  //
+  // test('Should throw FormatException when response data is malformed when using get another user profile', () async {
+  //   when(mockDio.request(
+  //     any,
+  //     options: anyNamed('options'),
+  //   )).thenThrow(FormatException());
+  //
+  //   expect(
+  //         () async => await laravelApiClient.getAnotherUserProfileInfo(1),
+  //     throwsA(isA<FormatException>()),
+  //   );
+  // });
+  //
+  // test('Should throw NetworkExceptions when an unknown error occurs when using get another user profile', () async {
+  //   when(mockDio.request(
+  //     any,
+  //     options: anyNamed('options'),
+  //   )).thenThrow(Exception('Unknown error'));
+  //
+  //   expect(
+  //         () async => await laravelApiClient.getAnotherUserProfileInfo(1),
+  //     throwsA(isA<NetworkExceptions>()),
+  //   );
+  // });
 
 
 

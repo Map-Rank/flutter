@@ -18,21 +18,8 @@ class BuildSelectZone extends GetView<EventsController> {
   Widget build(BuildContext context) {
     Get.lazyPut(()=>EventsController());
     return ListView(
-     padding: EdgeInsets.all(20),
+     //padding: EdgeInsets.all(20),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context).select_location_title,
-              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-              textAlign: TextAlign.start,
-            ),
-            TextButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
-          ],
-        ).marginOnly(bottom: 40),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

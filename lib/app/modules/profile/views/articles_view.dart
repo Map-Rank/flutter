@@ -43,21 +43,20 @@ class ArticlesView extends GetView<ProfileController> {
       body: Container(
         height: MediaQuery.sizeOf(context).height,
         width: MediaQuery.sizeOf(context).width,
+        //color: backgroundColor,
         //padding: const EdgeInsets.all(24.0),
-        child: Obx(() => Get.find<CommunityController>().allPosts.isNotEmpty? ListView.builder(
-          itemCount: Get.find<CommunityController>().allPosts.length,
+        child: Obx(() => controller.allPosts.isNotEmpty? ListView.builder(
+          itemCount: controller.allPosts.length,
             itemBuilder: (context, index) =>
             Obx(() => PostCardWidget(
               //likeTapped: RxBool(controller.allPosts[index].likeTapped),
-              content: Get.find<CommunityController>().allPosts[index].content == false?'':Get.find<CommunityController>().allPosts[index].content,
-              zone: Get.find<CommunityController>().allPosts[index].zone != null?Get.find<CommunityController>().allPosts[index].zone['name']: '',
-              publishedDate: Get.find<CommunityController>().allPosts[index].publishedDate,
-              postId: Get.find<CommunityController>().allPosts[index].postId,
-              commentCount: Get.find<CommunityController>().allPosts[index].commentCount,
-              shareCount:  RxInt(Get.find<CommunityController>().sharedPost.contains(Get.find<CommunityController>().allPosts[index])&& Get.find<CommunityController>().postSharedIndex.value == index?
-              Get.find<CommunityController>().sharedPost.where((element) => element.postId == Get.find<CommunityController>().allPosts[index].postId).toList().length + Get.find<CommunityController>().allPosts[index].shareCount:
-              Get.find<CommunityController>().allPosts[index].shareCount),
-              images: Get.find<CommunityController>().allPosts[index].imagesUrl,
+              content: controller.allPosts[index].content == false?'':controller.allPosts[index].content,
+              zone: controller.allPosts[index].zone != null?controller.allPosts[index].zone['name']: '',
+              publishedDate: controller.allPosts[index].publishedDate,
+              postId: controller.allPosts[index].postId,
+              commentCount: controller.allPosts[index].commentCount,
+              shareCount:  controller.allPosts[index].shareCount,
+              images: controller.allPosts[index].imagesUrl,
               isCommunityPage: false,
               user: UserModel(
                   firstName: controller.currentUser.value.firstName,
@@ -65,166 +64,68 @@ class ArticlesView extends GetView<ProfileController> {
                   avatarUrl: controller.currentUser.value.avatarUrl
               ),
               followWidget: SizedBox(),
-              likeCount: RxInt(Get.find<CommunityController>().allPosts[index].likeTapped.value && Get.find<CommunityController>().postSelectedIndex.value == index ?
-              ++Get.find<CommunityController>().allPosts[index].likeCount:
-              !Get.find<CommunityController>().allPosts[index].likeTapped.value  && Get.find<CommunityController>().postSelectedIndex.value == index?
-              --Get.find<CommunityController>().allPosts[index].likeCount:
-              Get.find<CommunityController>().allPosts[index].likeCount,),
+              likeCount: controller.allPosts[index].likeCount,
 
               likeWidget:  Obx(() =>
-              Get.find<CommunityController>().allPosts[index].likeTapped.value && Get.find<CommunityController>().postSelectedIndex.value == index?
+              controller.allPosts[index].likeTapped.value && controller.postSelectedIndex.value == index?
               const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
-              !Get.find<CommunityController>().allPosts[index].likeTapped.value  && Get.find<CommunityController>().postSelectedIndex.value == index?
+              !controller.allPosts[index].likeTapped.value  && controller.postSelectedIndex.value == index?
               const FaIcon(FontAwesomeIcons.heart,):
-              Get.find<CommunityController>().allPosts[index].likeTapped.value ?
+              controller.allPosts[index].likeTapped.value ?
               const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
               const FaIcon(FontAwesomeIcons.heart,)
 
                 ,),
               onLikeTapped: (){
-                Get.find<CommunityController>().postSelectedIndex.value = index.toDouble();
+                controller.postSelectedIndex.value = index.toDouble();
 
-                if(Get.find<CommunityController>().allPosts[index].likeTapped.value){
-                  Get.find<CommunityController>().allPosts[index].likeTapped.value = !Get.find<CommunityController>().allPosts[index].likeTapped.value;
-                  Get.find<CommunityController>().likeUnlikePost(Get.find<CommunityController>().allPosts[index].postId, index);
+                if(controller.allPosts[index].likeTapped.value){
+                  controller.allPosts[index].likeTapped.value = !controller.allPosts[index].likeTapped.value;
+                  controller.allPosts[index].likeCount.value = controller.allPosts[index].likeCount.value -1;
+                  Get.find<CommunityController>().likeUnlikePost(controller.allPosts[index].postId, index);
                 }
                 else{
-                  Get.find<CommunityController>().allPosts[index].likeTapped.value = !Get.find<CommunityController>().allPosts[index].likeTapped.value;
-                  Get.find<CommunityController>().likeUnlikePost(Get.find<CommunityController>().allPosts[index].postId, index);
+                  controller.allPosts[index].likeTapped.value = !controller.allPosts[index].likeTapped.value;
+                  controller.allPosts[index].likeCount.value = controller.allPosts[index].likeCount.value +1;
+                  Get.find<CommunityController>().likeMyPost.value = true;
+                  Get.find<CommunityController>().likeUnlikePost(controller.allPosts[index].postId, index);
+                  Get.find<CommunityController>().likeMyPost.value = false;
                 }
 
 
               },
               onCommentTapped: () async{
 
-                Get.find<CommunityController>().likeTapped.value = false;
-                Get.toNamed(Routes.COMMENT_VIEW,arguments: {'post': Get.find<CommunityController>().allPosts[index]} );
+                controller.likeTapped.value = false;
+                Get.toNamed(Routes.COMMENT_VIEW,arguments: {'post': controller.allPosts[index]} );
 
-               await Get.find<CommunityController>().getAPost(Get.find<CommunityController>().allPosts[index].postId);
-                Get.find<CommunityController>().likeCount!.value = Get.find<CommunityController>().allPosts.where((element)=>element.postId == Get.find<CommunityController>().postDetails.value.postId).toList()[0].likeCount;
-                Get.find<CommunityController>().commentList.value = Get.find<CommunityController>().postDetails.value.commentList!;
-                Get.find<CommunityController>().commentCount!.value =Get.find<CommunityController>().postDetails.value.commentCount!;
-                Get.find<CommunityController>().likeCount?.value = Get.find<CommunityController>().postDetails.value.likeCount!;
-                Get.find<CommunityController>().shareCount?.value =Get.find<CommunityController>().postDetails.value.shareCount!;
+                await Get.find<CommunityController>().getAPost(controller.allPosts[index].postId);
+                controller.likeCount!.value = controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0].likeCount;
+                controller.commentList.value = controller.postDetails.value.commentList!;
+                controller.commentCount!.value =controller.postDetails.value.commentCount!.value;
+                controller.likeCount?.value = controller.postDetails.value.likeCount!.value;
+                controller.shareCount?.value =controller.postDetails.value.shareCount!.value;
 
               },
               onPictureTapped: () async{
-                var post = Get.find<CommunityController>().allPosts[index];
+                var post = controller.allPosts[index];
                 post.user = controller.currentUser.value;
-                await Get.find<CommunityController>().initializePostDetails(post);
-                Get.find<CommunityController>().likeCount?.value = Get.find<CommunityController>().postDetails.value.likeCount!;
-                Get.find<CommunityController>().shareCount?.value =Get.find<CommunityController>().postDetails.value.shareCount!;
-                Get.toNamed(Routes.DETAILS_VIEW, arguments: {'post': Get.find<CommunityController>().allPosts[index]} );
+                await controller.initializeMyPostDetails(post);
+                Get.toNamed(Routes.DETAILS_VIEW, arguments: {'post': controller.allPosts[index]} );
 
               },
               onSharedTapped: ()async{
-                Get.find<CommunityController>().postSharedIndex.value = index;
-                Get.find<CommunityController>().sharedPost.add(Get.find<CommunityController>().allPosts[index]);
-                await Get.find<CommunityController>().sharePost(Get.find<CommunityController>().allPosts[index].postId);
+                controller.postSharedIndex.value = index;
+                controller.allPosts[index].shareCount.value = controller.allPosts[index].shareCount.value +1;
+                Get.find<CommunityController>().shareMyPost.value = true;
+                await Get.find<CommunityController>().sharePost(Get.find<CommunityController>().allPosts[index].postId, index);
+                Get.find<CommunityController>().shareMyPost.value = false;
 
 
               },
-              popUpWidget:
-              GestureDetector(
-                  onTap: (){
-                    Get.find<CommunityController>().selectedIndex.value = index;
-                    showModalBottomSheet(context: context, builder: (context) {
-                      return
-                        Container(
-                          height: Get.height/3,
-                          child: ListView(
-                            padding: EdgeInsets.all(20),
-                            children: [
-                              GestureDetector(onTap: () async{
-                                showDialog(context: context, builder: (context){
-                                  return CommentLoadingWidget();
-                                },);
-                                await Get.find<CommunityController>().deletePost(Get.find<CommunityController>().allPosts[index].postId);
-                                Navigator.of(context).pop();
-                              }, child: Row(children: [
-                                Icon(FontAwesomeIcons.trashCan),
-                                SizedBox(width: 20,),
-                                Text(AppLocalizations.of(context).delete, style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                              ],)).marginSymmetric(vertical: 10, ),
+              popUpWidget:SizedBox(),
 
-                              GestureDetector(onTap: () async{
-                                showDialog(context: context, builder: (context){
-                                  return CommentLoadingWidget();
-                                },);
-                                Get.find<CommunityController>().createUpdatePosts.value = true;
-                                Get.find<CommunityController>().post = await Get.find<CommunityController>().getAPost(Get.find<CommunityController>().allPosts[index].postId);
-
-                                Get.find<CommunityController>().postContentController.text = Get.find<CommunityController>().post.content!;
-
-                                for(int i = 0; i <Get.find<CommunityController>().post.sectors!.length; i++) {
-
-                                  Get.find<CommunityController>().sectorsSelected.add(Get.find<CommunityController>().sectors.where((element) => element['id'] == Get.find<CommunityController>().post.sectors![i]['id']).toList()[0]);
-                                }
-                                print('sectors selected : ${Get.find<CommunityController>().sectorsSelected}');
-
-                                if(Get.find<CommunityController>().post.zoneLevelId == '2'){
-                                  Get.find<CommunityController>().divisionsSet = await Get.find<CommunityController>().zoneRepository.getAllDivisions(3, Get.find<CommunityController>().post.zonePostId);
-                                  Get.find<CommunityController>().listDivisions.value =  Get.find<CommunityController>().divisionsSet['data'];
-                                  Get.find<CommunityController>().loadingDivisions.value = ! Get.find<CommunityController>().divisionsSet['status'];
-                                  Get.find<CommunityController>().divisions.value =  Get.find<CommunityController>().listDivisions;
-                                  Get.find<CommunityController>().regionSelectedValue.add(Get.find<CommunityController>().regions.where((element) => element['id'] == Get.find<CommunityController>().post.zonePostId).toList()[0]);
-
-                                }
-                                else if(Get.find<CommunityController>().post.zoneLevelId == '3'){
-
-                                  Get.find<CommunityController>().divisionsSet = await Get.find<CommunityController>().zoneRepository.getAllDivisions(3, int.parse(Get.find<CommunityController>().post.zoneParentId));
-                                  Get.find<CommunityController>().listDivisions.value =  Get.find<CommunityController>().divisionsSet['data'];
-                                  Get.find<CommunityController>().loadingDivisions.value = ! Get.find<CommunityController>().divisionsSet['status'];
-                                  Get.find<CommunityController>().divisions.value =  Get.find<CommunityController>().listDivisions;
-                                  Get.find<CommunityController>().regionSelectedValue.add(Get.find<CommunityController>().regions.where((element) => element['id'].toString() == Get.find<CommunityController>().post.zoneParentId).toList()[0]);
-
-                                  Get.find<CommunityController>().subdivisionsSet = await Get.find<CommunityController>().zoneRepository.getAllSubdivisions(4, Get.find<CommunityController>().post.zonePostId);
-                                  Get.find<CommunityController>().listSubdivisions.value =  Get.find<CommunityController>().subdivisionsSet['data'];
-                                  Get.find<CommunityController>().loadingSubdivisions.value = ! Get.find<CommunityController>().subdivisionsSet['status'];
-                                  Get.find<CommunityController>().subdivisions.value =  Get.find<CommunityController>().listSubdivisions;
-                                  Get.find<CommunityController>().divisionSelectedValue.add(Get.find<CommunityController>().divisions.where((element) => element['id'] == Get.find<CommunityController>().post.zonePostId).toList()[0]);
-                                }
-                                else if(Get.find<CommunityController>().post.zoneLevelId == '4'){
-                                  var region = await Get.find<CommunityController>().getSpecificZone(int.parse(Get.find<CommunityController>().post.zoneParentId));
-                                  print(region);
-
-                                  Get.find<CommunityController>().divisionsSet = await Get.find<CommunityController>().zoneRepository.getAllDivisions(3, int.parse(region['parent_id']));
-                                  Get.find<CommunityController>().listDivisions.value =  Get.find<CommunityController>().divisionsSet['data'];
-                                  Get.find<CommunityController>().loadingDivisions.value = ! Get.find<CommunityController>().divisionsSet['status'];
-                                  Get.find<CommunityController>().divisions.value =  Get.find<CommunityController>().listDivisions;
-
-                                  Get.find<CommunityController>().subdivisionsSet = await Get.find<CommunityController>().zoneRepository.getAllSubdivisions(4, int.parse(Get.find<CommunityController>().post.zoneParentId));
-                                  Get.find<CommunityController>().listSubdivisions.value =  Get.find<CommunityController>().subdivisionsSet['data'];
-                                  Get.find<CommunityController>().loadingSubdivisions.value = ! Get.find<CommunityController>().subdivisionsSet['status'];
-                                  Get.find<CommunityController>().subdivisions.value =  Get.find<CommunityController>().listSubdivisions;
-                                  Get.find<CommunityController>().divisionSelectedValue.add(Get.find<CommunityController>().divisions.where((element) => element['id'] == int.parse(Get.find<CommunityController>().post.zoneParentId)).toList()[0]);
-
-                                  Get.find<CommunityController>().regionSelectedValue.add(Get.find<CommunityController>().regions.where((element) => element['id'].toString() == Get.find<CommunityController>().divisionSelectedValue[0]['parent_id']).toList()[0]);
-
-                                  Get.find<CommunityController>().subdivisionSelectedValue.add(Get.find<CommunityController>().subdivisions.where((element) => element['id'] == Get.find<CommunityController>().post.zonePostId).toList()[0]);
-                                }
-
-
-                                Navigator.of(context).pop();
-                                Get.find<CommunityController>().noFilter.value = true;
-                                Get.toNamed(Routes.CREATE_POST);
-                              }, child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(FontAwesomeIcons.edit),
-                                  SizedBox(width: 20,),
-                                  Text(AppLocalizations.of(context).edit, style: TextStyle(fontSize: 16, color: Colors.grey.shade900),),
-                                ],))
-                            ],
-
-                          ),
-                        );
-                    },);
-
-                  },
-                  child: Icon(FontAwesomeIcons.ellipsisVertical, size: 20,)),
-
-              liked: Get.find<CommunityController>().allPosts[index].liked,
+              liked: controller.allPosts[index].liked,
             ))
         ):Center(
           child: SizedBox(

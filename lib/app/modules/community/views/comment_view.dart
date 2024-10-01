@@ -138,9 +138,9 @@ class CommentView extends GetView<CommunityController> {
                   zone: controller.postDetails!.value.zone['name'],
                   publishedDate: controller.postDetails!.value.publishedDate,
                   postId: controller.postDetails!.value.postId,
-                  commentCount: controller.commentList?.length,
-                  likeCount: RxInt(controller.likeCount!.value),
-                  shareCount: controller.shareCount,
+                  commentCount: RxInt(controller.commentList.length),
+                  likeCount: RxInt(controller.postDetails!.value.likeCount!.value),
+                  shareCount: controller.postDetails.value.shareCount,
                   images: controller.postDetails!.value.imagesUrl,
                   user: controller.postDetails!.value.user!,
                     likeWidget:  Obx(() =>
@@ -157,29 +157,38 @@ class CommentView extends GetView<CommunityController> {
                     onLikeTapped: (){
 
                       if(controller.postDetails!.value.likeTapped!.value){
-                        --controller.likeCount!.value;
-                        controller.postDetails!.value.likeTapped!.value = !controller.postDetails!.value.likeTapped!.value;
+                        controller.postDetails.value.likeTapped!.value = false;
+                        controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!-1;
+
                         controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
                         = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
+
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value
+                        = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value -1;
                         controller.likeUnlikePost(controller.postDetails!.value.postId!,  controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
 
                       }
                       else{
-                        ++controller.likeCount!.value;
-                        controller.postDetails!.value.likeTapped!.value = !controller.postDetails!.value.likeTapped!.value;
+                        controller.postDetails.value.likeTapped!.value = true;
+                        controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!+1;
+                        // controller.postDetails!.value.likeTapped!.value = !controller.postDetails!.value.likeTapped!.value;
                         controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
                         = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
+
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value
+                        = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value +1;
                         controller.likeUnlikePost(controller.postDetails!.value.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
                       }
 
 
                     },
 
-                  onSharedTapped: (){
+                  onSharedTapped: () async {
 
-                    controller.shareCount?.value = (controller.shareCount!.value + 1);
-                    //controller.sharedPost.add(post);
-                    controller.sharePost(post!.postId!);
+                    controller.postDetails.value.shareCount = controller.postDetails.value.shareCount!+1;
+                    controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].shareCount.value
+                    = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].shareCount.value +1;
+                    await controller.sharePost(post!.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
 
                   },
                   liked: controller.postDetails!.value.liked,

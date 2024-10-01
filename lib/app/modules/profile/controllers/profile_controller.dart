@@ -43,6 +43,39 @@ class ProfileController extends GetxController {
   TextEditingController feedbackController = TextEditingController();
 
 
+  var allPosts = [].obs;
+  var listAllPosts = [];
+  var allEvents = [].obs;
+  var listAllEvents = [];
+  var loadingPosts = true.obs;
+  var likeTapped = false.obs;
+
+  var selectedPost = [].obs;
+
+  var unlikedPost = [].obs;
+
+  var sharedPost = [].obs;
+
+  var postSelectedIndex = 0.5.obs;
+
+  var postFollowedIndex = 0.obs;
+
+  var postSharedIndex = 0.obs;
+
+  RxInt? likeCount = 0.obs;
+  RxInt? shareCount = 0.obs;
+  RxInt? commentCount = 0.obs;
+
+  var comment = ''.obs;
+  var sendComment = false.obs;
+
+  var commentList = [].obs;
+
+  Rx<Post> postDetails = Post().obs;
+
+  late ScrollController scrollbarController;
+
+
   var rating = 0.obs;
 
   late UserRepository userRepository ;
@@ -73,17 +106,13 @@ class ProfileController extends GetxController {
     phoneNumberController.text = currentUser.value.phoneNumber!;
     genderController.text = currentUser.value.gender!;
     birthdateController.text = currentUser.value.gender!;
-    if(! Platform.environment.containsKey('FLUTTER_TEST')){
-      Get.find<CommunityController>().listAllPosts.clear();
-      Get.find<CommunityController>().allPosts.clear();
-      Get.find<CommunityController>().listAllPosts = await getAllMyPosts();
-      Get.find<CommunityController>().allPosts.value =  Get.find<CommunityController>().listAllPosts;
 
-      Get.find<EventsController>().listAllEvents.clear();
-      Get.find<EventsController>().allEvents.clear();
-      Get.find<EventsController>().listAllEvents = await getAllMyEvents();
-      Get.find<EventsController>().allEvents.value = Get.find<EventsController>().listAllEvents;
-    }
+      listAllPosts = await getAllMyPosts();
+      allPosts.value =  listAllPosts;
+
+      listAllEvents = await getAllMyEvents();
+      allEvents.value = listAllEvents;
+
 
 
     super.onInit();
@@ -109,9 +138,9 @@ class ProfileController extends GetxController {
         var post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount: list[i] ['comment_count'],
-            likeCount: list[i] ['like_count'],
-            shareCount: list[i] ['share_count'],
+            commentCount: RxInt(list[i] ['comment_count']),
+            likeCount: RxInt(list[i] ['like_count']),
+            shareCount: RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -130,6 +159,28 @@ class ProfileController extends GetxController {
     } catch (e) {
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
     }
+  }
+
+  initializeMyPostDetails(Post post){
+    Get.find<CommunityController>().postDetails.value.content = post.content;
+    Get.find<CommunityController>().postDetails.value.zone = post.zone;
+    Get.find<CommunityController>().postDetails.value.postId = post.postId;
+    Get.find<CommunityController>().postDetails.value.commentCount = post.commentCount;
+    Get.find<CommunityController>().postDetails.value.likeCount = post.likeCount;
+    Get.find<CommunityController>().postDetails.value.shareCount = post.shareCount;
+    Get.find<CommunityController>().postDetails.value.publishedDate = post.publishedDate;
+    Get.find<CommunityController>().postDetails.value.imagesUrl = post.imagesUrl;
+    Get.find<CommunityController>().postDetails.value.user = post.user;
+    Get.find<CommunityController>().postDetails.value.liked = post.liked;
+    Get.find<CommunityController>().postDetails.value.likeTapped = post.likeTapped;
+    Get.find<CommunityController>().postDetails.value.isFollowing = post.isFollowing;
+    Get.find<CommunityController>().postDetails.value.commentList = post.commentList;
+    Get.find<CommunityController>().postDetails.value.sectors = post.sectors;
+    Get.find<CommunityController>().postDetails.value.zonePostId = post.zonePostId;
+    Get.find<CommunityController>().postDetails.value.zoneLevelId = post.zoneLevelId;
+    Get.find<CommunityController>().postDetails.value.zoneParentId = post.zoneParentId;
+    likeCount?.value = post.likeCount!.value;
+    shareCount?.value =post.shareCount!.value;
   }
 
   getAllMyEvents(){

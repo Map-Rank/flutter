@@ -757,6 +757,7 @@ class CreatePostView extends GetView<CommunityController> {
 
                             GestureDetector(
                               onTap: (){
+                                controller.filterBySector.value = false;
                                 showDialog(context: context,
                                   builder: (context) => Dialog(
                                     insetPadding: EdgeInsets.all(20),

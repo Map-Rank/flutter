@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
@@ -111,7 +112,7 @@ class AuthController extends GetxController {
     Get.lazyPut(()=>RootController());
     Get.lazyPut(() => AuthService());
 
-    Get.lazyPut(() => LaravelApiClient());
+    Get.lazyPut(() => LaravelApiClient(dio: Dio()));
     Get.lazyPut(() => DashboardController());
     Get.lazyPut(() => CommunityController());
     Get.lazyPut(() => NotificationController());

@@ -25,32 +25,23 @@ import 'dio_client.dart';
 //import 'package:dio/dio.dart' as dio_form_data;
 
 class LaravelApiClient extends GetxService {
-  late DioClient httpClient;
+  late Dio httpClient;
   late String baseUrl;
   late dio.Options optionsNetwork;
   late dio.Options optionsCache;
 
-  LaravelApiClient({Dio? dio}) {
+  LaravelApiClient({required Dio dio}) {
     baseUrl = GlobalService().baseUrl;
-    httpClient = DioClient(baseUrl, dio??Dio(BaseOptions(baseUrl: 'http://192.168.43.184:8080/api')));
+    httpClient = dio;
   }
 
   // LaravelApiClient({Dio? dio})
   //     : httpClient = dio ?? Dio(BaseOptions(baseUrl: 'http://192.168.43.184:8080/api'));
 
   Future<LaravelApiClient> init() async {
-    optionsNetwork = httpClient.optionsNetwork!;
-    optionsCache = httpClient.optionsCache!;
+    //optionsNetwork = httpClient.optionsNetwork!;
+    //optionsCache = httpClient.optionsCache!;
     return this;
-  }
-
-
-
-  void forceRefresh() {
-    if (!foundation.kIsWeb && !foundation.kDebugMode) {
-      optionsCache = dio.Options(headers: optionsCache.headers);
-      optionsNetwork = dio.Options(headers: optionsNetwork.headers);
-    }
   }
 
 
@@ -121,8 +112,7 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/profile',
         options: Options(
           method: 'GET',
@@ -150,7 +140,7 @@ class LaravelApiClient extends GetxService {
 
   }
 
-  getAnotherUserProfileInfo(int userId)async{
+  getAnotherUserProfileInfo(int userId,)async{
     try {
       var headers = {
         'Content-Type': 'application/json',
@@ -161,17 +151,18 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      //var dio = Dio();
+      // dio.interceptors.add(LogInterceptor(responseBody: true));
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/profile/detail/$userId',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
+          print('Code is reaching here');
           var user = UserModel.fromJson(response.data['data']);
           user.myPosts = response.data['data']['my_posts'];
           user.myEvents = response.data['data']['events'];
@@ -185,7 +176,7 @@ class LaravelApiClient extends GetxService {
     } on FormatException catch (_) {
       throw const FormatException("Unable to process the data");
     } catch (e) {
-      throw NetworkExceptions.getDioException(e);
+        throw NetworkExceptions.getDioException(e);
     }
 
   }
@@ -255,8 +246,7 @@ class LaravelApiClient extends GetxService {
         "email": user.phoneNumber,
         "password": user.phoneNumber
       });
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/login',
         options: Options(
           method: 'POST',
@@ -264,7 +254,6 @@ class LaravelApiClient extends GetxService {
         ),
         data: data,
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return UserModel.fromJson(response.data['data']);
@@ -279,7 +268,7 @@ class LaravelApiClient extends GetxService {
     } catch (e) {
       print(e.toString());
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 
   }
@@ -297,15 +286,13 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/logout',
         options: Options(
           method: 'POST',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -319,7 +306,7 @@ class LaravelApiClient extends GetxService {
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
   }
 
 
@@ -334,15 +321,13 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.delete(
         '${GlobalService().baseUrl}api/delete-user',
         options: Options(
           method: 'DELETE',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -356,7 +341,7 @@ class LaravelApiClient extends GetxService {
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
   }
 
 
@@ -369,8 +354,7 @@ class LaravelApiClient extends GetxService {
     var data = json.encode({
       "email": email
     });
-    var dio = Dio();
-    var response = await dio.request(
+    var response = await httpClient.post(
       '${GlobalService().baseUrl}api/forgot-password',
       options: Options(
         method: 'POST',
@@ -429,8 +413,7 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/follow/$userId',
         options: Options(
           method: 'POST',
@@ -462,8 +445,7 @@ class LaravelApiClient extends GetxService {
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/unfollow/$userId',
         options: Options(
           method: 'POST',
@@ -544,7 +526,7 @@ Future getAllZones(int levelId, int parentId) async {
         'Accept': 'application/json'
       };
       var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService()
             .baseUrl}api/zone?level_id=$levelId&parent_id=$parentId',
         options: Options(
@@ -572,21 +554,51 @@ Future getAllZones(int levelId, int parentId) async {
 
 }
 
+Future getAllZonesFilterByName() async{
+    try{
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  };
+  var dio = Dio();
+
+  var response = await httpClient.get(
+    '${GlobalService().baseUrl}api/zone',
+    options: Options(
+      method: 'GET',
+      headers: headers,
+    ),
+  );
+
+  if (response.statusCode == 200) {
+    if (response.data['status'] == true) {
+      return response.data['data'];
+    } else {
+      throw Exception(response.data['message']);
+    }
+  }
+  }on SocketException catch (e) {
+  throw SocketException(e.toString());
+  } on FormatException catch (_) {
+  throw const FormatException("Unable to process the data");
+  } catch (e) {
+  throw NetworkExceptions.getDioException(e);
+  }
+}
+
 Future getSpecificZone(int zoneId)async {
     try {
       var headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/zone/$zoneId',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -600,7 +612,7 @@ Future getSpecificZone(int zoneId)async {
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 }
 
@@ -610,15 +622,14 @@ Future getSpecificZone(int zoneId)async {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       };
-      var dio = Dio();
-      var response = await dio.request(
+
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/sector',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data;
@@ -632,7 +643,7 @@ Future getSpecificZone(int zoneId)async {
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
   }
 
@@ -650,15 +661,13 @@ Future getAllPosts(int page) async {
             .value
             .authToken}',
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/post?page=$page&size=10',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -672,7 +681,7 @@ Future getAllPosts(int page) async {
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 
 }
@@ -828,15 +837,14 @@ try {
         .value
         .authToken}'
   };
-  var dio = Dio();
-  var response = await dio.request(
+  var response = await httpClient.post(
     '${GlobalService().baseUrl}api/post/like/$postId',
     options: Options(
       method: 'POST',
       headers: headers,
     ),
   );
-// coverage:ignore-start
+
   if (response.statusCode == 200) {
     if (response.data['status'] == true) {
       print(response.data);
@@ -851,7 +859,7 @@ try {
   throw const FormatException("Unable to process the data");
 } catch (e) {
   throw NetworkExceptions.getDioException(e);
-}// coverage:ignore-end
+}
 
 }
 
@@ -866,15 +874,13 @@ Future getAPost(int postId) async{
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/post/$postId',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -889,7 +895,7 @@ Future getAPost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 }
 
 Future commentPost(int postId, String comment)async{
@@ -907,7 +913,7 @@ Future commentPost(int postId, String comment)async{
         "text": comment
       });
       var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/post/comment/$postId',
         options: Options(
           method: 'POST',
@@ -915,7 +921,7 @@ Future commentPost(int postId, String comment)async{
         ),
         data: data,
       );
-// coverage:ignore-start
+
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -930,7 +936,7 @@ Future commentPost(int postId, String comment)async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 
 }
@@ -946,15 +952,13 @@ sharePost(int postId) async{
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.post(
         '${GlobalService().baseUrl}api/post/share/$postId',
         options: Options(
           method: 'POST',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -968,7 +972,7 @@ sharePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 }
 
 deletePost(int postId) async{
@@ -982,15 +986,13 @@ deletePost(int postId) async{
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.delete(
         '${GlobalService().baseUrl}api/post/$postId',
         options: Options(
           method: 'DELETE',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -1005,7 +1007,7 @@ deletePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 }
 
@@ -1021,8 +1023,7 @@ deletePost(int postId) async{
             .value
             .authToken}',
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/post?page=$page&zone_id=$zoneId&size=10',
         options: Options(
           method: 'GET',
@@ -1061,8 +1062,7 @@ deletePost(int postId) async{
             .value
             .authToken}',
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService()
             .baseUrl}api/post?page=$page&sectors=$sectors&size=10',
         options: Options(
@@ -1103,15 +1103,14 @@ deletePost(int postId) async{
             .value
             .authToken}',
       };
-      var dio = Dio();
-      var response = await dio.request(
+
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/events?page=$page&size=10',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           print(response.data['data']);
@@ -1126,7 +1125,7 @@ deletePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 
   }
@@ -1143,14 +1142,14 @@ deletePost(int postId) async{
             .authToken}'
       };
       var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService().baseUrl}api/events/$eventId',
         options: Options(
           method: 'GET',
           headers: headers,
         ),
       );
-// coverage:ignore-start
+
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -1164,7 +1163,7 @@ deletePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
   }
 
   createEvent(Event event) async{
@@ -1309,8 +1308,7 @@ deletePost(int postId) async{
             .value
             .authToken}'
       };
-      var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.delete(
         '${GlobalService().baseUrl}api/events/$eventId',
         options: Options(
           method: 'DELETE',
@@ -1349,7 +1347,7 @@ deletePost(int postId) async{
             .authToken}',
       };
       var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService()
             .baseUrl}api/events?page=$page&zone_id=$zoneId&size=10',
         options: Options(
@@ -1357,7 +1355,6 @@ deletePost(int postId) async{
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           print(response.data['data']);
@@ -1372,7 +1369,7 @@ deletePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    }// coverage:ignore-end
+    }
 
 
   }
@@ -1391,7 +1388,7 @@ deletePost(int postId) async{
             .authToken}',
       };
       var dio = Dio();
-      var response = await dio.request(
+      var response = await httpClient.get(
         '${GlobalService()
             .baseUrl}api/events?page=$page&sectors=$sectors&size=10',
         options: Options(
@@ -1399,7 +1396,6 @@ deletePost(int postId) async{
           headers: headers,
         ),
       );
-// coverage:ignore-start
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
           return response.data['data'];
@@ -1413,7 +1409,7 @@ deletePost(int postId) async{
       throw const FormatException("Unable to process the data");
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
-    } // coverage:ignore-end
+    }
 
 
   }

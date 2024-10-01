@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
   await GetStorage.init();
   await Firebase.initializeApp();
   await Get.putAsync(() => AuthService().init());
-  await Get.putAsync(() => LaravelApiClient().init());
+  await Get.putAsync(() => LaravelApiClient(dio:Dio()).init());
   //await Get.putAsync(() => FirebaseProvider().init());
   await Get.putAsync(() => SettingsService().init());
   //Get.lazyPut(()=>RootBinding());

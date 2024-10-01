@@ -1,5 +1,6 @@
 // test/mocks.dart
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -29,7 +30,7 @@ void main() {
     // Initialize Get and the mock controller
     Get.lazyPut(()=>CommunityController());
     Get.lazyPut(()=>AuthService());
-    Get.lazyPut(()=>LaravelApiClient());
+    Get.lazyPut(()=>LaravelApiClient(dio: Dio()));
     final mockController = MockCommunityController();
     Get.lazyPut(()=>MockCommunityController());
 
@@ -80,7 +81,7 @@ void main() {
   testWidgets('buildInputImages renders correctly and interacts with delete and image picker buttons', (WidgetTester tester) async {
     Get.lazyPut(()=>CommunityController());
     Get.lazyPut(()=>AuthService());
-    Get.lazyPut(()=>LaravelApiClient());
+    Get.lazyPut(()=>LaravelApiClient(dio: Dio()));
     final mockController = MockCommunityController();
     Get.lazyPut(()=>MockCommunityController());
 

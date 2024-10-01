@@ -29,7 +29,7 @@ class LoginView extends GetView<AuthController> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           toolbarHeight: 0,
-          systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Color(0xff021d40)),
+          //systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Color(0xff021d40)),
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),

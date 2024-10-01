@@ -19,9 +19,9 @@ class BuildSelectSector extends GetView<CommunityController> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(20),
+      //padding: EdgeInsets.all(20),
       children: [
-        Row(
+        Obx(() => !controller.filterBySector.value?Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(AppLocalizations.of(context).select_sector_title,
@@ -29,16 +29,18 @@ class BuildSelectSector extends GetView<CommunityController> {
               textAlign: TextAlign.start,
             ),
 
-             TextButton(onPressed: (){
-               Navigator.of(context).pop();
-             }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
 
-          ],),
+          ],):SizedBox(),),
+
 
 
         Obx(() =>
             Column(
               children: [
+    Obx(() => !controller.filterBySector.value?
                 TextFieldWidget(
                   readOnly: false,
                   keyboardType: TextInputType.text,
@@ -50,7 +52,8 @@ class BuildSelectSector extends GetView<CommunityController> {
                     controller.filterSearchSectors(value)
                   },
                   errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                ),
+                )
+        :SizedBox()),
                 controller.loadingSectors.value ?
                 Column(
                   children: [
@@ -144,7 +147,6 @@ class BuildSelectSector extends GetView<CommunityController> {
             ),
         ).marginOnly(bottom: 20),
 
-        const SizedBox(height: 20),
       ],
     );
   }

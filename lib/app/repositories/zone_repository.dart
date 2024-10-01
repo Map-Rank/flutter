@@ -26,4 +26,9 @@ class ZoneRepository {
     return _laravelApiClient.getSpecificZone(zoneId);
   }
 
+  Future getAllZonesFilterByName(){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.getAllZonesFilterByName();
+  }
+
 }

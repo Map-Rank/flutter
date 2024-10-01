@@ -838,6 +838,7 @@ class CreateEventView extends GetView<EventsController> {
 
                             GestureDetector(
                               onTap: (){
+                                controller.filterBySector.value = false;
                                 showDialog(context: context,
                                   builder: (context) => Dialog(
                                     insetPadding: EdgeInsets.all(20),

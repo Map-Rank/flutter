@@ -106,6 +106,8 @@ class AuthController extends GetxController {
 
   RxList<String> languageList = RxList();
 
+  var box = GetStorage();
+
 
   AuthController(){
 
@@ -145,9 +147,6 @@ class AuthController extends GetxController {
     ].obs;// cover
     selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
     birthDateDisplay.text = "--/--/--";
-
-
-    var box = GetStorage();
 
     if(box.read('language')==null){
         await showDialog(context: Get.context!,
@@ -466,16 +465,18 @@ class AuthController extends GetxController {
         Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
         Get.find<AuthService>().user.value.email = a.email;
         Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
+         box.write("authToken",Get.find<AuthService>().user.value.authToken );
 
-        update();
+        //update();
 
         Get.put(RootController());
         Get.lazyPut(()=>DashboardController());
-        Get.lazyPut<CommunityController>(() => CommunityController(),fenix: true);
+        Get.lazyPut<CommunityController>(() => CommunityController());
         Get.lazyPut<NotificationController>(() => NotificationController());
         Get.lazyPut<EventsController>(() => EventsController());
         //loading.value = false;
         if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          print("Emaillllllllllllllllllll: ${Get.find<AuthService>().user.value.email}");
           Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
           await Get.find<RootController>().changePage(0);
         }
@@ -506,6 +507,7 @@ class AuthController extends GetxController {
       currentUser.value= user;
       currentUser.value.myPosts = user.myPosts;
       currentUser.value.myEvents = user.myEvents;
+      currentUser.value.authToken = box.read("authToken");
 
       Get.find<AuthService>().user.value = currentUser.value;
       print('my podt : ${currentUser.value.myPosts}');

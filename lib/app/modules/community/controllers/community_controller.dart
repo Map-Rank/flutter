@@ -52,8 +52,8 @@ class CommunityController extends GetxController {
   var createPostNotEvent = true.obs;
   late Post post;
   Rx<Post> postDetails = Post().obs;
-  var zones = [].obs;
-  var listAllZones = [];
+  List<Map<String, dynamic>> zones = [];
+  List<Map<String, dynamic>> listAllZones = [];
   var loadingRegions = true.obs;
   var regions = [].obs;
   var regionSelected = false.obs;
@@ -61,6 +61,7 @@ class CommunityController extends GetxController {
   var listRegions = [].obs;
   var regionsSet ={};
   var regionSelectedValue = [].obs;
+  var cancelSearchSubDivision = false.obs;
 
   var loadingDivisions = true.obs;
   var divisions = [].obs;
@@ -150,7 +151,6 @@ class CommunityController extends GetxController {
   late File feedbackImage = File('assets/images/loading.gif') ;
   final loadFeedbackImage = false.obs;
 
-  final TextEditingController searchController = TextEditingController();
 
 
   CommunityController() {
@@ -159,7 +159,7 @@ class CommunityController extends GetxController {
 
   @override
   void onInit() async {
-    searchController.addListener(_onSearchChanged);
+
     super.onInit();
 
     post = Post();
@@ -274,8 +274,10 @@ class CommunityController extends GetxController {
       //imageFiles = [];
     }
 
-    listAllZones = await getAllZonesFilterByName();
-    zones.value = listAllZones;
+    var listZones = await getAllZonesFilterByName();
+
+    listAllZones = listZones.cast<Map<String, dynamic>>();
+    zones = listAllZones;
 
 
 
@@ -383,9 +385,9 @@ class CommunityController extends GetxController {
           post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount:list[i] ['comment_count'],
-            likeCount:list[i] ['like_count'] ,
-            shareCount:list[i] ['share_count'],
+            commentCount:RxInt(list[i] ['comment_count']),
+            likeCount:RxInt(list[i] ['like_count']) ,
+            shareCount:RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -426,7 +428,7 @@ class CommunityController extends GetxController {
 
   filterSearchPostsByZone(var query)async{
     var postList = [];
-    if(divisionSelectedValue.isNotEmpty || regionSelectedValue.isNotEmpty || subdivisionSelectedValue.isNotEmpty) {
+    if(divisionSelectedValue.isNotEmpty || regionSelectedValue.isNotEmpty || subdivisionSelectedValue.isNotEmpty || !noFilter.value) {
       loadingPosts.value = true;
       try {
         page = 0;
@@ -441,9 +443,9 @@ class CommunityController extends GetxController {
           post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount:list[i] ['comment_count'],
-            likeCount:list[i] ['like_count'] ,
-            shareCount:list[i] ['share_count'],
+            commentCount:RxInt(list[i] ['comment_count']),
+            likeCount:RxInt(list[i] ['like_count']) ,
+            shareCount:RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -478,7 +480,7 @@ class CommunityController extends GetxController {
 
     }else {
       loadingPosts.value = true;
-      listAllPosts = getAllPosts(0);
+      listAllPosts = await getAllPosts(0);
       allPosts.value = listAllPosts;
       noFilter.value = false;
     }
@@ -741,48 +743,6 @@ class CommunityController extends GetxController {
 
   }
 
-  void _showOverlay() {
-    var _overlayEntry = _createOverlayEntry();
-    if (_overlayEntry != null) {
-      Overlay.of(Get.context!).insert(_overlayEntry!); // Just call insert()
-    }
-  }
-
-  void _onSearchChanged() {
-    String searchTerm = searchController.text.toLowerCase();
-      _showOverlay();
-  }
-
-  OverlayEntry _createOverlayEntry() {
-    RenderBox renderBox = Get.context?.findRenderObject() as RenderBox;
-    var size = renderBox.size;
-    var offset = renderBox.localToGlobal(Offset.zero);
-
-    return OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height,
-        width: size.width,
-        child: Material(
-          color: Colors.white,
-          elevation: 4.0,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('hey'),
-                onTap: () {
-                  // searchController.text = filteredItems[index];
-                  // _removeOverlay(); // Close the filter dropdown after selection
-                },
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
 
 
   emptyArrays(){
@@ -1009,7 +969,7 @@ class CommunityController extends GetxController {
       },);
       await communityRepository.sharePost(postId);
       Navigator.of(Get.context!).pop();
-      Share.share('https://dev.residat.com/show-post/${postId}');
+      Share.share('https://www.residat.com/show-post/${postId}');
 
     }
     catch (e) {

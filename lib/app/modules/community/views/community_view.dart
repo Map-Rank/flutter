@@ -253,21 +253,99 @@ class CommunityView extends GetView<CommunityController> {
                               borderRadius: BorderRadius.circular(10)
 
                             ),
-                            child: TextFormField(
-                              controller: controller.searchController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide:BorderSide.none,),
-                              hintText: AppLocalizations.of(context).search_subdivision,
-                              hintStyle: TextStyle(fontSize: 14),
-                              prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,),
-                            ),
-                              onChanged: (value){
-                                //Overlay.of(context).insert(controller.createOverlayEntry());
+                            child: Autocomplete<Map<String, dynamic>>(
+                              fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                                return TextFormField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  onFieldSubmitted: (value) => onFieldSubmitted(),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    hintText: AppLocalizations.of(context).search_subdivision,
+                                    hintStyle: TextStyle(fontSize: 14),
+                                    prefixIcon: Icon(
+                                      FontAwesomeIcons.search,
+                                      color: Colors.grey,
+                                      size: 15,
+                                    ),
+                                    suffixIcon: Obx(() => 
+                                      controller.cancelSearchSubDivision.value?
+                                       GestureDetector(
+                                          onTap: () async {
+                                            controller.loadingPosts.value = true;
+                                            textEditingController.clear();
+                                            controller.listAllPosts = await controller.getAllPosts(0);
+                                            controller.allPosts.value = controller.listAllPosts;
+                                          },
+                                          child: Icon(FontAwesomeIcons.multiply, color: Colors.grey.shade600,
+                                            size: 15,)):Icon(null),
+                                    )
+                                  ),
+                                  onChanged:(value){
+                                    if(value.length> 0){
+                                      controller.cancelSearchSubDivision.value = true;
+                                    }
+                                    else{
+                                      controller.cancelSearchSubDivision.value = false;
+                                    }
 
+
+                                  },
+                                );
                               },
+                              optionsBuilder: (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text.isEmpty) {
+                                  return const Iterable<Map<String, dynamic>>.empty();
+                                } else {
+                                  // Replace this with your dynamic list
+                                  List<Map<String, dynamic>> dynamicList = controller.zones;
 
-                                                      ),
+                                  // Filter the list based on the search query
+                                  return dynamicList.where((item) {
+                                    String name = item['name'].toLowerCase();
+                                    return name.contains(textEditingValue.text.toLowerCase());
+                                  });
+                                }
+                              },
+                              displayStringForOption: (Map<String, dynamic> option) {
+                                // This defines what will be shown in the field when the user selects an option
+                                return option['name'];
+                              },
+                              onSelected: (Map<String, dynamic> selection) async {
+                                // Handle the selected dynamic object
+                                //print('Selected: ${selection['name']}');
+                                controller.noFilter.value = false;
+                                await controller.filterSearchPostsByZone(selection['id']);
+                              },
+                              optionsViewBuilder: (context, Function(Map<String, dynamic>) onSelected, options) {
+                                return Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Material(
+                                    elevation: 4,
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemCount: options.length,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        final option = options.elementAt(index);
+                                        return ListTile(
+                                          title: Text(option['name']),
+                                          onTap: () {
+                                            onSelected(option);
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+
+
+                            ,
+
                           ),
                           ClipOval(
                               child: GestureDetector(

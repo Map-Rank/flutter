@@ -255,7 +255,7 @@ class PostCardWidget extends StatelessWidget {
                                   children: [
                                     if(index > 0)...[
                                       GestureDetector(
-                                        child: Icon(Icons.arrow_back_ios_outlined,),
+                                        child: Icon(Icons.arrow_back_ios_outlined,color: Colors.white,),
                                         onTap: (){
                                           imageScrollController!.jumpTo(imageScrollController!.position.pixels - Get.width);
 
@@ -265,7 +265,7 @@ class PostCardWidget extends StatelessWidget {
                                     Spacer(),
                                     if(index < images!.length-1)...[
                                       GestureDetector(
-                                        child: Icon(Icons.arrow_forward_ios_outlined,),
+                                        child: Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
                                         onTap: (){
                                           imageScrollController!.jumpTo(imageScrollController!.position.pixels + Get.width);
                                         },

@@ -304,8 +304,6 @@ class PostCardWidgetBoilerplate extends StatelessWidget {
                 ).marginOnly(bottom: 10),
               ]
 
-
-
             ]
         ).paddingSymmetric(horizontal: 10, vertical: 10)
     );

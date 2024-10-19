@@ -477,7 +477,7 @@ class EventsController extends GetxController {
 
     }else {
       loadingEvents.value = true;
-      listAllEvents = getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;
       noFilter.value = false;
     }

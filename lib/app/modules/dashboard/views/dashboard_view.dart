@@ -109,7 +109,7 @@ class DashboardView extends GetView<DashboardController> {
                   child: Icon(FontAwesomeIcons.multiply).marginOnly(top: 60, left: 20)),
             ),
             SizedBox(
-                height: 1000,
+                height: 800,
                 width: Get.width,
                 child: WebViewWidget(
                     controller: controller.webViewController)),

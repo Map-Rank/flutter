@@ -5,9 +5,12 @@ import 'package:get/get.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/community/widgets/comment_widget.dart';
+import 'package:mapnrank/app/modules/global_widgets/post_card_widget_boilerplate.dart';
 import '../../../../color_constants.dart';
 import '../../../models/user_model.dart';
 import '../../global_widgets/post_card_widget.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentView extends GetView<CommunityController> {
    CommentView({
@@ -21,17 +24,6 @@ class CommentView extends GetView<CommunityController> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(FontAwesomeIcons.arrowLeft, color: interfaceColor),
-            onPressed: () => {
-              Navigator.pop(context),
-              //Get.back()
-            },
-          ),
-        ),
         bottomSheet: SizedBox(
           height: 100,
           child: Column(
@@ -42,6 +34,7 @@ class CommentView extends GetView<CommunityController> {
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
+                            controller: controller.commentController,
                             style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
                             cursorColor: Colors.black,
                             textInputAction:TextInputAction.done ,
@@ -54,114 +47,182 @@ class CommentView extends GetView<CommunityController> {
                                 fillColor: Palette.background,
                                 enabledBorder: InputBorder.none,
                                 //filled: true,
-                                prefixIcon: const Icon(Icons.description),
+                                prefixIcon: const Icon(Icons.description, color: Colors.grey,),
                                 hintText: 'Share your thoughts ',
                                 hintStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
-                              suffixIcon: GestureDetector(
-                                onTap: () async {
-                                  var result =  await controller.commentPost(controller.postDetails!.postId!, controller.comment.value);
-                                   controller.commentList.value = result.commentList;
-                                },
-                                  child: const FaIcon(FontAwesomeIcons.paperPlane))
-                            ),
+                              suffixIcon: Obx(() => !controller.sendComment.value?GestureDetector(
+                                  onTap: () async {
+                                    controller.comment.value = controller.commentController.text;
+
+                                    var result =  await controller.commentPost(controller.postDetails!.value.postId!, controller.comment.value);
+                                    controller.commentCount!.value =  controller.commentCount!.value +1;
+                                    controller.commentController.clear();
+                                    controller.commentList.value = result.commentList;
+                                  },
+                                  child: FaIcon(FontAwesomeIcons.paperPlane,color: Colors.grey, )
+
+                              ):SizedBox(
+                                  height: 10,
+                                  width: 10,
+                                  child: SpinKitDualRing(color: interfaceColor, size: 10,))),
 
                           )
                       )
                   ),
                 )
-              ]
+                )]
           ),
         ),
-        body: Theme(
-          data: ThemeData(
-            //canvasColor: Colors.yellow,
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: Get.theme.colorScheme.secondary,
-                //background: Colors.red,
-                secondary: validateColor,
-              )
-          ),
-          child: Container(
-              decoration: const BoxDecoration(color: Colors.white,
+        body: Container(
+          padding: EdgeInsets.only(bottom: 100),
+          //height:  Get.height,
+          child: CustomScrollView(
+            //controller: controller.scrollbarController,
+            //primary: true,
+            shrinkWrap: false,
+            slivers: <Widget>[
+              SliverAppBar(
+                //expandedHeight: 80,
+                floating: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(FontAwesomeIcons.arrowLeft, color: interfaceColor),
+                  onPressed: () => {
+                    controller.sendComment.value = false,
+                    controller.likeTapped.value = false,
+                    controller.commentList.clear(),
+                    Navigator.pop(context),
+                    //Get.back()
+                  },
+                ),
+
+                flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.parallax,
+                ),
+
               ),
-              child:   SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child:Column(
-    children:
-                [
-                  PostCardWidget(
-                    popUpWidget: SizedBox(),
-                    likeTapped: RxBool(controller.postDetails!.likeTapped!),
-                    content: controller.postDetails!.content,
-                    zone: controller.postDetails!.zone['name'],
-                    publishedDate: controller.postDetails!.publishedDate,
-                    postId: controller.postDetails!.postId,
-                    commentCount: controller.postDetails!.commentCount,
-                    likeCount: RxInt(controller.selectedPost.contains(controller.postDetails) && controller.postDetails!.likeTapped!?
-                    controller.postDetails.likeCount!-1
-                        :controller.selectedPost.contains(controller.postDetails) && !controller.postDetails!.likeTapped!?
-                    controller.postDetails.likeCount!+1:
-                    controller.postDetails.likeCount!,),
-                    shareCount: controller.postDetails!.shareCount,
-                    images: controller.postDetails!.imagesUrl,
-                    user: controller.postDetails!.user!,
+
+
+              Obx(() => SliverToBoxAdapter(
+                child:  controller.loadingAPost.value? PostCardWidget(
+                  followWidget:Obx(() => !controller.postDetails!.value.isFollowing!.value?
+                  GestureDetector(
+                      onTap: (){
+
+                        controller.postDetails!.value.isFollowing!.value = !controller.postDetails!.value.isFollowing!.value;
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].isFollowing.value
+                        = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].isFollowing.value;
+                        controller.followUser(controller.postDetails!.value.user!.userId!,
+                            controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
+
+
+                      },
+                      child: Text('+ ${AppLocalizations.of(context).follow}',style:Get.textTheme.displaySmall,)):
+                  GestureDetector(
+                      onTap: (){
+
+                        controller.postDetails!.value.isFollowing!.value = !controller.postDetails!.value.isFollowing!.value;
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].isFollowing.value
+                        = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].isFollowing.value;
+                        controller.unfollowUser(controller.postDetails!.value.user!.userId!,
+                            controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
+                        //}
+                      },
+                      child: Text(AppLocalizations.of(context).following, style: Get.textTheme.displaySmall,textAlign: TextAlign.end,)
+                  ),),
+                  popUpWidget: SizedBox(),
+                  isCommunityPage: true,
+                  likeTapped: RxBool(controller.postDetails!.value.likeTapped!.value),
+                  content: controller.postDetails!.value.content,
+                  zone: controller.postDetails!.value.zone['name'],
+                  publishedDate: controller.postDetails!.value.publishedDate,
+                  postId: controller.postDetails!.value.postId,
+                  commentCount: RxInt(controller.commentList.length),
+                  likeCount: RxInt(controller.postDetails!.value.likeCount!.value),
+                  shareCount: controller.postDetails.value.shareCount,
+                  images: controller.postDetails!.value.imagesUrl,
+                  user: controller.postDetails!.value.user!,
                     likeWidget:  Obx(() =>
-                    controller.selectedPost.contains(controller.postDetails) &&controller.postDetails.likeTapped!?
-                    const FaIcon(FontAwesomeIcons.heart,):
-                    controller.selectedPost.contains(controller.postDetails) &&!controller.postDetails.likeTapped!?
+                    controller.postDetails!.value.likeTapped!.value && controller.likeTapped.value?
                     const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
-                    !controller.postDetails.likeTapped!?
+                    !controller.postDetails!.value.likeTapped!.value && controller.likeTapped.value?
                     const FaIcon(FontAwesomeIcons.heart,):
-                    const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,)
+                    controller.postDetails!.value.likeTapped!.value && !controller.likeTapped.value?
+                    const FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,):
+                    const FaIcon(FontAwesomeIcons.heart,)
 
 
                       ,),
-
-
                     onLikeTapped: (){
 
-                      if( controller.selectedPost.contains(controller.postDetails)){
-                        controller.selectedPost.remove(controller.postDetails);
-                        controller.likeUnlikePost(controller.postDetails.postId!);
+                      if(controller.postDetails!.value.likeTapped!.value){
+                        controller.postDetails.value.likeTapped!.value = false;
+                        controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!-1;
+
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
+                        = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
+
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value
+                        = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value -1;
+                        controller.likeUnlikePost(controller.postDetails!.value.postId!,  controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
+
                       }
                       else{
-                        controller.selectedPost.add(controller.postDetails);
-                        controller.likeUnlikePost(controller.postDetails.postId!);
+                        controller.postDetails.value.likeTapped!.value = true;
+                        controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!+1;
+                        // controller.postDetails!.value.likeTapped!.value = !controller.postDetails!.value.likeTapped!.value;
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
+                        = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
+
+                        controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value
+                        = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeCount.value +1;
+                        controller.likeUnlikePost(controller.postDetails!.value.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
                       }
 
+
                     },
-                    liked: controller.postDetails!.liked,
-                  ).marginOnly(top: 20, bottom: 5),
+
+                  onSharedTapped: () async {
+
+                    controller.postDetails.value.shareCount = controller.postDetails.value.shareCount!+1;
+                    controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].shareCount.value
+                    = controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].shareCount.value +1;
+                    await controller.sharePost(post!.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
+
+                  },
+                  liked: controller.postDetails!.value.liked,
+                ).marginOnly(top: 20, bottom: 5)
+                :PostCardWidgetBoilerplate(
+                  images: [],
+                ),)),
 
 
 
+              Obx(() => SliverList(
+                  delegate: SliverChildBuilderDelegate(
 
-                  Obx(() => buildCommentList(context, controller.commentList.value!).marginOnly(left:20 , right: 20),)
+                  childCount: controller.commentList.length,
+                      (context, index){
+                        return Container(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: CommentWidget(
+                            user: '${controller.commentList[index]['user']['first_name'][0].toUpperCase()}${controller.commentList[index]['user']['first_name'].substring(1).toLowerCase()} '
+                                '${controller.commentList[index]['user']['last_name'][0].toUpperCase()}${controller.commentList[index]['user']['last_name'].substring(1).toLowerCase()}' ,
+                            comment: controller.commentList[index]['text'],
+                            imageUrl: controller.commentList[index]['user']['avatar'],
+                          ),
+                        );
+
+              }
+                       )))
 
 
 
+            ],
 
-                ],)
-              ).paddingOnly(bottom: 80),
           ),
         )
-    );
-  }
-
-  Widget buildCommentList(BuildContext context, var commentsList) {
-    return SizedBox(
-      height: Get.height,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: commentsList.length,
-          itemBuilder: (context, index) {
-            return  CommentWidget(
-              user: '${commentsList[index]['user']['first_name']} ${commentsList[index]['user']['last_name']}' ,
-              comment: commentsList[index]['text'],
-              imageUrl: commentsList[index]['user']['avatar'],
-            );
-          },
-      ),
     );
   }
 

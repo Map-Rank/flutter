@@ -21,4 +21,14 @@ class ZoneRepository {
     return _laravelApiClient.getAllZones(levelId, parentId);
   }
 
+  Future getSpecificZone(int zoneId){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.getSpecificZone(zoneId);
+  }
+
+  Future getAllZonesFilterByName(){
+    _laravelApiClient = Get.find<LaravelApiClient>();
+    return _laravelApiClient.getAllZonesFilterByName();
+  }
+
 }

@@ -1,27 +1,29 @@
-import 'dart:io';
-import 'package:get/get.dart';
+
 import 'parents/model.dart';
 
-class User extends Model {
+class UserModel extends Model {
   String? firstName;
   String? lastName;
   String? email;
   String? password;
   String? gender;
-  String? phoneNumber;
+  var phoneNumber;
   String? birthdate;
   String? zoneId;
   int? userId;
   String? avatarUrl;
+  var imageFile;
   String? authToken;
-  String? companyName;
+  String? profession;
   static bool? auth;
   List? sectors;
+  List? myPosts = [];
+  List? myEvents = [];
 
-  User({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.companyName, this.gender,
-  this.lastName, this.zoneId, this. sectors});
+  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.profession, this.gender,this.imageFile,
+  this.lastName, this.zoneId, this. sectors, this.myPosts, this.myEvents});
 
-  User.fromJson(Map<String, dynamic> json) {
+  UserModel.fromJson(Map<String, dynamic> json) {
     firstName = stringFromJson(json, 'first_name');
     lastName = stringFromJson(json, 'last_name');
     email = stringFromJson(json, 'email');
@@ -49,10 +51,16 @@ class User extends Model {
     data['zone_id'] = zoneId;
     data['date_of_birth'] = birthdate;
     data['password'] = password;
+    data['token'] = authToken;
+    data['id'] = userId;
+    data['my_posts'] = myPosts;
     //data['sectors'] = sectors;
 
 
     return data;
   }
+
+
+
 
 }

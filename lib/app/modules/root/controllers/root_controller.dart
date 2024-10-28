@@ -1,16 +1,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mapnrank/app/modules/chat_room/controllers/chat_room_controller.dart';
-import 'package:mapnrank/app/modules/chat_room/views/chat_room_view.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/community/views/community_view.dart';
+import 'package:mapnrank/app/modules/community/views/create_post.dart';
 import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:mapnrank/app/modules/dashboard/views/dashboard_view.dart';
-import 'package:mapnrank/app/modules/profile/controllers/profile_controller.dart';
-import 'package:mapnrank/app/modules/profile/views/profile_view.dart';
+import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
+import 'package:mapnrank/app/modules/events/views/events_view.dart';
+import 'package:mapnrank/app/modules/notifications/views/notification_view.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
 import '../../../routes/app_routes.dart';
+import '../../auth/controllers/auth_controller.dart';
+import '../../notifications/controllers/notification_controller.dart';
 
 
 class RootController extends GetxController {
@@ -28,10 +30,12 @@ class RootController extends GetxController {
   }
 
   List<Widget> pages = [
-     const DashboardView(),
-     const CommunityView(),
-     const ChatRoomView(),
-    const ProfileView(),
+    const CommunityView(),
+    Container(),
+    const CreatePostView(),
+    const EventsView(),
+     //const NotificationView(),
+
   ];
 
   Widget get currentPage => pages[currentIndex.value];
@@ -42,6 +46,7 @@ class RootController extends GetxController {
     } else {
       currentIndex.value = _index;
       await refreshPage(_index);
+      Get.find<AuthController>().loading.value = false;
     }
   }
 
@@ -53,7 +58,6 @@ class RootController extends GetxController {
       await refreshPage(_index);
       await Get.offNamedUntil(Routes.ROOT, (Route route) {
         if (route.settings.name == Routes.ROOT) {
-          print('nath');
           return true;
         }
         return true;
@@ -73,31 +77,43 @@ class RootController extends GetxController {
     switch (_index) {
       case 0:
         {
-          await Get.find<DashboardController>().refreshDashboard();
+          await Get.find<AuthController>().getUser();
+          if(Get.find<AuthService>().user.value.email != null){
+            await Get.find<CommunityController>().refreshCommunity();
+          }
+
           break;
         }
       case 1:
         {
-          if(Get.find<AuthService>().user.value.email != null){
-            await Get.find<CommunityController>().refreshCommunity();
-          }
+          //await Get.find<DashboardController>().refreshDashboard();
+          showModalBottomSheet(context: Get.context!,
+            isScrollControlled: true,
+            builder: (context) => DashboardView(),);
+
           break;
         }
       case 2:
         {
+          Get.find<CommunityController>().isRootFolder = true;
+          Get.find<CommunityController>().emptyArrays();
+          break;
+        }
+      case 3:
+        {
           if(Get.find<AuthService>().user.value.email != null){
-            await Get.find<ChatRoomController>().refreshChatRoom();
+            await Get.find<EventsController>().refreshEvents();
           }
           break;
         }
 
-      case 3:
-        {
-          if(Get.find<AuthService>().user.value.email != null){
-            await Get.find<ProfileController>().refreshProfile();
-          }
-          break;
-        }
+      // case 4:
+      //   {
+      //     if(Get.find<AuthService>().user.value.email != null){
+      //       await Get.find<NotificationController>().refreshNotification();
+      //     }
+      //     break;
+      //   }
     }
   }
 

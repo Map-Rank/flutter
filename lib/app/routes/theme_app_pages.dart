@@ -4,6 +4,8 @@ import 'package:mapnrank/app/modules/auth/views/register_view.dart';
 import 'package:mapnrank/app/modules/community/views/create_post.dart';
 import 'package:mapnrank/app/modules/events/views/create_event.dart';
 import 'package:mapnrank/app/modules/events/views/event_details_view.dart';
+import 'package:mapnrank/app/modules/other_user_profile/binding/other_user_profile_binding.dart';
+import 'package:mapnrank/app/modules/other_user_profile/views/other_user_profile_view.dart';
 import 'package:mapnrank/app/modules/profile/views/events_view.dart';
 import 'package:mapnrank/app/modules/root/bindings/root_binding.dart';
 import 'package:mapnrank/app/modules/root/views/root_view.dart';
@@ -46,6 +48,7 @@ class Theme1AppPages {
     GetPage(name: Routes.FOLLOWERS, page: () =>const FollowersView(), transition: Transition.rightToLeft ),
     GetPage(name: Routes.ARTICLES, page: () =>const ArticlesView(),transition: Transition.rightToLeft ),
     GetPage(name: Routes.MY_EVENTS, page: () =>const MyEventsView(),transition: Transition.rightToLeft ),
+    GetPage(name: Routes.OTHER_USER_PROFILE, page: () =>const OtherUserProfileView(),binding: OtherUserProfileBinding(), transition: Transition.rightToLeft ),
     GetPage(name: Routes.SETTINGS_LANGUAGE, page: () =>LanguageView(), binding: SettingsBinding(),transition: Transition.rightToLeft ),
 
   ];

@@ -26,20 +26,36 @@ class RootView extends GetView<RootController> {
           },
           children: [
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.userGroup,
+              icon: controller.currentIndex.value == 0?Image.asset(
+        'assets/icons/community_colored.png',
+        ):Image.asset(
+        'assets/icons/community.png',
+      ),
               label: AppLocalizations.of(context).community,
             ),
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.thLarge,
+              icon: controller.currentIndex.value == 1?Image.asset(
+                'assets/icons/dashboard_colored.png',
+              ):Image.asset(
+                'assets/icons/dashboard.png',
+              ),
               label: AppLocalizations.of(context).dashboard,
             ),
 
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.circlePlus,
+              icon: controller.currentIndex.value == 2?Image.asset(
+                'assets/icons/create_colored.png',
+              ):Image.asset(
+                'assets/icons/create.png',
+              ),
               label: AppLocalizations.of(context).post,
             ),
             CustomBottomNavigationItem(
-              icon: FontAwesomeIcons.calendar,
+              icon: controller.currentIndex.value == 3?Image.asset(
+                'assets/icons/event_colored.png',
+              ):Image.asset(
+                'assets/icons/event.png',
+              ),
               label: AppLocalizations.of(context).events,
 
             ),

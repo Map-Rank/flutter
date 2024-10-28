@@ -3,18 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i6;
 
-import 'package:dio/dio.dart' as _i3;
-import 'package:get/get.dart' as _i4;
-import 'package:mapnrank/app/models/event_model.dart' as _i11;
-import 'package:mapnrank/app/models/feedback_model.dart' as _i9;
-import 'package:mapnrank/app/models/post_model.dart' as _i10;
-import 'package:mapnrank/app/models/user_model.dart' as _i8;
-import 'package:mapnrank/app/providers/dio_client.dart' as _i2;
-import 'package:mapnrank/app/providers/laravel_provider.dart' as _i5;
+import 'package:dio/dio.dart' as _i2;
+import 'package:get/get.dart' as _i3;
+import 'package:mapnrank/app/models/event_model.dart' as _i10;
+import 'package:mapnrank/app/models/feedback_model.dart' as _i8;
+import 'package:mapnrank/app/models/post_model.dart' as _i9;
+import 'package:mapnrank/app/models/user_model.dart' as _i7;
+import 'package:mapnrank/app/providers/laravel_provider.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,8 +28,8 @@ import 'package:mockito/src/dummies.dart' as _i6;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeDioClient_0 extends _i1.SmartFake implements _i2.DioClient {
-  _FakeDioClient_0(
+class _FakeDio_0 extends _i1.SmartFake implements _i2.Dio {
+  _FakeDio_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -39,7 +38,7 @@ class _FakeDioClient_0 extends _i1.SmartFake implements _i2.DioClient {
         );
 }
 
-class _FakeOptions_1 extends _i1.SmartFake implements _i3.Options {
+class _FakeOptions_1 extends _i1.SmartFake implements _i2.Options {
   _FakeOptions_1(
     Object parent,
     Invocation parentInvocation,
@@ -50,7 +49,7 @@ class _FakeOptions_1 extends _i1.SmartFake implements _i3.Options {
 }
 
 class _FakeInternalFinalCallback_2<T> extends _i1.SmartFake
-    implements _i4.InternalFinalCallback<T> {
+    implements _i3.InternalFinalCallback<T> {
   _FakeInternalFinalCallback_2(
     Object parent,
     Invocation parentInvocation,
@@ -61,7 +60,7 @@ class _FakeInternalFinalCallback_2<T> extends _i1.SmartFake
 }
 
 class _FakeLaravelApiClient_3 extends _i1.SmartFake
-    implements _i5.LaravelApiClient {
+    implements _i4.LaravelApiClient {
   _FakeLaravelApiClient_3(
     Object parent,
     Invocation parentInvocation,
@@ -74,22 +73,22 @@ class _FakeLaravelApiClient_3 extends _i1.SmartFake
 /// A class which mocks [LaravelApiClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
+class MockLaravelApiClient extends _i1.Mock implements _i4.LaravelApiClient {
   MockLaravelApiClient() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.DioClient get httpClient => (super.noSuchMethod(
+  _i2.Dio get httpClient => (super.noSuchMethod(
         Invocation.getter(#httpClient),
-        returnValue: _FakeDioClient_0(
+        returnValue: _FakeDio_0(
           this,
           Invocation.getter(#httpClient),
         ),
-      ) as _i2.DioClient);
+      ) as _i2.Dio);
 
   @override
-  set httpClient(_i2.DioClient? _httpClient) => super.noSuchMethod(
+  set httpClient(_i2.Dio? _httpClient) => super.noSuchMethod(
         Invocation.setter(
           #httpClient,
           _httpClient,
@@ -100,7 +99,7 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
   @override
   String get baseUrl => (super.noSuchMethod(
         Invocation.getter(#baseUrl),
-        returnValue: _i6.dummyValue<String>(
+        returnValue: _i5.dummyValue<String>(
           this,
           Invocation.getter(#baseUrl),
         ),
@@ -116,16 +115,16 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       );
 
   @override
-  _i3.Options get optionsNetwork => (super.noSuchMethod(
+  _i2.Options get optionsNetwork => (super.noSuchMethod(
         Invocation.getter(#optionsNetwork),
         returnValue: _FakeOptions_1(
           this,
           Invocation.getter(#optionsNetwork),
         ),
-      ) as _i3.Options);
+      ) as _i2.Options);
 
   @override
-  set optionsNetwork(_i3.Options? _optionsNetwork) => super.noSuchMethod(
+  set optionsNetwork(_i2.Options? _optionsNetwork) => super.noSuchMethod(
         Invocation.setter(
           #optionsNetwork,
           _optionsNetwork,
@@ -134,16 +133,16 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       );
 
   @override
-  _i3.Options get optionsCache => (super.noSuchMethod(
+  _i2.Options get optionsCache => (super.noSuchMethod(
         Invocation.getter(#optionsCache),
         returnValue: _FakeOptions_1(
           this,
           Invocation.getter(#optionsCache),
         ),
-      ) as _i3.Options);
+      ) as _i2.Options);
 
   @override
-  set optionsCache(_i3.Options? _optionsCache) => super.noSuchMethod(
+  set optionsCache(_i2.Options? _optionsCache) => super.noSuchMethod(
         Invocation.setter(
           #optionsCache,
           _optionsCache,
@@ -152,22 +151,22 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       );
 
   @override
-  _i4.InternalFinalCallback<void> get onStart => (super.noSuchMethod(
+  _i3.InternalFinalCallback<void> get onStart => (super.noSuchMethod(
         Invocation.getter(#onStart),
         returnValue: _FakeInternalFinalCallback_2<void>(
           this,
           Invocation.getter(#onStart),
         ),
-      ) as _i4.InternalFinalCallback<void>);
+      ) as _i3.InternalFinalCallback<void>);
 
   @override
-  _i4.InternalFinalCallback<void> get onDelete => (super.noSuchMethod(
+  _i3.InternalFinalCallback<void> get onDelete => (super.noSuchMethod(
         Invocation.getter(#onDelete),
         returnValue: _FakeInternalFinalCallback_2<void>(
           this,
           Invocation.getter(#onDelete),
         ),
-      ) as _i4.InternalFinalCallback<void>);
+      ) as _i3.InternalFinalCallback<void>);
 
   @override
   bool get initialized => (super.noSuchMethod(
@@ -182,20 +181,20 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       ) as bool);
 
   @override
-  _i7.Future<_i5.LaravelApiClient> init() => (super.noSuchMethod(
+  _i6.Future<_i4.LaravelApiClient> init() => (super.noSuchMethod(
         Invocation.method(
           #init,
           [],
         ),
         returnValue:
-            _i7.Future<_i5.LaravelApiClient>.value(_FakeLaravelApiClient_3(
+            _i6.Future<_i4.LaravelApiClient>.value(_FakeLaravelApiClient_3(
           this,
           Invocation.method(
             #init,
             [],
           ),
         )),
-      ) as _i7.Future<_i5.LaravelApiClient>);
+      ) as _i6.Future<_i4.LaravelApiClient>);
 
   @override
   void forceRefresh() => super.noSuchMethod(
@@ -207,7 +206,7 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       );
 
   @override
-  dynamic register(_i8.UserModel? user) => super.noSuchMethod(Invocation.method(
+  dynamic register(_i7.UserModel? user) => super.noSuchMethod(Invocation.method(
         #register,
         [user],
       ));
@@ -220,72 +219,72 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       ));
 
   @override
-  dynamic updateUser(_i8.UserModel? user) =>
+  dynamic updateUser(_i7.UserModel? user) =>
       super.noSuchMethod(Invocation.method(
         #updateUser,
         [user],
       ));
 
   @override
-  dynamic login(_i8.UserModel? user) => super.noSuchMethod(Invocation.method(
+  dynamic login(_i7.UserModel? user) => super.noSuchMethod(Invocation.method(
         #login,
         [user],
       ));
 
   @override
-  _i7.Future<dynamic> logout() => (super.noSuchMethod(
+  _i6.Future<dynamic> logout() => (super.noSuchMethod(
         Invocation.method(
           #logout,
           [],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> deleteAccount() => (super.noSuchMethod(
+  _i6.Future<dynamic> deleteAccount() => (super.noSuchMethod(
         Invocation.method(
           #deleteAccount,
           [],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> resetPassword(String? email) => (super.noSuchMethod(
+  _i6.Future<dynamic> resetPassword(String? email) => (super.noSuchMethod(
         Invocation.method(
           #resetPassword,
           [email],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> followUser(int? userId) => (super.noSuchMethod(
+  _i6.Future<dynamic> followUser(int? userId) => (super.noSuchMethod(
         Invocation.method(
           #followUser,
           [userId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> unfollowUser(int? userId) => (super.noSuchMethod(
+  _i6.Future<dynamic> unfollowUser(int? userId) => (super.noSuchMethod(
         Invocation.method(
           #unfollowUser,
           [userId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  dynamic sendFeedback(_i9.FeedbackModel? feedbackModel) =>
+  dynamic sendFeedback(_i8.FeedbackModel? feedbackModel) =>
       super.noSuchMethod(Invocation.method(
         #sendFeedback,
         [feedbackModel],
       ));
 
   @override
-  _i7.Future<dynamic> getAllZones(
+  _i6.Future<dynamic> getAllZones(
     int? levelId,
     int? parentId,
   ) =>
@@ -297,74 +296,74 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             parentId,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> getSpecificZone(int? zoneId) => (super.noSuchMethod(
+  _i6.Future<dynamic> getSpecificZone(int? zoneId) => (super.noSuchMethod(
         Invocation.method(
           #getSpecificZone,
           [zoneId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> getAllSectors() => (super.noSuchMethod(
+  _i6.Future<dynamic> getAllSectors() => (super.noSuchMethod(
         Invocation.method(
           #getAllSectors,
           [],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> getAllPosts(int? page) => (super.noSuchMethod(
+  _i6.Future<dynamic> getAllPosts(int? page) => (super.noSuchMethod(
         Invocation.method(
           #getAllPosts,
           [page],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> createPost(_i10.Post? post) => (super.noSuchMethod(
+  _i6.Future<dynamic> createPost(_i9.Post? post) => (super.noSuchMethod(
         Invocation.method(
           #createPost,
           [post],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> updatePost(_i10.Post? post) => (super.noSuchMethod(
+  _i6.Future<dynamic> updatePost(_i9.Post? post) => (super.noSuchMethod(
         Invocation.method(
           #updatePost,
           [post],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> likeUnlikePost(int? postId) => (super.noSuchMethod(
+  _i6.Future<dynamic> likeUnlikePost(int? postId) => (super.noSuchMethod(
         Invocation.method(
           #likeUnlikePost,
           [postId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> getAPost(int? postId) => (super.noSuchMethod(
+  _i6.Future<dynamic> getAPost(int? postId) => (super.noSuchMethod(
         Invocation.method(
           #getAPost,
           [postId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> commentPost(
+  _i6.Future<dynamic> commentPost(
     int? postId,
     String? comment,
   ) =>
@@ -376,8 +375,8 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             comment,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
   dynamic sharePost(int? postId) => super.noSuchMethod(Invocation.method(
@@ -392,7 +391,7 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       ));
 
   @override
-  _i7.Future<dynamic> filterPostsByZone(
+  _i6.Future<dynamic> filterPostsByZone(
     int? page,
     int? zoneId,
   ) =>
@@ -404,11 +403,11 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             zoneId,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> filterPostsBySectors(
+  _i6.Future<dynamic> filterPostsBySectors(
     int? page,
     dynamic sectors,
   ) =>
@@ -420,8 +419,8 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             sectors,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
   dynamic getAllEvents(int? page) => super.noSuchMethod(Invocation.method(
@@ -430,23 +429,23 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       ));
 
   @override
-  _i7.Future<dynamic> getAnEvent(int? eventId) => (super.noSuchMethod(
+  _i6.Future<dynamic> getAnEvent(int? eventId) => (super.noSuchMethod(
         Invocation.method(
           #getAnEvent,
           [eventId],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  dynamic createEvent(_i11.Event? event) =>
+  dynamic createEvent(_i10.Event? event) =>
       super.noSuchMethod(Invocation.method(
         #createEvent,
         [event],
       ));
 
   @override
-  dynamic updateEvent(_i11.Event? event) =>
+  dynamic updateEvent(_i10.Event? event) =>
       super.noSuchMethod(Invocation.method(
         #updateEvent,
         [event],
@@ -459,7 +458,7 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
       ));
 
   @override
-  _i7.Future<dynamic> filterEventsByZone(
+  _i6.Future<dynamic> filterEventsByZone(
     int? page,
     int? zoneId,
   ) =>
@@ -471,11 +470,11 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             zoneId,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
-  _i7.Future<dynamic> filterEventsBySectors(
+  _i6.Future<dynamic> filterEventsBySectors(
     int? page,
     dynamic sectors,
   ) =>
@@ -487,8 +486,8 @@ class MockLaravelApiClient extends _i1.Mock implements _i5.LaravelApiClient {
             sectors,
           ],
         ),
-        returnValue: _i7.Future<dynamic>.value(),
-      ) as _i7.Future<dynamic>);
+        returnValue: _i6.Future<dynamic>.value(),
+      ) as _i6.Future<dynamic>);
 
   @override
   void onInit() => super.noSuchMethod(

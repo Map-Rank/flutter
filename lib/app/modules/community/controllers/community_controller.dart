@@ -3,7 +3,9 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -50,6 +52,8 @@ class CommunityController extends GetxController {
   var createPostNotEvent = true.obs;
   late Post post;
   Rx<Post> postDetails = Post().obs;
+  List<Map<String, dynamic>> zones = [];
+  List<Map<String, dynamic>> listAllZones = [];
   var loadingRegions = true.obs;
   var regions = [].obs;
   var regionSelected = false.obs;
@@ -57,6 +61,7 @@ class CommunityController extends GetxController {
   var listRegions = [].obs;
   var regionsSet ={};
   var regionSelectedValue = [].obs;
+  var cancelSearchSubDivision = false.obs;
 
   var loadingDivisions = true.obs;
   var divisions = [].obs;
@@ -118,6 +123,9 @@ class CommunityController extends GetxController {
 
   var commentList = [].obs;
 
+  var likeMyPost = false.obs;
+  var shareMyPost = false.obs;
+
   TextEditingController commentController = TextEditingController();
   TextEditingController postContentController = TextEditingController();
   TextEditingController feedbackController = TextEditingController();
@@ -136,12 +144,13 @@ class CommunityController extends GetxController {
   var chooseASubDivision = false.obs;
 
   var inputImage = false.obs;
-  var inputSector = false.obs;
-  var inputZone = false.obs;
+  var filterBySector = false.obs;
+  var filterByLocation = false.obs;
 
   var picker = ImagePicker();
   late File feedbackImage = File('assets/images/loading.gif') ;
   final loadFeedbackImage = false.obs;
+
 
 
   CommunityController() {
@@ -150,6 +159,7 @@ class CommunityController extends GetxController {
 
   @override
   void onInit() async {
+
     super.onInit();
 
     post = Post();
@@ -231,9 +241,9 @@ class CommunityController extends GetxController {
           lastName: 'User',
           avatarUrl: 'https://example.com/avatar.png',
         ),
-        commentCount: 5,
-        shareCount: 10,
-        likeCount: 100,
+        commentCount: RxInt(5),
+        shareCount: RxInt(10),
+        likeCount: RxInt(100),
         likeTapped: false.obs,
         isFollowing: false.obs,
 
@@ -254,15 +264,20 @@ class CommunityController extends GetxController {
           lastName: 'User',
           avatarUrl: 'https://example.com/avatar.png',
         ),
-        commentCount: 5,
-        shareCount: 10,
-        likeCount: 100,
+        commentCount: RxInt(5),
+        shareCount: RxInt(10),
+        likeCount: RxInt(100),
         likeTapped: false.obs,
         isFollowing: false.obs,
 
       );
       //imageFiles = [];
     }
+
+    var listZones = await getAllZonesFilterByName();
+
+    listAllZones = listZones.cast<Map<String, dynamic>>();
+    zones = listAllZones;
 
 
 
@@ -309,7 +324,8 @@ class CommunityController extends GetxController {
       var list = await communityRepository.getAllPosts(page);
       print(list);
       for( var i = 0; i< list.length; i++){
-        UserModel user = UserModel(userId: list[i]['creator'][0]['id'],
+        UserModel user = UserModel(
+            userId: list[i]['creator'][0]['id'],
             lastName:list[i]['creator'][0]['last_name'],
             firstName: list[i]['creator'][0]['first_name'],
             avatarUrl: list[i]['creator'][0]['avatar']
@@ -317,9 +333,9 @@ class CommunityController extends GetxController {
         var post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount:list[i] ['comment_count'],
-            likeCount:list[i] ['like_count'] ,
-            shareCount:list[i] ['share_count'],
+            commentCount:RxInt(list[i] ['comment_count']),
+            likeCount:RxInt(list[i] ['like_count']) ,
+            shareCount:RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -369,9 +385,9 @@ class CommunityController extends GetxController {
           post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount:list[i] ['comment_count'],
-            likeCount:list[i] ['like_count'] ,
-            shareCount:list[i] ['share_count'],
+            commentCount:RxInt(list[i] ['comment_count']),
+            likeCount:RxInt(list[i] ['like_count']) ,
+            shareCount:RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -412,7 +428,7 @@ class CommunityController extends GetxController {
 
   filterSearchPostsByZone(var query)async{
     var postList = [];
-    if(divisionSelectedValue.isNotEmpty || regionSelectedValue.isNotEmpty || subdivisionSelectedValue.isNotEmpty) {
+    if(divisionSelectedValue.isNotEmpty || regionSelectedValue.isNotEmpty || subdivisionSelectedValue.isNotEmpty || !noFilter.value) {
       loadingPosts.value = true;
       try {
         page = 0;
@@ -427,9 +443,9 @@ class CommunityController extends GetxController {
           post = Post(
             zone: list[i]['zone'],
             postId: list[i]['id'],
-            commentCount:list[i] ['comment_count'],
-            likeCount:list[i] ['like_count'] ,
-            shareCount:list[i] ['share_count'],
+            commentCount:RxInt(list[i] ['comment_count']),
+            likeCount:RxInt(list[i] ['like_count']) ,
+            shareCount:RxInt(list[i] ['share_count']),
             content: list[i]['content'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['images'],
@@ -464,7 +480,7 @@ class CommunityController extends GetxController {
 
     }else {
       loadingPosts.value = true;
-      listAllPosts = getAllPosts(0);
+      listAllPosts = await getAllPosts(0);
       allPosts.value = listAllPosts;
       noFilter.value = false;
     }
@@ -713,6 +729,22 @@ class CommunityController extends GetxController {
 
   }
 
+  getAllZonesFilterByName() async{
+    try{
+      var result = await zoneRepository.getAllZonesFilterByName();
+      print('result of zones is: $result');
+      return result;
+    }
+    catch(e){
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
+    }
+
+  }
+
+
+
   emptyArrays(){
     //postContentController.clear();
     postFollowed.clear();
@@ -797,7 +829,22 @@ class CommunityController extends GetxController {
 
     }
     catch (e) {
-        allPosts.elementAt(index).likeTapped.value = !allPosts.elementAt(index).likeTapped.value;
+      if(!likeMyPost.value) {
+        allPosts
+            .elementAt(index)
+            .likeTapped
+            .value = !allPosts
+            .elementAt(index)
+            .likeTapped
+            .value;
+        allPosts
+            .elementAt(index)
+            .likeCount
+            .value = allPosts
+            .elementAt(index)
+            .likeCount
+            .value - 1;
+      }
 
 
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
@@ -808,7 +855,7 @@ class CommunityController extends GetxController {
 
   }
   
-  initializePostDetails(Post post){
+  initializePostDetails(Post post) async{
     postDetails.value.content = post.content;
     postDetails.value.zone = post.zone;
     postDetails.value.postId = post.postId;
@@ -833,7 +880,8 @@ class CommunityController extends GetxController {
       loadingAPost.value = false;
       var result= await communityRepository.getAPost(postId);
       print("Result is : ${result}");
-      UserModel user = UserModel(userId: result['creator'][0]['id'],
+      UserModel user = UserModel(
+          userId: result['creator'][0]['id'],
           lastName:result['creator'][0]['last_name'],
           firstName: result['creator'][0]['first_name'],
           avatarUrl: result['creator'][0]['avatar']
@@ -841,9 +889,9 @@ class CommunityController extends GetxController {
       Post postModel = Post(
         zone: result['zone'],
         postId: result['id'],
-        commentCount:result ['comment_count'],
-        likeCount:result ['like_count'] ,
-        shareCount:result ['share_count'],
+        commentCount:RxInt(result['comment_count']),
+        likeCount:RxInt(result ['like_count']) ,
+        shareCount:RxInt(result ['share_count']),
         content: result['content'],
         publishedDate: result['humanize_date_creation'],
         imagesUrl: result['images'],
@@ -913,7 +961,7 @@ class CommunityController extends GetxController {
 
   }
 
-  sharePost(int postId)async{
+  sharePost(int postId, int index)async{
     try{
       copyLink.value = false;
       showDialog(context: Get.context!, builder: (context){
@@ -921,16 +969,14 @@ class CommunityController extends GetxController {
       },);
       await communityRepository.sharePost(postId);
       Navigator.of(Get.context!).pop();
-      Share.share('https://dev.residat.com/show-post/${postId}');
+      Share.share('https://www.residat.com/show-post/${postId}');
 
     }
     catch (e) {
-      for(var i = 0; i< sharedPost.length; i++){
-        if(sharedPost[i].postId == postId ){
-          sharedPost.removeAt(i);
-          break;
-        }
+      if(!shareMyPost.value) {
+        allPosts.elementAt(index).shareCount.value = allPosts.elementAt(index).shareCount.value -1;
       }
+
       Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
 
     }

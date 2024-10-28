@@ -53,7 +53,7 @@ class SettingsService extends GetxService {
             labelMedium:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2) ,
             bodyMedium: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
             bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Color(0xff6B6B6B), height: 1.2),
-            displayMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Color(0xff242424), height: 1.4),
+            displayMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500, color: Color(0xff242424), height: 1.4),
             displaySmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500, color: Color(0xff242424), height: 1.4),
 
           ),

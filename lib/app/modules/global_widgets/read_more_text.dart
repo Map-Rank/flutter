@@ -15,7 +15,7 @@ class ReadMoreText extends StatefulWidget {
   final TextStyle textStyle;
   final TextDirection? textDirection;
 
-   ReadMoreText(
+  ReadMoreText(
       this.data, {
         Key? key,
         this.maxCharsLength = 240,

@@ -14,9 +14,9 @@ class Post extends Model {
   int? postId;
   List? sectors;
   List? imagesUrl;
-  int? commentCount;
-  int? shareCount;
-  int? likeCount;
+  RxInt? commentCount;
+  RxInt? shareCount;
+  RxInt? likeCount;
   RxBool? likeTapped;
   bool? commentTapped;
   bool? shareTapped;

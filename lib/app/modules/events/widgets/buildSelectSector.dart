@@ -20,8 +20,9 @@ class BuildSelectSector extends GetView<EventsController> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-     padding: EdgeInsets.all(20),
+     padding: EdgeInsets.all(10),
       children: [
+        Obx(() => !controller.filterBySector.value?
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,23 +35,23 @@ class BuildSelectSector extends GetView<EventsController> {
               Navigator.of(context).pop();
             }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
           ],
-        ),
+        ):SizedBox(),),
 
         Obx(() =>
             Column(
               children: [
-                TextFieldWidget(
-                  readOnly: false,
-                  keyboardType: TextInputType.text,
-                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
-                  iconData: FontAwesomeIcons.search,
-                  style: const TextStyle(color: labelColor),
-                  hintText: AppLocalizations.of(context).select_search_sector,
-                  onChanged: (value)=>{
-                    controller.filterSearchSectors(value)
-                  },
-                  errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                ),
+                Obx(() => !controller.filterBySector.value?TextFieldWidget(
+    readOnly: false,
+    keyboardType: TextInputType.text,
+    validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
+    iconData: FontAwesomeIcons.search,
+    style: const TextStyle(color: labelColor),
+    hintText: AppLocalizations.of(context).select_search_sector,
+    onChanged: (value)=>{
+    controller.filterSearchSectors(value)
+    },
+    errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
+    ):SizedBox()),
                 controller.loadingSectors.value ?
                 Column(
                   children: [

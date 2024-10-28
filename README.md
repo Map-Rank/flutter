@@ -4,8 +4,8 @@
 [![License: AGPL](https://img.shields.io/badge/License-agpl-yellow.svg)](#)
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-brightgreen)
-![Dependencies](https://img.shields.io/badge/dependencies-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-61.4%-brightgreen)
+![Dependencies](https://img.shields.io/badge/dependencies-pub.dev-brightgreen)
 
 RESIDAT is a digital platform for sharing place-based information on climate risks from spatial data and citizen science reports .This platform shall have five main components 
 - Visualization of place-based climate risks
@@ -82,12 +82,71 @@ RESIDAT is a digital platform for sharing place-based information on climate ris
 In order to run and use this project on your devices you need to fulfill the prerequisites and dependencies required below.
 
 ## Prerequisites
-- Get a powerful machine that will allow you to emulate an android, ios  device or both.( <a href="https://docs.flutter.dev/get-started/install/windows/mobile">Visit this link for more enhancement</a>)
-- Set up Android Studio or VScode on your device
-- "Fork" or Clone  this repository from the main page.
+1. Get a powerful machine that will allow you to emulate an android, ios  device or both.( <a href="https://docs.flutter.dev/get-started/install/windows/mobile">Visit this link for more enhancement</a>)
+2. Set up Android Studio or VScode on your device.
+
+  **Android Studio** is the official Integrated Development Environment (IDE) for Android app development. Based on the powerful code editor and developer tools from IntelliJ IDEA , Android Studio offers even more features that enhance your productivity when building Android apps, such as:
+
+  - A flexible Gradle-based build system
+  - A fast and feature-rich emulator
+  - A unified environment where you can develop for all Android devices
+  - Live Edit to update composables in emulators and physical devices in real time
+  - Code templates and GitHub integration to help you build common app features and import sample code
+  - Extensive testing tools and frameworks
+  - Lint tools to catch performance, usability, version compatibility, and other problems 
+  - C++ and NDK support
+  - Built-in support for Google Cloud Platform, making it easy to integrate Google Cloud Messaging and App Engine
+<a href="https://developer.android.com/studio?gad_source=1&gclid=Cj0KCQjwu-63BhC9ARIsAMMTLXS-TmNcoT4ZiWnqnuCSflz4bGjSkWJ_lHEI2ibGazx5kb0YgqvnsssaAon8EALw_wcB&gclsrc=aw.ds">Download Android Studio here</a>
+
+  **Visual Studio Code**, also commonly referred to as VS Code,  is an integrated development environment developed by Microsoft for Windows, Linux, macOS and web browsers. Features include support for debugging, syntax highlighting, intelligent code completion, snippets, code refactoring, and embedded version control with Git. Users can change the theme, keyboard shortcuts, preferences, and install extensions that add functionality. VScode offers a wide range of advantages that are:
+  - Code in any language
+  - Some key features include Git integration, debugging tools, and extensions that allow you to customize your workflow.
+  - Large Community environment
+  - Fast and efficient: Visual Studio Code is fast and efficient, with a small footprint.
+<a href="https://code.visualstudio.com/">Download Visual Studio Code here</a>
+
+In the case you have been used to VSCode and your working machine is not really powerful, VScode is a better choice but you have to have a good knowledge with dealing with extensions.
+Android Studio is suitable for powerful machine, that do not deal with fast and efficiency concerns and ease the environment installation process.
+
+3. "Fork" or Clone  this repository from the main page.
 
 ### Dependencies
-- Once you have the project in your development environment, Get all the dependencies of the project by tapping the command: "flutter pub get" at the root of your project in your terminal.
+Once you have the project in your development environment, Get all the dependencies of the project by tapping the command: "flutter pub get" at the root of your project in your terminal. Following is the list of dependencies used in our project and their different usage:
+- `cupertino_icons: ^1.0.2` This is an asset repo containing the default set of icon assets used by Flutter's
+- `change_app_package_name: ^1.1.0` Helps to change the package name of your app in all the files affected
+- `firebase_core: ^2.24.2` Flutter plugin for Firebase Core, enabling connecting to multiple Firebase apps.
+- `flutter_native_splash: ^2.2.19` This package automatically generates iOS, Android, and Web-native code for customizing this native splash screen background color and splash image. Supports dark mode, full screen, and platform-specific options.
+- `get: ^4.6.6` Open screens/snackbars/dialogs without context, manage states and inject dependencies easily
+- `get_storage: ^2.1.1` A fast, extra light and synchronous key-value storage written entirely in Dart
+- `google_fonts: ^4.0.4` Applies a specific font family to your entire application
+- `flutter_spinkit: ^5.2.1` A collection of loading indicators animated with flutter.
+- `flutter_rounded_date_picker: ^3.0.4` The Flutter plugin that help you can choose dates and years with rounded calendars and customizable themes
+- `image_picker: ^1.0.4` Flutter plugin for selecting images from the Android and iOS image library, and taking new pictures with the camera.
+- `font_awesome_flutter: ^10.4.0` The Font Awesome Icon pack available as Flutter Icons. Provides 2000 additional icons to use in your apps
+- `path_provider: ^2.1.1` Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
+- `icons_launcher: ^2.1.0` A command-line tool that simplifies the task of updating your Flutter app's launcher icon
+- `share_plus: ^7.2.2` Flutter plugin for sharing content via the platform share UI, using the ACTION_SEND intent on Android and UIActivityViewController on iOS
+- `intl_phone_field: ^3.2.0` A customised Flutter TextFormField to input international phone number along with country code.
+- `dio: ^5.4.3+1` A powerful HTTP networking package, supports Interceptors, Aborting and canceling a request, Custom adapters, Transformers, etc.
+- `mockito: ^5.4.0` A mock framework inspired by Mockito with APIs for Fakes, Mocks, behavior verification, and stubbing.
+- `http_mock_adapter: ^0.6.1` A simple to use mocking package for Dio intended to be used in tests. It provides various types and methods to declaratively mock request-response communication.
+- `coverage: ^1.8.0` Coverage provides coverage data collection, manipulation, and formatting for Dart. collect_coverage collects coverage JSON from the Dart VM Service. format_coverage formats JSON coverage data into either LCOV or pretty-printed format.
+- `webview_flutter: ^4.8.0` A Flutter plugin that provides a WebView widget backed by the system webview.
+- `url_launcher: ^6.3.0` Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.
+- `flutter_localizations:` Flutter Localization is a package use for in-app localization with map data. More easier and faster to implement and inspired by the flutter_localizations itself.
+- `intl:` any Contains code to deal with internationalized/localized messages, date and number formatting and parsing, bi-directional text, and other internationalization issues.
+- `flutter_typeahead: ^5.2.0` A highly customizable typeahead (autocomplete) text input field for Flutter
+- `firebase_messaging: ^14.7.10` Flutter plugin for Firebase Cloud Messaging, a cross-platform messaging solution that lets you reliably deliver messages on Android and iOS.
+- `flutter_local_notifications: ^17.2.2` A cross platform plugin for displaying local notifications.
+- `envied: ^0.5.4+1` Explicitly reads environment variables into a dart file from a .env file for more security and faster start up times.
+
+
+dev_dependencies:
+- `build_runner: ^2.4.11` A build system for Dart code generation and modular compilation.
+- `envied_generator: ^0.5.4+1` This package contains the generator for Envied.
+
+
+- `flutter_lints: ^2.0.0` Recommended lints for Flutter apps, packages, and plugins to encourage good coding practices.
 
 
 ## Troubleshooting

@@ -16,15 +16,18 @@ import '../../global_widgets/post_card_widget.dart';
 class DetailsView extends GetView<CommunityController> {
   DetailsView({
     this.post,
+    this.imageScrollController,
     super.key
   });
   Post? post;
+  ScrollController? imageScrollController;
 
 
 
 
   @override
   Widget build(BuildContext context) {
+    imageScrollController = ScrollController();
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -87,7 +90,10 @@ class DetailsView extends GetView<CommunityController> {
                           height: Get.height/2,
                           padding: EdgeInsets.all(20),
                           decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                          child: Text(controller.postDetails!.value.content!.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ''), style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
+                          child: Text(controller.postDetails!.value.content!.replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                            return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                          })
+                              .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
 
                         );
                       },
@@ -96,51 +102,46 @@ class DetailsView extends GetView<CommunityController> {
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                          child: Text(controller.postDetails!.value.content!.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ''), style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)).marginAll(20)),
+                          child: Text(controller.postDetails!.value.content!.replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                            return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                          })
+                              .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)).marginAll(20)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Obx(() => controller.postDetails!.value.likeTapped!.value?
                     TextButton.icon(
                       onPressed: (){
+                        print(controller.postDetails.value.likeTapped!.value);
 
-                          controller.postDetails!.value.likeTapped!.value = false;
-                          --controller.likeCount!.value;
-                          print(controller.postDetails!.value.likeTapped!.value);
-                          controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
-                          = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
-                          controller.likeUnlikePost(controller.postDetails!.value.postId!,  controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
+                          if( controller.postDetails.value.likeTapped!.value){
+                            controller.postDetails.value.likeTapped!.value = false;
+                            controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!-1;
 
+                          }
+                          else{
+                            controller.postDetails.value.likeTapped!.value = true;
+                            controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!+1;
 
-
-
-                      },
-                      icon: const FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white,),
-                      label:  Text('${controller.likeCount}', style: TextStyle(color: Colors.white,),)):
-                    TextButton.icon(
-                      onPressed: (){
-
-
-                          controller.postDetails!.value.likeTapped!.value = true;
-                          ++controller.likeCount!.value;
-                          print(controller.postDetails!.value.likeTapped!.value);
-                          controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
-                          = !controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value;
-                          controller.likeUnlikePost(controller.postDetails!.value.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
-
+                          }
+                          // controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
+                          // = !controller.postDetails.value.likeTapped!.value;
+                          controller.likeUnlikePost(controller.postDetails.value.postId!,  controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
 
                       },
-                      icon: const FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white,),
-                      label:  Text('${controller.likeCount}', style: TextStyle(color: Colors.white,),)),),
+                      icon: Obx(() => controller.postDetails.value.likeTapped!.value?
+                      FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,)
+                          :FaIcon(FontAwesomeIcons.heart, color: Colors.white,),),
+                      label:  Obx(() => Text('${controller.postDetails.value.likeCount!.value}', style: TextStyle(color: Colors.white,),)),),
+
 
                     TextButton.icon(
                         onPressed: () async{
                           Get.toNamed(Routes.COMMENT_VIEW);
                           controller.postDetails = await controller.getAPost(controller.postDetails!.value.postId!);
                           controller.commentList.value = controller.postDetails.value.commentList!;
-                          controller.commentCount!.value = controller.postDetails.value.commentCount!;
+                          controller.commentCount!.value = controller.postDetails.value.commentCount!.value;
 
                         },
                         icon: const FaIcon(FontAwesomeIcons.comment, color: Colors.white,),
@@ -148,14 +149,15 @@ class DetailsView extends GetView<CommunityController> {
                     TextButton.icon(
                         onPressed: () async{
 
-                            controller.shareCount?.value = (controller.shareCount!.value + 1);
-                            controller.sharedPost.add(post);
-                            controller.sharePost(post!.postId!);
+                            // controller.shareCount?.value = (controller.shareCount!.value + 1);
+                            // controller.sharedPost.add(post);
+                          controller.postDetails.value.shareCount!.value = controller.postDetails.value.shareCount!.value+1;
+                            await controller.sharePost(controller.postDetails.value.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]) );
 
 
                         },
                         icon: const FaIcon(FontAwesomeIcons.share, color: Colors.white,),
-                        label: Obx(() => Text('${controller.shareCount}', style: TextStyle(color: Colors.white,),)))
+                        label: Obx(() => Text('${controller.postDetails.value.shareCount!.value}', style: TextStyle(color: Colors.white,),)))
 
                   ],)
 
@@ -212,30 +214,70 @@ class DetailsView extends GetView<CommunityController> {
                       //width: Get.width,
                       //height: Get.height*0.7,
                       child: ListView.builder(
+                        controller: imageScrollController,
                         scrollDirection: Axis.horizontal,
                         itemCount: controller.postDetails.value.imagesUrl?.length,
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            //onTap: onPictureTapped,
-                            child: FadeInImage(
-                              width: Get.width,
-                              height: Get.height*0.8,
-                              fit: BoxFit.cover,
-                              image:  NetworkImage(
-                                  '${controller.postDetails.value.imagesUrl![index]['url']}',
-                                  headers: GlobalService.getTokenHeaders()
+                          return Stack(
+                            children: [
+                              GestureDetector(
+                                //onTap: onPictureTapped,
+                                child: FadeInImage(
+                                  width: Get.width,
+                                  height: Get.height*0.8,
+                                  fit: BoxFit.cover,
+                                  image:  NetworkImage(
+                                      '${controller.postDetails.value.imagesUrl![index]['url']}',
+                                      headers: GlobalService.getTokenHeaders()
+                                  ),
+                                  placeholder: const AssetImage(
+                                      "assets/images/loading.gif"),
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                        "assets/images/loading.gif",
+                                        width: Get.width,
+                                        height: Get.height,
+                                        fit: BoxFit.fitWidth);
+                                  },
+                                ).marginOnly(right: 10,),
                               ),
-                              placeholder: const AssetImage(
-                                  "assets/images/loading.gif"),
-                              imageErrorBuilder:
-                                  (context, error, stackTrace) {
-                                return Image.asset(
-                                    "assets/images/loading.gif",
-                                    width: Get.width,
-                                    height: Get.height,
-                                    fit: BoxFit.fitWidth);
-                              },
-                            ).marginOnly(right: 10,),
+                              Positioned(
+                                top: Get.height*0.8/2.2,
+                                child: SizedBox(
+                                  width: Get.width,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      if(index > 0)...[
+                                        GestureDetector(
+                                          child: Icon(Icons.arrow_back_ios_outlined, color: Colors.white,),
+                                          onTap: (){
+                                            // imageScrollController?.animateTo(
+                                            //   imageScrollController!.position.pixels - Get.width ,
+                                            //   duration: const Duration(milliseconds: 300),
+                                            //   curve: Curves.easeInOut,
+                                            // );
+                                            imageScrollController!.jumpTo(imageScrollController!.position.pixels - Get.width);
+
+                                          },
+                                        )
+                                      ],
+                                      Spacer(),
+                                      if(index < controller.postDetails.value.imagesUrl!.length - 1)...[
+                                        GestureDetector(
+                                          child: Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
+                                          onTap: (){
+                                            imageScrollController!.jumpTo(imageScrollController!.position.pixels + Get.width);
+                                          },
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           );
 
                         },

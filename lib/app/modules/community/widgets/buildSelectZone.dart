@@ -21,20 +21,6 @@ class BuildSelectZone extends GetView<CommunityController> {
     Get.lazyPut(()=>EventsController());
     return ListView(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(AppLocalizations.of(context).select_location_title,
-              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: Colors.black, fontSize: 16)),
-              textAlign: TextAlign.start,
-            ),
-            TextButton(onPressed: (){
-              Navigator.of(context).pop();
-            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
-          ],
-        ).marginOnly(bottom: 20),
-
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +190,7 @@ class BuildSelectZone extends GetView<CommunityController> {
 
             ),
           ],
-        ).marginOnly(bottom: 20),
+        ).marginOnly(bottom: 20, top: 20, left: 10, right: 10),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,7 +361,7 @@ class BuildSelectZone extends GetView<CommunityController> {
               ),
             ),
           ],
-        ).marginOnly(bottom: 20),
+        ).marginOnly(bottom: 20, left: 10, right: 10),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,7 +533,7 @@ class BuildSelectZone extends GetView<CommunityController> {
               ),
             ),
           ],
-        ).marginOnly(bottom: 20),
+        ).marginOnly(bottom: 20, left: 10, right: 10),
 
 
       ],

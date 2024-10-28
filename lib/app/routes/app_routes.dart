@@ -17,6 +17,7 @@ class Routes {
   static const FOLLOWERS = '/profile/followers';
   static const ARTICLES = '/profile/articles';
   static const MY_EVENTS = '/profile/my_events_view';
+  static const OTHER_USER_PROFILE = '/other_user_profile/other_user_profile_view';
 
   static const SETTINGS = '/settings';
   static const SETTINGS_THEME_MODE = '/settings/theme_mode';

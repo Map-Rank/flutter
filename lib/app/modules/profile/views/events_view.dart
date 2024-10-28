@@ -40,22 +40,22 @@ class MyEventsView extends GetView<ProfileController> {
           height: MediaQuery.sizeOf(context).height,
           width: MediaQuery.sizeOf(context).width,
           //padding: const EdgeInsets.all(24.0),
-          child: Obx(() => Get.find<EventsController>().allEvents.isNotEmpty? ListView.builder(
-              itemCount: Get.find<EventsController>().allEvents.length,
+          child: Obx(() => controller.allEvents.isNotEmpty? ListView.builder(
+              itemCount: controller.allEvents.length,
               itemBuilder: (context, index) =>
                   Obx(() => EventCardWidget(
                       isAllEventsPage: false,
                       //likeTapped: RxBool(controller.allPosts[index].likeTapped),
-                      content: Get.find<EventsController>().allEvents[index].content,
-                      image: 'https://www.residat.com/${Get.find<EventsController>().allEvents[index].imagesUrl}',
-                      eventOrganizer: Get.find<EventsController>().allEvents[index].organizer,
-                      title: Get.find<EventsController>().allEvents[index].title,
-                      zone: Get.find<EventsController>().allEvents[index].zone != null?Get.find<EventsController>().allEvents[index].zone: '',
-                      publishedDate: Get.find<EventsController>().allEvents[index].publishedDate,
-                      eventId: Get.find<EventsController>().allEvents[index].eventId,
+                      content: controller.allEvents[index].content,
+                      image: 'https://www.residat.com/${controller.allEvents[index].imagesUrl}',
+                      eventOrganizer: controller.allEvents[index].organizer,
+                      title: controller.allEvents[index].title,
+                      zone: controller.allEvents[index].zone != null?controller.allEvents[index].zone: '',
+                      publishedDate: controller.allEvents[index].publishedDate,
+                      eventId: controller.allEvents[index].eventId,
                       popUpWidget: GestureDetector(
                           onTap: (){
-                            Get.find<EventsController>().allEvents[index].eventCreatorId == controller.currentUser.value.userId?
+                            controller.allEvents[index].eventCreatorId == controller.currentUser.value.userId?
                             showModalBottomSheet(context: context, builder: (context) => Container(
                               child: ListView(
                                 padding: EdgeInsets.all(20),
@@ -64,7 +64,7 @@ class MyEventsView extends GetView<ProfileController> {
                                     showDialog(context: context, builder: (context){
                                       return CommentLoadingWidget();
                                     },);
-                                    await Get.find<EventsController>().deleteEvent(Get.find<EventsController>().allEvents[index].eventId);
+                                    await Get.find<EventsController>().deleteEvent(controller.allEvents[index].eventId);
                                     Navigator.of(context).pop();
                                   }, child: Text(AppLocalizations.of(context).delete)),
 
@@ -72,7 +72,7 @@ class MyEventsView extends GetView<ProfileController> {
                                     showDialog(context: context, builder: (context){
                                       return CommentLoadingWidget();
                                     },);
-                                    Get.find<EventsController>()..createUpdateEvents.value = true;
+                                    Get.find<EventsController>().createUpdateEvents.value = true;
 
                                     //controller.event = await controller.getAnEvent(controller.allEvents[index].eventId);
                                     Get.find<EventsController>().event = Get.find<EventsController>().allEvents[index];

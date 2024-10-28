@@ -86,8 +86,8 @@ class EventsController extends GetxController {
   var chooseASubDivision = false.obs;
 
   var inputImage = false.obs;
-  var inputSector = false.obs;
-  var inputZone = false.obs;
+  var filterBySector = false.obs;
+  var filterByLocation = false.obs;
 
   TextEditingController eventOrganizerController = TextEditingController();
 
@@ -210,7 +210,7 @@ class EventsController extends GetxController {
       listAllEvents = [Event(), Event()];
     }
 
-    allEvents.value= listAllEvents;
+    allEvents.value = listAllEvents;
     emptyArrays();
   }
 
@@ -477,7 +477,7 @@ class EventsController extends GetxController {
 
     }else {
       loadingEvents.value = true;
-      listAllEvents = getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;
       noFilter.value = false;
     }

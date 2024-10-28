@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
@@ -18,7 +19,7 @@ class RootBinding extends Bindings {
           () => AuthService(),
     );
     Get.lazyPut<LaravelApiClient>(
-          () => LaravelApiClient(),
+          () => LaravelApiClient(dio: Dio()),
     );
     Get.lazyPut<DashboardController>(
           () => DashboardController(),

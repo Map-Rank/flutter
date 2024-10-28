@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/events/controllers/events_controller.dart';
@@ -74,7 +75,7 @@ class EventsView extends GetView<EventsController> {
                     //expandedHeight: 80,
                     leadingWidth: 0,
                     floating: true,
-                    toolbarHeight: 100,
+                    toolbarHeight: controller.filterByLocation.value?450:100,
                     systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
                     leading: Icon(null),
                     centerTitle: true,
@@ -155,94 +156,102 @@ class EventsView extends GetView<EventsController> {
                             color: backgroundColor,
                             //border: Border(bottom: BorderSide(color: interfaceColor))
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: <BoxShadow>[BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 20.0,
-                                          offset: Offset(1, 1)
-                                      )]
+                          child: Column(children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: <BoxShadow>[BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 20.0,
+                                            offset: Offset(1, 1)
+                                        )]
+                                    ),
+                                    child: TextButton.icon(
+                                      icon: Image.asset(
+                                          "assets/images/filter.png",
+                                          width: 20,
+                                          height: 20,
+                                          fit: BoxFit.fitWidth) ,
+                                      label: Text(AppLocalizations.of(context).filter_by_location, style: TextStyle(color: Colors.black),),
+                                      onPressed: () {
+                                        controller.noFilter.value = false;
+                                        controller.filterByLocation.value = !controller.filterByLocation.value;
+
+                                      },),
                                   ),
-                                  child: TextButton.icon(
-                                    icon: Image.asset(
-                                        "assets/images/filter.png",
-                                        width: 20,
-                                        height: 20,
-                                        fit: BoxFit.fitWidth) ,
-                                    label: Text(AppLocalizations.of(context).filter_by_location, style: TextStyle(color: Colors.black),),
-                                    onPressed: () {
-
-                                      controller.noFilter.value = false;
-                                      showModalBottomSheet(context: context,
-
-                                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                                        builder: (context) {
-                                          return Container(
-                                              padding: const EdgeInsets.all(20),
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-
-                                              ),
-                                              child: BuildSelectZone()
-                                          );
-                                        },
-                                      );
-
-                                    },),
                                 ),
-                              ),
-                              // Expanded(
-                              //   child: Container(
-                              //     margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
-                              //     decoration: BoxDecoration(
-                              //         color: Colors.white,
-                              //         boxShadow: <BoxShadow>[BoxShadow(
-                              //             color: Colors.black12,
-                              //             blurRadius: 20.0,
-                              //             offset: Offset(1, 1)
-                              //         )],
-                              //         borderRadius: BorderRadius.circular(10)
-                              //     ),
-                              //     child: TextButton.icon(
-                              //       icon: Image.asset(
-                              //           "assets/images/filter.png",
-                              //           width: 20,
-                              //           height: 20,
-                              //           fit: BoxFit.fitWidth) ,
-                              //       label: Text('Filter by sector', style: TextStyle(color: Colors.black)),
-                              //       onPressed: () {
-                              //
-                              //         controller.noFilter.value = false;
-                              //         showModalBottomSheet(context: context,
-                              //
-                              //           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                              //           builder: (context) {
-                              //             return Container(
-                              //                 padding: const EdgeInsets.all(20),
-                              //                 decoration: const BoxDecoration(
-                              //                     color: backgroundColor,
-                              //                     borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
-                              //
-                              //                 ),
-                              //                 child: BuildSelectSector()
-                              //             );
-                              //           },
-                              //         );
-                              //
-                              //       },),
-                              //   ),
-                              // ),
+                                // Expanded(
+                                //   child: Container(
+                                //     margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
+                                //     decoration: BoxDecoration(
+                                //         color: Colors.white,
+                                //         boxShadow: <BoxShadow>[BoxShadow(
+                                //             color: Colors.black12,
+                                //             blurRadius: 20.0,
+                                //             offset: Offset(1, 1)
+                                //         )],
+                                //         borderRadius: BorderRadius.circular(10)
+                                //     ),
+                                //     child: TextButton.icon(
+                                //       icon: Image.asset(
+                                //           "assets/images/filter.png",
+                                //           width: 20,
+                                //           height: 20,
+                                //           fit: BoxFit.fitWidth) ,
+                                //       label: Text('Filter by sector', style: TextStyle(color: Colors.black)),
+                                //       onPressed: () {
+                                //
+                                //         controller.noFilter.value = false;
+                                //         showModalBottomSheet(context: context,
+                                //
+                                //           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                //           builder: (context) {
+                                //             return Container(
+                                //                 padding: const EdgeInsets.all(20),
+                                //                 decoration: const BoxDecoration(
+                                //                     color: backgroundColor,
+                                //                     borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                                //
+                                //                 ),
+                                //                 child: BuildSelectSector()
+                                //             );
+                                //           },
+                                //         );
+                                //
+                                //       },),
+                                //   ),
+                                // ),
 
 
-                            ],),
+                              ],),
+                            Obx(() => Visibility(
+                              visible: controller.filterByLocation.value,
+                              child: Container(
+                                width: Get.width,
+                                padding: EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                    color: interfaceColor,
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: Text(AppLocalizations.of(context).select_location_title,
+                                  style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: Colors.white, fontSize: 16)),
+                                  textAlign: TextAlign.start,),
+                              ).marginOnly(bottom: 20, left: 5, right: 5),),),
+                            Obx(() =>  Visibility(
+                                visible: controller.filterByLocation.value,
+                                child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    color: Colors.white,
+                                    height: Get.height/2.5,
+                                    child: BuildSelectZone()).marginOnly(bottom: 10)),),
+                          ],)
+
                         ),
 
                     ),

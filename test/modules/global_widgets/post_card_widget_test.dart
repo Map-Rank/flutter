@@ -49,7 +49,7 @@ void main() {
         postId: 1,
         publishedDate: '2024-06-14',
         likeCount: likeCount,
-        commentCount: RxInt(3),
+        commentCount: 3,
         shareCount: shareCount,
         images: [
           {'url': 'https://example.com/image1.png'},

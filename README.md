@@ -41,6 +41,9 @@ RESIDAT is a digital platform for sharing place-based information on climate ris
 
 <a href="https://doc-mobile.residat.com/">Visit this link</a> To access our full documentation and our apis.
 
+<a href="https://github.com/Map-Rank/residat-flutter/discussions">Visit this discussion link</a> To access our discussion forum, suggest functionalities or ideas, get in touch with us.
+
+
 
 ## Context
 
@@ -196,6 +199,8 @@ Our test coverage is actually at 57% representing the percentage of lines covere
 ### RESIDAT Contributor Code of Conduct
 
 As contributors and maintainers of the RESIDAT project, we pledge to foster an open and welcoming environment for everyone. We are committed to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+
+<a href="https://github.com/Map-Rank/residat-flutter/discussions">Visit this discussion link</a> To access our discussion forum, suggest functionalities or ideas, get in touch with us.
 
 #### Our Principles
 - **Collaborative Ethos**: We create an inclusive space for diverse backgrounds and experiences, fostering a unique vision and product that resonates with the RESIDAT platform users.

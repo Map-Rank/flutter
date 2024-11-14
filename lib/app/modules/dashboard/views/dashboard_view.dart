@@ -292,6 +292,7 @@ class DashboardView extends GetView<DashboardController> {
                 cursor: SystemMouseCursors.click, // Use a special cursor to indicate interactivity
                 child: GestureDetector(
                     onTap: () async {
+                      //Nothing to add concerning disasters markers yet
 
                     },
                     // And/or any other gesture callback

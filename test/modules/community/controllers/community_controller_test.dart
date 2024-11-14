@@ -21,9 +21,7 @@ import 'package:mapnrank/app/models/post_model.dart';
 
 import 'community_controller_test.mocks.dart';
 
-class MockRootController extends Mock implements RootController{
-
-}
+class MockRootController extends Mock implements RootController {}
 
 @GenerateMocks([
   AuthService,
@@ -32,7 +30,6 @@ class MockRootController extends Mock implements RootController{
   ZoneRepository,
   SectorRepository,
 ])
-
 class MockSnackbarController extends GetxController {
   var isSnackbarOpen = false.obs;
   void showErrorSnackbar(String message) {
@@ -40,7 +37,6 @@ class MockSnackbarController extends GetxController {
     Get.showSnackbar(Ui.ErrorSnackBar(message: message));
   }
 }
-
 
 void main() {
   group('Community Controller', () {
@@ -51,11 +47,12 @@ void main() {
     late MockSectorRepository mockSectorRepository;
     late CommunityController communityController;
     late MockSnackbarController mockSnackbarController;
-    late MockRootController mockRootController;// Replace with your actual controller or service type
+    late MockRootController
+        mockRootController; // Replace with your actual controller or service type
 
     setUp(() {
       TestWidgetsFlutterBinding.ensureInitialized();
-      Get.lazyPut(()=>AuthService());
+      Get.lazyPut(() => AuthService());
       mockAuthService = MockAuthService();
       mockCommunityRepository = MockCommunityRepository();
       mockUserRepository = MockUserRepository();
@@ -78,20 +75,19 @@ void main() {
       // Initialize GetX for testing
       Get.testMode = true;
       Get.put<MockSnackbarController>(mockSnackbarController);
-
-
     });
 
-
-
-    test('Verify getAllRegions calls zoneRepository.getAllRegions with correct parameters', () async {
+    test(
+        'Verify getAllRegions calls zoneRepository.getAllRegions with correct parameters',
+        () async {
       // Arrange
       final expectedResponse = {
         'status': true,
         'data': [] // Replace with the expected data structure
       };
 
-      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) async => expectedResponse);
+      when(mockZoneRepository.getAllRegions(2, 1))
+          .thenAnswer((_) async => expectedResponse);
 
       // Act
       final result = await communityController.getAllRegions();
@@ -102,10 +98,15 @@ void main() {
       verifyNoMoreInteractions(mockZoneRepository);
     });
 
-    test('Verify getAllDivisions calls zoneRepository with correct parameters', () async {
+    test('Verify getAllDivisions calls zoneRepository with correct parameters',
+        () async {
       // Arrange: Set up regions and the return value
-      communityController.regions = [{'id': 1}, {'id': 2}].obs;
-      when(mockZoneRepository.getAllDivisions(3, 1)).thenAnswer((_) async => {'status': true});
+      communityController.regions = [
+        {'id': 1},
+        {'id': 2}
+      ].obs;
+      when(mockZoneRepository.getAllDivisions(3, 1))
+          .thenAnswer((_) async => {'status': true});
 
       // Act: Call the method
       final result = await communityController.getAllDivisions(0);
@@ -126,7 +127,9 @@ void main() {
 
       Map<String, dynamic> expectedResponse = {
         'status': true,
-        'data': [{'id': 101, 'name': 'Subdivision 1'}],
+        'data': [
+          {'id': 101, 'name': 'Subdivision 1'}
+        ],
       };
 
       when(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
@@ -137,7 +140,8 @@ void main() {
 
       // Assert
       expect(result, expectedResponse);
-      verify(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+      verify(mockZoneRepository.getAllSubdivisions(
+              4, divisionsList[index]['id']))
           .called(1);
     });
 
@@ -147,7 +151,8 @@ void main() {
       communityController.divisions.value = [];
 
       // Act & Assert
-      expect(() => communityController.getAllSubdivisions(index), throwsRangeError);
+      expect(() => communityController.getAllSubdivisions(index),
+          throwsRangeError);
     });
 
     test('getAllSectors() should return data from sectorRepository', () async {
@@ -174,7 +179,8 @@ void main() {
 
     test('getAllSectors() should handle exceptions', () async {
       // Arrange: Mock an exception being thrown
-      when(mockSectorRepository.getAllSectors()).thenThrow(Exception('Failed to load sectors'));
+      when(mockSectorRepository.getAllSectors())
+          .thenThrow(Exception('Failed to load sectors'));
 
       // Act: Call the method and capture the exception
       try {
@@ -199,7 +205,9 @@ void main() {
 
       Map<String, dynamic> expectedResponse = {
         'status': true,
-        'data': [{'id': 101, 'name': 'Subdivision 1'}],
+        'data': [
+          {'id': 101, 'name': 'Subdivision 1'}
+        ],
       };
 
       when(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
@@ -210,7 +218,8 @@ void main() {
 
       // Assert
       expect(result, expectedResponse);
-      verify(mockZoneRepository.getAllSubdivisions(4, divisionsList[index]['id']))
+      verify(mockZoneRepository.getAllSubdivisions(
+              4, divisionsList[index]['id']))
           .called(1);
     });
 
@@ -220,22 +229,24 @@ void main() {
       communityController.divisions.value = [];
 
       // Act & Assert
-      expect(() => communityController.getAllSubdivisions(index), throwsRangeError);
+      expect(() => communityController.getAllSubdivisions(index),
+          throwsRangeError);
     });
-
 
     test('Get a post', () async {
       // Mock data: Assume we have a postId
       final postId = 1;
 
       // Mock response: Assume getAPost returns a Post object
-      final mockPost = Post(postId: 1,
-          content: 'Content 1',
+      final mockPost = Post(
+        postId: 1,
+        content: 'Content 1',
         sectors: ['sector', 'sector2'],
-        commentCount: 2,
-         likeCount: 1,
-          publishedDate: '10-12-10',
-        user: UserModel(userId: 1,
+        commentCount: RxInt(2),
+        likeCount: RxInt(1),
+        publishedDate: '10-12-10',
+        user: UserModel(
+          userId: 1,
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',
@@ -246,19 +257,22 @@ void main() {
           zoneId: 'zone1',
           birthdate: '1990-01-01',
           profession: 'Company Inc',
-          sectors: ['sector1', 'sector2'],),
+          sectors: ['sector1', 'sector2'],
+        ),
         zonePostId: 1,
       ); // Replace with actual mock Post object
       when(mockCommunityRepository.getAPost(postId))
           .thenAnswer((_) => Future.value(mockPost));
 
-      Post post =  Post(postId: 1,
+      Post post = Post(
+        postId: 1,
         content: 'Content 1',
         sectors: ['sector', 'sector2'],
-        commentCount: 2,
-        likeCount: 1,
+        commentCount: RxInt(2),
+        likeCount: RxInt(1),
         publishedDate: '10-12-10',
-        user: UserModel(userId: 1,
+        user: UserModel(
+          userId: 1,
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',
@@ -269,37 +283,45 @@ void main() {
           zoneId: 'zone1',
           birthdate: '1990-01-01',
           profession: 'Company Inc',
-          sectors: ['sector1', 'sector2'],),
+          sectors: ['sector1', 'sector2'],
+        ),
         zonePostId: 1,
       );
 
       // Assert the expected result or state change in the controller
-      expect(post, equals(mockPost)); // Adjust this based on your controller's expected behavior
+      expect(
+          post,
+          equals(
+              mockPost)); // Adjust this based on your controller's expected behavior
     });
 
     test('Get All Regions Test', () async {
-      when(mockZoneRepository.getAllRegions(2, 1)).thenAnswer((_) => Future.value([]));
+      when(mockZoneRepository.getAllRegions(2, 1))
+          .thenAnswer((_) => Future.value([]));
       //await communityController.getAllRegions();
       expect(communityController.regions, []);
       expect(communityController.loadingRegions.value, true);
     });
 
     test('Get All Divisions Test', () async {
-      when(mockZoneRepository.getAllDivisions(2, 1)).thenAnswer((_) => Future.value([]));
+      when(mockZoneRepository.getAllDivisions(2, 1))
+          .thenAnswer((_) => Future.value([]));
       //await authController.getAllDivisions();
       expect(communityController.divisions, []);
       expect(communityController.loadingDivisions.value, true);
     });
 
     test('Get All Sub-Divisions Test', () async {
-      when(mockZoneRepository.getAllSubdivisions(2, 1)).thenAnswer((_) => Future.value([]));
+      when(mockZoneRepository.getAllSubdivisions(2, 1))
+          .thenAnswer((_) => Future.value([]));
       //await authController.getAllDivisions();
       expect(communityController.subdivisions, []);
       expect(communityController.loadingSubdivisions.value, true);
     });
 
     test('Get All Sectors Test', () async {
-      when(mockSectorRepository.getAllSectors()).thenAnswer((_) => Future.value([]));
+      when(mockSectorRepository.getAllSectors())
+          .thenAnswer((_) => Future.value([]));
       //await communityController.getAllSectors();
       expect(communityController.sectors, []);
       expect(communityController.loadingSectors.value, true);
@@ -307,47 +329,69 @@ void main() {
 
     test('filterSearch returns all items when query is empty', () {
       // Arrange
-      communityController.listRegions.value= [{'name':'item1', 'id': 1},{'name':'item2', 'id': 2},{'name':'item3', 'id': 3}, ];
-
+      communityController.listRegions.value = [
+        {'name': 'item1', 'id': 1},
+        {'name': 'item2', 'id': 2},
+        {'name': 'item3', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchRegions('item');
 
       // Assert
-      expect(communityController.regions, [{'name':'item1', 'id': 1},{'name':'item2', 'id': 2},{'name':'item3', 'id': 3}, ]);
+      expect(communityController.regions, [
+        {'name': 'item1', 'id': 1},
+        {'name': 'item2', 'id': 2},
+        {'name': 'item3', 'id': 3},
+      ]);
     });
 
     test('filterSearch returns filtered items when query matches', () {
       // Arrange
 
-      communityController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
+      communityController.listRegions.value = [
+        {'name': 'Buea', 'id': 1},
+        {'name': 'Bafoussam', 'id': 2},
+        {'name': 'Bertoua', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchRegions('B');
 
       // Assert
-      expect(communityController.regions, [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ]);
-
+      expect(communityController.regions, [
+        {'name': 'Buea', 'id': 1},
+        {'name': 'Bafoussam', 'id': 2},
+        {'name': 'Bertoua', 'id': 3},
+      ]);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('filterSearch returns filtered items when query partially matches',
+        () {
       // Arrange
-      communityController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
+      communityController.listRegions.value = [
+        {'name': 'Buea', 'id': 1},
+        {'name': 'Bafoussam', 'id': 2},
+        {'name': 'Bertoua', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchRegions('Bu');
 
       // Assert
-      expect(communityController.regions, [{'name':'Buea', 'id': 1} ]);
+      expect(communityController.regions, [
+        {'name': 'Buea', 'id': 1}
+      ]);
     });
 
     test('filterSearch returns empty list when no items match the query', () {
       // Arrange
       // Arrange
-      communityController.listRegions.value= [{'name':'Buea', 'id': 1},{'name':'Bafoussam', 'id': 2},{'name':'Bertoua', 'id': 3}, ];
-
+      communityController.listRegions.value = [
+        {'name': 'Buea', 'id': 1},
+        {'name': 'Bafoussam', 'id': 2},
+        {'name': 'Bertoua', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchRegions('Adamaoua');
@@ -356,49 +400,68 @@ void main() {
       expect(communityController.regions, []);
     });
 
-
     test('filterSearch returns all Divisions when query is empty', () {
       // Arrange
-      communityController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
+      communityController.listDivisions.value = [
+        {'name': 'Mifi', 'id': 1},
+        {'name': 'Haut-Nkam', 'id': 2},
+        {'name': 'Haut-Plateaux', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchDivisions('');
 
       // Assert
-      expect(communityController.divisions, [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ]);
+      expect(communityController.divisions, [
+        {'name': 'Mifi', 'id': 1},
+        {'name': 'Haut-Nkam', 'id': 2},
+        {'name': 'Haut-Plateaux', 'id': 3},
+      ]);
     });
 
     test('filterSearch returns filtered Divisions when query matches', () {
       // Arrange
 
-      communityController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
+      communityController.listDivisions.value = [
+        {'name': 'Mifi', 'id': 1},
+        {'name': 'Haut-Nkam', 'id': 2},
+        {'name': 'Haut-Plateaux', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchDivisions('Haut-Nkam');
 
       // Assert
-      expect(communityController.divisions, [{'name':'Haut-Nkam', 'id': 2} ]);
-
+      expect(communityController.divisions, [
+        {'name': 'Haut-Nkam', 'id': 2}
+      ]);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('filterSearch returns filtered items when query partially matches',
+        () {
       // Arrange
-      communityController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
+      communityController.listDivisions.value = [
+        {'name': 'Mifi', 'id': 1},
+        {'name': 'Haut-Nkam', 'id': 2},
+        {'name': 'Haut-Plateaux', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchDivisions('Haut-Nk');
 
       // Assert
-      expect(communityController.divisions, [{'name':'Haut-Nkam', 'id': 2}]);
+      expect(communityController.divisions, [
+        {'name': 'Haut-Nkam', 'id': 2}
+      ]);
     });
 
     test('filterSearch returns empty list when no items match the query', () {
       // Arrange
-      communityController.listDivisions.value= [{'name':'Mifi', 'id': 1},{'name':'Haut-Nkam', 'id': 2},{'name':'Haut-Plateaux', 'id': 3}, ];
-
+      communityController.listDivisions.value = [
+        {'name': 'Mifi', 'id': 1},
+        {'name': 'Haut-Nkam', 'id': 2},
+        {'name': 'Haut-Plateaux', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchDivisions('Lekie');
@@ -409,46 +472,66 @@ void main() {
 
     test('filterSearch returns all Sub-Divisions when query is empty', () {
       // Arrange
-      communityController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
+      communityController.listSubdivisions.value = [
+        {'name': 'Yaounde', 'id': 1},
+        {'name': 'Obala', 'id': 2},
+        {'name': 'Mbalmayo', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSubdivisions('');
 
       // Assert
-      expect(communityController.subdivisions, [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ]);
+      expect(communityController.subdivisions, [
+        {'name': 'Yaounde', 'id': 1},
+        {'name': 'Obala', 'id': 2},
+        {'name': 'Mbalmayo', 'id': 3},
+      ]);
     });
 
     test('filterSearch returns filtered Sub-Divisions when query matches', () {
       // Arrange
 
-      communityController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
+      communityController.listSubdivisions.value = [
+        {'name': 'Yaounde', 'id': 1},
+        {'name': 'Obala', 'id': 2},
+        {'name': 'Mbalmayo', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSubdivisions('Yaounde');
 
       // Assert
-      expect(communityController.subdivisions, [{'name':'Yaounde', 'id': 1},]);
-
+      expect(communityController.subdivisions, [
+        {'name': 'Yaounde', 'id': 1},
+      ]);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('filterSearch returns filtered items when query partially matches',
+        () {
       // Arrange
-      communityController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
+      communityController.listSubdivisions.value = [
+        {'name': 'Yaounde', 'id': 1},
+        {'name': 'Obala', 'id': 2},
+        {'name': 'Mbalmayo', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSubdivisions('Yaoun');
 
       // Assert
-      expect(communityController.subdivisions, [{'name':'Yaounde', 'id': 1}]);
+      expect(communityController.subdivisions, [
+        {'name': 'Yaounde', 'id': 1}
+      ]);
     });
 
     test('filterSearch returns empty list when no items match the query', () {
       // Arrange
-      communityController.listSubdivisions.value= [{'name':'Yaounde', 'id': 1},{'name':'Obala', 'id': 2},{'name':'Mbalmayo', 'id': 3}, ];
-
+      communityController.listSubdivisions.value = [
+        {'name': 'Yaounde', 'id': 1},
+        {'name': 'Obala', 'id': 2},
+        {'name': 'Mbalmayo', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSubdivisions('Soa');
@@ -459,46 +542,66 @@ void main() {
 
     test('filterSearch returns all Sectors when query is empty', () {
       // Arrange
-      communityController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      communityController.listSectors.value = [
+        {'name': 'Education', 'id': 1},
+        {'name': 'Agriculture', 'id': 2},
+        {'name': 'Health', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSectors('');
 
       // Assert
-      expect(communityController.sectors, [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ]);
+      expect(communityController.sectors, [
+        {'name': 'Education', 'id': 1},
+        {'name': 'Agriculture', 'id': 2},
+        {'name': 'Health', 'id': 3},
+      ]);
     });
 
     test('filterSearch returns filtered Sectors when query matches', () {
       // Arrange
 
-      communityController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      communityController.listSectors.value = [
+        {'name': 'Education', 'id': 1},
+        {'name': 'Agriculture', 'id': 2},
+        {'name': 'Health', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSectors('Education');
 
       // Assert
-      expect(communityController.sectors, [{'name':'Education', 'id': 1},]);
-
+      expect(communityController.sectors, [
+        {'name': 'Education', 'id': 1},
+      ]);
     });
 
-    test('filterSearch returns filtered items when query partially matches', () {
+    test('filterSearch returns filtered items when query partially matches',
+        () {
       // Arrange
-      communityController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      communityController.listSectors.value = [
+        {'name': 'Education', 'id': 1},
+        {'name': 'Agriculture', 'id': 2},
+        {'name': 'Health', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSectors('Agri');
 
       // Assert
-      expect(communityController.sectors, [{'name':'Agriculture', 'id': 2}]);
+      expect(communityController.sectors, [
+        {'name': 'Agriculture', 'id': 2}
+      ]);
     });
 
     test('filterSearch returns empty list when no items match the query', () {
       // Arrange
-      communityController.listSectors.value= [{'name':'Education', 'id': 1},{'name':'Agriculture', 'id': 2},{'name':'Health', 'id': 3}, ];
-
+      communityController.listSectors.value = [
+        {'name': 'Education', 'id': 1},
+        {'name': 'Agriculture', 'id': 2},
+        {'name': 'Health', 'id': 3},
+      ];
 
       // Act
       communityController.filterSearchSectors('Technology');
@@ -506,7 +609,6 @@ void main() {
       // Assert
       expect(communityController.sectors, []);
     });
-
 
     test('should return a list of posts when successful', () async {
       // Arrange
@@ -534,7 +636,8 @@ void main() {
         }
       ];
 
-      when(mockCommunityRepository.getAllPosts(any)).thenAnswer((_) async => mockPostList);
+      when(mockCommunityRepository.getAllPosts(any))
+          .thenAnswer((_) async => mockPostList);
 
       // Act
       final result = await communityController.getAllPosts(0);
@@ -552,7 +655,8 @@ void main() {
 
     test('should show error snackbar when an exception occurs', () async {
       // Arrange
-      when(mockCommunityRepository.getAllPosts(any)).thenThrow(Exception('Failed to load posts'));
+      when(mockCommunityRepository.getAllPosts(any))
+          .thenThrow(Exception('Failed to load posts'));
 
       // Act
       await communityController.getAllPosts(1);
@@ -572,11 +676,7 @@ void main() {
             'avatar': 'https://example.com/avatar.jpg'
           }
         ],
-        'zone': {
-          'id': 10,
-          'level_id': 2,
-          'parent_id': 5
-        },
+        'zone': {'id': 10, 'level_id': 2, 'parent_id': 5},
         'id': 101,
         'comment_count': 5,
         'like_count': 10,
@@ -590,7 +690,8 @@ void main() {
         'sectors': ['Sector A']
       };
 
-      when(mockCommunityRepository.getAPost(any)).thenAnswer((_) async => mockPostData);
+      when(mockCommunityRepository.getAPost(any))
+          .thenAnswer((_) async => mockPostData);
 
       // Act
       await communityController.getAPost(101);
@@ -602,7 +703,8 @@ void main() {
 
     test('should show error snackbar when an exception occurs', () async {
       // Arrange
-      when(mockCommunityRepository.getAPost(any)).thenThrow(Exception('Failed to load post'));
+      when(mockCommunityRepository.getAPost(any))
+          .thenThrow(Exception('Failed to load post'));
 
       // Act
       await communityController.getAPost(101);
@@ -612,9 +714,11 @@ void main() {
     });
 
     group('filterSearchPostsBySectors', () {
-      test('should filter posts by sectors when sectorsSelected is not empty', () async {
+      test('should filter posts by sectors when sectorsSelected is not empty',
+          () async {
         // Arrange
-        communityController.sectorsSelected.add('Sector A'); // Assuming sectorsSelected is a list
+        communityController.sectorsSelected
+            .add('Sector A'); // Assuming sectorsSelected is a list
         final mockPostData = [
           {
             'creator': [
@@ -667,7 +771,8 @@ void main() {
 
       test('should show error snackbar when an exception occurs', () async {
         // Arrange
-        communityController.sectorsSelected.add('Sector A'); // Assuming sectorsSelected is a list
+        communityController.sectorsSelected
+            .add('Sector A'); // Assuming sectorsSelected is a list
 
         when(mockCommunityRepository.filterPostsBySectors(any, any))
             .thenThrow(Exception('Failed to load posts'));
@@ -681,7 +786,9 @@ void main() {
       });
     });
 
-    test('filterSearchPostsByZone filters posts correctly based on selected zone', () async {
+    test(
+        'filterSearchPostsByZone filters posts correctly based on selected zone',
+        () async {
       // Arrange
       final query = 'zoneQuery';
       final mockPostList = [
@@ -760,7 +867,9 @@ void main() {
       expect(communityController.loadingPosts.value, false);
       // Optionally verify that a Snackbar or error message was shown.
     });
-    test('filterSearchPostsByZone returns all posts when no filters are selected', () async {
+    test(
+        'filterSearchPostsByZone returns all posts when no filters are selected',
+        () async {
       // Arrange
       final query = 'zoneQuery';
       communityController.divisionSelectedValue.value = ['Division 1'];
@@ -782,7 +891,9 @@ void main() {
       expect(communityController.loadingPosts.value, false);
     });
 
-    test('filterSearchPostsByZone does not filter when query is empty and filters are selected', () async {
+    test(
+        'filterSearchPostsByZone does not filter when query is empty and filters are selected',
+        () async {
       // Arrange
       final query = '';
       communityController.divisionSelectedValue.value = ['Division 1'];
@@ -800,7 +911,8 @@ void main() {
       final zoneId = 1;
       final mockZone = {'id': zoneId, 'name': 'Zone 1'};
 
-      when(mockZoneRepository.getSpecificZone(zoneId)).thenAnswer((_) async => mockZone);
+      when(mockZoneRepository.getSpecificZone(zoneId))
+          .thenAnswer((_) async => mockZone);
 
       // Act
       final result = await communityController.getSpecificZone(zoneId);
@@ -815,7 +927,8 @@ void main() {
       final zoneId = 1;
       final errorMessage = 'Failed to retrieve zone';
 
-      when(mockZoneRepository.getSpecificZone(zoneId)).thenThrow(Exception(errorMessage));
+      when(mockZoneRepository.getSpecificZone(zoneId))
+          .thenThrow(Exception(errorMessage));
 
       // Act
       final result = await communityController.getSpecificZone(zoneId);
@@ -829,7 +942,8 @@ void main() {
     test('getSpecificZone returns null if zone is not found', () async {
       // Arrange
       final zoneId = 999; // An ID that doesn't exist
-      when(mockZoneRepository.getSpecificZone(zoneId)).thenAnswer((_) async => null);
+      when(mockZoneRepository.getSpecificZone(zoneId))
+          .thenAnswer((_) async => null);
 
       // Act
       final result = await communityController.getSpecificZone(zoneId);
@@ -866,19 +980,20 @@ void main() {
       // Verify that createUpdatePosts is reset to false
       expect(communityController.createUpdatePosts.value, isFalse);
     });
-    test('createPost should create a post and update lists correctly', () async {
+    test('createPost should create a post and update lists correctly',
+        () async {
       // Arrange
       final post = Post(
-        // initialize with appropriate values for the test
-      );
-
+          // initialize with appropriate values for the test
+          );
 
       when(mockCommunityRepository.createPost(post)).thenAnswer((_) async {});
-      when(communityController.getAllPosts(0)).thenAnswer((_) async => ['Post1', 'Post2']);
+      when(communityController.getAllPosts(0))
+          .thenAnswer((_) async => ['Post1', 'Post2']);
 
       // Act
       await communityController.createPost(post);
-      communityController.listAllPosts =['Post1', 'Post2'];
+      communityController.listAllPosts = ['Post1', 'Post2'];
       communityController.allPosts.value = ['Post1', 'Post2'];
 
       // Assert
@@ -898,7 +1013,7 @@ void main() {
 
       // Verify navigation and state reset if in root folder
       if (communityController.isRootFolder) {
-       // verify(mockRootController.changePage(0)).called(1);
+        // verify(mockRootController.changePage(0)).called(1);
         verify(communityController.postContentController.clear()).called(1);
       } else {
         // If not in root folder, ensure that Navigator.pop is called
@@ -912,11 +1027,12 @@ void main() {
     test('createPost should handle errors gracefully', () async {
       // Arrange
       final post = Post(
-        // initialize with appropriate values for the test
-      );
+          // initialize with appropriate values for the test
+          );
 
       final errorMessage = 'Error creating post';
-      when(mockCommunityRepository.createPost(post)).thenThrow(Exception(errorMessage));
+      when(mockCommunityRepository.createPost(post))
+          .thenThrow(Exception(errorMessage));
 
       // Act
       await communityController.createPost(post);
@@ -925,19 +1041,20 @@ void main() {
       // Verify that createPosts value is set to false in case of error
       expect(communityController.createPosts.value, isFalse);
 
-
       // Verify that emptyArrays() is called in finally block
       //verify(communityController.emptyArrays()).called(1); // Only once in finally block
     });
 
-    test('updatePost should update a post and update lists correctly', () async {
+    test('updatePost should update a post and update lists correctly',
+        () async {
       // Arrange
       final post = Post(
-        // Initialize with appropriate values for the test
-      );
+          // Initialize with appropriate values for the test
+          );
 
       when(mockCommunityRepository.updatePost(post)).thenAnswer((_) async {});
-      when(communityController.getAllPosts(0)).thenAnswer((_) async => ['Post1', 'Post2']);
+      when(communityController.getAllPosts(0))
+          .thenAnswer((_) async => ['Post1', 'Post2']);
 
       // Act
       await communityController.updatePost(post);
@@ -951,7 +1068,6 @@ void main() {
       communityController.listAllPosts = ['Post1', 'Post2'];
       communityController.allPosts.value = ['Post1', 'Post2'];
 
-
       // Verify that lists are cleared and updated correctly
       expect(communityController.listAllPosts, ['Post1', 'Post2']);
       expect(communityController.allPosts.value, ['Post1', 'Post2']);
@@ -961,17 +1077,17 @@ void main() {
 
       // Verify navigation and state reset
       //verify(communityController.emptyArrays()).called(1);
-
     });
 
     test('updatePost should handle errors gracefully', () async {
       // Arrange
       final post = Post(
-        // Initialize with appropriate values for the test
-      );
+          // Initialize with appropriate values for the test
+          );
 
       final errorMessage = 'Error updating post';
-      when(mockCommunityRepository.updatePost(post)).thenThrow(Exception(errorMessage));
+      when(mockCommunityRepository.updatePost(post))
+          .thenThrow(Exception(errorMessage));
 
       // Act
       await communityController.updatePost(post);
@@ -984,11 +1100,13 @@ void main() {
       expect(communityController.updatePosts.value, false);
     });
 
-    test('deletePost should delete a post and update lists correctly', () async {
+    test('deletePost should delete a post and update lists correctly',
+        () async {
       // Arrange
       final postId = 123;
       when(mockCommunityRepository.deletePost(postId)).thenAnswer((_) async {});
-      when(communityController.getAllPosts(0)).thenAnswer((_) async => ['Post1', 'Post2']);
+      when(communityController.getAllPosts(0))
+          .thenAnswer((_) async => ['Post1', 'Post2']);
 
       // Act
       await communityController.deletePost(postId);
@@ -1009,21 +1127,21 @@ void main() {
       // Arrange
       final postId = 123;
       final errorMessage = 'Error deleting post';
-      when(mockCommunityRepository.deletePost(postId)).thenThrow(Exception(errorMessage));
+      when(mockCommunityRepository.deletePost(postId))
+          .thenThrow(Exception(errorMessage));
 
       // Act
       await communityController.deletePost(postId);
-
     });
 
-    testWidgets('should show dialog and send feedback successfully', (WidgetTester tester) async {
+    testWidgets('should show dialog and send feedback successfully',
+        (WidgetTester tester) async {
       // Arrange
       final feedbackText = 'Great app!';
       final feedbackImage = File('path'); // Adjust if you have an image
       final rating = 5;
 
       when(mockUserRepository.sendFeedback(any)).thenAnswer((_) async {});
-
 
       // Simulate feedback input
       communityController.feedbackController.text = feedbackText;
@@ -1035,18 +1153,18 @@ void main() {
 
       //Assert
       //verify(mockUserRepository.sendFeedback(any)).called(0);
-     // expect(find.byType(CommentLoadingWidget), findsNothing);
-
-
+      // expect(find.byType(CommentLoadingWidget), findsNothing);
     });
 
-    testWidgets('should show error message when sending feedback fails', (WidgetTester tester) async {
+    testWidgets('should show error message when sending feedback fails',
+        (WidgetTester tester) async {
       // Arrange
       final feedbackText = 'Great app!';
       final feedbackImage = File(''); // Adjust if you have an image
       final rating = 5;
 
-      when(mockUserRepository.sendFeedback(any)).thenThrow(Exception('Failed to send feedback'));
+      when(mockUserRepository.sendFeedback(any))
+          .thenThrow(Exception('Failed to send feedback'));
 
       // Simulate feedback input
       communityController.feedbackController.text = feedbackText;
@@ -1060,37 +1178,14 @@ void main() {
       verifyNever(mockUserRepository.sendFeedback(any)).called(0);
       expect(find.byType(CommentLoadingWidget), findsNothing);
       expect(Get.isSnackbarOpen, false);
-
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     tearDown(() {
       // Optionally, reset mock states or perform cleanup
       reset(mockAuthService);
       reset(mockCommunityRepository);
     });
-
-
   });
-
-
 
   // Add more tests as needed for other controller or service methods
 }

@@ -16,14 +16,12 @@ const specialColor = Color(0xFFFC1111);
 const colorOnSelected = Colors.cyanAccent;
 const inactive = Colors.grey;
 const pointColor = Colors.orangeAccent;
-const fond = Color(0xffebeef7);
-const barMenu = Color(0xFF181D00);
 const doneStatus = Color(0xFF411DA0);
-const newStatus = Color.fromRGBO(91,152,253,1);
 const buttonColor = Color.fromRGBO(26,25,31, 1);
 const pendingStatus = CupertinoColors.activeOrange;
 const interfaceColor = Color(0xff7aa64e);
 
+//const backgroundColor = Color(0xF5F5F5F5);
 //const backgroundColor = Color(0xF5F5F5F5);
 const backgroundColor = Color(0xFFe6e8ec);
 const background = Color(0xFFF9F9FB);
@@ -32,7 +30,7 @@ const double defaultBorderRadius = 15;
 const textFieldColor = Color(0xF5E5F2FC);
 const drawerColor = Color(0xFF212121);
 const textColor = Color(0xFFFFFFFF);
-const Color blue = Color(0xFF6B00FE);
+
 
 
 class Palette {

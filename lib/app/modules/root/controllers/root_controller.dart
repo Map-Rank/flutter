@@ -31,7 +31,7 @@ class RootController extends GetxController {
 
   List<Widget> pages = [
     const CommunityView(),
-    Container(),
+    const DashboardView(),
     const CreatePostView(),
     const EventsView(),
      //const NotificationView(),
@@ -46,6 +46,7 @@ class RootController extends GetxController {
     } else {
       currentIndex.value = _index;
       await refreshPage(_index);
+      Get.lazyPut(()=>AuthController());
       Get.find<AuthController>().loading.value = false;
     }
   }
@@ -86,10 +87,7 @@ class RootController extends GetxController {
         }
       case 1:
         {
-          //await Get.find<DashboardController>().refreshDashboard();
-          showModalBottomSheet(context: Get.context!,
-            isScrollControlled: true,
-            builder: (context) => DashboardView(),);
+          await Get.find<DashboardController>().refreshDashboard();
 
           break;
         }

@@ -32,6 +32,7 @@ class RegisterView extends GetView<AuthController> {
     return WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: Form(
           key: controller.registerFormKey,
@@ -110,29 +111,29 @@ class RegisterView extends GetView<AuthController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 10.0,
-                    height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: interfaceColor,
-                      shape: BoxShape.circle,
+                    width: Get.width/4,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
-                    height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    width: Get.width/4,
+                    height: 10,
+                    decoration:  BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    decoration:BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
 
@@ -142,29 +143,29 @@ class RegisterView extends GetView<AuthController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    decoration:  BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: interfaceColor,
-                      shape: BoxShape.circle,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
 
@@ -176,29 +177,29 @@ class RegisterView extends GetView<AuthController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
+                    decoration:BoxDecoration(
+                      color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
                   Container(
-                    width: 10.0,
+                    width: Get.width/4,
                     height: 10.0,
-                    decoration: const BoxDecoration(
-                      color: interfaceColor,
-                      shape: BoxShape.circle,
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                        borderRadius: BorderRadius.circular(8)
                     ),
                   ),
                   const SizedBox(width: 20,),
@@ -524,7 +525,7 @@ class RegisterView extends GetView<AuthController> {
               style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
             ): const SizedBox(height: 30,
                 child: SpinKitThreeBounce(color: Colors.white, size: 20)),
-          ).paddingSymmetric(vertical: 40, horizontal: 20),),
+          ).paddingSymmetric(vertical: 20, horizontal: 20),),
 
 
         Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
@@ -774,7 +775,7 @@ class RegisterView extends GetView<AuthController> {
                     style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                   )
               ),
-            ],).paddingSymmetric(vertical: 40, horizontal: 20),
+            ],).paddingSymmetric(vertical: 20, horizontal: 20),
 
 
     Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)..paddingSymmetric(vertical: 20),
@@ -804,15 +805,12 @@ class RegisterView extends GetView<AuthController> {
                       return Dialog(
                         insetPadding: EdgeInsets.all(20),
                         child: Container(
+                          padding: EdgeInsets.all(20),
                           child: Column(
                             children: [
                               TextFieldWidget(
                                 labelText: AppLocalizations.of(context).choose_your_region,
                                 isFirst: true,
-                                selection: true,
-                                onCancelTapped: (){
-                                  Navigator.of(context).pop();
-                                },
                                 readOnly: false,
                                 keyboardType: TextInputType.text,
                                 validator: (input) => input!.isEmpty ? 'Required field' : null,
@@ -871,11 +869,13 @@ class RegisterView extends GetView<AuthController> {
                                               if(controller.regionSelectedValue.contains(controller.regions[index]) ){
                                                 controller.regionSelectedValue.clear();
                                                 controller.regionSelectedValue.remove(controller.regions[index]);
+
                                               }
                                               else{
                                                 controller.regionSelectedValue.clear();
                                                 controller.regionSelectedValue.add(controller.regions[index]);
                                                 controller.currentUser.value.zoneId = controller.regions[index]['id'].toString();
+
                                               }
                                               controller.regionSelected.value = !controller.regionSelected.value;
                                               controller.regionSelectedIndex.value = index;
@@ -883,6 +883,7 @@ class RegisterView extends GetView<AuthController> {
                                               controller.listDivisions.value =  controller.divisionsSet['data'];
                                               controller.loadingDivisions.value = ! controller.divisionsSet['status'];
                                               controller.divisions.value =  controller.listDivisions;
+                                              Navigator.of(context).pop();
 
                                               print(controller.regionSelected);
 
@@ -943,6 +944,7 @@ class RegisterView extends GetView<AuthController> {
                         return Dialog(
                           insetPadding: EdgeInsets.all(20),
                           child: Container(
+                              padding: EdgeInsets.all(20),
                               child: Column(
                                 children: [
                                   Obx(() =>
@@ -953,11 +955,6 @@ class RegisterView extends GetView<AuthController> {
                                             isLast:true,
                                             labelText: AppLocalizations.of(context).choose_your_division,
                                             readOnly: false,
-                                            selection: true,
-                                            onCancelTapped: (){
-                                              Navigator.of(context).pop();
-
-                                            },
                                             keyboardType: TextInputType.text,
                                             validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                             //onChanged: (input) => controller.selectUser.value = input,
@@ -991,7 +988,7 @@ class RegisterView extends GetView<AuthController> {
                                             ],
                                           ) :
                                           Container(
-                                              height: Get.height*0.68,
+                                              height: Get.height*0.65,
                                               margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
                                               // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                               decoration: BoxDecoration(
@@ -1026,6 +1023,7 @@ class RegisterView extends GetView<AuthController> {
                                                           controller.listSubdivisions.value = controller.subdivisionsSet['data'];
                                                           controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
                                                           controller.subdivisions.value = controller.listSubdivisions;
+                                                          Navigator.of(context).pop();
                                                           print(controller.subdivisionSelectedValue[0]['id'].toString());
 
                                                         },
@@ -1087,16 +1085,13 @@ class RegisterView extends GetView<AuthController> {
                         return Dialog(
                           insetPadding: EdgeInsets.all(20),
                           child: Container(
+                            padding: EdgeInsets.all(20),
                             child: Column(
                               children: [
                                 TextFieldWidget(
                                   isFirst: true,
                                   labelText: AppLocalizations.of(context).subdivision,
                                   readOnly: false,
-                                  selection: true,
-                                  onCancelTapped: (){
-                                    Navigator.of(context).pop();
-                                  },
                                   keyboardType: TextInputType.text,
                                   validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                                   //onChanged: (input) => controller.selectUser.value = input,
@@ -1131,8 +1126,8 @@ class RegisterView extends GetView<AuthController> {
                                 ) :
                                 Container(
                                     height: Get.height*0.7,
-                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
-                                    // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 5, bottom: 5),
+                                     //padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                                       color: Colors.white,
@@ -1167,6 +1162,8 @@ class RegisterView extends GetView<AuthController> {
                                                 print(controller.subdivisions);
 
                                                 controller.currentUser.value.zoneId = controller.subdivisionSelectedValue[0]['id'].toString();
+
+                                                Navigator.of(context).pop();
 
 
                                                 //print(controller.subdivisionSelected);
@@ -1269,7 +1266,7 @@ class RegisterView extends GetView<AuthController> {
                 )
 
               ],
-            ).paddingSymmetric(vertical: 40, horizontal: 20),
+            ).paddingSymmetric(vertical: 20, horizontal: 20),
 
         Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
           ],

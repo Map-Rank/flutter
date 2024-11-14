@@ -19,7 +19,7 @@ class BuildSelectZone extends GetView<CommunityController> {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(()=>EventsController());
-    return ListView(
+    return Column(
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -31,19 +31,11 @@ class BuildSelectZone extends GetView<CommunityController> {
                   builder:  (context) => Dialog(
                       insetPadding: EdgeInsets.all(20),
                       child:  ListView(
-                        padding: EdgeInsets.all(20),
+                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(AppLocalizations.of(context).choose_your_region,
-                                style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-                                textAlign: TextAlign.start,
-                              ),
-                              TextButton(onPressed: (){
-                                Navigator.of(context).pop();
-                              }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
-                            ],
+                          Text(AppLocalizations.of(context).choose_your_region,
+                            style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                            textAlign: TextAlign.start,
                           ),
 
                           Obx(() =>
@@ -84,7 +76,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                                     ],
                                   ) :
                                   Container(
-                                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                      margin: const EdgeInsetsDirectional.only(end: 10, start: 10),
                                       // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                       decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -152,6 +144,8 @@ class BuildSelectZone extends GetView<CommunityController> {
                                                   controller.loadingDivisions.value = ! controller.divisionsSet['status'];
                                                   controller.divisions.value =  controller.listDivisions;
 
+                                                  Navigator.of(context).pop();
+
 
                                                 },
                                                 // coverage:ignore-end
@@ -174,7 +168,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                 decoration: BoxDecoration(shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -208,17 +202,9 @@ class BuildSelectZone extends GetView<CommunityController> {
                     child: ListView(
                       padding: EdgeInsets.all(20),
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(AppLocalizations.of(context).choose_your_subdivision,
-                              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-                              textAlign: TextAlign.start,
-                            ),
-                            TextButton(onPressed: (){
-                              Navigator.of(context).pop();
-                            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
-                          ],
+                        Text(AppLocalizations.of(context).choose_your_subdivision,
+                          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                          textAlign: TextAlign.start,
                         ),
 
                         Obx(() =>
@@ -259,7 +245,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                                   ],
                                 ) :
                                 Container(
-                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, bottom: 10),
                                     // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -323,6 +309,8 @@ class BuildSelectZone extends GetView<CommunityController> {
                                                 controller.listSubdivisions.value = controller.subdivisionsSet['data'];
                                                 controller.loadingSubdivisions.value = !controller.subdivisionsSet['status'];
                                                 controller.subdivisions.value = controller.listSubdivisions;
+
+                                                Navigator.of(context).pop();
                                                 //print(controller.subdivisionSelectedValue[0]['id'].toString());
 
                                               },
@@ -346,7 +334,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                 decoration: BoxDecoration(shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -382,17 +370,9 @@ class BuildSelectZone extends GetView<CommunityController> {
                     child: ListView(
                       padding: EdgeInsets.all(20),
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(AppLocalizations.of(context).choose_your_subdivision,
-                              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-                              textAlign: TextAlign.start,
-                            ),
-                            TextButton(onPressed: (){
-                              Navigator.of(context).pop();
-                            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
-                          ],
+                        Text(AppLocalizations.of(context).choose_your_subdivision,
+                          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+                          textAlign: TextAlign.start,
                         ),
                         Obx(() =>
                             Column(
@@ -432,7 +412,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                                   ],
                                 ) :
                                 Container(
-                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, top: 10, bottom: 10),
+                                    margin: const EdgeInsetsDirectional.only(end: 10, start: 10, bottom: 10),
                                     // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -489,6 +469,7 @@ class BuildSelectZone extends GetView<CommunityController> {
 
                                                 }
 
+                                                Navigator.of(context).pop();
 
 
                                                 print(controller.subdivisions);
@@ -518,7 +499,7 @@ class BuildSelectZone extends GetView<CommunityController> {
                 decoration: BoxDecoration(shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Get.theme.focusColor.withOpacity(0.5))),
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,

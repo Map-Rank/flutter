@@ -302,7 +302,8 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "update": "Modifier",
-    "ok": "Ok"
+    "ok": "Ok",
+    "or": "ou"
   
 
 }

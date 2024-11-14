@@ -25,6 +25,7 @@ class MainDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(()=>AuthController());
     return Drawer(
       backgroundColor: Colors.white,
       child: ListView(

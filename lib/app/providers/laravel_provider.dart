@@ -402,6 +402,37 @@ class LaravelApiClient extends GetxService {
 
   }
 
+  Future checkTokenValidity(String token) async{
+    try{
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      };
+
+      var response = await httpClient.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: Options(
+          method: 'POST',
+          headers: headers,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      else{
+        return false;
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+  }
+
   Future followUser(int userId) async{
     try {
       var headers = {
@@ -519,6 +550,33 @@ class LaravelApiClient extends GetxService {
 
 
   // Handling Sectors and zones
+
+
+ getCameroonGeoJson() async {
+    try{
+      var response = await httpClient.get(
+        'https://www.residat.com/assets/maps/National_Region.json',
+        options: Options(
+          method: 'GET',
+        ),
+      );
+      if (response.statusCode == 200) {
+        return json.encode(response.data);
+      }
+      else {
+        throw Exception((response.statusMessage));
+      }
+
+    }on SocketException catch (e) {
+  throw SocketException(e.toString());
+  } on FormatException catch (_) {
+  throw const FormatException("Unable to process the data");
+  } catch (e) {
+  throw NetworkExceptions.getDioException(e);
+  }
+
+ }
+
 Future getAllZones(int levelId, int parentId) async {
     try {
       var headers = {
@@ -586,6 +644,66 @@ Future getAllZonesFilterByName() async{
   }
 }
 
+Future getSpecificZoneByName(String name) async{
+    try{
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+
+      var response = await httpClient.get(
+        '${GlobalService().baseUrl}api/zone?name=$name',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+      else {
+        print(response.statusMessage);
+      }
+    }on SocketException catch (e) {
+  throw SocketException(e.toString());
+  } on FormatException catch (_) {
+  throw const FormatException("Unable to process the data");
+  } catch (e) {
+  throw NetworkExceptions.getDioException(e);
+  }
+
+}
+
+  getSpecificZoneGeoJson(String url) async {
+    try{
+      var response = await httpClient.get(
+        url,
+        options: Options(
+          method: 'GET',
+        ),
+      );
+      if (response.statusCode == 200) {
+        return json.encode(response.data);
+      }
+      else {
+        throw Exception((response.statusMessage));
+      }
+
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+
+  }
+
 Future getSpecificZone(int zoneId)async {
     try {
       var headers = {
@@ -614,6 +732,40 @@ Future getSpecificZone(int zoneId)async {
       throw NetworkExceptions.getDioException(e);
     }
 
+}
+
+Future getDisasterMarkers() async{
+  try {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get
+          .find<AuthService>()
+          .user
+          .value
+          .authToken}'
+    };
+    var response = await httpClient.get(
+      '${GlobalService().baseUrl}api/disasters',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw Exception(response.data['message']);
+      }
+    }
+  }on SocketException catch (e) {
+    throw SocketException(e.toString());
+  } on FormatException catch (_) {
+    throw const FormatException("Unable to process the data");
+  } catch (e) {
+    throw NetworkExceptions.getDioException(e);
+  }
 }
 
   Future getAllSectors() async {
@@ -685,6 +837,42 @@ Future getAllPosts(int page) async {
 
 
 }
+
+  Future getPostsByZone(int zone_id) async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}',
+      };
+      var response = await httpClient.get(
+        '${GlobalService().baseUrl}api/post?zone_id=$zone_id&size=4',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+
+
+  }
 
 Future createPost(Post post)async{
     try {

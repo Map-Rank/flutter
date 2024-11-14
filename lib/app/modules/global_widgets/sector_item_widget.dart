@@ -18,7 +18,7 @@ class SectorItemWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 80,
+        height: 40,
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black38, width: 0.5)),
           //border: selected? Border.all(color: interfaceColor,width: 2) : null,

@@ -732,7 +732,6 @@ class CommunityController extends GetxController {
   getAllZonesFilterByName() async{
     try{
       var result = await zoneRepository.getAllZonesFilterByName();
-      print('result of zones is: $result');
       return result;
     }
     catch(e){
@@ -935,9 +934,9 @@ class CommunityController extends GetxController {
       Post postModel = Post(
           zone: result['zone'],
           postId: result['id'],
-          commentCount:result ['comment_count'],
-          likeCount:result ['like_count'] ,
-          shareCount:result ['share_count'],
+          commentCount:RxInt(result ['comment_count']),
+          likeCount:RxInt(result ['like_count']) ,
+          shareCount:RxInt(result ['share_count']),
           content: result['content'],
           publishedDate: result['published_at'],
           imagesUrl: result['images'],

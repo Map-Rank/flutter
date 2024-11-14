@@ -20,6 +20,11 @@ class UserRepository {
      return _laravelApiClient.deleteAccount();
    }
 
+   Future checkTokenValidity(String token) {
+     _laravelApiClient = Get.find<LaravelApiClient>();
+     return _laravelApiClient.checkTokenValidity(token);
+   }
+
 
 
   Future register(UserModel user) {

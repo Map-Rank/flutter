@@ -14,9 +14,13 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mapnrank/app/modules/auth/bindings/auth_binding.dart';
 import 'package:mapnrank/app/modules/auth/views/login_view.dart';
+import 'package:mapnrank/app/modules/root/bindings/root_binding.dart';
+import 'package:mapnrank/app/modules/root/views/root_view.dart';
 import 'package:mapnrank/app/providers/laravel_provider.dart';
+import 'package:mapnrank/app/repositories/user_repository.dart';
 import 'package:mapnrank/app/routes/theme_app_pages.dart';
 import 'package:mapnrank/app/services/auth_service.dart';
+import 'package:mapnrank/app/services/global_services.dart';
 import 'package:mapnrank/app/services/settings_services.dart';
 import 'app/services/firebase_messaging_service.dart';
 import 'firebase_options.dart';
@@ -54,6 +58,23 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
   //Get.lazyPut(()=>RootBinding());
   //await Get.putAsync(() => TranslationService().init());
   Get.log('All services started...');
+  var box = GetStorage();
+  if(box.read("authToken") != null)
+    {
+      try{
+        var validity = await UserRepository().checkTokenValidity(box.read("authToken"));
+        print('Validity: ${validity.toString()}');
+        if(validity != null){
+          GlobalService.isAuthTokenValid = validity;
+        }
+      }
+      catch(e){
+
+      }
+
+    }
+
+
 
 
 }
@@ -123,13 +144,13 @@ class MyApp extends StatelessWidget {
           body: Center(child: Text('404 - Page Not Found')),
         ),
       ),
-      initialBinding: AuthBinding(),
+      initialBinding: GlobalService.isAuthTokenValid?RootBinding():AuthBinding(),
       getPages: Theme1AppPages.routes,
       defaultTransition: Transition.cupertino,
       themeMode: Get.find<SettingsService>().getThemeMode(),
       theme: Get.find<SettingsService>().getLightTheme(),
       darkTheme: Get.find<SettingsService>().getDarkTheme(),
-      home: LoginView(),
+      home:  GlobalService.isAuthTokenValid?RootView():LoginView(),
 
       localizationsDelegates: [
         AppLocalizations.delegate,

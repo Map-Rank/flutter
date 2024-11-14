@@ -18,6 +18,7 @@ class TextFieldWidget extends StatelessWidget {
     required this.iconData,
     this.labelText,
     this.obscureText,
+     this.focus,
     required this.suffixIcon,
     this.isFirst,
     this.editable,
@@ -49,6 +50,7 @@ class TextFieldWidget extends StatelessWidget {
   final IconData iconData;
   final String? initialValue;
   final bool? obscureText;
+   final bool? focus;
   final bool? isFirst;
   final bool? isLast;
   final Widget suffixIcon;
@@ -80,6 +82,7 @@ class TextFieldWidget extends StatelessWidget {
         ],).paddingOnly(left: 10, right: 20),
         SizedBox(height: 10,),
         TextFormField(
+          autofocus: focus??false,
           controller: textController?? TextEditingController(text: null),
           initialValue: initialValue,
           maxLines: keyboardType == TextInputType.multiline ? null : 1,

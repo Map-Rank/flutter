@@ -26,6 +26,7 @@ class AuthService extends GetxService {
   Future getCurrentUser() async {
     if (UserModel.auth == null && _box!.hasData('current_user')) {
       user.value = UserModel.fromJson(await _box?.read('current_user'));
+      print('User is :   ${user.value}');
       UserModel.auth = true;
     } else {
       UserModel.auth = false;

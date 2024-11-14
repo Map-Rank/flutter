@@ -34,6 +34,7 @@ class UserModel extends Model {
     authToken = stringFromJson(json, 'token');
     zoneId = stringFromJson(json, 'zone_id');
     avatarUrl = stringFromJson(json, 'avatar');
+    myPosts = listFromJson(json, 'my_posts');
 
 
 

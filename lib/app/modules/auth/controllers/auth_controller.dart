@@ -48,6 +48,12 @@ class AuthController extends GetxController {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
+  var emailFocus = false;
+  var phoneFocus = false;
+
+
 
 
 
@@ -435,6 +441,9 @@ class AuthController extends GetxController {
       loading.value = true;
       currentUser.value = await userRepository.register(currentUser.value);
       Get.find<AuthService>().user.value = currentUser.value;
+      box.write("authToken",Get.find<AuthService>().user.value.authToken );
+      box.write("current_user", Get.find<AuthService>().user.value.toJson()
+      );
      if(! Platform.environment.containsKey('FLUTTER_TEST')){
        await Get.find<RootController>().changePage(0);
        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).account_created_successfully ));
@@ -466,6 +475,7 @@ class AuthController extends GetxController {
         Get.find<AuthService>().user.value.email = a.email;
         Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
          box.write("authToken",Get.find<AuthService>().user.value.authToken );
+        box.write("current_user", Get.find<AuthService>().user.value.toJson());
 
         //update();
 
@@ -503,13 +513,14 @@ class AuthController extends GetxController {
 
     try {
       var user = await userRepository.getUser();
-      print(user);
       currentUser.value= user;
       currentUser.value.myPosts = user.myPosts;
       currentUser.value.myEvents = user.myEvents;
       currentUser.value.authToken = box.read("authToken");
 
       Get.find<AuthService>().user.value = currentUser.value;
+      box.write("current_user", Get.find<AuthService>().user.value.toJson());
+      print(user.toJson()['my_posts']);
       print('my podt : ${currentUser.value.myPosts}');
       //await Get.find<RootController>().changePage(0);
       //Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).profile_info_successful ));

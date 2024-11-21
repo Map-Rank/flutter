@@ -148,6 +148,7 @@ class AuthController extends GetxController {
 
   @override
   void onInit() async {
+    progress = 0.0.obs;
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
     sectorRepository = SectorRepository();
@@ -546,30 +547,33 @@ class AuthController extends GetxController {
       loading.value = true;
       try {
         var a = await userRepository.login(currentUser.value);
-        Get.find<AuthService>().user.value.authToken = a.authToken;
-        Get.find<AuthService>().user.value.userId = a.userId;
-        Get.find<AuthService>().user.value.firstName = a.firstName;
-        Get.find<AuthService>().user.value.lastName = a.lastName;
-        Get.find<AuthService>().user.value.gender = a.gender;
-        Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
-        Get.find<AuthService>().user.value.email = a.email;
-        Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
-         box.write("authToken",Get.find<AuthService>().user.value.authToken );
-        box.write("current_user", Get.find<AuthService>().user.value.toJson());
+        if(a != null){
+          Get.find<AuthService>().user.value.authToken = a.authToken;
+          Get.find<AuthService>().user.value.userId = a.userId;
+          Get.find<AuthService>().user.value.firstName = a.firstName;
+          Get.find<AuthService>().user.value.lastName = a.lastName;
+          Get.find<AuthService>().user.value.gender = a.gender;
+          Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
+          Get.find<AuthService>().user.value.email = a.email;
+          Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
+          box.write("authToken",Get.find<AuthService>().user.value.authToken );
+          box.write("current_user", Get.find<AuthService>().user.value.toJson());
 
-        //update();
+          //update();
 
-        Get.put(RootController());
-        Get.lazyPut(()=>DashboardController());
-        Get.lazyPut<CommunityController>(() => CommunityController());
-        Get.lazyPut<NotificationController>(() => NotificationController());
-        Get.lazyPut<EventsController>(() => EventsController());
-        //loading.value = false;
-        if(! Platform.environment.containsKey('FLUTTER_TEST')){
-          print("Emaillllllllllllllllllll: ${Get.find<AuthService>().user.value.email}");
-          Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
-          await Get.find<RootController>().changePage(0);
+          Get.put(RootController());
+          Get.lazyPut(()=>DashboardController());
+          Get.lazyPut<CommunityController>(() => CommunityController());
+          Get.lazyPut<NotificationController>(() => NotificationController());
+          Get.lazyPut<EventsController>(() => EventsController());
+          //loading.value = false;
+          if(! Platform.environment.containsKey('FLUTTER_TEST')){
+            print("Emaillllllllllllllllllll: ${Get.find<AuthService>().user.value.email}");
+            Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).login_successful ));
+            await Get.find<RootController>().changePage(0);
+          }
         }
+
 
 
 

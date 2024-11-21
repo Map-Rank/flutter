@@ -25,6 +25,7 @@ class WelcomeInstitutionalUserView extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.progress.value = 0.0;
     controller.startProgress();
     return Scaffold(
       resizeToAvoidBottomInset: true,

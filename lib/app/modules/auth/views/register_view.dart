@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -32,7 +33,7 @@ class RegisterView extends GetView<AuthController> {
     return WillPopScope(
       onWillPop: Helper().onWillPop,
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         body: Form(
           key: controller.registerFormKey,
@@ -528,7 +529,11 @@ class RegisterView extends GetView<AuthController> {
           ).paddingSymmetric(vertical: 20, horizontal: 20),),
 
 
-        Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
+        GestureDetector(
+          onTap: (){
+            Get.offAllNamed(Routes.INSTITUTIONAL_USER);
+          },
+            child: Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20)),
         ],
       ),
 
@@ -745,8 +750,9 @@ class RegisterView extends GetView<AuthController> {
 
 
 
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Obx(() => BlockButtonWidget(
                 onPressed: () {
@@ -759,6 +765,7 @@ class RegisterView extends GetView<AuthController> {
                 ): const SizedBox(height: 30,
                     child: SpinKitThreeBounce(color: Colors.white, size: 20)),
               )),
+              SizedBox(height: 10,),
               BlockButtonWidget(
                   onPressed: () {
                     if(controller.sectorsSelected.isEmpty){
@@ -777,8 +784,14 @@ class RegisterView extends GetView<AuthController> {
               ),
             ],).paddingSymmetric(vertical: 20, horizontal: 20),
 
+          SizedBox(height: 10,),
 
-    Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)..paddingSymmetric(vertical: 20),
+
+    GestureDetector(
+      onTap: () {
+        Get.offAllNamed(Routes.INSTITUTIONAL_USER);
+      },
+        child: Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)..paddingSymmetric(vertical: 20)),
         ],
       ),
 
@@ -1224,8 +1237,9 @@ class RegisterView extends GetView<AuthController> {
               ],
             ).paddingSymmetric(horizontal: 10),
 
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BlockButtonWidget(
                     onPressed: () {
@@ -1240,6 +1254,7 @@ class RegisterView extends GetView<AuthController> {
                       style: Get.textTheme.headlineSmall?.merge(TextStyle(color: Get.theme.primaryColor)),
                     )
                 ),
+                SizedBox(height: 10,),
                 BlockButtonWidget(
                     onPressed: () {
                       //controller.login(),
@@ -1267,8 +1282,13 @@ class RegisterView extends GetView<AuthController> {
 
               ],
             ).paddingSymmetric(vertical: 20, horizontal: 20),
+            SizedBox(height: 10,),
 
-        Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
+        GestureDetector(
+          onTap: (){
+            Get.offAllNamed(Routes.INSTITUTIONAL_USER);
+          },
+            child: Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20)),
           ],
 
         ));

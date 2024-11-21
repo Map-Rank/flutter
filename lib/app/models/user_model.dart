@@ -4,6 +4,9 @@ import 'parents/model.dart';
 class UserModel extends Model {
   String? firstName;
   String? lastName;
+  String? description;
+  String? language;
+  String? type;
   String? email;
   String? password;
   String? gender;
@@ -20,12 +23,15 @@ class UserModel extends Model {
   List? myPosts = [];
   List? myEvents = [];
 
-  UserModel({this.userId,this.firstName, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.profession, this.gender,this.imageFile,
-  this.lastName, this.zoneId, this. sectors, this.myPosts, this.myEvents});
+  UserModel({this.userId,this.firstName, this.language, this.email, this.authToken, this.password, this.phoneNumber, this.avatarUrl, this.birthdate, this.profession, this.gender,this.imageFile,
+  this.lastName,this.description, this.type, this.zoneId, this. sectors, this.myPosts, this.myEvents});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     firstName = stringFromJson(json, 'first_name');
     lastName = stringFromJson(json, 'last_name');
+    description = stringFromJson(json, 'description');
+    language = stringFromJson(json, 'language');
+    type = stringFromJson(json, 'type');
     email = stringFromJson(json, 'email');
     phoneNumber = stringFromJson(json, 'phone');
     gender = stringFromJson(json, 'gender');
@@ -55,6 +61,9 @@ class UserModel extends Model {
     data['token'] = authToken;
     data['id'] = userId;
     data['my_posts'] = myPosts;
+    data['description'] = description;
+    data['type'] = type;
+    data['language'] = language;
     //data['sectors'] = sectors;
 
 

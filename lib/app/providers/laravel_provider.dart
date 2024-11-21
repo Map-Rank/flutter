@@ -20,6 +20,7 @@ import '../../color_constants.dart';
 import '../../common/ui.dart';
 import '../exceptions/network_exceptions.dart';
 import '../models/event_model.dart';
+import '../routes/app_routes.dart';
 import 'dio_client.dart';
 
 //import 'package:dio/dio.dart' as dio_form_data;
@@ -63,6 +64,7 @@ class LaravelApiClient extends GetxService {
         'password': user.password!,
         'gender': user.gender!,
         'zone_id': user.zoneId!,
+        'language':user.language!,
         'sectors': user.sectors![0].toString()
       });
 
@@ -87,6 +89,61 @@ class LaravelApiClient extends GetxService {
         var result = json.decode(data);
         if (result['status'] == true) {
           return UserModel.fromJson(result['data']);
+        } else {
+          throw Exception((result['message']));
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }// coverage:ignore-end
+
+  }
+
+  registerInstitution(UserModel user) async {
+    try {
+      var headers = {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+      };
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${GlobalService().baseUrl}api/create/request'));
+      request.fields.addAll({
+        'company_name': user.firstName!,
+        'email': user.email!,
+        'phone': user.phoneNumber,
+        'password': user.password!,
+        'description': user.description!,
+        'language':user.language!,
+        'zone_id': user.zoneId!,
+
+      });
+
+      if (user.imageFile != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+            'files', ".${user.imageFile!.path}"));
+      }
+      if (user.profession != null) {
+        request.fields.addAll({
+          'profession': user.profession!
+        });
+      }
+
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+// coverage:ignore-start
+      if (response.statusCode == 200) {
+        var data = await response.stream.bytesToString();
+        var result = json.decode(data);
+        if (result['status'] == true) {
+          return result['data'];
         } else {
           throw Exception((result['message']));
         }
@@ -256,7 +313,13 @@ class LaravelApiClient extends GetxService {
       );
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          return UserModel.fromJson(response.data['data']);
+          if(response.data['data']['verified'].toString() == 'false'){
+            Get.offAllNamed(Routes.WELCOME_INSTITUTIONAL_USER);
+
+          }else{
+            return UserModel.fromJson(response.data['data']);
+          }
+
         } else {
           throw Exception(response.data['message']);
         }

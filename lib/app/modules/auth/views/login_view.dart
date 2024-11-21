@@ -255,7 +255,8 @@ class LoginView extends GetView<AuthController> {
                                     controller.loginFormKey.currentState!.save();
                                     await controller.login();
 
-                                  }},
+                                  }
+                                  },
                                 color: Get.theme.colorScheme.secondary,
                                 text: Text(
                                   AppLocalizations.of(context).login,
@@ -271,7 +272,12 @@ class LoginView extends GetView<AuthController> {
                                   child: SpinKitThreeBounce(color: Colors.white, size: 20)),
                             ).paddingOnly(top: 20,)),
 
-                            Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20),
+                            GestureDetector(
+                              onTap: (){
+                                Get.offAllNamed(Routes.INSTITUTIONAL_USER);
+
+                              },
+                                child: Text(AppLocalizations.of(context).register_institution,style: TextStyle(fontFamily: "poppins",fontSize: 15, color: interfaceColor, fontWeight: FontWeight.w500), textAlign: TextAlign.center,).paddingSymmetric(vertical: 20)),
                           ],
                         ),
 

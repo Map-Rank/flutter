@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -35,9 +36,11 @@ class AuthController extends GetxController {
   Rx<UserModel> currentUser = Get.find<AuthService>().user;
   late GlobalKey<FormState> loginFormKey;
   late GlobalKey<FormState> registerFormKey;
+  late GlobalKey<FormState> institutionalUserFormKey;
   final hidePassword = true.obs;
   RxBool loading = false.obs;
   RxBool registerNext = false.obs;
+  RxBool institutionalUserNext = false.obs;
   RxBool registerNextStep1 = false.obs;
   var picker = ImagePicker();
   late File profileImage = File('assets/images/loading.gif') ;
@@ -50,6 +53,10 @@ class AuthController extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  TextEditingController institutionNameController = TextEditingController();
+  TextEditingController institutionEmailController = TextEditingController();
+  TextEditingController institutionPhoneController = TextEditingController();
+  TextEditingController institutionDescriptionController = TextEditingController();
   var emailFocus = false;
   var phoneFocus = false;
 
@@ -106,13 +113,22 @@ class AuthController extends GetxController {
 
   var selectedGender = ''.obs;
 
+  var selectedCoverageZone = ''.obs;
+
   RxList<String> genderList = RxList();
+
+  RxList<String> institutionZoneCoverageList = RxList();
 
   var selectedLanguage = ''.obs;
 
   RxList<String> languageList = RxList();
 
   var box = GetStorage();
+
+  RxDouble progress = 0.0.obs;
+  Timer? _timer;
+  Duration duration = Duration(seconds: 10); // Total duration of the progress
+
 
 
   AuthController(){
@@ -139,6 +155,7 @@ class AuthController extends GetxController {
 // coverage:ignore-start
     WidgetsBinding.instance.addPostFrameCallback((_) async {
     selectedGender = AppLocalizations.of(Get.context!).select_gender.obs;
+    selectedCoverageZone = AppLocalizations.of(Get.context!).national.obs;
     genderList = [
       AppLocalizations.of(Get.context!).select_gender,
       AppLocalizations.of(Get.context!).male,
@@ -149,6 +166,14 @@ class AuthController extends GetxController {
       AppLocalizations.of(Get.context!).select_language,
       AppLocalizations.of(Get.context!).en,
       AppLocalizations.of(Get.context!).fr,
+
+    ].obs;
+    institutionZoneCoverageList = [
+      AppLocalizations.of(Get.context!).national,
+      AppLocalizations.of(Get.context!).regional,
+      AppLocalizations.of(Get.context!).divisional,
+      AppLocalizations.of(Get.context!).sub_divisional,
+
 
     ].obs;// cover
     selectedLanguage = AppLocalizations.of(Get.context!).select_language.obs;
@@ -218,11 +243,13 @@ class AuthController extends GetxController {
                                       selectedLanguage.value == "Français") {
                                     box.write("language", 'fr');
                                     Get.updateLocale(const Locale('fr'));
+                                    currentUser.value.language = 'fr';
                                   }
                                   else if (selectedLanguage.value == "English" ||
                                       selectedLanguage.value == "Anglais") {
                                     box.write("language", 'en');
                                     Get.updateLocale(const Locale('en'));
+                                    currentUser.value.language = 'en';
                                   }
                                 },)
                                   .marginOnly(left: 50, right: 20,)
@@ -303,6 +330,36 @@ class AuthController extends GetxController {
     super.onInit();
 
   }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void startProgress() {
+    const int updatesPerSecond = 60; // Smooth updates per second
+    final int totalUpdates = duration.inSeconds * updatesPerSecond;
+    final double increment = 1.0 / totalUpdates;
+
+    int updateCount = 0;
+
+    _timer = Timer.periodic(
+      Duration(milliseconds: 1000 ~/ updatesPerSecond),
+          (timer) {
+
+          progress.value += increment;
+
+        updateCount++;
+        if (updateCount >= totalUpdates) {
+          _timer?.cancel();
+          Get.offAllNamed(Routes.LOGIN);
+        }
+      },
+    );
+  }
+
+
 
   getAllRegions() async{
     return zoneRepository.getAllRegions(2, 1);
@@ -448,6 +505,29 @@ class AuthController extends GetxController {
        await Get.find<RootController>().changePage(0);
        Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).account_created_successfully ));
      }
+
+    }
+    catch (e) {
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
+
+    } finally {
+      loading.value = false;
+    }
+
+  }
+
+  registerInstitution() async {
+
+    try {
+      loading.value = true;
+      var result = await userRepository.registerInstitution(currentUser.value);
+      if(result['verified'] == false){
+        box.write("authToken", result['token']);
+
+      }
+
 
     }
     catch (e) {

@@ -556,6 +556,7 @@ class AuthController extends GetxController {
           Get.find<AuthService>().user.value.phoneNumber = a.phoneNumber;
           Get.find<AuthService>().user.value.email = a.email;
           Get.find<AuthService>().user.value.avatarUrl = a.avatarUrl;
+          Get.find<AuthService>().user.value.type = a.type;
           box.write("authToken",Get.find<AuthService>().user.value.authToken );
           box.write("current_user", Get.find<AuthService>().user.value.toJson());
 

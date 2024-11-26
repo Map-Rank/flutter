@@ -329,7 +329,14 @@ class DashboardView extends GetView<DashboardController> {
                         decoration: BoxDecoration(
                           color: Colors.white
                         ),
-                        child: Column(
+                        child: Obx(() => controller.postsZoneStatistics.isEmpty?
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: interfaceColor,
+                            value: 1,
+                          ),
+                        ):
+                        Column(
                           children: [
                             Container(
                               padding: EdgeInsets.all(20),
@@ -359,7 +366,7 @@ class DashboardView extends GetView<DashboardController> {
                                     ) ,
                                   ),
                                   Positioned(
-                                    bottom: 20,
+                                      bottom: 20,
                                       left: 10,
                                       child: Text(controller.postsZoneStatistics[0]['zone']['name'], style: TextStyle(fontSize: 16),)
                                   )
@@ -371,113 +378,113 @@ class DashboardView extends GetView<DashboardController> {
                               margin: EdgeInsets.only(left: 20),
                               height:Get.height/3,
                               decoration: BoxDecoration(
-                                color: backgroundColor
+                                  color: backgroundColor
                               ),
                               child: Obx(() => ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: controller.postsZoneStatistics.length,
                                 itemBuilder: (context, index) =>
                                     Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                  child: Stack(
-                                    children: [
-                                      FadeInImage(
-                                        width: Get.width,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage('${controller.postsZoneStatistics[index]['images'][0]['url']}',
-                                            headers: GlobalService.getTokenHeaders()
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10)
                                         ),
-                                        placeholder: const AssetImage(
-                                          "assets/images/loading.gif",),
-                                        imageErrorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Image.asset(
-                                              "assets/images/loading.gif",
+                                        child: Stack(
+                                          children: [
+                                            FadeInImage(
                                               width: Get.width,
                                               height: 200,
-                                              fit: BoxFit.fitHeight);
-                                        },
-                                      ),
-                                      Positioned(
-                                        top: Get.height/6,
-                                          child: Container(
-                                            width: Get.width,
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-                                              color: Colors.white,
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage('${controller.postsZoneStatistics[index]['images'][0]['url']}',
+                                                  headers: GlobalService.getTokenHeaders()
+                                              ),
+                                              placeholder: const AssetImage(
+                                                "assets/images/loading.gif",),
+                                              imageErrorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return Image.asset(
+                                                    "assets/images/loading.gif",
+                                                    width: Get.width,
+                                                    height: 200,
+                                                    fit: BoxFit.fitHeight);
+                                              },
                                             ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    ClipOval(
-                                                        child: FadeInImage(
-                                                          width: 40,
-                                                          height: 40,
-                                                          fit: BoxFit.cover,
-                                                          image:  NetworkImage(controller.postsZoneStatistics[index]['creator'][0]['avatar'], headers: GlobalService.getTokenHeaders()),
-                                                          placeholder: const AssetImage(
-                                                              "assets/images/loading.gif"),
-                                                          imageErrorBuilder:
-                                                              (context, error, stackTrace) {
-                                                            return Image.asset(
-                                                                "assets/images/loading.gif",
+                                            Positioned(
+                                                top: Get.height/6,
+                                                child: Container(
+                                                  width: Get.width,
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                                                    color: Colors.white,
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          ClipOval(
+                                                              child: FadeInImage(
                                                                 width: 40,
                                                                 height: 40,
-                                                                fit: BoxFit.cover);
-                                                          },
-                                                        )
-                                                    ),
-                                                    const SizedBox(width: 5,),
-                                                    Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text('${controller.postsZoneStatistics[index]['creator'][0]['first_name'][0].toUpperCase()}${controller.postsZoneStatistics[index]['creator'][0]['first_name'].substring(1).toLowerCase()} ${controller.postsZoneStatistics[index]['creator'][0]['last_name'][0].toUpperCase()}${controller.postsZoneStatistics[index]['creator'][0]['last_name'].substring(1).toLowerCase()}',
-                                                            //overflow:TextOverflow.ellipsis ,
-                                                            style: Get.textTheme.titleSmall),
-                                                        Container(
-                                                          padding: EdgeInsets.all(5),
-                                                          decoration: BoxDecoration(
-                                                              color: secondaryColor,
-                                                            borderRadius: BorderRadius.circular(10)
+                                                                fit: BoxFit.cover,
+                                                                image:  NetworkImage(controller.postsZoneStatistics[index]['creator'][0]['avatar'], headers: GlobalService.getTokenHeaders()),
+                                                                placeholder: const AssetImage(
+                                                                    "assets/images/loading.gif"),
+                                                                imageErrorBuilder:
+                                                                    (context, error, stackTrace) {
+                                                                  return Image.asset(
+                                                                      "assets/images/loading.gif",
+                                                                      width: 40,
+                                                                      height: 40,
+                                                                      fit: BoxFit.cover);
+                                                                },
+                                                              )
                                                           ),
-                                                            child: Text('RECENT', style: TextStyle(color: Colors.white),)
+                                                          const SizedBox(width: 5,),
+                                                          Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text('${controller.postsZoneStatistics[index]['creator'][0]['first_name'][0].toUpperCase()}${controller.postsZoneStatistics[index]['creator'][0]['first_name'].substring(1).toLowerCase()} ${controller.postsZoneStatistics[index]['creator'][0]['last_name'][0].toUpperCase()}${controller.postsZoneStatistics[index]['creator'][0]['last_name'].substring(1).toLowerCase()}',
+                                                                  //overflow:TextOverflow.ellipsis ,
+                                                                  style: Get.textTheme.titleSmall),
+                                                              Container(
+                                                                  padding: EdgeInsets.all(5),
+                                                                  decoration: BoxDecoration(
+                                                                      color: secondaryColor,
+                                                                      borderRadius: BorderRadius.circular(10)
+                                                                  ),
+                                                                  child: Text('RECENT', style: TextStyle(color: Colors.white),)
 
-                                                       )
-                                                      ],
-                                                    )
+                                                              )
+                                                            ],
+                                                          )
 
 
-                                                  ],
+                                                        ],
 
 
-                                                ).marginOnly(bottom: 10),
+                                                      ).marginOnly(bottom: 10),
 
-                                                Text(controller.postsZoneStatistics[index]['content'].replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
-                                                  return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
-                                                })
-                                                    .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), overflow: TextOverflow.ellipsis,),
+                                                      Text(controller.postsZoneStatistics[index]['content'].replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                                                        return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                                                      })
+                                                          .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), overflow: TextOverflow.ellipsis,),
 
-                                              ],
-                                            ),
+                                                    ],
+                                                  ),
 
-                                      ))
-                                    ],
-                                  )
-                                ).marginOnly(right: 20),),),
+                                                ))
+                                          ],
+                                        )
+                                    ).marginOnly(right: 20),),),
                             ),
 
                           ],
-                        )
+                        ),)
                       ),
                   );
 

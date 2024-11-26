@@ -18,14 +18,16 @@ import '../../notifications/controllers/notification_controller.dart';
 class RootController extends GetxController {
   final currentIndex = 0.obs;
   final notificationsCount = 0.obs;
+  late NotificationController _notificationController;
 
 
   RootController() {
-
+    _notificationController = new NotificationController();
   }
 
   @override
   void onInit() async {
+    getNotificationsCount();
     super.onInit();
   }
 
@@ -34,7 +36,7 @@ class RootController extends GetxController {
     const DashboardView(),
     const CreatePostView(),
     const EventsView(),
-     //const NotificationView(),
+    const NotificationView(),
 
   ];
 
@@ -105,14 +107,25 @@ class RootController extends GetxController {
           break;
         }
 
-      // case 4:
-      //   {
-      //     if(Get.find<AuthService>().user.value.email != null){
-      //       await Get.find<NotificationController>().refreshNotification();
-      //     }
-      //     break;
-      //   }
+      case 4:
+        {
+          if(Get.find<AuthService>().user.value.email != null){
+            await Get.find<NotificationController>().refreshNotification();
+          }
+          break;
+        }
     }
+  }
+
+  void getNotificationsCount() async {
+    var count = 0;
+    var list = await _notificationController.getNotifications();
+    for(int i =0; i<list.length; i++ ){
+
+          count = count +1;
+
+    }
+    notificationsCount.value =count;
   }
 
 

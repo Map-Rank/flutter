@@ -107,161 +107,258 @@ class AccountView extends GetView<ProfileController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFieldWidget(
-                    textController: controller.firstNameController,
-                    readOnly: false,
-                    labelText: AppLocalizations.of(context).first_name,
-                    hintText: "John",
-                    //initialValue: '',
-                    keyboardType: TextInputType.text,
-                    // onSaved: (input) =>
-                    //     controller.currentUser.value.firstName = input,
-                    onChanged: (value) => {
-                      controller.firstNameController.text = value,
-                      controller.currentUser.value.firstName = controller.firstNameController.text,
-                    },
-                    validator: (input) => input!.length < 3
-                        ? AppLocalizations.of(context).enter_three_characters
-                        : null,
-                    iconData: Icons.person,
-                    key: null,
-                    errorText: '',
-                    prefixIcon: const Icon(Icons.person_2_outlined),
-                    suffixIcon: const Icon(null),
-                    suffix: const Icon(null),
-                  ),
-                  TextFieldWidget(
-                    textController: controller.lastNameController,
-                    isFirst: true,
-                    readOnly: false,
-                    labelText: AppLocalizations.of(context).last_name,
-                    hintText: "Doe",
-                    //initialValue: '',
-                    keyboardType: TextInputType.text,
-                    // onSaved: (input) =>
-                    //     controller.currentUser.value.lastName = input,
-                    onChanged: (value) => {
-                      controller.lastNameController.text = value,
-                      controller.currentUser.value.lastName = controller.lastNameController.text,
-                    },
-                    validator: (input) => input!.length < 3
-                        ? AppLocalizations.of(context).enter_three_characters
-                        : null,
-                    iconData: Icons.person,
-                    key: null,
-                    errorText: '',
-                    prefixIcon: const Icon(Icons.person_2_outlined),
-                    suffixIcon: const Icon(null),
-                    suffix: const Icon(null),
-                  ),
-                  TextFieldWidget(
-                    textController: controller.emailController,
-                    readOnly: true,
-                    labelText: AppLocalizations.of(context).email,
-                    hintText: "johndoe@gmail.com",
-                    //initialValue: '',
-                    keyboardType: TextInputType.emailAddress,
-                    // onSaved: (input) =>
-                    //     controller.currentUser.value.email = input,
-                    // onChanged: (value) =>
-                    //     {controller.currentUser.value.email = value},
-                    validator: (input) {
-                      return !input!.contains('@')
-                          ? AppLocalizations.of(context).enter_valid_email_address
-                          : null;
-                    },
-                    iconData: Icons.alternate_email,
-                    key: null,
-                    errorText: '',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    suffixIcon: const Icon(null),
-                    suffix: const Icon(null),
-                  ),
-                  TextFieldWidget(
-                    textController: controller.birthdateController,
-                    readOnly: false,
-                    labelText: AppLocalizations.of(context).date_of_birth,
-                    //hintText: "Male",
-                    //initialValue: '',
-                    keyboardType: TextInputType.number,
-                    // onSaved: (input) =>
-                    //     controller.currentUser.value.phoneNumber = input,
-                    // onChanged: (value) =>
-                    //     {controller.currentUser.value.phoneNumber = value},
-                    iconData: Icons.calendar_month,
-                    key: null,
-                    errorText: '',
-                    prefixIcon: Icon(Icons.calendar_month),
-                    suffix:const Icon(null), suffixIcon: Icon(null),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context).phone_number,
-                        style: Get.textTheme.labelMedium,
-                        textAlign:TextAlign.start,
-                      ).paddingOnly(left: 10, right: 20),
-                      SizedBox(height: 10,),
-                      IntlPhoneField(
-                        initialValue: controller.phoneNumberController.text,
-                        validator: (phone) {
-                          // Check if the field is empty and return null to skip validation
-                          if (phone!.completeNumber.isEmpty) {
+                  if(controller.currentUser.value.type?.toUpperCase() != 'COUNCIL')...[
+                    TextFieldWidget(
+                      textController: controller.firstNameController,
+                      readOnly: false,
+                      labelText: AppLocalizations.of(context).first_name,
+                      hintText: "John",
+                      //initialValue: '',
+                      keyboardType: TextInputType.text,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.firstName = input,
+                      onChanged: (value) => {
+                        controller.firstNameController.text = value,
+                        controller.currentUser.value.firstName = controller.firstNameController.text,
+                      },
+                      validator: (input) => input!.length < 3
+                          ? AppLocalizations.of(context).enter_three_characters
+                          : null,
+                      iconData: Icons.person,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: const Icon(Icons.person_2_outlined),
+                      suffixIcon: const Icon(null),
+                      suffix: const Icon(null),
+                    ),
+                    TextFieldWidget(
+                      textController: controller.lastNameController,
+                      isFirst: true,
+                      readOnly: false,
+                      labelText: AppLocalizations.of(context).last_name,
+                      hintText: "Doe",
+                      //initialValue: '',
+                      keyboardType: TextInputType.text,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.lastName = input,
+                      onChanged: (value) => {
+                        controller.lastNameController.text = value,
+                        controller.currentUser.value.lastName = controller.lastNameController.text,
+                      },
+                      validator: (input) => input!.length < 3
+                          ? AppLocalizations.of(context).enter_three_characters
+                          : null,
+                      iconData: Icons.person,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: const Icon(Icons.person_2_outlined),
+                      suffixIcon: const Icon(null),
+                      suffix: const Icon(null),
+                    ),
+                    TextFieldWidget(
+                      textController: controller.emailController,
+                      readOnly: true,
+                      labelText: AppLocalizations.of(context).email,
+                      hintText: "johndoe@gmail.com",
+                      //initialValue: '',
+                      keyboardType: TextInputType.emailAddress,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.email = input,
+                      // onChanged: (value) =>
+                      //     {controller.currentUser.value.email = value},
+                      validator: (input) {
+                        return !input!.contains('@')
+                            ? AppLocalizations.of(context).enter_valid_email_address
+                            : null;
+                      },
+                      iconData: Icons.alternate_email,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      suffixIcon: const Icon(null),
+                      suffix: const Icon(null),
+                    ),
+                    TextFieldWidget(
+                      textController: controller.birthdateController,
+                      readOnly: false,
+                      labelText: AppLocalizations.of(context).date_of_birth,
+                      //hintText: "Male",
+                      //initialValue: '',
+                      keyboardType: TextInputType.number,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.phoneNumber = input,
+                      // onChanged: (value) =>
+                      //     {controller.currentUser.value.phoneNumber = value},
+                      iconData: Icons.calendar_month,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: Icon(Icons.calendar_month),
+                      suffix:const Icon(null), suffixIcon: Icon(null),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).phone_number,
+                          style: Get.textTheme.labelMedium,
+                          textAlign:TextAlign.start,
+                        ).paddingOnly(left: 10, right: 20),
+                        SizedBox(height: 10,),
+                        IntlPhoneField(
+                          initialValue: controller.phoneNumberController.text,
+                          validator: (phone) {
+                            // Check if the field is empty and return null to skip validation
+                            if (phone!.completeNumber.isEmpty) {
+                              return AppLocalizations.of(context).input_phone_number;
+                            }
                             return AppLocalizations.of(context).input_phone_number;
-                          }
-                          return AppLocalizations.of(context).input_phone_number;
 
-                        },
+                          },
 
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
-                          border:OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
-                          contentPadding: EdgeInsets.all(10),
-                          labelStyle: TextStyle(
-                            color: Colors.white,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            border:OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            contentPadding: EdgeInsets.all(10),
+                            labelStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                            hintText: '677777777',
+                            labelText: AppLocalizations.of(context).phone_number,
+                            suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
                           ),
-                          hintText: '677777777',
-                          labelText: AppLocalizations.of(context).phone_number,
-                          suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
+                          //initialCountryCode: 'CM',
+                          style:  Get.textTheme.headlineMedium,
+                          onSaved: (phone) {
+                            controller.currentUser.value.phoneNumber = phone?.completeNumber;
+                          },
+                          onChanged:(value) => {
+                            controller.currentUser.value.phoneNumber = value.completeNumber,
+                            print('${value.completeNumber}'),
+                          },
                         ),
-                        //initialCountryCode: 'CM',
-                        style:  Get.textTheme.headlineMedium,
-                        onSaved: (phone) {
-                          controller.currentUser.value.phoneNumber = phone?.completeNumber;
-                        },
-                        onChanged:(value) => {
-                          controller.currentUser.value.phoneNumber = value.completeNumber,
-                          print('${value.completeNumber}'),
-                        },
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
-                  TextFieldWidget(
-                    textController: controller.genderController,
-                    readOnly: true,
-                    labelText: AppLocalizations.of(context).gender,
-                    hintText: "Male",
-                    //initialValue: '',
-                    keyboardType: TextInputType.number,
-                    // onSaved: (input) =>
-                    //     controller.currentUser.value.phoneNumber = input,
-                    // onChanged: (value) =>
-                    //     {controller.currentUser.value.phoneNumber = value},
-                    iconData: Icons.person,
-                    key: null,
-                    errorText: '',
-                    prefixIcon:const Icon(Icons.groups_outlined),
-                    suffix:const Icon(null), suffixIcon: Icon(null),
-                  ),
+                    TextFieldWidget(
+                      textController: controller.genderController,
+                      readOnly: true,
+                      labelText: AppLocalizations.of(context).gender,
+                      hintText: "Male",
+                      //initialValue: '',
+                      keyboardType: TextInputType.number,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.phoneNumber = input,
+                      // onChanged: (value) =>
+                      //     {controller.currentUser.value.phoneNumber = value},
+                      iconData: Icons.person,
+                      key: null,
+                      errorText: '',
+                      prefixIcon:const Icon(Icons.groups_outlined),
+                      suffix:const Icon(null), suffixIcon: Icon(null),
+                    ),
+                  ]
+                  else...[
+                    TextFieldWidget(
+                      textController: controller.firstNameController,
+                      readOnly: false,
+                      labelText: AppLocalizations.of(context).institution,
+                      hintText: "John",
+                      //initialValue: '',
+                      keyboardType: TextInputType.text,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.firstName = input,
+                      onChanged: (value) => {
+                        controller.firstNameController.text = value,
+                        controller.currentUser.value.firstName = controller.firstNameController.text,
+                      },
+                      validator: (input) => input!.length < 3
+                          ? AppLocalizations.of(context).enter_three_characters
+                          : null,
+                      iconData: Icons.person,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: const Icon(Icons.person_2_outlined),
+                      suffixIcon: const Icon(null),
+                      suffix: const Icon(null),
+                    ),
+                    TextFieldWidget(
+                      textController: controller.emailController,
+                      readOnly: true,
+                      labelText: AppLocalizations.of(context).email,
+                      hintText: "johndoe@gmail.com",
+                      //initialValue: '',
+                      keyboardType: TextInputType.emailAddress,
+                      // onSaved: (input) =>
+                      //     controller.currentUser.value.email = input,
+                      // onChanged: (value) =>
+                      //     {controller.currentUser.value.email = value},
+                      validator: (input) {
+                        return !input!.contains('@')
+                            ? AppLocalizations.of(context).enter_valid_email_address
+                            : null;
+                      },
+                      iconData: Icons.alternate_email,
+                      key: null,
+                      errorText: '',
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      suffixIcon: const Icon(null),
+                      suffix: const Icon(null),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).phone_number,
+                          style: Get.textTheme.labelMedium,
+                          textAlign:TextAlign.start,
+                        ).paddingOnly(left: 10, right: 20),
+                        SizedBox(height: 10,),
+                        IntlPhoneField(
+                          initialValue: controller.phoneNumberController.text,
+                          validator: (phone) {
+                            // Check if the field is empty and return null to skip validation
+                            if (phone!.completeNumber.isEmpty) {
+                              return AppLocalizations.of(context).input_phone_number;
+                            }
+                            return AppLocalizations.of(context).input_phone_number;
+
+                          },
+
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            border:OutlineInputBorder(borderSide:BorderSide(width: 1, style: BorderStyle.solid, color: Get.theme.focusColor.withOpacity(0.5) ), borderRadius: BorderRadius.circular(10),),
+                            contentPadding: EdgeInsets.all(10),
+                            labelStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                            hintText: '677777777',
+                            labelText: AppLocalizations.of(context).phone_number,
+                            suffixIcon: Icon(Icons.phone_android_outlined, color: Colors.white,),
+                          ),
+                          //initialCountryCode: 'CM',
+                          style:  Get.textTheme.headlineMedium,
+                          onSaved: (phone) {
+                            controller.currentUser.value.phoneNumber = phone?.completeNumber;
+                          },
+                          onChanged:(value) => {
+                            controller.currentUser.value.phoneNumber = value.completeNumber,
+                            print('${value.completeNumber}'),
+                          },
+                        ),
+                      ],
+                    ),
+
+                  ]
+
                 ],
               ),
             ),
             const SizedBox(
               height: 24,
             ),
+          if(controller.currentUser.value.type?.toUpperCase() != 'COUNCIL')...[
             Obx(() => !controller.updateUserInfo.value?BlockButtonWidget(
                 onPressed: () async {
                   controller.updateUser();
@@ -281,6 +378,8 @@ class AccountView extends GetView<ProfileController> {
               text: const SizedBox(height: 30,
                   child: SpinKitThreeBounce(color: Colors.white, size: 20)),
             ),)
+          ]
+
           ],
         ),
       ),

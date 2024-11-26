@@ -59,6 +59,15 @@ class RootView extends GetView<RootController> {
               label: AppLocalizations.of(context).events,
 
             ),
+            CustomBottomNavigationItem(
+              icon: controller.currentIndex.value == 4?Image.asset(
+                'assets/icons/event_colored.png',
+              ):Image.asset(
+                'assets/icons/event.png',
+              ),
+              label: AppLocalizations.of(context).notification,
+
+            ),
             // CustomBottomNavigationItem(
             //   icon: FontAwesomeIcons.bell,
             //   label: 'Notifications',

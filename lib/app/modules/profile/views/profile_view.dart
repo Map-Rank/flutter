@@ -356,6 +356,7 @@ class ProfileView extends GetView<ProfileController> {
               GestureDetector(
                 key: Key('signoutkey'),
                 onTap: (() {
+                  Get.lazyPut(()=>AuthController());
                   if(! Platform.environment.containsKey('FLUTTER_TEST')){
                     Get.find<AuthController>().loading.value = false;
                   }

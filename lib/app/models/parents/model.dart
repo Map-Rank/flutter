@@ -71,6 +71,19 @@ abstract class Model {
     }
   }
 
+  listFromJson(Map<String, dynamic> json, var attribute){
+    try {
+      print('Result: ${json}');
+      print('Result: ${json['my_posts']}');
+      var result = json['my_posts'];
+      //print('Result: ${result}');
+      //return result[0];
+      return result??[];
+    } catch (e) {
+      throw Exception('Error while parsing $attribute[$e]');
+    }
+  }
+
   int intFromJson(Map<String, dynamic> json, String attribute, {int defaultValue = 0}) {
     try {
       if (json[attribute] != null) {

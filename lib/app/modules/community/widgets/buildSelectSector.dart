@@ -18,7 +18,7 @@ class BuildSelectSector extends GetView<CommunityController> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       //padding: EdgeInsets.all(20),
       children: [
         Obx(() => !controller.filterBySector.value?Row(

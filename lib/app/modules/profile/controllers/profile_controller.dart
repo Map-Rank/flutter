@@ -105,7 +105,7 @@ class ProfileController extends GetxController {
     emailController.text = currentUser.value.email!;
     phoneNumberController.text = currentUser.value.phoneNumber!;
     genderController.text = currentUser.value.gender!;
-    birthdateController.text = currentUser.value.gender!;
+    birthdateController.text = currentUser.value.birthdate!;
 
       listAllPosts = await getAllMyPosts();
       allPosts.value =  listAllPosts;

@@ -82,7 +82,7 @@ class PostCardWidget extends StatelessWidget {
             children: [
               SizedBox(
                 //width: Get.width,
-                height: 60,
+                //height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,9 +128,13 @@ class PostCardWidget extends StatelessWidget {
                                     };
 
                                   },
-                                  child: Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
-                                      overflow:TextOverflow.ellipsis ,
-                                      style: Get.textTheme.titleSmall),
+                                  child: Wrap(
+                                    children: [
+                                      Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
+                                          //overflow:TextOverflow.ellipsis ,
+                                          style: Get.textTheme.titleSmall)
+                                    ],
+                                  ),
                                 ),
                               ),
                               Spacer(),
@@ -182,10 +186,9 @@ class PostCardWidget extends StatelessWidget {
               return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
             })
                 .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), // Remove empty lines),
-            maxLines: 2,
+            maxLines: 3,
             trimMode: TrimMode.line,
-            textStyle: Get.textTheme.displayMedium!).paddingSymmetric(horizontal: 10)
-            .marginOnly(bottom: 20),
+            textStyle: Get.textTheme.displayMedium!).paddingSymmetric(horizontal: 10).marginOnly(top: 20),
               if(images!.isNotEmpty)...[
                 if( images!.length == 1)...[
                   GestureDetector(
@@ -292,29 +295,29 @@ class PostCardWidget extends StatelessWidget {
 
               Obx(() => Row(
                 children: [
-                  Obx(() => likeCount!.value>0?FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor):FaIcon(FontAwesomeIcons.heart, color: null)),
+                  Obx(() => likeCount!.value>0?FaIcon(FontAwesomeIcons.solidHeart, size: 20, color: interfaceColor):FaIcon(FontAwesomeIcons.heart, color: null)),
                   const SizedBox(width: 10,),
                   if(likeCount!.value <= 1)...[
-                    Obx(() => Text('${likeCount!.value} ${AppLocalizations.of(context).like}'),)
+                    Obx(() => Text('${likeCount!.value} ${AppLocalizations.of(context).like}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12)),),)
                   ]
                   else...[
-                    Obx(() => Text('${likeCount!.value}  ${AppLocalizations.of(context).like}s'),)
+                    Obx(() => Text('${likeCount!.value}  ${AppLocalizations.of(context).like}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),)
                   ],
 
 
                   const Spacer(),
                   if(commentCount! <= 1)...[
-                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12)),),
                   ]
                   else...[
-                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}s'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),
                   ],
                   if(shareCount! <= 1)...[
-                    Obx(() =>  Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}'),),
+                    Obx(() =>  Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),),
 
                   ]
                   else...[
-                    Obx(() =>Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}s'), )
+                    Obx(() =>Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))), )
 
                   ],
 
@@ -322,11 +325,11 @@ class PostCardWidget extends StatelessWidget {
 
 
                 ],
-              ).marginOnly(top: 5, bottom: 5),).paddingSymmetric(horizontal: 10),
+              ).marginOnly(top: 5,),).paddingSymmetric(horizontal: 10),
 
-              const Divider(
-                color: Colors.grey,
-              ),
+              Divider(
+                color: Colors.grey.shade300,
+              ).paddingSymmetric(horizontal: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -373,7 +376,7 @@ class PostCardWidget extends StatelessWidget {
                   ),
                 ],
 
-              ).paddingSymmetric(horizontal: 10),
+              ).paddingSymmetric(horizontal: 10,),
 
             ]
         ).paddingSymmetric( vertical: 10)

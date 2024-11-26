@@ -37,24 +37,104 @@ class EventsView extends GetView<EventsController> {
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         backgroundColor: Colors.white,
-        floatingActionButton:  FloatingActionButton.extended(
-            backgroundColor: interfaceColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            onPressed: (){
-              controller.noFilter.value = true;
-              controller.chooseARegion.value = false;
-              controller.chooseADivision.value = false;
-              controller.chooseASubDivision.value = false;
+        appBar: AppBar(
+          leadingWidth: 0,
+          //floating: true,
+          //toolbarHeight: controller.filterByLocation.value?450:100,
+          systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+          leading: Icon(null),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          title: Container(
+            //padding: EdgeInsets.all(20),
+            //margin: EdgeInsets.only(bottom: 20),
+              color: Colors.white,
+              child:
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      Scaffold.of(context).openDrawer();
+                    },
+                    child: Image.asset(
+                        "assets/images/logo.png",
+                        width: Get.width/6,
+                        height: Get.width/6,
+                        fit: BoxFit.fitWidth),
+                  ),
+                  Container(
+                    height: 40,
+                    width: Get.width/1.6,
+                    decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(10)
 
-              if(controller.event?.sectors != null){
-                controller.event?.sectors!.clear();
-                controller.emptyArrays();
-              }
-              Get.toNamed(Routes.CREATE_EVENT);
-            },
-            heroTag: null,
-            icon: const FaIcon(FontAwesomeIcons.add),
-            label: Text(AppLocalizations.of(context).create_event)),
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide:BorderSide.none,),
+                          hintText: AppLocalizations.of(context).search_subdivision,
+                          hintStyle: TextStyle(fontSize: 14),
+                          prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
+                      ),
+                    ),
+                  ),
+                  ClipOval(
+                      child: GestureDetector(
+                        onTap: () async {
+
+                          Get.lazyPut<ProfileController>(
+                                () => ProfileController(),
+                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
+
+                        },
+                        child: FadeInImage(
+                          width: 30,
+                          height: 30,
+                          fit: BoxFit.cover,
+                          image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                          placeholder: const AssetImage(
+                              "assets/images/loading.gif"),
+                          imageErrorBuilder:
+                              (context, error, stackTrace) {
+                            return Image.asset(
+                                "assets/images/user_admin.png",
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.fitWidth);
+                          },
+                        ),
+                      )
+                  ),
+                ],
+              )
+          ),
+        ),
+        floatingActionButton:  SizedBox(
+          height: 40,
+          child: FloatingActionButton.extended(
+              backgroundColor: interfaceColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              onPressed: (){
+                controller.noFilter.value = true;
+                controller.chooseARegion.value = false;
+                controller.chooseADivision.value = false;
+                controller.chooseASubDivision.value = false;
+
+                if(controller.event?.sectors != null){
+                  controller.event?.sectors!.clear();
+                  controller.emptyArrays();
+                }
+                Get.toNamed(Routes.CREATE_EVENT);
+              },
+              heroTag: null,
+              icon: const FaIcon(FontAwesomeIcons.add),
+              label: Text(AppLocalizations.of(context).create_event)),
+        ),
         body: RefreshIndicator(
             onRefresh: () async {
               await controller.refreshEvents(showMessage: true);
@@ -71,86 +151,9 @@ class EventsView extends GetView<EventsController> {
                 primary: true,
                 shrinkWrap: false,
                 slivers: <Widget>[
-                  SliverAppBar(
+                  SliverToBoxAdapter(
                     //expandedHeight: 80,
-                    leadingWidth: 0,
-                    floating: true,
-                    toolbarHeight: controller.filterByLocation.value?450:100,
-                    systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
-                    leading: Icon(null),
-                    centerTitle: true,
-                    backgroundColor: Colors.white,
-                    title: Container(
-                      //padding: EdgeInsets.all(20),
-                        //margin: EdgeInsets.only(bottom: 20),
-                        color: Colors.white,
-                        child:
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                Scaffold.of(context).openDrawer();
-                              },
-                              child: Image.asset(
-                                  "assets/images/logo.png",
-                                  width: Get.width/6,
-                                  height: Get.width/6,
-                                  fit: BoxFit.fitWidth),
-                            ),
-                            Container(
-                              height: 40,
-                              width: Get.width/1.6,
-                              decoration: BoxDecoration(
-                                  color: backgroundColor,
-                                  borderRadius: BorderRadius.circular(10)
-
-                              ),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide:BorderSide.none,),
-                                    hintText: AppLocalizations.of(context).search_subdivision,
-                                    hintStyle: TextStyle(fontSize: 14),
-                                    prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.grey, size: 15,)
-                                ),
-                              ),
-                            ),
-                            ClipOval(
-                                child: GestureDetector(
-                                  onTap: () async {
-
-                                    Get.lazyPut<ProfileController>(
-                                          () => ProfileController(),
-                                    );
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileView(), ));
-
-                                  },
-                                  child: FadeInImage(
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
-                                    image:  NetworkImage(controller.currentUser.value!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
-                                    placeholder: const AssetImage(
-                                        "assets/images/loading.gif"),
-                                    imageErrorBuilder:
-                                        (context, error, stackTrace) {
-                                      return Image.asset(
-                                          "assets/images/user_admin.png",
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.fitWidth);
-                                    },
-                                  ),
-                                )
-                            ),
-                          ],
-                        )
-                    ),
-
-
-                    bottom: PreferredSize(preferredSize: Size(Get.width, 50),
+                    child: PreferredSize(preferredSize: Size(Get.width, 50),
                         child: Container(
                           decoration: BoxDecoration(
                             color: backgroundColor,
@@ -162,7 +165,7 @@ class EventsView extends GetView<EventsController> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    margin: EdgeInsets.fromLTRB(5, 20, 5, 15),
+                                    margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(10),

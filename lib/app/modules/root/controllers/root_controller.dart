@@ -18,23 +18,25 @@ import '../../notifications/controllers/notification_controller.dart';
 class RootController extends GetxController {
   final currentIndex = 0.obs;
   final notificationsCount = 0.obs;
+  late NotificationController _notificationController;
 
 
   RootController() {
-
+    _notificationController = new NotificationController();
   }
 
   @override
   void onInit() async {
+    getNotificationsCount();
     super.onInit();
   }
 
   List<Widget> pages = [
     const CommunityView(),
-    Container(),
+    const DashboardView(),
     const CreatePostView(),
     const EventsView(),
-     //const NotificationView(),
+    const NotificationView(),
 
   ];
 
@@ -46,6 +48,7 @@ class RootController extends GetxController {
     } else {
       currentIndex.value = _index;
       await refreshPage(_index);
+      Get.lazyPut(()=>AuthController());
       Get.find<AuthController>().loading.value = false;
     }
   }
@@ -86,10 +89,7 @@ class RootController extends GetxController {
         }
       case 1:
         {
-          //await Get.find<DashboardController>().refreshDashboard();
-          showModalBottomSheet(context: Get.context!,
-            isScrollControlled: true,
-            builder: (context) => DashboardView(),);
+          await Get.find<DashboardController>().refreshDashboard();
 
           break;
         }
@@ -107,14 +107,25 @@ class RootController extends GetxController {
           break;
         }
 
-      // case 4:
-      //   {
-      //     if(Get.find<AuthService>().user.value.email != null){
-      //       await Get.find<NotificationController>().refreshNotification();
-      //     }
-      //     break;
-      //   }
+      case 4:
+        {
+          if(Get.find<AuthService>().user.value.email != null){
+            await Get.find<NotificationController>().refreshNotification();
+          }
+          break;
+        }
     }
+  }
+
+  void getNotificationsCount() async {
+    var count = 0;
+    var list = await _notificationController.getNotifications();
+    for(int i =0; i<list.length; i++ ){
+
+          count = count +1;
+
+    }
+    notificationsCount.value =count;
   }
 
 

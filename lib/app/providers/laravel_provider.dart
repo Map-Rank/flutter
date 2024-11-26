@@ -20,6 +20,7 @@ import '../../color_constants.dart';
 import '../../common/ui.dart';
 import '../exceptions/network_exceptions.dart';
 import '../models/event_model.dart';
+import '../routes/app_routes.dart';
 import 'dio_client.dart';
 
 //import 'package:dio/dio.dart' as dio_form_data;
@@ -63,6 +64,7 @@ class LaravelApiClient extends GetxService {
         'password': user.password!,
         'gender': user.gender!,
         'zone_id': user.zoneId!,
+        'language':user.language!,
         'sectors': user.sectors![0].toString()
       });
 
@@ -87,6 +89,61 @@ class LaravelApiClient extends GetxService {
         var result = json.decode(data);
         if (result['status'] == true) {
           return UserModel.fromJson(result['data']);
+        } else {
+          throw Exception((result['message']));
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }// coverage:ignore-end
+
+  }
+
+  registerInstitution(UserModel user) async {
+    try {
+      var headers = {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+      };
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${GlobalService().baseUrl}api/create/request'));
+      request.fields.addAll({
+        'company_name': user.firstName!,
+        'email': user.email!,
+        'phone': user.phoneNumber,
+        'password': user.password!,
+        'description': user.description!,
+        'language':user.language!,
+        'zone_id': user.zoneId!,
+
+      });
+
+      if (user.imageFile != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+            'files', ".${user.imageFile!.path}"));
+      }
+      if (user.profession != null) {
+        request.fields.addAll({
+          'profession': user.profession!
+        });
+      }
+
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+// coverage:ignore-start
+      if (response.statusCode == 200) {
+        var data = await response.stream.bytesToString();
+        var result = json.decode(data);
+        if (result['status'] == true) {
+          return result['data'];
         } else {
           throw Exception((result['message']));
         }
@@ -256,7 +313,13 @@ class LaravelApiClient extends GetxService {
       );
       if (response.statusCode == 200) {
         if (response.data['status'] == true) {
-          return UserModel.fromJson(response.data['data']);
+          if(response.data['data']['verified'].toString() == 'false'){
+            Get.offAllNamed(Routes.WELCOME_INSTITUTIONAL_USER);
+
+          }else{
+            return UserModel.fromJson(response.data['data']);
+          }
+
         } else {
           throw Exception(response.data['message']);
         }
@@ -402,6 +465,37 @@ class LaravelApiClient extends GetxService {
 
   }
 
+  Future checkTokenValidity(String token) async{
+    try{
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      };
+
+      var response = await httpClient.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: Options(
+          method: 'POST',
+          headers: headers,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      else{
+        return false;
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+  }
+
   Future followUser(int userId) async{
     try {
       var headers = {
@@ -519,6 +613,33 @@ class LaravelApiClient extends GetxService {
 
 
   // Handling Sectors and zones
+
+
+ getCameroonGeoJson() async {
+    try{
+      var response = await httpClient.get(
+        'https://www.residat.com/assets/maps/National_Region.json',
+        options: Options(
+          method: 'GET',
+        ),
+      );
+      if (response.statusCode == 200) {
+        return json.encode(response.data);
+      }
+      else {
+        throw Exception((response.statusMessage));
+      }
+
+    }on SocketException catch (e) {
+  throw SocketException(e.toString());
+  } on FormatException catch (_) {
+  throw const FormatException("Unable to process the data");
+  } catch (e) {
+  throw NetworkExceptions.getDioException(e);
+  }
+
+ }
+
 Future getAllZones(int levelId, int parentId) async {
     try {
       var headers = {
@@ -586,6 +707,66 @@ Future getAllZonesFilterByName() async{
   }
 }
 
+Future getSpecificZoneByName(String name) async{
+    try{
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+
+      var response = await httpClient.get(
+        '${GlobalService().baseUrl}api/zone?name=$name',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+      else {
+        print(response.statusMessage);
+      }
+    }on SocketException catch (e) {
+  throw SocketException(e.toString());
+  } on FormatException catch (_) {
+  throw const FormatException("Unable to process the data");
+  } catch (e) {
+  throw NetworkExceptions.getDioException(e);
+  }
+
+}
+
+  getSpecificZoneGeoJson(String url) async {
+    try{
+      var response = await httpClient.get(
+        url,
+        options: Options(
+          method: 'GET',
+        ),
+      );
+      if (response.statusCode == 200) {
+        return json.encode(response.data);
+      }
+      else {
+        throw Exception((response.statusMessage));
+      }
+
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+
+  }
+
 Future getSpecificZone(int zoneId)async {
     try {
       var headers = {
@@ -614,6 +795,40 @@ Future getSpecificZone(int zoneId)async {
       throw NetworkExceptions.getDioException(e);
     }
 
+}
+
+Future getDisasterMarkers() async{
+  try {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Get
+          .find<AuthService>()
+          .user
+          .value
+          .authToken}'
+    };
+    var response = await httpClient.get(
+      '${GlobalService().baseUrl}api/disasters',
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+    if (response.statusCode == 200) {
+      if (response.data['status'] == true) {
+        return response.data['data'];
+      } else {
+        throw Exception(response.data['message']);
+      }
+    }
+  }on SocketException catch (e) {
+    throw SocketException(e.toString());
+  } on FormatException catch (_) {
+    throw const FormatException("Unable to process the data");
+  } catch (e) {
+    throw NetworkExceptions.getDioException(e);
+  }
 }
 
   Future getAllSectors() async {
@@ -685,6 +900,42 @@ Future getAllPosts(int page) async {
 
 
 }
+
+  Future getPostsByZone(int zone_id) async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}',
+      };
+      var response = await httpClient.get(
+        '${GlobalService().baseUrl}api/post?zone_id=$zone_id&size=4',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+
+
+  }
 
 Future createPost(Post post)async{
     try {
@@ -1415,6 +1666,120 @@ deletePost(int postId) async{
   }
 
 
+  // Handling notifications
+
+  ///Get list of notifications
+  Future getUserNotifications() async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}',
+      };
+
+      var response = await httpClient.get(
+        '${GlobalService()
+            .baseUrl}api/notifications',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+  }
+
+  /// Get specific notification
+
+  Future getSpecificNotification(var id) async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}',
+      };
+
+      var response = await httpClient.get(
+        '${GlobalService()
+            .baseUrl}api/notifications/$id',
+        options: Options(
+          method: 'GET',
+          headers: headers,
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+  }
+
+  ///Delete specific notification
+
+  Future deleteSpecificNotification(var id) async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}',
+      };
+
+      var response = await httpClient.get(
+        '${GlobalService()
+            .baseUrl}api/notifications/$id',
+        options: Options(
+          method: 'DELETE',
+          headers: headers,
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data['status'] == true) {
+          return response.data['data'];
+        } else {
+          throw Exception(response.data['message']);
+        }
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }
+  }
 
 
 

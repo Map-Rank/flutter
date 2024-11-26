@@ -218,7 +218,13 @@
   "no_events_found": "No events found",
 
 
-  "institution": "Institution",
+  "institution": "Institution Name",
+  "institution_description":"Who are you? What do you do?",
+  "institution_zone":"Choose your territorial zone",
+  "national": "National",
+  "regional": "Regional",
+  "divisional": "Divisional",
+  "sub_divisional": "Sub-divisional",
   "get_to_us": "Get to us for any problem or suggestion.",
   "contact_us":"Contact us",
   "contact_us_explanation":"For any questions or concerns, do not hesitate to let us know.",
@@ -304,6 +310,7 @@
   "delete": "Delete",
   "edit": "Edit",
   "update": "Update",
-  "ok": "Ok"
+  "ok": "Ok",
+  "or": "or"
 
 }

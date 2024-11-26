@@ -2,6 +2,8 @@ class Routes {
   static const LOGIN = '/login';
   static const REGISTER = '/register';
   static const FORGOT_PASSWORD = '/forgot_password';
+  static const INSTITUTIONAL_USER = '/institutional_user';
+  static const WELCOME_INSTITUTIONAL_USER = '/welcome_institutional_user';
   static const VERIFICATION = '/verification_view';
 
   static const ROOT = '/root';

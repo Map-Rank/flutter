@@ -11,6 +11,8 @@ class GlobalService extends GetxService {
   get baseUrl => "https://www.admin.residat.com/";
   //get baseUrl => "https://backoffice-dev.residat.com/";
   static var logOutToken = '';
+  static var hydroMapUrl = "https://www.residat.com/assets/maps/Hydrography/Hydro_Polygon.geojson";
+  static var isAuthTokenValid = false;
   String get apiPath => "api/";
   String get appName => "Residat";
   static Map<String, String> getTokenHeaders() {

@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import '../../color_constants.dart';
 import '../../common/ui.dart';
 import '../../main.dart';
+import '../modules/community/controllers/community_controller.dart';
+import '../modules/notifications/controllers/notification_controller.dart';
 import '../modules/root/controllers/root_controller.dart';
 import '../routes/app_routes.dart';
 import 'auth_service.dart';
@@ -63,27 +65,17 @@ class FireBaseMessagingService extends GetxService {
   Future fcmOnMessageListeners() async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
       if (Get.isRegistered<RootController>()) {
-        //Get.find<RootController>().getNotificationsCount();
+        Get.find<RootController>().getNotificationsCount();
       }
 
-        _bookingNotification(message);
-      // var count = 0;
-      // NotificationsController _notificationController = new NotificationsController();
-      // var list = await _notificationController.getNotifications(Get.find<MyAuthService>().myUser.value.id);
-      // for(int i =0; i<list.length; i++ ){
-      //   if(Get.find<MyAuthService>().myUser.value.id==list[i]['sender_partner_id'])
-      //   {
-      //     if(!list[i]['is_seen_sender']){
-      //       count = count +1;
-      //     }
-      //   }
-      //   else{
-      //     if(!list[i]['is_seen_receiver']){
-      //       count = count +1;
-      //     }
-      //   }
-      // }
-      // Get.find<RootController>().notificationsCount.value = count ;
+        _massNotification(message);
+       var count = 0;
+      NotificationController _notificationController = new NotificationController();
+      var list = await _notificationController.getNotifications();
+      for(int i =0; i<list.length; i++ ){
+            count = count +1;
+      }
+      Get.find<RootController>().notificationsCount.value = count ;
     });
   }
 
@@ -96,23 +88,13 @@ class FireBaseMessagingService extends GetxService {
 
   Future fcmOnResumeListeners() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-      // var count = 0;
-      // NotificationsController _notificationController = new NotificationsController();
-      // var list = await _notificationController.getNotifications(Get.find<MyAuthService>().myUser.value.id);
-      // for(int i =0; i<list.length; i++ ){
-      //   if(Get.find<MyAuthService>().myUser.value.id==list[i]['sender_partner_id'])
-      //   {
-      //     if(!list[i]['is_seen_sender']){
-      //       count = count +1;
-      //     }
-      //   }
-      //   else{
-      //     if(!list[i]['is_seen_receiver']){
-      //       count = count +1;
-      //     }
-      //   }
-      // }
-      // Get.find<RootController>().notificationsCount.value = count ;
+      var count = 0;
+      NotificationController _notificationController = new NotificationController();
+      var list = await _notificationController.getNotifications();
+      for(int i =0; i<list.length; i++ ){
+            count = count +1;
+      }
+      Get.find<RootController>().notificationsCount.value = count ;
 
       _notificationsBackground(message);
     });
@@ -155,13 +137,10 @@ class FireBaseMessagingService extends GetxService {
 
   }
 
-  void _bookingNotification(RemoteMessage message) {
+  void _massNotification(RemoteMessage message) {
     if (Get.currentRoute == Routes.ROOT) {
-      //Get.find<BookingsController>().refreshBookings();
+      Get.find<CommunityController>().refreshCommunity();
     }
-    /*if (Get.currentRoute == Routes.BOOKING) {
-      Get.find<BookingsController>().refreshBooking();
-    // }*/
     RemoteNotification? notification = message.notification;
     Get.showSnackbar(Ui.notificationSnackBar(
       title: notification!.title!,
@@ -173,36 +152,12 @@ class FireBaseMessagingService extends GetxService {
         height: 30,
       ),
       onTap: (getBar) async {
-        if (message.data['bookingId'] != null) {
-          //await Get.back();
-         // Get.toNamed(Routes.BOOKING, arguments: new Booking(id: message.data['bookingId']));
+        if (message.data['id'] != null) {
+          //Get.back();
+          //Get.toNamed(Routes.N, arguments: new Booking(id: message.data['bookingId']));
         }
       },
     ));
   }
 
-  void _newMessageNotification(RemoteMessage message) {
-    // RemoteNotification notification = message.notification;
-    // if (Get.find<MessagesController>().initialized) {
-    //   Get.find<MessagesController>().refreshMessages();
-    // }
-    // if (Get.currentRoute != Routes.CHAT) {
-    //   Get.showSnackbar(Ui.notificationSnackBar(
-    //     title: notification.title,
-    //     message: notification.body,
-    //     mainButton: Image.asset(
-    //       'assets/img/hubcolis.png',
-    //       fit: BoxFit.cover,
-    //       width: 30,
-    //       height: 30,
-    //     ),
-    //     onTap: (getBar) async {
-    //       if (message.data['messageId'] != null) {
-    //         await Get.back();
-    //         Get.toNamed(Routes.CHAT, arguments: new Message([], id: message.data['messageId']));
-    //       }
-    //     },
-    //   ));
-    // }
-  }
 }

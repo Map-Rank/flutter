@@ -20,6 +20,7 @@ import '../../color_constants.dart';
 import '../../common/ui.dart';
 import '../exceptions/network_exceptions.dart';
 import '../models/event_model.dart';
+import '../models/notification_model.dart';
 import '../routes/app_routes.dart';
 import 'dio_client.dart';
 
@@ -65,6 +66,7 @@ class LaravelApiClient extends GetxService {
         'gender': user.gender!,
         'zone_id': user.zoneId!,
         'language':user.language!,
+        'fcm_token':user.firebaseToken!,
         'sectors': user.sectors![0].toString()
       });
 
@@ -119,6 +121,7 @@ class LaravelApiClient extends GetxService {
         'password': user.password!,
         'description': user.description!,
         'language':user.language!,
+        'fcm_token':user.firebaseToken!,
         'zone_id': user.zoneId!,
 
       });
@@ -1779,6 +1782,57 @@ deletePost(int postId) async{
     } catch (e) {
       throw NetworkExceptions.getDioException(e);
     }
+  }
+
+  createNotification(NotificationModel notification) async{
+    print(notification.title!);
+    print(notification.content!);
+    print(notification.zoneId!);
+
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Get
+            .find<AuthService>()
+            .user
+            .value
+            .authToken}'
+      };
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${GlobalService().baseUrl}api/notifications'));
+      request.fields.addAll({
+        'titre_en': notification.title!,
+        'titre_fr': notification.title!,
+        'zone_id': notification.zoneId!,
+        'content_en': notification.content!,
+        'content_fr': notification.content!
+      });
+
+
+      request.files.add(await http.MultipartFile.fromPath(
+          'media', ".${notification.imageNotificationBanner![0].path}"));
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+// coverage:ignore-start
+      if (response.statusCode == 201) {
+        var data = await response.stream.bytesToString();
+        var result = json.decode(data);
+        if (result['status'] == true) {
+          return result['data'];
+        } else {
+          throw Exception((result['message']));
+        }
+      }
+    }on SocketException catch (e) {
+      throw SocketException(e.toString());
+    } on FormatException catch (_) {
+      throw const FormatException("Unable to process the data");
+    } catch (e) {
+      throw NetworkExceptions.getDioException(e);
+    }// coverage:ignore-end
   }
 
 

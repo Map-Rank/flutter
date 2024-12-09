@@ -10,11 +10,12 @@ class NotificationModel extends Model {
   String? date;
   UserModel? userModel;
   String? zoneId;
+  String? zoneName;
   String? bannerUrl;
   List? imageNotificationBanner;
 
 
-  NotificationModel({this.userModel, this.title, this.notificationId, this.content, this.date, this.zoneId, this.imageNotificationBanner, this.bannerUrl});
+  NotificationModel({this.userModel, this.title, this.notificationId, this.content, this.date, this.zoneId, this.imageNotificationBanner, this.zoneName, this.bannerUrl});
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     super.fromJson(json);

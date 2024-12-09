@@ -246,7 +246,7 @@
   
   "no_notification":"You have no notification",
   "no_alert":"You have no alert",
-  "notification":"Notification",
+  "notification":"Inbox",
   "create_mass_message":"Create mass message",
   "notification_title":"Notification title",
   "enter_notification_title":"Enter notification title",
@@ -318,6 +318,10 @@
   "edit": "Edit",
   "update": "Update",
   "ok": "Ok",
+  "created": "Created",
+  "on": "on",
+  "at": "at",
+  "by": "By",
   "or": "or"
 
 }

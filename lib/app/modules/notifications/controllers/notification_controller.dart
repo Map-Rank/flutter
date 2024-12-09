@@ -1,4 +1,4 @@
-// coverage:ignore-file
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -149,7 +149,8 @@ class NotificationController extends GetxController {
           title: Get.find<AuthService>().user.value.language == 'en'?list[i]['titre_en']:list[i]['titre_fr'],
           userModel: user,
           date: list[i]['created_at'],
-          bannerUrl: list[i]['image'].toString()
+          bannerUrl: list[i]['image'].toString(),
+          zoneName: list[i]['zone']['name']
 
         );
         //notificationList.clear();

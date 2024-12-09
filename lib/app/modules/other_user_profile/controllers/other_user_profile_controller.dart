@@ -138,6 +138,8 @@ class OtherUserProfileController extends GetxController {
       currentUser.value.email = user.email;
       currentUser.value.avatarUrl = user.avatarUrl;
       currentUser.value.myPosts = user.myPosts;
+      currentUser.value.followerCount = user.followerCount;
+      currentUser.value.followingCount = user.followingCount;
 
         listAllPosts = await getAllMyPosts();
         allPosts.value =  listAllPosts;

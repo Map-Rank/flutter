@@ -718,7 +718,7 @@ Future getSpecificZoneByName(String name) async{
       };
 
       var response = await httpClient.get(
-        '${GlobalService().baseUrl}api/zone?name=$name',
+        name=='CAMEROUN'?'${GlobalService().baseUrl}api/zone?name=$name':'${GlobalService().baseUrl}api/zone?code=$name',
         options: Options(
           method: 'GET',
           headers: headers,

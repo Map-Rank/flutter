@@ -243,7 +243,7 @@
 
     "no_notification":"Vous n''avez pas de notification",
     "no_alert":"Vous n''avez pas d''alert",
-    "notification":"Notification",
+    "notification":"Inbox",
     "create_mass_message":"Créer message de masse",
     "notification_title":"Titre notification",
     "enter_notification_title":"Entrez titre notification",
@@ -317,6 +317,10 @@
     "edit": "Modifier",
     "update": "Modifier",
     "ok": "Ok",
+    "created": "Créé",
+    "on": "le",
+    "at": "à",
+    "by": "Par",
     "or": "ou"
   
 

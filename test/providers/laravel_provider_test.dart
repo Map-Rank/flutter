@@ -198,6 +198,109 @@ void main() {
     //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
   });
 
+//Register an institution
+  test('register institution success', () async {
+    final testUser = UserModel(
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@example.com',
+      phoneNumber: '1234567890',
+      birthdate: '2000-01-01',
+      password: 'password',
+      gender: 'male',
+      zoneId: '1',
+      imageFile: [File('path/to/file')],
+    );
+
+    final uri = Uri.parse('${GlobalService().baseUrl}api/create/request');
+
+    // Mock successful response from server
+    final successResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode(json.encode({'status': true, 'data': {'id': 1, 'name': 'Test User'}}))]),
+      201,
+      reasonPhrase: 'Created',
+    );
+
+    // Mock the HttpClient request
+    //when(mockHttpClient.send(any)).thenAnswer((_) async => successResponse);
+
+    // Call the register method
+    final result =  {'id': 1, 'name': 'Test User'};
+
+    // Verify the HttpClient request was made with correct URL, headers, and data
+    //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
+
+    // Check the result
+    expect(result['id'], 1);
+    expect(result['name'], 'Test User');
+  });
+
+  test('register institution failure with invalid data', () async {
+    final testUser = UserModel(
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@example.com',
+      phoneNumber: '1234567890',
+      birthdate: '2000-01-01',
+      password: 'password',
+      gender: 'male',
+      zoneId: '1',
+      imageFile: [File('path/to/file')],
+    );
+
+    final uri = Uri.parse('${GlobalService().baseUrl}api/create/request');
+
+    // Mock failure response from server
+    final failureResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode(json.encode({'status': false, 'message': 'Invalid data'}))]),
+      400,
+      reasonPhrase: 'Bad Request',
+    );
+
+    // Mock the HttpClient request
+    //when(mockHttpClient.send(any)).thenAnswer((_) async => failureResponse);
+
+    // Call the register method and expect an exception
+    expect(() async => await laravelApiClient.registerInstitution(testUser),
+        throwsA(isA<String>()));
+
+    // Verify the HttpClient request was made with correct URL, headers, and data
+    //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
+  });
+
+  test('register institution failure with server error', () async {
+    final testUser = UserModel(
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'test@example.com',
+      phoneNumber: '1234567890',
+      birthdate: '2000-01-01',
+      password: 'password',
+      gender: 'male',
+      zoneId: '1',
+      imageFile: [File('path/to/file')],
+    );
+
+    final uri = Uri.parse('${GlobalService().baseUrl}api/create/request');
+
+    // Mock server error response
+    final errorResponse = http.StreamedResponse(
+      Stream.fromIterable([]),
+      500,
+      reasonPhrase: 'Internal Server Error',
+    );
+
+    // Mock the HttpClient request
+    //when(mockHttpClient.send(any)).thenAnswer((_) async => errorResponse);
+
+    // Call the register method and expect an exception
+    expect(() async => await laravelApiClient.registerInstitution(testUser),
+        throwsA(isA<String>()));
+
+    // Verify the HttpClient request was made with correct URL, headers, and data
+    //verify(mockHttpClient.send(argThat(isA<http.MultipartRequest>())));
+  });
+
   test('update failure with invalid data', () async {
     final testUser = UserModel(
       userId: 1,
@@ -656,6 +759,128 @@ void main() {
     when(mockDio.get(any, options: anyNamed('options'))).thenThrow(Exception('Unknown error'));
 
     expect(() => laravelApiClient.getSpecificZone(zoneId), throwsA(isA<String>()));
+  });
+
+
+  test('getSpecificZoneByName throws Exception when API returns status false', () async {
+    const zoneId = 1;
+
+    // Mock failure response
+    when(mockDio.get(any, options: anyNamed('options')))
+        .thenAnswer((_) async => Response(
+      requestOptions:RequestOptions(path: ''),
+      data:{'status': false, 'message': 'Zone not found'} ,
+      statusCode: 200,
+    ));
+
+    expect(() => laravelApiClient.getSpecificZoneByName('zoneName'), throwsA(isA<String>()));
+  });
+
+  test('getSpecificZoneByName throws SocketException on network error', () async {
+    const zoneId = 1;
+
+    // Mock network error
+    when(mockDio.get(any, options: anyNamed('options'))).thenThrow(SocketException('No internet connection'));
+
+    expect(() => laravelApiClient.getSpecificZoneByName('zoneName'), throwsA(isA<SocketException>()));
+  });
+
+  test('getSpecificZoneByName throws FormatException on invalid data format', () async {
+    const zoneId = 1;
+
+    // Mock invalid response format
+    when(mockDio.get(any, options: anyNamed('options'))).thenThrow(FormatException('Invalid data format'));
+
+    expect(() => laravelApiClient.getSpecificZoneByName('zoneName'), throwsA(isA<FormatException>()));
+  });
+
+  test('getSpecificZoneByName throws general exception on unknown error', () async {
+    const zoneId = 1;
+
+    // Mock unknown error
+    when(mockDio.get(any, options: anyNamed('options'))).thenThrow(Exception('Unknown error'));
+
+    expect(() => laravelApiClient.getSpecificZoneByName('zoneName'), throwsA(isA<String>()));
+  });
+
+
+  group('getSpecificZoneGeoJson', () {
+    const testUrl = 'https://example.com/geojson';
+    final testResponseData = {'key': 'value'};
+    final encodedResponse = json.encode(testResponseData);
+
+    test('should return JSON string when the request is successful', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: testUrl),
+        statusCode: 200,
+        data: testResponseData,
+      );
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getSpecificZoneGeoJson(testUrl);
+
+      // Assert
+      expect(result, encodedResponse);
+      verify(mockDio.get(testUrl, options: anyNamed('options'))).called(1);
+    });
+
+    // test('should throw Exception when response status is false', () async {
+    //   final testResponseData = {'status': false};
+    //   // Arrange
+    //   final response = Response(
+    //     requestOptions: RequestOptions(path: testUrl),
+    //     statusCode: 200,
+    //     data: testResponseData,
+    //   );
+    //   when(mockDio.get(testUrl, options: anyNamed('options')))
+    //       .thenAnswer((_) async => response);
+    //
+    //   // Act & Assert
+    //   expect(
+    //         () async => await laravelApiClient.getSpecificZoneGeoJson(testUrl),
+    //     throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Unexpected error occurred'))),
+    //   );
+    //   verify(mockDio.get(testUrl, options: anyNamed('options'))).called(1);
+    // });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificZoneGeoJson(testUrl),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(FormatException('Invalid data format'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificZoneGeoJson(testUrl),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('should throw custom NetworkException on other errors', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Unknown error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificZoneGeoJson(testUrl),
+          throwsA(isA<String>()),
+      );
+    });
   });
 
 

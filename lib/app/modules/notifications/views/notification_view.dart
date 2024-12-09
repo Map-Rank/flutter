@@ -1,4 +1,4 @@
-// coverage:ignore-file
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -169,7 +169,9 @@ class NotificationView extends GetView<NotificationController> {
                     ListView.separated(
                         itemCount: controller.notifications.length,
                         separatorBuilder: (context, index) {
-                          return SizedBox(height: 7);
+                          return SizedBox(
+                              height: 0,
+                          );
                         },
                         shrinkWrap: true,
                         primary: false,
@@ -206,7 +208,9 @@ class NotificationView extends GetView<NotificationController> {
                 ListView.separated(
                     itemCount: controller.createdNotifications.length,
                     separatorBuilder: (context, index) {
-                      return SizedBox(height: 7);
+                      return SizedBox(
+                        height: 0,
+                      );
                     },
                     shrinkWrap: true,
                     primary: false,
@@ -243,7 +247,7 @@ class NotificationView extends GetView<NotificationController> {
                   :ListView.separated(
                     itemCount: controller.receivedNotifications.length,
                     separatorBuilder: (context, index) {
-                      return SizedBox(height: 7);
+                      return SizedBox(height: 0);
                     },
                     shrinkWrap: true,
                     primary: false,

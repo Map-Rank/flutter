@@ -16,15 +16,18 @@ import '../../global_widgets/post_card_widget.dart';
 class DetailsView extends GetView<CommunityController> {
   DetailsView({
     this.post,
+    this.imageScrollController,
     super.key
   });
   Post? post;
+  ScrollController? imageScrollController;
 
 
 
 
   @override
   Widget build(BuildContext context) {
+    imageScrollController = ScrollController();
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
@@ -38,13 +41,13 @@ class DetailsView extends GetView<CommunityController> {
                         width: 30,
                         height: 30,
                         fit: BoxFit.cover,
-                        image: NetworkImage(controller.postDetails!.user!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
+                        image: NetworkImage(controller.postDetails!.value.user!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
                         placeholder: const AssetImage(
                             "assets/images/loading.gif"),
                         imageErrorBuilder:
                             (context, error, stackTrace) {
                           return Image.asset(
-                              "assets/images/téléchargement (3).png",
+                              "assets/images/user_admin.png",
                               width: 50,
                               height: 50,
                               fit: BoxFit.fitWidth);
@@ -52,14 +55,16 @@ class DetailsView extends GetView<CommunityController> {
                     )
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: 10,
                 ),
 
-                Text('${controller.postDetails!.user!.firstName!} ${controller.postDetails!.user!.lastName!}', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,),
+                SizedBox(
+                  width: Get.width*0.48,
+                    child: Text('${controller.postDetails!.value.user!.firstName!} ${controller.postDetails!.value.user!.lastName!}', style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)), overflow: TextOverflow.ellipsis,)),
 
 
               ]
-          ).paddingAll(20),
+          ).paddingOnly(left: 5),
           elevation: 0,
           leading: IconButton(
             icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white),
@@ -81,10 +86,14 @@ class DetailsView extends GetView<CommunityController> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
                       builder: (context) {
                         return Container(
+                          width: Get.width,
                           height: Get.height/2,
                           padding: EdgeInsets.all(20),
                           decoration: const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
+                          child: Text(controller.postDetails!.value.content!.replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                            return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                          })
+                              .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), style: const TextStyle(color: Colors.black), ).marginOnly(bottom: 50),
 
                         );
                       },
@@ -93,7 +102,10 @@ class DetailsView extends GetView<CommunityController> {
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                          child: Text(controller.postDetails!.content!, style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)).marginAll(20)),
+                          child: Text(controller.postDetails!.value.content!.replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                            return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                          })
+                              .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), style: const TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,)).marginAll(20)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,56 +113,51 @@ class DetailsView extends GetView<CommunityController> {
                   children: [
                     TextButton.icon(
                       onPressed: (){
-                        var arguments = Get.arguments as Map<String, dynamic>;
-                        if(arguments!=null) {
-                          if (arguments['post'] != null) {
-                            post = arguments['post'];
-                          }}
+                        print(controller.postDetails.value.likeTapped!.value);
 
-                        if( controller.selectedPost.contains(post)){
-                          controller.likeCount?.value = (controller.likeCount!.value - 1);
-                          controller.selectedPost.remove(post);
-                          //controller.postSelectedIndex.value = index;
-                          controller.likeUnlikePost(post!.postId!);
-                        }
-                        else{
-                          controller.likeCount?.value = (controller.likeCount!.value + 1);
-                              controller.selectedPost.add(post);
-                          controller.likeUnlikePost(post!.postId!);
-                        }
+                          if( controller.postDetails.value.likeTapped!.value){
+                            controller.postDetails.value.likeTapped!.value = false;
+                            controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!-1;
+
+                          }
+                          else{
+                            controller.postDetails.value.likeTapped!.value = true;
+                            controller.postDetails.value.likeCount = controller.postDetails.value.likeCount!+1;
+
+                          }
+                          // controller.allPosts[controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0])].likeTapped.value
+                          // = !controller.postDetails.value.likeTapped!.value;
+                          controller.likeUnlikePost(controller.postDetails.value.postId!,  controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]));
 
                       },
-                      icon: const FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white,),
-                      label: Obx(() => Text('${controller.likeCount}', style: TextStyle(color: Colors.white,),)),),
+                      icon: Obx(() => controller.postDetails.value.likeTapped!.value?
+                      FaIcon(FontAwesomeIcons.solidHeart, color: interfaceColor,)
+                          :FaIcon(FontAwesomeIcons.heart, color: Colors.white,),),
+                      label:  Obx(() => Text('${controller.postDetails.value.likeCount!.value}', style: TextStyle(color: Colors.white,),)),),
+
+
                     TextButton.icon(
                         onPressed: () async{
-                          showDialog(context: context, builder: (context){
-                            return CommentLoadingWidget();
-                          },);
-                          controller.postDetails = await controller.getAPost(controller.postDetails!.postId!);
-                          controller.commentList.value = controller.postDetails.commentList!;
-                          Navigator.of(context).pop();
-                          controller.commentCount!.value = controller.postDetails.commentCount!;
                           Get.toNamed(Routes.COMMENT_VIEW);
+                          controller.postDetails = await controller.getAPost(controller.postDetails!.value.postId!);
+                          controller.commentList.value = controller.postDetails.value.commentList!;
+                          controller.commentCount!.value = controller.postDetails.value.commentCount!.value;
+
                         },
                         icon: const FaIcon(FontAwesomeIcons.comment, color: Colors.white,),
-                        label: Text('${controller.postDetails.commentCount}', style:  TextStyle(color: Colors.white,),)),
+                        label: Text('${controller.postDetails.value.commentCount}', style:  TextStyle(color: Colors.white,),)),
                     TextButton.icon(
                         onPressed: () async{
-                          var arguments = Get.arguments as Map<String, dynamic>;
-                          if(arguments!=null) {
-                            if (arguments['post'] != null) {
-                              post = arguments['post'];
-                            }}
 
-                            controller.shareCount?.value = (controller.shareCount!.value + 1);
-                            controller.sharedPost.add(post);
-                            controller.sharePost(post!.postId!);
+                            // controller.shareCount?.value = (controller.shareCount!.value + 1);
+                            // controller.sharedPost.add(post);
+                          controller.postDetails.value.shareCount!.value = controller.postDetails.value.shareCount!.value+1;
+                            await controller.sharePost(controller.postDetails.value.postId!, controller.allPosts.indexOf(controller.allPosts.where((element)=>element.postId == controller.postDetails.value.postId).toList()[0]) );
 
 
                         },
                         icon: const FaIcon(FontAwesomeIcons.share, color: Colors.white,),
-                        label: Obx(() => Text('${controller.shareCount}', style: TextStyle(color: Colors.white,),)))
+                        label: Obx(() => Text('${controller.postDetails.value.shareCount!.value}', style: TextStyle(color: Colors.white,),)))
 
                   ],)
 
@@ -172,8 +179,8 @@ class DetailsView extends GetView<CommunityController> {
             child:   Column(
               children:
               [
-                if(controller.postDetails.imagesUrl!.isNotEmpty)...[
-                  if( controller.postDetails.imagesUrl!.length == 1)...[
+                if(controller.postDetails.value.imagesUrl!.isNotEmpty)...[
+                  if( controller.postDetails.value.imagesUrl!.length == 1)...[
                     Expanded(
                       child: GestureDetector(
                         //onTap: onPictureTapped,
@@ -182,8 +189,8 @@ class DetailsView extends GetView<CommunityController> {
                               width: Get.width,
                               height: Get.height,
                               fit: BoxFit.cover,
-                              image:  NetworkImage('${GlobalService().baseUrl}'
-                                  '${controller.postDetails.imagesUrl![0]['url'].substring(1,controller.postDetails.imagesUrl![0]['url'].length)}',
+                              image:  NetworkImage(
+                                  '${controller.postDetails.value.imagesUrl![0]['url']}',
                                   headers: GlobalService.getTokenHeaders()
                               ),
                               placeholder: const AssetImage(
@@ -207,30 +214,70 @@ class DetailsView extends GetView<CommunityController> {
                       //width: Get.width,
                       //height: Get.height*0.7,
                       child: ListView.builder(
+                        controller: imageScrollController,
                         scrollDirection: Axis.horizontal,
-                        itemCount: controller.postDetails.imagesUrl?.length,
+                        itemCount: controller.postDetails.value.imagesUrl?.length,
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            //onTap: onPictureTapped,
-                            child: FadeInImage(
-                              width: Get.width,
-                              height: Get.height*0.8,
-                              fit: BoxFit.cover,
-                              image:  NetworkImage('${GlobalService().baseUrl}'
-                                  '${controller.postDetails.imagesUrl![index]['url'].substring(1,controller.postDetails.imagesUrl![index]['url'].length)}',
-                                  headers: GlobalService.getTokenHeaders()
+                          return Stack(
+                            children: [
+                              GestureDetector(
+                                //onTap: onPictureTapped,
+                                child: FadeInImage(
+                                  width: Get.width,
+                                  height: Get.height*0.8,
+                                  fit: BoxFit.cover,
+                                  image:  NetworkImage(
+                                      '${controller.postDetails.value.imagesUrl![index]['url']}',
+                                      headers: GlobalService.getTokenHeaders()
+                                  ),
+                                  placeholder: const AssetImage(
+                                      "assets/images/loading.gif"),
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                        "assets/images/loading.gif",
+                                        width: Get.width,
+                                        height: Get.height,
+                                        fit: BoxFit.fitWidth);
+                                  },
+                                ).marginOnly(right: 10,),
                               ),
-                              placeholder: const AssetImage(
-                                  "assets/images/loading.gif"),
-                              imageErrorBuilder:
-                                  (context, error, stackTrace) {
-                                return Image.asset(
-                                    "assets/images/loading.gif",
-                                    width: Get.width,
-                                    height: Get.height,
-                                    fit: BoxFit.fitWidth);
-                              },
-                            ).marginOnly(right: 10,),
+                              Positioned(
+                                top: Get.height*0.8/2.2,
+                                child: SizedBox(
+                                  width: Get.width,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      if(index > 0)...[
+                                        GestureDetector(
+                                          child: Icon(Icons.arrow_back_ios_outlined, color: Colors.white,),
+                                          onTap: (){
+                                            // imageScrollController?.animateTo(
+                                            //   imageScrollController!.position.pixels - Get.width ,
+                                            //   duration: const Duration(milliseconds: 300),
+                                            //   curve: Curves.easeInOut,
+                                            // );
+                                            imageScrollController!.jumpTo(imageScrollController!.position.pixels - Get.width);
+
+                                          },
+                                        )
+                                      ],
+                                      Spacer(),
+                                      if(index < controller.postDetails.value.imagesUrl!.length - 1)...[
+                                        GestureDetector(
+                                          child: Icon(Icons.arrow_forward_ios_outlined, color: Colors.white,),
+                                          onTap: (){
+                                            imageScrollController!.jumpTo(imageScrollController!.position.pixels + Get.width);
+                                          },
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           );
 
                         },

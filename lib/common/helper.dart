@@ -2,9 +2,14 @@
 import 'dart:convert' as convert;
 import 'dart:io' as io;
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '../app/modules/root/controllers/root_controller.dart';
+import '../color_constants.dart';
 import 'ui.dart';
 
 class Helper {
@@ -31,6 +36,7 @@ class Helper {
       return false;
     }
   }
+
 
   static Future<dynamic> getJsonFile(String path) async {
     return rootBundle.loadString(path).then(convert.jsonDecode);

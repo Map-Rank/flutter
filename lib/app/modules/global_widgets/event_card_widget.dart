@@ -19,6 +19,7 @@ class EventCardWidget extends StatelessWidget {
     this.publishedDate,
     this.image,
     this.title,
+    this.isAllEventsPage,
     this.popUpWidget,
   }) : super(key: key);
 
@@ -32,6 +33,7 @@ class EventCardWidget extends StatelessWidget {
   final String? eventOrganizer;
   final String? image;
   Widget? popUpWidget;
+  var isAllEventsPage;
 
 
 
@@ -105,7 +107,7 @@ class EventCardWidget extends StatelessWidget {
                             imageErrorBuilder:
                                 (context, error, stackTrace) {
                               return Image.asset(
-                                  "assets/images/téléchargement (3).png",
+                                  "assets/images/user_admin.png",
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.fitWidth);
@@ -120,14 +122,15 @@ class EventCardWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
                       children: [
                         SizedBox(
-                            child: Text(title!, style: Get.textTheme.headlineSmall,),
-                          width: Get.width/2,
+                            child: Text(title!, style: Get.textTheme.headlineLarge),
+                          width: !isAllEventsPage? Get.width/1.8:Get.width
                         ),
-
-                        popUpWidget!,
+                        if(!isAllEventsPage)...[
+                          popUpWidget!,
+                        ]
 
 
 
@@ -136,32 +139,35 @@ class EventCardWidget extends StatelessWidget {
 
                     ),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
-                        SizedBox(
-                            width: Get.width/4,
-                          //height: 40,
-                            child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
-                        const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
-                        SizedBox(
-                            //width: Get.width/5,
-                          //height: 20,
-                            child: Text(publishedDate!, style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,)),
+        SizedBox(
+          width: Get.width,
+          height: 10,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+
+            children: [
+              const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
+              SizedBox(
+                width: Get.width/4,
+                child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
+              const FaIcon(FontAwesomeIcons.solidCircle, size: 8,).marginOnly(right: 10),
+              SizedBox(
+                width: Get.width/4.5,
+                  child: Text(publishedDate!, style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,)),
 
 
-                        //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
-                      ],
-                    ),
+              //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
+            ],
+          ),
+        ).marginOnly(bottom: 10),
 
-                    RichText(text: TextSpan(children: [
-                      TextSpan(text: 'Organized by: ', style: TextStyle(color: Colors.black)),
-                      TextSpan(text: eventOrganizer, style: TextStyle(color: Colors.black))
-                    ])).marginOnly(bottom: 10),
 
-                    Text(content!, style: TextStyle(), textAlign:TextAlign.justify, maxLines: 4, overflow: TextOverflow.ellipsis,),
+                    // RichText(text: TextSpan(children: [
+                    //   TextSpan(text: 'Organized by: ', style: TextStyle(color: Colors.black)),
+                    //   TextSpan(text: eventOrganizer, style: TextStyle(color: Colors.black))
+                    // ])).marginOnly(bottom: 10),
+
+                    Text(content!.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ''), maxLines: 3, style: Get.textTheme.displayMedium?.merge(TextStyle(overflow: TextOverflow.ellipsis,) )),
 
 
 

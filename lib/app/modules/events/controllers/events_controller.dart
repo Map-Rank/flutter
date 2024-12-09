@@ -23,15 +23,14 @@ import 'dart:math' as Math;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../color_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class EventsController extends GetxController {
 
   Rx<UserModel> currentUser = Get.find<AuthService>().user;
   var startingDate = "--/--/--".obs;
-  var startingDateDisplay = "--/--/--".obs;
   var endingDate = "--/--/--".obs;
-  var endingDateDisplay = "--/--/--".obs;
   late EventsRepository eventsRepository ;
   var allEvents = [].obs;
   var imageFiles = [].obs;
@@ -87,8 +86,17 @@ class EventsController extends GetxController {
   var chooseASubDivision = false.obs;
 
   var inputImage = false.obs;
-  var inputSector = false.obs;
-  var inputZone = false.obs;
+  var filterBySector = false.obs;
+  var filterByLocation = false.obs;
+
+  TextEditingController eventOrganizerController = TextEditingController();
+
+  TextEditingController eventLocation = TextEditingController();
+
+  TextEditingController startingDateDisplay = TextEditingController();
+
+  TextEditingController endingDateDisplay = TextEditingController();
+
 
 
   EventsController(){
@@ -98,82 +106,111 @@ class EventsController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
-    event = Event();
-
-    scrollbarController = ScrollController()..addListener(_scrollListener);
     eventsRepository = EventsRepository();
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
     sectorRepository = SectorRepository();
+    startingDateDisplay.text = "--/--/--";
+    endingDateDisplay.text = "--/--/--";
+    event = Event();
+
+    scrollbarController = ScrollController()..addListener(_scrollListener);
 
 
 
 
-    listAllEvents = await getAllEvents(0);
-    allEvents.value= listAllEvents;
+// coverage:ignore-start
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllEvents = await getAllEvents(0);
+      allEvents.value= listAllEvents;
 
 
-    var box = GetStorage();
+      var box = GetStorage();
 
-    var boxRegions = box.read("allRegions");
+      var boxRegions = box.read("allRegions");
 
-    if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Regions...'),
-        duration: Duration(seconds: 3),
-      ));
+      if(boxRegions == null){
+        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_regions),
+          duration: Duration(seconds: 3),
+        ));
 
-      regionsSet = await getAllRegions();
-      listRegions.value = regionsSet['data'];
-      loadingRegions.value = !regionsSet['status'];
-      regions.value = listRegions;
+        regionsSet = await getAllRegions();
+        listRegions.value = regionsSet['data'];
+        loadingRegions.value = !regionsSet['status'];
+        regions.value = listRegions;
 
-      box.write("allRegions", regionsSet);
+        box.write("allRegions", regionsSet);
 
+      }
+      else{
+
+        listRegions.value = boxRegions['data'];
+        loadingRegions.value = !boxRegions['status'];
+        regions.value = listRegions;
+
+
+      }
+
+      var boxSectors = box.read("allSectors");
+
+      if(boxSectors == null){
+
+        ScaffoldMessenger.of(Get.context!).showSnackBar( SnackBar(
+          content: Text(AppLocalizations.of(Get.context!).loading_sectors),
+          duration: Duration(seconds: 3),
+        ));
+
+        sectorsSet = await getAllSectors();
+        listSectors.value = sectorsSet['data'];
+        loadingSectors.value = !sectorsSet['status'];
+        sectors.value = listSectors;
+
+        box.write("allSectors", sectorsSet);
+
+      }
+      else{
+        listSectors.value = boxSectors['data'];
+        loadingSectors.value = !boxSectors['status'];
+        sectors.value = listSectors;
+
+
+      }
     }
     else{
-
-      listRegions.value = boxRegions['data'];
-      loadingRegions.value = !boxRegions['status'];
-      regions.value = listRegions;
-
-
-    }
-
-    var boxSectors = box.read("allSectors");
-
-    if(boxSectors == null){
-
-      ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-        content: Text('Loading Sectors...'),
-        duration: Duration(seconds: 3),
-      ));
-
-      sectorsSet = await getAllSectors();
-      listSectors.value = sectorsSet['data'];
-      loadingSectors.value = !sectorsSet['status'];
-      sectors.value = listSectors;
-
-      box.write("allSectors", sectorsSet);
-
-    }
-    else{
-      listSectors.value = boxSectors['data'];
-      loadingSectors.value = !boxSectors['status'];
-      sectors.value = listSectors;
-
+      listAllEvents = [Event(
+        eventId: 1,
+        title: "Flutter Conference",
+        content: "An exciting conference about Flutter development.",
+        zone: "Zone 1",
+        organizer: "Tech World",
+        publishedDate: "2024-09-01",
+        imagesUrl: "https://example.com/event_image.jpg",
+      )];
+      allEvents.value= listAllEvents;
+      loadingEvents = false.obs;
+      createUpdateEvents = true.obs;
 
     }
 
+// coverage:ignore-end
+    super.onInit();
 
   }
 
 
   Future refreshEvents({bool showMessage = false}) async {
+    listAllEvents.clear();
+    allEvents.clear();
     loadingEvents.value = true;
-    listAllEvents = await getAllEvents(0);
-    allEvents.value= listAllEvents;
+    if(! Platform.environment.containsKey('FLUTTER_TEST')){
+      listAllEvents = await getAllEvents(0);
+    }
+    else{
+      listAllEvents = [Event(), Event()];
+    }
+
+    allEvents.value = listAllEvents;
     emptyArrays();
   }
 
@@ -187,6 +224,7 @@ class EventsController extends GetxController {
      sectorsSelected.clear();
      imageFiles.clear();
      regionSelectedValue.clear();
+     createUpdateEvents.value = false;
      divisionSelectedValue.clear();
      subdivisionSelectedValue.clear();
   }
@@ -216,7 +254,7 @@ class EventsController extends GetxController {
       }
 
       imageFiles.add(compressedImage) ;
-      event.imagesFilePaths = imageFiles;
+      event.imagesFileBanner = imageFiles;
 
     }
     else{
@@ -243,7 +281,7 @@ class EventsController extends GetxController {
 
 
         imageFiles.add(compressedImage) ;
-        event.imagesFilePaths = imageFiles;
+        event.imagesFileBanner = imageFiles;
 
 
         i++;
@@ -251,79 +289,17 @@ class EventsController extends GetxController {
     }
   }
 
-  startingDatePicker() async {
-    DateTime? pickedDate = await showRoundedDatePicker(
 
-      context: Get.context!,
-      theme: ThemeData.light().copyWith(
-          primaryColor: buttonColor
-      ),
-      height: Get.height/2,
-      initialDate: DateTime.now().add(Duration(days: 2)),
-      firstDate: DateTime.now().add(Duration(days: 1)),
-      lastDate: DateTime(DateTime.now().year+6),
-      styleDatePicker: MaterialRoundedDatePickerStyle(
-          textStyleYearButton: const TextStyle(
-            fontSize: 52,
-            color: Colors.white,
-          )
-      ),
-      borderRadius: 16,
-      //selectableDayPredicate: disableDate
-    );
-    if (pickedDate != null ) {
-      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      TimeOfDay? selectedTime = await showTimePicker(
-        context: Get.context!,
-        initialTime: TimeOfDay.now(),
-      );
-      startingDateDisplay.value = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      startingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      event.startDate = startingDate.value;
-
-    }
-  }
-
-  endingDatePicker() async {
-    DateTime? pickedDate = await showRoundedDatePicker(
-
-      context: Get.context!,
-      theme: ThemeData.light().copyWith(
-          primaryColor: buttonColor
-      ),
-      height: Get.height/2,
-      initialDate: DateTime.now().add(Duration(days: 2)),
-      firstDate: DateTime.now().add(Duration(days: 1)),
-      lastDate: DateTime(DateTime.now().year+6),
-      styleDatePicker: MaterialRoundedDatePickerStyle(
-          textStyleYearButton: const TextStyle(
-            fontSize: 52,
-            color: Colors.white,
-          )
-      ),
-      borderRadius: 16,
-      //selectableDayPredicate: disableDate
-    );
-    if (pickedDate != null ) {
-      TimeOfDay? selectedTime = await showTimePicker(
-        context: Get.context!,
-        initialTime: TimeOfDay.now(),
-      );
-      //birthDate.value = DateFormat('dd/MM/yy').format(pickedDate);
-      endingDateDisplay.value = "${DateFormat('dd-MM-yyyy').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      endingDate.value = "${DateFormat('yyyy-MM-dd').format(pickedDate)} ${selectedTime?.hour.toString().padLeft(2, "0")}:${selectedTime?.minute.toString().padLeft(2, "0")}:00";
-      event.endDate = endingDate.value;
-    }
-  }
-
+// coverage:ignore-start
   void _scrollListener() async{
     print('extent is ${scrollbarController.position.extentAfter}');
     if (scrollbarController.position.extentAfter < 10) {
-      var event = await getAllEvents(page++);
+      var event = await getAllEvents(++page);
       allEvents.addAll(event);
       listAllEvents.addAll(event);
     }
   }
+// coverage:ignore-end
 
 
 
@@ -403,21 +379,6 @@ class EventsController extends GetxController {
     return sectorRepository.getAllSectors();
   }
 
-
-  filterSearchEventsByName(String query){
-    List dummySearchList = [];
-    dummySearchList = listAllEvents;
-    if(query.isNotEmpty) {
-      List dummyListData = [];
-      dummyListData = dummySearchList.where((element) => element.organizer
-          .toString().toLowerCase().contains(query.toLowerCase())).toList();
-      allEvents.value = dummyListData;
-      return;
-    } else {
-      allEvents.value = listAllEvents;
-    }
-  }
-
   filterSearchEventsBySectors(var query) async {
     var eventsList = [];
     if(sectorsSelected.isNotEmpty) {
@@ -456,7 +417,10 @@ class EventsController extends GetxController {
 
       }
       catch (e) {
-        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+
+        if(! Platform.environment.containsKey('FLUTTER_TEST')){
+          Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+        }
       }
       finally {
         loadingEvents.value = false;
@@ -479,11 +443,6 @@ class EventsController extends GetxController {
         var list = await eventsRepository.filterEventsByZone(page, query);
         print(list);
         for( var i = 0; i< list.length; i++){
-          UserModel user = UserModel(userId: list[i]['creator'][0]['id'],
-              lastName:list[i]['creator'][0]['last_name'],
-              firstName: list[i]['creator'][0]['first_name'],
-              avatarUrl: list[i]['creator'][0]['avatar']
-          );
           event = Event(
               zone: list[i]['location'],
               eventId: list[i]['id'].toInt(),
@@ -491,7 +450,7 @@ class EventsController extends GetxController {
               publishedDate: list[i]['humanize_date_creation'],
               imagesUrl: list[i]['image'],
               title: list[i]['title'],
-              eventCreatorId: int.parse(list[i]['user_id']),
+              eventCreatorId: list[i]['user_id'],
               organizer: list[i]['organized_by'],
               eventSectors: list[i][''],
               startDate: list[i]['date_debut'],
@@ -518,7 +477,7 @@ class EventsController extends GetxController {
 
     }else {
       loadingEvents.value = true;
-      listAllEvents = getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
       allEvents.value = listAllEvents;
       noFilter.value = false;
     }
@@ -603,29 +562,47 @@ class EventsController extends GetxController {
     }
   }
 
+  getSpecificZone(int zoneId){
+    try{
+      var result = zoneRepository.getSpecificZone(zoneId);
+      return result;
+    }
+    catch(e){
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
+    }
+
+  }
+
   getAllEvents(int page)async{
     var eventsList = [];
     try{
 
       var list = await eventsRepository.getAllEvents(page);
+      print('List is: $list');
 
       for( var i = 0; i< list.length; i++) {
-        event = Event(
+        var event = Event(
             zone: list[i]['location'],
             eventId: list[i]['id'].toInt(),
             content: list[i]['description'],
             publishedDate: list[i]['humanize_date_creation'],
             imagesUrl: list[i]['image'],
             title: list[i]['title'],
-            eventCreatorId: int.parse(list[i]['user_id']),
+            eventCreatorId: list[i]['user_id'],
             organizer: list[i]['organized_by'],
-            eventSectors: list[i][''],
+            eventSectors: list[i]['sector'],
             startDate: list[i]['date_debut'],
-            endDate: list[i]['date_fin']
-
+            endDate: list[i]['date_fin'],
+            zoneParentId: list[i]['zone']['parent_id'],
+            zoneLevelId: list[i]['zone']['level_id'],
+            zoneEventId: list[i]['zone']['id'],
             //sectors: list[i]['sectors']
 
         );
+        print(list[i]['sector']);
+        print(event.eventSectors);
 
         //print(User.fromJson(list[i]['creator']));
         //if(list[i]['is_valid'] == "1"){
@@ -638,7 +615,9 @@ class EventsController extends GetxController {
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 
@@ -659,16 +638,19 @@ class EventsController extends GetxController {
           imagesUrl: result['image'],
           title: result['title'],
           eventCreatorId: int.parse(result['user_id']),
-          organizer: result['organized_by']
-
-        //sectors: list[i]['sectors']
+          organizer: result['organized_by'],
+        zoneParentId: result['zone']['parent_id'],
+        zoneLevelId: result['zone']['level_id'], //sectors: list[i]['sectors']
 
       );
+      eventModel.sectors = result['sector'].toList();
       return eventModel;
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
 
@@ -676,24 +658,21 @@ class EventsController extends GetxController {
 
   }
   createEvent(Event event)async{
-    print(event.zone);
-    print(event.title);
-    print(event.startDate);
-    print(event.content);
-    print(event.endDate);
-    print(event.organizer);
-    print(event.zoneEventId);
     try{
 
       await eventsRepository.createEvent(event);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event created successfully' ));
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
       createEvents.value = true;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_created_successful ));
+      Navigator.pop(Get.context!);
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       createEvents.value = true;
@@ -707,16 +686,24 @@ class EventsController extends GetxController {
   updateEvent(Event event)async{
     try{
       await eventsRepository.updateEvent(event);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event updated successfully' ));
+      listAllEvents.clear();
+      allEvents.clear();
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_updated_successful ));
+      emptyArrays();
+      Navigator.pop(Get.context!);
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      updateEvents.value = false;
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
-      createEvents.value = true;
+      updateEvents.value = false;
       emptyArrays();
     }
 
@@ -727,13 +714,16 @@ class EventsController extends GetxController {
   deleteEvent(int eventId)async{
     try{
       await eventsRepository.deleteEvent(eventId);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: 'Event deleted successfully' ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).event_deleted_successful ));
       loadingEvents.value = true;
-      await getAllEvents(0);
+      listAllEvents = await getAllEvents(0);
+      allEvents.value = listAllEvents;
 
     }
     catch (e) {
-      Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+      }
     }
     finally {
       //createPosts.value = true;

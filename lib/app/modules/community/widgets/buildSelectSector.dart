@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
 import 'package:mapnrank/app/modules/global_widgets/location_widget.dart';
+import 'package:mapnrank/app/modules/global_widgets/sector_item_widget.dart';
 import 'package:mapnrank/app/modules/global_widgets/text_field_widget.dart';
 import 'package:mapnrank/color_constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BuildSelectSector extends GetView<CommunityController> {
   BuildSelectSector({Key? key,
@@ -17,28 +19,41 @@ class BuildSelectSector extends GetView<CommunityController> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      //padding: EdgeInsets.all(20),
       children: [
+        Obx(() => !controller.filterBySector.value?Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(AppLocalizations.of(context).select_sector_title,
+              style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
+              textAlign: TextAlign.start,
+            ),
 
-        Text('Select a sector',
-          style: Get.textTheme.bodyMedium?.merge(const TextStyle(color: labelColor)),
-          textAlign: TextAlign.start,
-        ),
+            TextButton(onPressed: (){
+              Navigator.of(context).pop();
+            }, child: Text('${AppLocalizations.of(context).ok}/${AppLocalizations.of(context).cancel}'))
+
+          ],):SizedBox(),),
+
+
+
         Obx(() =>
             Column(
               children: [
+    Obx(() => !controller.filterBySector.value?
                 TextFieldWidget(
                   readOnly: false,
                   keyboardType: TextInputType.text,
-                  validator: (input) => input!.isEmpty ? 'Required field' : null,
+                  validator: (input) => input!.isEmpty ? AppLocalizations.of(context).required_field : null,
                   iconData: FontAwesomeIcons.search,
                   style: const TextStyle(color: labelColor),
-                  hintText: 'Select or search by sector name',
+                  hintText: AppLocalizations.of(context).select_search_sector,
                   onChanged: (value)=>{
                     controller.filterSearchSectors(value)
                   },
                   errorText: '', suffixIcon: const Icon(null), suffix: const Icon(null),
-                ),
+                )
+        :SizedBox()),
                 controller.loadingSectors.value ?
                 Column(
                   children: [
@@ -103,15 +118,14 @@ class BuildSelectSector extends GetView<CommunityController> {
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     controller.post?.sectors?.add(controller.sectors[index]['id']);
                                     print( controller.sectors[index]);
-                                    print('nath');
                                   }
                                   else{
-                                    print('christelle');
                                     controller.sectorsSelected.add(controller.sectors[index]);
                                     var sectorsIds = [];
                                     for(var i = 0; i<controller.sectorsSelected.length; i++){
                                       sectorsIds.add(controller.sectors[index]['id']);
                                     }
+                                    controller.post.sectors = sectorsIds;
                                     controller.filterSearchPostsBySectors(sectorsIds);
                                   }
 
@@ -122,8 +136,8 @@ class BuildSelectSector extends GetView<CommunityController> {
 
                               },
                               // coverage:ignore-end
-                              child: Obx(() => LocationWidget(
-                                regionName: controller.sectors[index]['name'],
+                              child: Obx(() => SectorItemWidget(
+                                sectorName: controller.sectors[index]['name'],
                                 selected: controller.sectorsSelected.contains(controller.sectors[index])? true : false,
                               ).marginOnly(bottom: 5))
                           );
@@ -133,7 +147,6 @@ class BuildSelectSector extends GetView<CommunityController> {
             ),
         ).marginOnly(bottom: 20),
 
-        const SizedBox(height: 20),
       ],
     );
   }

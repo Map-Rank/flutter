@@ -45,16 +45,20 @@ class SettingsService extends GetxService {
         textTheme: GoogleFonts.getTextTheme(
           'Poppins',
           TextTheme(
-            //titleMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
-            headlineSmall: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black, height: 1.3, ),
+            headlineLarge: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700, color: Colors.black, height: 1.4),
+            headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4, ),
             headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.normal, color: Colors.black, height: 1.4),
-            titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600, color: interfaceColor, height: 1.2),
+            titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w700, color: Color(0xff021D40), height: 1.5),
             labelMedium:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2) ,
             bodyMedium: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
-            bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.grey, height: 1.2),
+            bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Color(0xff6B6B6B), height: 1.2),
+            displayMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500, color: Color(0xff242424).withOpacity(0.9), height: 1.4 ),
+            displaySmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500, color: Color(0xff242424), height: 1.4),
+
           ),
 
-        ));
+        )
+    );
   }
 
   ThemeData getDarkTheme() {
@@ -78,12 +82,14 @@ class SettingsService extends GetxService {
             'Poppins',
 
             TextTheme(
-              headlineSmall: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.black, height: 1.3, ),
+              headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black, height: 1.4, ),
               headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.normal, color: Colors.black, height: 1.4),
-              titleSmall: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600, color: interfaceColor, height: 1.2),
+              titleSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.black),
               labelMedium:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2) ,
               bodyMedium: TextStyle(fontSize: 13.0, fontWeight: FontWeight.w600, color: labelColor, height: 1.2),
-              bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.grey, height: 1.2),
+              bodySmall: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Color(0xff6B6B6B), height: 1.2),
+              displayMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Color(0xff242424), height: 1.4),
+              displaySmall: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400, color: Color(0xff242424), height: 1.4),
             )));
   }
 

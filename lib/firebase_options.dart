@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:mapnrank/env/env.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -49,21 +50,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: "AIzaSyChU6zChJFQwciOFVPA39rH7TU4e0cQjvA",
-    appId: "1:390075232477:android:e2af6db5a13869106b2b34",
-    messagingSenderId: "390075232477",
-    projectId: "residat-7f3e3",
-    androidClientId: "754693177402-591j5gue73i5mm7u80r3rd5jrh2scmvj.apps.googleusercontent.com",
-    storageBucket: "residat-7f3e3.appspot.com",
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: "${Env.api_key}",
+    appId: "${Env.app_id}",
+    messagingSenderId: "${Env.messaging_sender_id}",
+    projectId: "${Env.project_id}",
+    androidClientId: "273830249825-fe9pl6akb7o1vsntb1gsc7t6vf98vsur.apps.googleusercontent.com",
+    storageBucket: "rankit-74583.appspot.com",
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: "AIzaSyChU6zChJFQwciOFVPA39rH7TU4e0cQjvA",
-    appId: "1:390075232477:android:e2af6db5a13869106b2b34",
-    messagingSenderId: "390075232477",
-    projectId: "residat-7f3e3",
-    storageBucket: "residat-7f3e3.appspot.com",
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: "${Env.api_key}",
+    appId: "${Env.app_id}",
+    messagingSenderId: "${Env.messaging_sender_id}",
+    projectId: "${Env.project_id}",
+    storageBucket: "rankit-74583.appspot.com",
     iosClientId: '739267820418-ego0tsnaktg58eca2o74m3gqiv5sbt8c.apps.googleusercontent.com',
     iosBundleId: 'com.mapnrank.app',
   );

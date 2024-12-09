@@ -13,11 +13,13 @@ class Event extends Model {
   var zone;
   var zoneEventId;
   var eventSectors;
+  var zoneLevelId;
+  var zoneParentId;
   int? eventId;
-  List? sectors;
+  var sectors;
   String? imagesUrl;
   int? eventCreatorId;
-  List? imagesFilePaths;
+  List? imagesFileBanner;
 
 
   Event({this.eventId,
@@ -31,9 +33,11 @@ class Event extends Model {
     this.organizer,
     this.zoneEventId,
     this.eventSectors,
-    this.imagesFilePaths,
+    this.imagesFileBanner,
     this.startDate,
     this.endDate,
+    this.zoneParentId,
+    this.zoneLevelId,
   });
 
   Event.fromJson(Map<String, dynamic> json) {

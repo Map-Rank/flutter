@@ -6,11 +6,11 @@ import 'package:mapnrank/app/modules/global_widgets/custom_bottom_nav_bar.dart';
 void main() {
   testWidgets('CustomBottomNavigationBar test', (WidgetTester tester) async {
     int selectedIndex = 0;
-    final items = [
-      CustomBottomNavigationItem(icon: Icons.home, label: 'Home'),
-      CustomBottomNavigationItem(icon: Icons.search, label: 'Search'),
-      CustomBottomNavigationItem(icon: Icons.person, label: 'Profile'),
-    ];
+final items = [
+ CustomBottomNavigationItem(icon: Icon(Icons.home), label: 'Home'),
+ CustomBottomNavigationItem(icon: Icon(Icons.search), label: 'Search'),
+ CustomBottomNavigationItem(icon: Icon(Icons.person), label: 'Profile'),
+];
 
     await tester.pumpWidget(
       MaterialApp(

@@ -40,8 +40,8 @@ void main() {
     );
 
     // Assert
-    expect(find.byIcon(FontAwesomeIcons.square), findsOneWidget);
-    expect(find.byIcon(FontAwesomeIcons.check), findsNothing);
+    expect(find.byIcon(FontAwesomeIcons.circle), findsOneWidget);
+    expect(find.byIcon(FontAwesomeIcons.dotCircle), findsNothing);
   });
 
   testWidgets('LocationWidget displays the correct icon when selected', (WidgetTester tester) async {
@@ -58,8 +58,8 @@ void main() {
     );
 
     // Assert
-    expect(find.byIcon(FontAwesomeIcons.check), findsOneWidget);
-    expect(find.byIcon(FontAwesomeIcons.square), findsNothing);
+    expect(find.byIcon(FontAwesomeIcons.dotCircle), findsOneWidget);
+    expect(find.byIcon(FontAwesomeIcons.circle), findsNothing);
   });
 
   testWidgets('LocationWidget displays the correct border when selected', (WidgetTester tester) async {
@@ -78,7 +78,7 @@ void main() {
     // Assert
     final container = tester.widget<Container>(find.byType(Container).first);
     final BoxDecoration? decoration = container.decoration as BoxDecoration?;
-    expect(decoration?.border, isNull);
+    expect(decoration?.border, Border(bottom: BorderSide(color: Color(0x61000000), width: 0.5)));
     //expect(decoration?.border?.top.color, equals(interfaceColor));
   });
 
@@ -98,6 +98,6 @@ void main() {
     // Assert
     final container = tester.widget<Container>(find.byType(Container).first);
     final BoxDecoration? decoration = container.decoration as BoxDecoration?;
-    expect(decoration?.border, isNull);
+    expect(decoration?.border, Border(bottom: BorderSide(color: Color(0x61000000), width: 0.5)));
   });
 }

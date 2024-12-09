@@ -8,16 +8,19 @@ class Post extends Model {
   String? publishedDate;
   var zone;
   var zonePostId;
+  var zoneLevelId;
+  var zoneParentId;
   var postSectors;
   int? postId;
   List? sectors;
   List? imagesUrl;
-  int? commentCount;
-  int? shareCount;
-  int? likeCount;
-  bool? likeTapped;
+  RxInt? commentCount;
+  RxInt? shareCount;
+  RxInt? likeCount;
+  RxBool? likeTapped;
   bool? commentTapped;
   bool? shareTapped;
+  RxBool? isFollowing;
   UserModel? user;
   bool? liked;
   List? imagesFilePaths;
@@ -40,7 +43,10 @@ class Post extends Model {
     this.likeTapped,
     this.commentTapped,
     this.shareTapped,
-    this.commentList
+    this.commentList,
+    this.zoneLevelId,
+    this.zoneParentId,
+    this.isFollowing,
   });
 
   Post.fromJson(Map<String, dynamic> json) {

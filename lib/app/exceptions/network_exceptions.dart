@@ -31,6 +31,9 @@ abstract class NetworkExceptions {
       case 503:
         return "Service unavailable";
         break;
+      case 422:
+        return "Invalid Credentials";
+        break;
       default:
         return "Received invalid status code";
     }

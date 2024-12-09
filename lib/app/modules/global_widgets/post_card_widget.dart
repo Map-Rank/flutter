@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/models/user_model.dart';
+import 'package:mapnrank/app/modules/global_widgets/read_more_text.dart';
+import 'package:mapnrank/app/modules/other_user_profile/controllers/other_user_profile_controller.dart';
 import 'package:mapnrank/app/services/global_services.dart';
 import '../../../color_constants.dart';
+import '../../routes/app_routes.dart';
 import '../community/controllers/community_controller.dart';
 import '../community/widgets/comment_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PostCardWidget extends StatelessWidget {
   PostCardWidget({Key? key,
@@ -28,9 +31,13 @@ class PostCardWidget extends StatelessWidget {
     this.shareTapped,
     this.likeTapped,
     this.commentTapped,
+    this.onFollowTapped,
     this.likeWidget,
     this.onActionTapped,
-    this.popUpWidget
+    this.popUpWidget,
+    this.followWidget,
+    this.isCommunityPage,
+    this.imageScrollController,
   }) : super(key: key);
 
   final List? sectors;
@@ -40,7 +47,7 @@ class PostCardWidget extends StatelessWidget {
   var zone;
   final UserModel? user;
   RxInt? likeCount;
-  final int? commentCount;
+  RxInt? commentCount;
   RxInt? shareCount;
   final List? images;
   final bool? liked;
@@ -49,88 +56,52 @@ class PostCardWidget extends StatelessWidget {
   final Function()? onSharedTapped;
   final Function()? onPictureTapped;
   final Function()? onActionTapped;
+  final Function()? onFollowTapped;
   RxBool? likeTapped;
   var commentTapped;
   var shareTapped;
   Widget? likeWidget;
   Widget? popUpWidget;
+  Widget? followWidget;
+  bool? isCommunityPage;
+  ScrollController? imageScrollController;
+
 
 
 
 
   @override
   Widget build(BuildContext context) {
-
-
-    return Card(
-
-        color: Get.theme.primaryColor,
-        shape: const RoundedRectangleBorder(
-          side:  BorderSide(
-              color: inactive, width: 0, style: BorderStyle.none
-            //travelState != 'accepted' && isUser ? inactive : interfaceColor.withOpacity(0.4), width: 2
-          ) ,
-          //borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
+    imageScrollController = ScrollController();
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10)),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 60,
+                //width: Get.width,
+                //height: 60,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     InkWell(
-                      onTap: () => showDialog(
-                          context: context, builder: (_){
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Material(
-                                child: IconButton(onPressed: ()=> Navigator.pop(context), icon: const Icon(Icons.close, size: 20))
-                            ),
-                            ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: FadeInImage(
-                                width: Get.width,
-                                height: Get.height/2,
-                                fit: BoxFit.cover,
-                                image:  NetworkImage(user!.avatarUrl!, headers: {}),
-                                placeholder: const AssetImage(
-                                    "assets/images/loading.gif"),
-                                imageErrorBuilder:
-                                    (context, error, stackTrace) {
-                                  return Center(
-                                      child: Container(
-                                          width: Get.width/1.5,
-                                          height: Get.height/3,
-                                          color: Colors.white,
-                                          child: const Center(
-                                              child: Icon(Icons.person, size: 150)
-                                          )
-                                      )
-                                  );
-                                },
-                              ),
-                            )
-                          ],
-                        );
-                      }),
                       child: ClipOval(
                           child: FadeInImage(
                             width: 40,
                             height: 40,
                             fit: BoxFit.cover,
-                            image:  NetworkImage(user!.avatarUrl!, headers: {}),
+                            image:  NetworkImage(user!.avatarUrl!, headers: GlobalService.getTokenHeaders()),
                             placeholder: const AssetImage(
                                 "assets/images/loading.gif"),
                             imageErrorBuilder:
                                 (context, error, stackTrace) {
                               return Image.asset(
-                                  "assets/images/téléchargement (3).png",
+                                  "assets/images/user_admin.png",
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.fitWidth);
@@ -138,44 +109,87 @@ class PostCardWidget extends StatelessWidget {
                           )
                       ),
                     ),
-                    const SizedBox(width: 20,),
+                    const SizedBox(width: 5,),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',overflow:TextOverflow.ellipsis , style: Get.textTheme.headlineSmall).marginOnly(bottom: 10),
-                        Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const FaIcon(FontAwesomeIcons.locationDot, size: 10,).marginOnly(right: 10),
-                                SizedBox(
-                                    width: Get.width/4,
-                                    child: Text(zone.toString(), style: Get.textTheme.bodySmall).marginOnly(right: 10)),
-                                const FaIcon(FontAwesomeIcons.solidCircle, size: 10,).marginOnly(right: 10),
-                                SizedBox(
-                                    width: Get.width/4,
-                                    child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
+                        SizedBox(
+                          width: Get.width*0.81,
+                          child: Row(
+                            //crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: Get.width*0.45,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    if(isCommunityPage == true){
+                                      Get.toNamed(Routes.OTHER_USER_PROFILE, arguments: {'userId':user?.userId});
+                                    };
+
+                                  },
+                                  child: Wrap(
+                                    children: [
+                                      Text('${user?.firstName![0].toUpperCase()}${user?.firstName!.substring(1).toLowerCase()} ${user?.lastName![0].toUpperCase()}${user?.lastName!.substring(1).toLowerCase()}',
+                                          //overflow:TextOverflow.ellipsis ,
+                                          style: Get.textTheme.titleSmall)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
 
 
-                                //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
-                              ],
-                            )
+                              isCommunityPage!?
+                              followWidget!:
+                              SizedBox(
+                                  width: 15,
+                                  height: 15,
+                                  child: popUpWidget!),
+
+
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(
+                          height: 10,
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+
+                            children: [
+                              const FaIcon(FontAwesomeIcons.locationDot, size: 15,).marginOnly(right: 10),
+                              SizedBox(
+                                //width: Get.width/4,
+                                child: Text(zone.toString(), style: Get.textTheme.bodySmall, overflow: TextOverflow.ellipsis,).marginOnly(right: 10),),
+                              const FaIcon(FontAwesomeIcons.solidCircle, size: 5,).marginOnly(right: 10),
+                              SizedBox(
+                                //width: Get.width/4,
+                                  child: Text(publishedDate!, style: Get.textTheme.bodySmall)),
+
+
+                              //Text("⭐️ ${this.rating}", style: TextStyle(fontSize: 13, color: appColor))
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    const Spacer(),
-
-                    popUpWidget!,
-
 
                   ],
 
 
                 ),
-              ),
-              Text(content!).marginOnly(bottom: 20),
+              ).paddingSymmetric(horizontal: 10),
+
+              ReadMoreText(
+                  content == null? '':content?.replaceAllMapped(RegExp(r'<p>|<\/p>'), (match) {
+                    return match.group(0) == '</p>' ? '\n' : ''; // Replace </p> with \n and remove <p>
+                  })
+                      .replaceAll(RegExp(r'^\s*\n', multiLine: false), ''), // Remove empty lines),
+                  maxLines: 3,
+                  trimMode: TrimMode.line,
+                  textStyle: Get.textTheme.displayMedium!).paddingSymmetric(horizontal: 10).marginOnly(top: 20),
               if(images!.isNotEmpty)...[
                 if( images!.length == 1)...[
                   GestureDetector(
@@ -183,10 +197,10 @@ class PostCardWidget extends StatelessWidget {
                     child: ClipRect(
                         child: FadeInImage(
                           width: Get.width,
-                          height: Get.height/3,
+                          height: 375,
                           fit: BoxFit.cover,
-                          image:  NetworkImage('${GlobalService().baseUrl}'
-                              '${images![0]['url'].substring(1,images![0]['url'].length)}',
+                          image:  NetworkImage(
+                              '${images![0]['url']}',
                               headers: GlobalService.getTokenHeaders()
                           ),
                           placeholder: const AssetImage(
@@ -196,8 +210,8 @@ class PostCardWidget extends StatelessWidget {
                             return Image.asset(
                                 "assets/images/loading.gif",
                                 width: Get.width,
-                                height: Get.height/4,
-                                fit: BoxFit.fitWidth);
+                                height: 375,
+                                fit: BoxFit.fitHeight);
                           },
                         )
 
@@ -206,37 +220,180 @@ class PostCardWidget extends StatelessWidget {
                 ]
                 else...[
                   SizedBox(
-                    height: Get.height/4,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: images?.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: onPictureTapped,
-                          child: FadeInImage(
-                            width: Get.width-50,
-                            height: Get.height/4,
-                            fit: BoxFit.cover,
-                            image:  NetworkImage('${GlobalService().baseUrl}'
-                                '${images![index]['url'].substring(1,images![index]['url'].length)}',
-                                headers: GlobalService.getTokenHeaders()
-                            ),
-                            placeholder: const AssetImage(
-                                "assets/images/loading.gif"),
-                            imageErrorBuilder:
-                                (context, error, stackTrace) {
-                              return Image.asset(
-                                  "assets/images/loading.gif",
-                                  width: Get.width,
-                                  height: Get.height/4,
-                                  fit: BoxFit.fitWidth);
-                            },
-                          ).marginOnly(right: 10),
-                        );
+                      height: 375,
+                      child: images!.length == 2?
+                      Row(
+                        children: [
+                          Expanded(
+                              child: GestureDetector(
+                                onTap: onPictureTapped,
+                                child: SizedBox(
+                                    height: Get.height,
+                                    child: _buildImage(images![0]['url'], Colors.transparent)),
+                              )),
+                          SizedBox(width: 2),
+                          Expanded(child: GestureDetector(
+                            onTap: onPictureTapped,
+                            child: SizedBox(
+                                height: Get.height,
+                                child: _buildImage(images![1]['url'], Colors.transparent)),
+                          )),
 
-                      },
-                    ),
+                        ],
+                      )
+                          :images!.length == 3?
+                      Row(
+                        children: [
+                          Expanded(
+                              child: GestureDetector(
+                                onTap: onPictureTapped,
+                                child: SizedBox(
+                                    height: Get.height,
+                                    child: _buildImage(images![0]['url'], Colors.transparent)),
+                              )),
+                          SizedBox(width: 2),
+                          Expanded(child: GestureDetector(
+                            onTap: onPictureTapped,
+                            child: SizedBox(
+                                height: Get.height,
+                                child: _buildImage(images![1]['url'], Colors.transparent)),
+                          )),
+                          SizedBox(width: 2),
+                          Expanded(child: GestureDetector(
+                            onTap: onPictureTapped,
+                            child: SizedBox(
+                                height: Get.height,
+                                child: _buildImage(images![2]['url'], Colors.transparent)),
+                          )),
+                        ],
+                      ):
+                      Row(
+                        children: [
+                          Expanded(
+                              child: GestureDetector(
+                                onTap: onPictureTapped,
+                                child: SizedBox(
+                                    height: Get.height,
+                                    child: _buildImage(images![0]['url'], Colors.transparent)),
+                              )),
+                          SizedBox(width: 2),
+                          Expanded(child: GestureDetector(
+                            onTap: onPictureTapped,
+                            child: SizedBox(
+                                height: Get.height,
+                                child: _buildImage(images![1]['url'], Colors.transparent)),
+                          )),
+                          SizedBox(width: 2),
+                          Expanded(child: GestureDetector(
+                            onTap: onPictureTapped,
+                            child: SizedBox(
+                                height: Get.height,
+                                child: _buildImage(images![2]['url'], Colors.transparent)),
+                          )),
+                          images!.length > 4?
+                          Expanded(
+                              child: GestureDetector(
+                                onTap: () => onPictureTapped,
+                                child: SizedBox(
+                                  height: Get.height,
+                                    child: _buildMoreOverlay(images![3]['url'], images!.length - 4)),
+                              ))
+                              :Expanded(
+                              child: GestureDetector(
+                                onTap: onPictureTapped,
+                                child: SizedBox(
+                                  height: Get.height,
+                                    child: _buildImage(images![3]['url'], Colors.transparent)),
+                              )),
+                        ],
+                      )
+
                   )
+
+
+
+                  //The code belows allows to display images exactly like on LinkedIn and Facebook
+
+                  // SizedBox(
+                  //     height: 375,
+                  //     child: images!.length == 2?
+                  //     Row(
+                  //       children: [
+                  //         Expanded(
+                  //             child: GestureDetector(
+                  //               onTap: onPictureTapped,
+                  //               child: SizedBox(
+                  //               height: Get.height,
+                  //               child: _buildImage(images![0]['url'],  Colors.transparent)),
+                  //             )),
+                  //         SizedBox(width: 2),
+                  //         Expanded(child: GestureDetector(
+                  //           onTap: onPictureTapped,
+                  //           child: SizedBox(
+                  //               height: Get.height,
+                  //               child: _buildImage(images![1]['url'],  Colors.transparent)),
+                  //         )),
+                  //       ],
+                  //     )
+                  //         :images!.length == 3?
+                  //     Column(
+                  //       children: [
+                  //         Expanded(child:
+                  //         SizedBox(
+                  //             width: Get.width,
+                  //             height: Get.height*3/4,
+                  //             child: _buildImage(images![0]['url'],  Colors.transparent))),
+                  //         SizedBox(height: 2),
+                  //         Row(
+                  //           children: [
+                  //             Expanded(
+                  //                 child: SizedBox(
+                  //                   height: Get.height/5,
+                  //                     child: _buildImage(images![1]['url'],  Colors.transparent))),
+                  //             SizedBox(width: 2),
+                  //             Expanded(child: SizedBox(
+                  //                 height: Get.height/5,
+                  //                 child: _buildImage(images![2]['url'],  Colors.transparent))),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ):Column(
+                  //       children: [
+                  //         Expanded(child: SizedBox(
+                  //             width: Get.width,
+                  //             height: Get.height*3/4,
+                  //             child: _buildImage(images![0]['url'], Colors.transparent))),
+                  //         SizedBox(height: 2),
+                  //         Row(
+                  //           children: [
+                  //             Expanded(
+                  //                 child: GestureDetector(
+                  //                   onTap: () => onPictureTapped,
+                  //                   child: SizedBox(
+                  //                     height: Get.height/5,
+                  //                       child: _buildImage(images![1]['url'],  Colors.transparent)),
+                  //                 )),
+                  //             SizedBox(width: 2),
+                  //             Expanded(child:
+                  //             GestureDetector(
+                  //               onTap: () => onPictureTapped,
+                  //               child: SizedBox(
+                  //                 height: Get.height/5,
+                  //                   child: _buildImage(images![2]['url'],  Colors.transparent)),
+                  //             )),
+                  //             SizedBox(width: 2),
+                  //             images!.length > 4?
+                  //             Expanded(child: _buildMoreOverlay(images![3]['url'], images!.length - 4))
+                  //                 :Expanded(
+                  //                 child: SizedBox(
+                  //                   height: Get.height/5,
+                  //                     child: _buildImage(images![3]['url'],  Colors.transparent))),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     )
+                  //
+                  // )
                 ]
 
                 ,
@@ -245,29 +402,29 @@ class PostCardWidget extends StatelessWidget {
 
               Obx(() => Row(
                 children: [
-                  Obx(() => FaIcon(FontAwesomeIcons.heart, color: likeCount!.value>0! ? interfaceColor: null),),
+                  Obx(() => likeCount!.value>0?FaIcon(FontAwesomeIcons.solidHeart, size: 20, color: interfaceColor):FaIcon(FontAwesomeIcons.heart, color: null)),
                   const SizedBox(width: 10,),
                   if(likeCount!.value <= 1)...[
-                    Obx(() => Text('${likeCount!.value} like'),)
+                    Obx(() => Text('${likeCount!.value} ${AppLocalizations.of(context).like}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12)),),)
                   ]
                   else...[
-                    Obx(() => Text('${likeCount!.value} likes'),)
+                    Obx(() => Text('${likeCount!.value}  ${AppLocalizations.of(context).like}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),)
                   ],
 
 
                   const Spacer(),
                   if(commentCount! <= 1)...[
-                    Text(' ${commentCount!} Comment'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12)),),
                   ]
                   else...[
-                    Text(' ${commentCount!} Comments'),
+                    Text(' ${commentCount!}  ${AppLocalizations.of(context).comment}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),
                   ],
                   if(shareCount! <= 1)...[
-                    Obx(() =>  Text(' . ${shareCount!} Share'),),
+                    Obx(() =>  Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))),),
 
                   ]
                   else...[
-                    Obx(() =>Text(' . ${shareCount!} Shares'), )
+                    Obx(() =>Text(' . ${shareCount!}  ${AppLocalizations.of(context).share}s', style: Get.textTheme.headlineMedium?.merge(TextStyle(fontSize: 12))), )
 
                   ],
 
@@ -275,51 +432,124 @@ class PostCardWidget extends StatelessWidget {
 
 
                 ],
-              ).marginOnly(top: 10, bottom: 10),),
+              ).marginOnly(top: 5,),).paddingSymmetric(horizontal: 10),
 
-
-              const Divider(
-                color: Colors.grey,
-              ),
+              Divider(
+                color: Colors.grey.shade300,
+              ).paddingSymmetric(horizontal: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap:onLikeTapped,
 
                     child: Column(
                       children:  [
-
                         likeWidget!,
-
-                        const Text('Like')
+                        Text(AppLocalizations.of(context).like_verb)
                       ],
                     ),
                   ),
                   GestureDetector(
                     onTap: onCommentTapped,
                     child: Column(
-                      children: const [
-                        FaIcon(FontAwesomeIcons.comment),
-                        Text('Comment')
+                      children: [
+                        Image.asset(
+                          'assets/icons/comment.png',
+                          //fit: BoxFit.cover,
+                          // width: 150,
+                          // height: 130,
+
+                        ),
+                        Text(AppLocalizations.of(context).comment_verb)
                       ],
                     ),
                   ),
                   GestureDetector(
                     onTap: onSharedTapped,
                     child: Column(
-                      children: const [
-                        FaIcon(FontAwesomeIcons.shareFromSquare, key: Key('shareIcon'),),
-                        Text('Share'),
+                      children:[
+                        Image.asset(
+                          'assets/icons/share.png',
+                          //fit: BoxFit.cover,
+                          //  width: 150,
+                          //  height: 130,
+
+                        ),
+                        Text(AppLocalizations.of(context).share_verb),
                       ],
                     ),
                   ),
                 ],
 
-              ),
+              ).paddingSymmetric(horizontal: 10,),
 
             ]
-        ).paddingSymmetric(horizontal: 10, vertical: 10)
+        ).paddingSymmetric( vertical: 10)
+    );
+  }
+
+
+
+  Widget _buildImage(String imageUrl, Color color) {
+    return GestureDetector(
+      onTap: onPictureTapped,
+      child: ClipRRect(
+        //borderRadius: BorderRadius.circular(8.0),
+        child: Image.network(
+          imageUrl,
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset(
+                "assets/images/loading.gif",
+                width: 40,
+                height: 40,
+                fit: BoxFit.fitWidth);
+          },
+          fit: BoxFit.cover,
+          color: color==Colors.transparent?null:color.withOpacity(0.5),
+          colorBlendMode: BlendMode.hardLight,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMoreOverlay(String imageUrl, int remainingCount) {
+    return SizedBox(
+      height: Get.height/5,
+      child: GestureDetector(
+        onTap: onPictureTapped,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildImage(imageUrl, Colors.black87),
+            Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '+$remainingCount',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'more',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                  ],
+                )
+            ),
+          ],
+        ),
+      ),
     );
   }
 

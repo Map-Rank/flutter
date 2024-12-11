@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">123</td>
+            <td class="headerCovTableEntry">129</td>
             <td class="headerCovTableEntry">195</td>
-            <td class="headerCovTableEntryLo">63.1 %</td>
+            <td class="headerCovTableEntryLo">66.2 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-09 13:30:30</td>
+            <td class="headerValue">2024-12-11 15:25:32</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -581,12 +581,12 @@
 <a name="519"><span class="lineNum">     519 </span>            : </a>
 <a name="520"><span class="lineNum">     520 </span>            :   }</a>
 <a name="521"><span class="lineNum">     521 </span>            : </a>
-<a name="522"><span class="lineNum">     522 </span><span class="lineNoCov">          0 :   registerInstitution() async {</span></a>
+<a name="522"><span class="lineNum">     522 </span><span class="lineCov">          1 :   registerInstitution() async {</span></a>
 <a name="523"><span class="lineNum">     523 </span>            : </a>
 <a name="524"><span class="lineNum">     524 </span>            :     try {</a>
-<a name="525"><span class="lineNum">     525 </span><span class="lineNoCov">          0 :       loading.value = true;</span></a>
-<a name="526"><span class="lineNum">     526 </span><span class="lineNoCov">          0 :       var result = await userRepository.registerInstitution(currentUser.value);</span></a>
-<a name="527"><span class="lineNum">     527 </span><span class="lineNoCov">          0 :       if(result['verified'] == false){</span></a>
+<a name="525"><span class="lineNum">     525 </span><span class="lineCov">          2 :       loading.value = true;</span></a>
+<a name="526"><span class="lineNum">     526 </span><span class="lineCov">          4 :       var result = await userRepository.registerInstitution(currentUser.value);</span></a>
+<a name="527"><span class="lineNum">     527 </span><span class="lineCov">          1 :       if(result['verified'] == false){</span></a>
 <a name="528"><span class="lineNum">     528 </span><span class="lineNoCov">          0 :         box.write(&quot;authToken&quot;, result['token']);</span></a>
 <a name="529"><span class="lineNum">     529 </span>            : </a>
 <a name="530"><span class="lineNum">     530 </span>            :       }</a>
@@ -594,12 +594,12 @@
 <a name="532"><span class="lineNum">     532 </span>            : </a>
 <a name="533"><span class="lineNum">     533 </span>            :     }</a>
 <a name="534"><span class="lineNum">     534 </span>            :     catch (e) {</a>
-<a name="535"><span class="lineNum">     535 </span><span class="lineNoCov">          0 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="535"><span class="lineNum">     535 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
 <a name="536"><span class="lineNum">     536 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
 <a name="537"><span class="lineNum">     537 </span>            :       }</a>
 <a name="538"><span class="lineNum">     538 </span>            : </a>
 <a name="539"><span class="lineNum">     539 </span>            :     } finally {</a>
-<a name="540"><span class="lineNum">     540 </span><span class="lineNoCov">          0 :       loading.value = false;</span></a>
+<a name="540"><span class="lineNum">     540 </span><span class="lineCov">          2 :       loading.value = false;</span></a>
 <a name="541"><span class="lineNum">     541 </span>            :     }</a>
 <a name="542"><span class="lineNum">     542 </span>            : </a>
 <a name="543"><span class="lineNum">     543 </span>            :   }</a>

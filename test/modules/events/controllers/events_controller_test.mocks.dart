@@ -7,7 +7,6 @@ import 'dart:async' as _i9;
 import 'dart:convert' as _i18;
 import 'dart:io' as _i5;
 import 'dart:typed_data' as _i19;
-import 'dart:ui' as _i20;
 
 import 'package:flutter/foundation.dart' as _i7;
 import 'package:flutter/material.dart' as _i6;
@@ -163,31 +162,9 @@ class _FakeIOSink_11 extends _i1.SmartFake implements _i5.IOSink {
         );
 }
 
-class _FakeImageProvider_12<T extends Object> extends _i1.SmartFake
-    implements _i6.ImageProvider<T> {
-  _FakeImageProvider_12(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeAlignmentGeometry_13 extends _i1.SmartFake
-    implements _i6.AlignmentGeometry {
-  _FakeAlignmentGeometry_13(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeState_14<T extends _i6.StatefulWidget> extends _i1.SmartFake
+class _FakeState_12<T extends _i6.StatefulWidget> extends _i1.SmartFake
     implements _i6.State<T> {
-  _FakeState_14(
+  _FakeState_12(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -200,9 +177,9 @@ class _FakeState_14<T extends _i6.StatefulWidget> extends _i1.SmartFake
       super.toString();
 }
 
-class _FakeStatefulElement_15 extends _i1.SmartFake
+class _FakeStatefulElement_13 extends _i1.SmartFake
     implements _i6.StatefulElement {
-  _FakeStatefulElement_15(
+  _FakeStatefulElement_13(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -215,9 +192,9 @@ class _FakeStatefulElement_15 extends _i1.SmartFake
       super.toString();
 }
 
-class _FakeDiagnosticsNode_16 extends _i1.SmartFake
+class _FakeDiagnosticsNode_14 extends _i1.SmartFake
     implements _i6.DiagnosticsNode {
-  _FakeDiagnosticsNode_16(
+  _FakeDiagnosticsNode_14(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -1817,36 +1794,6 @@ class MockImage extends _i1.Mock implements _i6.Image {
   }
 
   @override
-  _i6.ImageProvider<Object> get image => (super.noSuchMethod(
-        Invocation.getter(#image),
-        returnValue: _FakeImageProvider_12<Object>(
-          this,
-          Invocation.getter(#image),
-        ),
-      ) as _i6.ImageProvider<Object>);
-
-  @override
-  _i20.FilterQuality get filterQuality => (super.noSuchMethod(
-        Invocation.getter(#filterQuality),
-        returnValue: _i20.FilterQuality.none,
-      ) as _i20.FilterQuality);
-
-  @override
-  _i6.AlignmentGeometry get alignment => (super.noSuchMethod(
-        Invocation.getter(#alignment),
-        returnValue: _FakeAlignmentGeometry_13(
-          this,
-          Invocation.getter(#alignment),
-        ),
-      ) as _i6.AlignmentGeometry);
-
-  @override
-  _i6.ImageRepeat get repeat => (super.noSuchMethod(
-        Invocation.getter(#repeat),
-        returnValue: _i6.ImageRepeat.repeat,
-      ) as _i6.ImageRepeat);
-
-  @override
   bool get matchTextDirection => (super.noSuchMethod(
         Invocation.getter(#matchTextDirection),
         returnValue: false,
@@ -1876,7 +1823,7 @@ class MockImage extends _i1.Mock implements _i6.Image {
           #createState,
           [],
         ),
-        returnValue: _FakeState_14<_i6.Image>(
+        returnValue: _FakeState_12<_i6.Image>(
           this,
           Invocation.method(
             #createState,
@@ -1901,7 +1848,7 @@ class MockImage extends _i1.Mock implements _i6.Image {
           #createElement,
           [],
         ),
-        returnValue: _FakeStatefulElement_15(
+        returnValue: _FakeStatefulElement_13(
           this,
           Invocation.method(
             #createElement,
@@ -1996,7 +1943,7 @@ class MockImage extends _i1.Mock implements _i6.Image {
             #style: style,
           },
         ),
-        returnValue: _FakeDiagnosticsNode_16(
+        returnValue: _FakeDiagnosticsNode_14(
           this,
           Invocation.method(
             #toDiagnosticsNode,

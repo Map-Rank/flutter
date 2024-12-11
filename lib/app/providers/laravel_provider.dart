@@ -1760,7 +1760,7 @@ deletePost(int postId) async{
             .authToken}',
       };
 
-      var response = await httpClient.get(
+      var response = await httpClient.delete(
         '${GlobalService()
             .baseUrl}api/notifications/$id',
         options: Options(
@@ -1785,10 +1785,6 @@ deletePost(int postId) async{
   }
 
   createNotification(NotificationModel notification) async{
-    print(notification.title!);
-    print(notification.content!);
-    print(notification.zoneId!);
-
     try {
       var headers = {
         'Content-Type': 'application/json',

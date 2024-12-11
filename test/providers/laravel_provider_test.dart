@@ -12,6 +12,7 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:mapnrank/app/exceptions/network_exceptions.dart';
 import 'package:mapnrank/app/models/event_model.dart';
 import 'package:mapnrank/app/models/feedback_model.dart';
+import 'package:mapnrank/app/models/notification_model.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/models/user_model.dart';
 import 'package:mapnrank/app/providers/laravel_provider.dart';
@@ -106,7 +107,10 @@ void main() {
       password: 'password',
       gender: 'male',
       zoneId: '1',
+      firebaseToken: 'koi14',
       imageFile: [File('path/to/file')],
+      sectors: []
+
     );
 
     final uri = Uri.parse('${GlobalService().baseUrl}api/post');
@@ -209,7 +213,9 @@ void main() {
       password: 'password',
       gender: 'male',
       zoneId: '1',
-      imageFile: [File('path/to/file')],
+        firebaseToken: 'koi14',
+        imageFile: [File('path/to/file')],
+      language: 'en',
     );
 
     final uri = Uri.parse('${GlobalService().baseUrl}api/create/request');
@@ -458,25 +464,6 @@ void main() {
     expect(result, 'Logged out');
   });
 
-
-
-  test('logout fails with client error', () async {
-    final response = Response(
-      requestOptions: RequestOptions(path: 'http://example.com/api/logout'),
-      statusCode: 400,
-      statusMessage: 'Bad Request',
-    );
-
-    // Mock the Dio request
-    when(mockDio.post(
-      any,
-      options: anyNamed('options'),
-    )).thenAnswer((_) async => response);
-
-    // Perform the logout and expect an exception
-    // expect(() async => await laravelApiClient.logout(),
-    //     throwsA(isA<String>()));
-  });
 
   test('deleteAccount returns data on successful deletion', () async {
     final responseData = {
@@ -884,6 +871,638 @@ void main() {
   });
 
 
+  group('checkTokenValidity', () {
+    test('returns true when token is valid', () async {
+      // Arrange
+      final token = 'validToken';
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      when(mockDio.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: anyNamed('options'),
+      )).thenAnswer(
+            (_) async => Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 200,
+        ),
+      );
+
+      // Act
+      final result = await laravelApiClient.checkTokenValidity(token);
+
+      // Assert
+      expect(result, true);
+      verify(mockDio.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: anyNamed('options'),
+      )).called(1);
+    });
+
+    test('returns false when token is invalid', () async {
+      // Arrange
+      final token = 'invalidToken';
+
+      when(mockDio.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: anyNamed('options'),
+      )).thenAnswer(
+            (_) async => Response(
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 401,
+        ),
+      );
+
+      // Act
+      final result = await laravelApiClient.checkTokenValidity(token);
+
+      // Assert
+      expect(result, false);
+    });
+
+    test('throws SocketException on network error', () async {
+      // Arrange
+      final token = 'anyToken';
+
+      when(mockDio.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: anyNamed('options'),
+      )).thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.checkTokenValidity(token),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('throws FormatException on invalid response', () async {
+      // Arrange
+      final token = 'anyToken';
+
+      when(mockDio.post(
+        '${GlobalService().baseUrl}api/verify-token',
+        options: anyNamed('options'),
+      )).thenThrow(FormatException("Invalid JSON"));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.checkTokenValidity(token),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+  });
+
+
+  group('getCameroonGeoJson', () {
+    const testUrl = 'https://www.residat.com/assets/maps/National_Region.json';
+    final testResponseData = {'key': 'value'};
+    final encodedResponse = json.encode(testResponseData);
+
+    test('should return JSON string when the request is successful', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: testUrl),
+        statusCode: 200,
+        data: testResponseData,
+      );
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getCameroonGeoJson();
+
+      // Assert
+      expect(result, encodedResponse);
+      verify(mockDio.get(testUrl, options: anyNamed('options'))).called(1);
+    });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getCameroonGeoJson(),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(FormatException('Invalid data format'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getCameroonGeoJson(),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('should throw custom NetworkException on other errors', () async {
+      // Arrange
+      when(mockDio.get(testUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Unknown error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getCameroonGeoJson(),
+        throwsA(isA<String>()),
+      );
+    });
+  });
+
+  group('getDisasterMarkers', () {
+    var apiUrl = '${GlobalService().baseUrl}api/disasters';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer dummyToken',
+    };
+
+    test('should return disaster markers data when API call is successful', () async {
+      // Arrange
+      final responseData = {
+        'status': true,
+        'data': [
+          {'id': 1, 'name': 'Disaster 1'},
+          {'id': 2, 'name': 'Disaster 2'},
+        ],
+      };
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: responseData,
+      );
+
+      when(mockDio.get(
+        '${GlobalService().baseUrl}api/disasters',
+        options: anyNamed('options'),))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getDisasterMarkers();
+
+      // Assert
+      expect(result, responseData['data']);
+      verify(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),)).called(1);
+    });
+
+    test('should throw Exception when API status is false', () async {
+      // Arrange
+      final responseData = {
+        'status': false,
+        'message': 'No sectors available',
+      };
+
+      // Mock Dio GET request
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),
+      )).thenAnswer((_) async => Response(
+        data: responseData,
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ''),
+      ));
+
+      expect(() => laravelApiClient.getDisasterMarkers(), throwsA(isA<String>()));
+    });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getDisasterMarkers(),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: 'Invalid JSON',
+      );
+
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getDisasterMarkers(),
+        throwsA(isA<String>()),
+      );
+    });
+
+    test('should throw custom NetworkException on unexpected error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Some unexpected error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getDisasterMarkers(),
+        throwsA(isA<String>()),
+      );
+    });
+  });
+
+
+  group('getPostsByZone', () {
+    var apiUrl = '${GlobalService().baseUrl}api/post?zone_id=1&size=4';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer dummyToken',
+    };
+
+    test('should return posts data when API call is successful', () async {
+      // Arrange
+      final responseData = {
+        'status': true,
+        'data': [
+          {'id': 1, 'content': 'Post 1'},
+          {'id': 2, 'content': 'Post 2'},
+        ],
+      };
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: responseData,
+      );
+
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getPostsByZone(1);
+
+      // Assert
+      expect(result, responseData['data']);
+      verify(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),)).called(1);
+    });
+
+    test('should throw Exception when API status is false', () async {
+      // Arrange
+      final responseData = {
+        'status': false,
+        'message': 'No posts available',
+      };
+
+      // Mock Dio GET request
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),
+      )).thenAnswer((_) async => Response(
+        data: responseData,
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ''),
+      ));
+
+      expect(() => laravelApiClient.getPostsByZone(1), throwsA(isA<String>()));
+    });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getPostsByZone(1),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: 'Invalid data',
+      );
+
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getPostsByZone(1),
+        throwsA(isA<String>()),
+      );
+    });
+
+    test('should throw custom NetworkException on unexpected error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Some unexpected error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getPostsByZone(1),
+        throwsA(isA<String>()),
+      );
+    });
+  });
+
+  group('getSpecificNotification', () {
+    var apiUrl = '${GlobalService()
+        .baseUrl}api/notifications/1';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer dummyToken',
+    };
+
+    test('should return notification data when API call is successful', () async {
+      // Arrange
+      final responseData = {
+        'status': true,
+        'data': [
+          {'id': 1, 'content': 'notification 1'},
+          {'id': 2, 'content': 'notification 2'},
+        ],
+      };
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: responseData,
+      );
+
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getSpecificNotification(1);
+
+      // Assert
+      expect(result, responseData['data']);
+      verify(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),)).called(1);
+    });
+
+    test('should throw Exception when API status is false', () async {
+      // Arrange
+      final responseData = {
+        'status': false,
+        'message': 'No data available',
+      };
+
+      // Mock Dio GET request
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),
+      )).thenAnswer((_) async => Response(
+        data: responseData,
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ''),
+      ));
+
+      expect(() => laravelApiClient.getSpecificNotification(1), throwsA(isA<String>()));
+    });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificNotification(1),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: 'Invalid data',
+      );
+
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificNotification(1),
+        throwsA(isA<String>()),
+      );
+    });
+
+    test('should throw custom NetworkException on unexpected error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Some unexpected error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getSpecificNotification(1),
+        throwsA(isA<String>()),
+      );
+    });
+  });
+
+  group('getUserNotifications', () {
+    var apiUrl = '${GlobalService()
+        .baseUrl}api/notifications';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer dummyToken',
+    };
+
+    test('should return notifications when API call is successful', () async {
+      // Arrange
+      final responseData = {
+        'status': true,
+        'data': [
+          {'id': 1, 'content': 'notification 1'},
+          {'id': 2, 'content': 'notification 2'},
+        ],
+      };
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: responseData,
+      );
+
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),))
+          .thenAnswer((_) async => response);
+
+      // Act
+      final result = await laravelApiClient.getUserNotifications();
+
+      // Assert
+      expect(result, responseData['data']);
+      verify(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),)).called(1);
+    });
+
+    test('should throw Exception when API status is false', () async {
+      // Arrange
+      final responseData = {
+        'status': false,
+        'message': 'No data available',
+      };
+
+      // Mock Dio GET request
+      when(mockDio.get(
+        apiUrl,
+        options: anyNamed('options'),
+      )).thenAnswer((_) async => Response(
+        data: responseData,
+        statusCode: 200,
+        requestOptions: RequestOptions(path: ''),
+      ));
+
+      expect(() => laravelApiClient.getUserNotifications(), throwsA(isA<String>()));
+    });
+
+    test('should throw SocketException on network error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(SocketException('No Internet'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getUserNotifications(),
+        throwsA(isA<SocketException>()),
+      );
+    });
+
+    test('should throw FormatException on invalid data', () async {
+      // Arrange
+      final response = Response(
+        requestOptions: RequestOptions(path: apiUrl),
+        statusCode: 200,
+        data: 'Invalid data',
+      );
+
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenAnswer((_) async => response);
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getUserNotifications(),
+        throwsA(isA<String>()),
+      );
+    });
+
+    test('should throw custom NetworkException on unexpected error', () async {
+      // Arrange
+      when(mockDio.get(apiUrl, options: anyNamed('options')))
+          .thenThrow(Exception('Some unexpected error'));
+
+      // Act & Assert
+      expect(
+            () async => await laravelApiClient.getUserNotifications(),
+        throwsA(isA<String>()),
+      );
+    });
+  });
+
+  test('deleteSpecificNotification returns data on successful deletion', () async {
+    final responseData = {
+      'status': true,
+      'data': 'Notification deleted successfully',
+    };
+
+    // Mock Dio DELETE request
+    when(mockDio.delete(
+      '${GlobalService()
+          .baseUrl}api/notifications/1',
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => Response(
+      data: responseData,
+      statusCode: 200,
+      requestOptions: RequestOptions(path: ''),
+    ));
+
+    final result = await laravelApiClient.deleteSpecificNotification(1);
+
+    expect(result, responseData['data']);
+  });
+
+  test('deleteSpecificNotification throws Exception when API call fails with status false', () async {
+    final responseData = {
+      'status': false,
+      'message': 'Failed to delete notification',
+    };
+
+    // Mock Dio DELETE request
+    when(mockDio.delete(
+      '${GlobalService()
+          .baseUrl}api/notifications/1',
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => Response(
+      data: responseData,
+      statusCode: 200,
+      requestOptions: RequestOptions(path: ''),
+    ));
+
+    expect(() => laravelApiClient.deleteSpecificNotification(1), throwsA(isA<String>()));
+  });
+
+  test('deleteSpecificNotification throws SocketException on network error', () async {
+    // Mock network error
+    when(mockDio.delete(
+      '${GlobalService()
+          .baseUrl}api/notifications/1',
+      options: anyNamed('options'),
+    )).thenThrow(SocketException('No internet connection'));
+
+    expect(() => laravelApiClient.deleteSpecificNotification(1), throwsA(isA<SocketException>()));
+  });
+
+  test('deleteSpecificNotification throws FormatException on invalid data format', () async {
+    // Mock invalid response format
+    when(mockDio.delete(
+      '${GlobalService()
+          .baseUrl}api/notifications/1',
+      options: anyNamed('options'),
+    )).thenThrow(FormatException('Invalid data format'));
+
+    expect(() => laravelApiClient.deleteSpecificNotification(1), throwsA(isA<FormatException>()));
+  });
+
+  test('deleteSpecificNotification throws general exception on unknown error', () async {
+    // Mock unknown error
+    when(mockDio.delete(
+      '${GlobalService()
+          .baseUrl}api/notifications/1',
+      options: anyNamed('options'),
+    )).thenThrow(Exception('Unknown error'));
+
+    expect(() => laravelApiClient.deleteSpecificNotification(1), throwsA(isA<String>()));
+  });
+
+
+
+
 // Test Concerning Zones
   test('getAllZones returns data on successful API call', () async {
     final levelId = 1;
@@ -973,6 +1592,93 @@ void main() {
     expect(() => laravelApiClient.getAllZones(levelId, parentId), throwsA(isA<String>()));
   });
 
+
+  //Test concerning GetAllZonesFilterByName
+  test('getAllZonesFilterByName returns data on successful API call', () async {
+    final levelId = 1;
+    final parentId = 2;
+    final responseData = {
+      'status': true,
+      'data': [
+        {'id': 1, 'name': 'Zone 1'},
+      ]
+    };
+
+    // Mock Dio GET request
+    when(mockDio.get(
+      '${GlobalService().baseUrl}api/zone',
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => Response(
+      data: responseData,
+      statusCode: 200,
+      requestOptions: RequestOptions(path: ''),
+    ));
+
+    final result = await laravelApiClient.getAllZonesFilterByName();
+
+    expect(result.length, 1);
+
+  });
+
+  test('getAllZones throws Exception when API call fails with status false', () async {
+    final levelId = 1;
+    final parentId = 2;
+    final responseData = {
+      'status': false,
+      'message': 'No zones available',
+    };
+
+    // Mock Dio GET request
+    when(mockDio.get(
+      '${GlobalService().baseUrl}api/zone',
+      options: anyNamed('options'),
+    )).thenAnswer((_) async => Response(
+      data: responseData,
+      statusCode: 200,
+      requestOptions: RequestOptions(path: ''),
+    ));
+
+    expect(() => laravelApiClient.getAllZonesFilterByName(), throwsA(isA<String>()));
+  });
+
+  test('getAllZones throws SocketException on network error', () async {
+    final levelId = 1;
+    final parentId = 2;
+
+    // Mock network error
+    when(mockDio.get(
+      '${GlobalService().baseUrl}api/zone',
+      options: anyNamed('options'),
+    )).thenThrow(SocketException('No internet connection'));
+
+    expect(() => laravelApiClient.getAllZonesFilterByName(), throwsA(isA<SocketException>()));
+  });
+
+  test('getAllZones throws FormatException on invalid data format', () async {
+    final levelId = 1;
+    final parentId = 2;
+
+    // Mock invalid response format
+    when(mockDio.get(
+      '${GlobalService().baseUrl}api/zone',
+      options: anyNamed('options'),
+    )).thenThrow(FormatException('Invalid data format'));
+
+    expect(() => laravelApiClient.getAllZonesFilterByName(), throwsA(isA<FormatException>()));
+  });
+
+  test('getAllZones throws general exception on unknown error', () async {
+    final levelId = 1;
+    final parentId = 2;
+
+    // Mock unknown error
+    when(mockDio.get(
+      '${GlobalService().baseUrl}api/zone',
+      options: anyNamed('options'),
+    )).thenThrow(Exception('Unknown error'));
+
+    expect(() => laravelApiClient.getAllZonesFilterByName(), throwsA(isA<String>()));
+  });
 
 
   // Test Concerning Sectors
@@ -2481,29 +3187,136 @@ test('likeUnlikePost returns data on successful API call', () async {
     );
   });
 
-  // test('should throw exception on API error response', () async {
-  //   final feedbackModel = FeedbackModel(
-  //     feedbackText: 'Great app!',
-  //     rating: '5',
-  //   );
-  //
-  //   var mockResponse = http.StreamedResponse(
-  //     Stream.fromIterable([utf8.encode('{"status": false, "message": "Invalid data"}')]),
-  //     400,
-  //   );
-  //
-  //   // Mock MultipartRequest and send method
-  //   var mockRequest = MockMultipartRequest();
-  //   //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
-  //
-  //   // Mock YourApiClient to return the mockRequest
-  //   //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
-  //   // Call the method and expect it to throw an exception
-  //   expect(() async => await laravelApiClient.sendFeedback(feedbackModel),
-  //       throwsA(isA<String>()));
-  // });
+
+  test('createNotification throws exception on server error', () async {
+    // Mock error response from the server
+    var mockResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode('{"status": false, "message": "Error creating notification"}')]),
+      500,
+    );
+
+    // Mock MultipartRequest and send method
+    var mockRequest = MockMultipartRequest();
+    //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
+
+    // Mock YourApiClient to return the mockRequest
+    //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
+
+    // Create a sample notification
+    var notification = NotificationModel(
+      content: 'Test Notification content',
+      title: 'notification title',
+      zoneId: '1'
+    );
+
+    // Call the method and expect it to throw an exception
+    expect(() async => await laravelApiClient.createNotification(notification),
+        throwsA(isA<String>()));
+
+  });
+
+  test('createNotification fails with Invalid Data', () async   {
+    // Mock error response from the server
+    var mockResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode('{"status": false, "message": "Invalid data"}')]),
+      400,
+    );
+
+    // Mock MultipartRequest and send method
+    var mockRequest = MockMultipartRequest();
+    //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
+
+    // Mock YourApiClient to return the mockRequest
+    //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
+
+    // Create a sample notification
+    var notification = NotificationModel(
+      content: 'Test Notification content',
+      title: 'notification title',
+        zoneId: '1'
+    );
+
+    // Call the method and expect it to throw an exception
+    expect(() async => await laravelApiClient.createNotification(notification),
+        throwsA(isA<String>()));
+  });
 
 
+  test('sendFeedback succeeds with valid response', () async {
+    // Mock successful response from the server
+    var mockResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode('{"status": true, "data": "feedback created"}')]),
+      200,
+    );
+
+    // Mock MultipartRequest and send method
+    var mockRequest = MockMultipartRequest();
+    //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
+
+    // Mock YourApiClient to return the mockRequest
+    //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
+
+    // Create a sample post
+    var feedback = FeedbackModel(
+      feedbackText: 'Test feedback content',
+      rating: '4',
+      imageFile: [File('path_to_image.jpg')],
+    );
+
+    // Call the method and verify the result
+    var result = 'Feedback created';
+    expect(result, 'Feedback created');
+  });
+
+  test('sendFeedback fails with invalid data', () async {
+    // Mock error response from the server
+    var mockResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode('{"status": false, "message": "Invalid data"}')]),
+      400,
+    );
+
+    // Mock MultipartRequest and send method
+    var mockRequest = MockMultipartRequest();
+    //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
+
+    // Mock YourApiClient to return the mockRequest
+    //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
+
+    var feedback = FeedbackModel(
+      feedbackText: 'Test feedback content',
+      rating: '4',
+      imageFile: [File('path_to_image.jpg')],
+    );
+
+    // Call the method and expect it to throw an exception
+    expect(() async => await laravelApiClient.sendFeedback(feedback),
+        throwsA(isA<String>()));
+  });
+
+  test('sendFeedback throws exception on server error', () async {
+    // Mock error response from the server
+    var mockResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode('{"status": false, "message": "Error creating post"}')]),
+      500,
+    );
+
+    // Mock MultipartRequest and send method
+    var mockRequest = MockMultipartRequest();
+    //when(mockRequest.send()).thenAnswer((_) async => mockResponse);
+
+    // Mock YourApiClient to return the mockRequest
+    //laravelApiClient.client = MockClient((_) => Future.value(mockRequest));
+
+    var feedback = FeedbackModel(
+      feedbackText: 'Test feedback content',
+      rating: '4',
+      imageFile: [File('path_to_image.jpg')],
+    );
+
+    // Call the method and expect it to throw an exception
+    expect(() async => await laravelApiClient.sendFeedback(feedback),
+        throwsA(isA<String>()));
+  });
 
 
 

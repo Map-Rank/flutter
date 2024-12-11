@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">566</td>
-            <td class="headerCovTableEntry">822</td>
-            <td class="headerCovTableEntryLo">68.9 %</td>
+            <td class="headerCovTableEntry">735</td>
+            <td class="headerCovTableEntry">819</td>
+            <td class="headerCovTableEntryMed">89.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-09 13:30:30</td>
+            <td class="headerValue">2024-12-11 15:25:32</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -167,21 +167,21 @@
 <a name="105"><span class="lineNum">     105 </span>            : </a>
 <a name="106"><span class="lineNum">     106 </span>            :   }</a>
 <a name="107"><span class="lineNum">     107 </span>            : </a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineNoCov">          0 :   registerInstitution(UserModel user) async {</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">          1 :   registerInstitution(UserModel user) async {</span></a>
 <a name="109"><span class="lineNum">     109 </span>            :     try {</a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="111"><span class="lineNum">     111 </span>            :         'Content-Type': 'multipart/form-data',</a>
 <a name="112"><span class="lineNum">     112 </span>            :         'Accept': 'application/json'</a>
 <a name="113"><span class="lineNum">     113 </span>            :       };</a>
 <a name="114"><span class="lineNum">     114 </span>            : </a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineNoCov">          0 :       var request = http.MultipartRequest(</span></a>
-<a name="116"><span class="lineNum">     116 </span><span class="lineNoCov">          0 :           'POST', Uri.parse('${GlobalService().baseUrl}api/create/request'));</span></a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineNoCov">          0 :       request.fields.addAll({</span></a>
-<a name="118"><span class="lineNum">     118 </span><span class="lineNoCov">          0 :         'company_name': user.firstName!,</span></a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :         'email': user.email!,</span></a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineNoCov">          0 :         'phone': user.phoneNumber,</span></a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :         'password': user.password!,</span></a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineNoCov">          0 :         'description': user.description!,</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          1 :       var request = http.MultipartRequest(</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">          4 :           'POST', Uri.parse('${GlobalService().baseUrl}api/create/request'));</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">          1 :       request.fields.addAll({</span></a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">          1 :         'company_name': user.firstName!,</span></a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">          1 :         'email': user.email!,</span></a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">          1 :         'phone': user.phoneNumber,</span></a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">          1 :         'password': user.password!,</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">          1 :         'description': user.description!,</span></a>
 <a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :         'language':user.language!,</span></a>
 <a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :         'fcm_token':user.firebaseToken!,</span></a>
 <a name="125"><span class="lineNum">     125 </span><span class="lineNoCov">          0 :         'zone_id': user.zoneId!,</span></a>
@@ -530,31 +530,31 @@
 <a name="468"><span class="lineNum">     468 </span>            : </a>
 <a name="469"><span class="lineNum">     469 </span>            :   }</a>
 <a name="470"><span class="lineNum">     470 </span>            : </a>
-<a name="471"><span class="lineNum">     471 </span><span class="lineNoCov">          0 :   Future checkTokenValidity(String token) async{</span></a>
+<a name="471"><span class="lineNum">     471 </span><span class="lineCov">          1 :   Future checkTokenValidity(String token) async{</span></a>
 <a name="472"><span class="lineNum">     472 </span>            :     try{</a>
-<a name="473"><span class="lineNum">     473 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="473"><span class="lineNum">     473 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="474"><span class="lineNum">     474 </span>            :         'Content-Type': 'application/json',</a>
 <a name="475"><span class="lineNum">     475 </span>            :         'Accept': 'application/json',</a>
 <a name="476"><span class="lineNum">     476 </span>            :         'Authorization': 'Bearer $token'</a>
-<a name="477"><span class="lineNum">     477 </span><span class="lineNoCov">          0 :       };</span></a>
+<a name="477"><span class="lineNum">     477 </span><span class="lineCov">          1 :       };</span></a>
 <a name="478"><span class="lineNum">     478 </span>            : </a>
-<a name="479"><span class="lineNum">     479 </span><span class="lineNoCov">          0 :       var response = await httpClient.post(</span></a>
-<a name="480"><span class="lineNum">     480 </span><span class="lineNoCov">          0 :         '${GlobalService().baseUrl}api/verify-token',</span></a>
-<a name="481"><span class="lineNum">     481 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="479"><span class="lineNum">     479 </span><span class="lineCov">          2 :       var response = await httpClient.post(</span></a>
+<a name="480"><span class="lineNum">     480 </span><span class="lineCov">          3 :         '${GlobalService().baseUrl}api/verify-token',</span></a>
+<a name="481"><span class="lineNum">     481 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="482"><span class="lineNum">     482 </span>            :           method: 'POST',</a>
 <a name="483"><span class="lineNum">     483 </span>            :           headers: headers,</a>
 <a name="484"><span class="lineNum">     484 </span>            :         ),</a>
 <a name="485"><span class="lineNum">     485 </span>            :       );</a>
 <a name="486"><span class="lineNum">     486 </span>            : </a>
-<a name="487"><span class="lineNum">     487 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
+<a name="487"><span class="lineNum">     487 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
 <a name="488"><span class="lineNum">     488 </span>            :         return true;</a>
 <a name="489"><span class="lineNum">     489 </span>            :       }</a>
 <a name="490"><span class="lineNum">     490 </span>            :       else{</a>
 <a name="491"><span class="lineNum">     491 </span>            :         return false;</a>
 <a name="492"><span class="lineNum">     492 </span>            :       }</a>
-<a name="493"><span class="lineNum">     493 </span><span class="lineNoCov">          0 :     }on SocketException catch (e) {</span></a>
-<a name="494"><span class="lineNum">     494 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="495"><span class="lineNum">     495 </span><span class="lineNoCov">          0 :     } on FormatException catch (_) {</span></a>
+<a name="493"><span class="lineNum">     493 </span><span class="lineCov">          1 :     }on SocketException catch (e) {</span></a>
+<a name="494"><span class="lineNum">     494 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="495"><span class="lineNum">     495 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
 <a name="496"><span class="lineNum">     496 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="497"><span class="lineNum">     497 </span>            :     } catch (e) {</a>
 <a name="498"><span class="lineNum">     498 </span><span class="lineNoCov">          0 :       throw NetworkExceptions.getDioException(e);</span></a>
@@ -625,29 +625,29 @@
 <a name="563"><span class="lineNum">     563 </span>            : </a>
 <a name="564"><span class="lineNum">     564 </span>            :   }</a>
 <a name="565"><span class="lineNum">     565 </span>            : </a>
-<a name="566"><span class="lineNum">     566 </span><span class="lineNoCov">          0 :   sendFeedback(FeedbackModel feedbackModel) async {</span></a>
+<a name="566"><span class="lineNum">     566 </span><span class="lineCov">          1 :   sendFeedback(FeedbackModel feedbackModel) async {</span></a>
 <a name="567"><span class="lineNum">     567 </span>            :     try {</a>
-<a name="568"><span class="lineNum">     568 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="568"><span class="lineNum">     568 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="569"><span class="lineNum">     569 </span>            :         'Content-Type': 'multipart/form-data',</a>
 <a name="570"><span class="lineNum">     570 </span>            :         'Accept': 'application/json',</a>
-<a name="571"><span class="lineNum">     571 </span><span class="lineNoCov">          0 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="572"><span class="lineNum">     572 </span><span class="lineNoCov">          0 :             .find&lt;AuthService&gt;()</span></a>
-<a name="573"><span class="lineNum">     573 </span><span class="lineNoCov">          0 :             .user</span></a>
-<a name="574"><span class="lineNum">     574 </span><span class="lineNoCov">          0 :             .value</span></a>
-<a name="575"><span class="lineNum">     575 </span><span class="lineNoCov">          0 :             .authToken}'</span></a>
-<a name="576"><span class="lineNum">     576 </span><span class="lineNoCov">          0 :       };</span></a>
+<a name="571"><span class="lineNum">     571 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="572"><span class="lineNum">     572 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
+<a name="573"><span class="lineNum">     573 </span><span class="lineCov">          1 :             .user</span></a>
+<a name="574"><span class="lineNum">     574 </span><span class="lineCov">          1 :             .value</span></a>
+<a name="575"><span class="lineNum">     575 </span><span class="lineCov">          1 :             .authToken}'</span></a>
+<a name="576"><span class="lineNum">     576 </span><span class="lineCov">          1 :       };</span></a>
 <a name="577"><span class="lineNum">     577 </span>            : </a>
-<a name="578"><span class="lineNum">     578 </span><span class="lineNoCov">          0 :       var request = http.MultipartRequest(</span></a>
-<a name="579"><span class="lineNum">     579 </span><span class="lineNoCov">          0 :           'POST', Uri.parse('${GlobalService().baseUrl}api/create-feedback'));</span></a>
-<a name="580"><span class="lineNum">     580 </span><span class="lineNoCov">          0 :       request.fields.addAll({</span></a>
+<a name="578"><span class="lineNum">     578 </span><span class="lineCov">          1 :       var request = http.MultipartRequest(</span></a>
+<a name="579"><span class="lineNum">     579 </span><span class="lineCov">          4 :           'POST', Uri.parse('${GlobalService().baseUrl}api/create-feedback'));</span></a>
+<a name="580"><span class="lineNum">     580 </span><span class="lineCov">          3 :       request.fields.addAll({</span></a>
 <a name="581"><span class="lineNum">     581 </span>            :         'page_link': 'https://feedback-from-mobile-application',</a>
-<a name="582"><span class="lineNum">     582 </span><span class="lineNoCov">          0 :         'text': feedbackModel.feedbackText!,</span></a>
-<a name="583"><span class="lineNum">     583 </span><span class="lineNoCov">          0 :         'rating': feedbackModel.rating!,</span></a>
+<a name="582"><span class="lineNum">     582 </span><span class="lineCov">          1 :         'text': feedbackModel.feedbackText!,</span></a>
+<a name="583"><span class="lineNum">     583 </span><span class="lineCov">          1 :         'rating': feedbackModel.rating!,</span></a>
 <a name="584"><span class="lineNum">     584 </span>            :       });</a>
 <a name="585"><span class="lineNum">     585 </span>            : </a>
-<a name="586"><span class="lineNum">     586 </span><span class="lineNoCov">          0 :       if (feedbackModel.imageFile != null) {</span></a>
-<a name="587"><span class="lineNum">     587 </span><span class="lineNoCov">          0 :         request.files.add(await http.MultipartFile.fromPath(</span></a>
-<a name="588"><span class="lineNum">     588 </span><span class="lineNoCov">          0 :             'files', &quot;.${feedbackModel.imageFile!.path}&quot;));</span></a>
+<a name="586"><span class="lineNum">     586 </span><span class="lineCov">          1 :       if (feedbackModel.imageFile != null) {</span></a>
+<a name="587"><span class="lineNum">     587 </span><span class="lineCov">          1 :         request.files.add(await http.MultipartFile.fromPath(</span></a>
+<a name="588"><span class="lineNum">     588 </span><span class="lineCov">          2 :             'files', &quot;.${feedbackModel.imageFile!.path}&quot;));</span></a>
 <a name="589"><span class="lineNum">     589 </span>            :       }</a>
 <a name="590"><span class="lineNum">     590 </span>            : </a>
 <a name="591"><span class="lineNum">     591 </span>            : </a>
@@ -680,27 +680,27 @@
 <a name="618"><span class="lineNum">     618 </span>            :   // Handling Sectors and zones</a>
 <a name="619"><span class="lineNum">     619 </span>            : </a>
 <a name="620"><span class="lineNum">     620 </span>            : </a>
-<a name="621"><span class="lineNum">     621 </span><span class="lineNoCov">          0 :  getCameroonGeoJson() async {</span></a>
+<a name="621"><span class="lineNum">     621 </span><span class="lineCov">          1 :  getCameroonGeoJson() async {</span></a>
 <a name="622"><span class="lineNum">     622 </span>            :     try{</a>
-<a name="623"><span class="lineNum">     623 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
+<a name="623"><span class="lineNum">     623 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
 <a name="624"><span class="lineNum">     624 </span>            :         'https://www.residat.com/assets/maps/National_Region.json',</a>
-<a name="625"><span class="lineNum">     625 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="625"><span class="lineNum">     625 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="626"><span class="lineNum">     626 </span>            :           method: 'GET',</a>
 <a name="627"><span class="lineNum">     627 </span>            :         ),</a>
 <a name="628"><span class="lineNum">     628 </span>            :       );</a>
-<a name="629"><span class="lineNum">     629 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="630"><span class="lineNum">     630 </span><span class="lineNoCov">          0 :         return json.encode(response.data);</span></a>
+<a name="629"><span class="lineNum">     629 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="630"><span class="lineNum">     630 </span><span class="lineCov">          2 :         return json.encode(response.data);</span></a>
 <a name="631"><span class="lineNum">     631 </span>            :       }</a>
 <a name="632"><span class="lineNum">     632 </span>            :       else {</a>
 <a name="633"><span class="lineNum">     633 </span><span class="lineNoCov">          0 :         throw Exception((response.statusMessage));</span></a>
 <a name="634"><span class="lineNum">     634 </span>            :       }</a>
 <a name="635"><span class="lineNum">     635 </span>            : </a>
-<a name="636"><span class="lineNum">     636 </span><span class="lineNoCov">          0 :     }on SocketException catch (e) {</span></a>
-<a name="637"><span class="lineNum">     637 </span><span class="lineNoCov">          0 :   throw SocketException(e.toString());</span></a>
-<a name="638"><span class="lineNum">     638 </span><span class="lineNoCov">          0 :   } on FormatException catch (_) {</span></a>
+<a name="636"><span class="lineNum">     636 </span><span class="lineCov">          1 :     }on SocketException catch (e) {</span></a>
+<a name="637"><span class="lineNum">     637 </span><span class="lineCov">          2 :   throw SocketException(e.toString());</span></a>
+<a name="638"><span class="lineNum">     638 </span><span class="lineCov">          1 :   } on FormatException catch (_) {</span></a>
 <a name="639"><span class="lineNum">     639 </span>            :   throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="640"><span class="lineNum">     640 </span>            :   } catch (e) {</a>
-<a name="641"><span class="lineNum">     641 </span><span class="lineNoCov">          0 :   throw NetworkExceptions.getDioException(e);</span></a>
+<a name="641"><span class="lineNum">     641 </span><span class="lineCov">          1 :   throw NetworkExceptions.getDioException(e);</span></a>
 <a name="642"><span class="lineNum">     642 </span>            :   }</a>
 <a name="643"><span class="lineNum">     643 </span>            : </a>
 <a name="644"><span class="lineNum">     644 </span>            :  }</a>
@@ -740,94 +740,94 @@
 <a name="678"><span class="lineNum">     678 </span>            : </a>
 <a name="679"><span class="lineNum">     679 </span>            : }</a>
 <a name="680"><span class="lineNum">     680 </span>            : </a>
-<a name="681"><span class="lineNum">     681 </span><span class="lineCov">          1 : Future getAllZonesFilterByName() async{</span></a>
+<a name="681"><span class="lineNum">     681 </span><span class="lineCov">          2 : Future getAllZonesFilterByName() async{</span></a>
 <a name="682"><span class="lineNum">     682 </span>            :     try{</a>
-<a name="683"><span class="lineNum">     683 </span><span class="lineCov">          1 :   var headers = {</span></a>
+<a name="683"><span class="lineNum">     683 </span><span class="lineCov">          2 :   var headers = {</span></a>
 <a name="684"><span class="lineNum">     684 </span>            :     'Content-Type': 'application/json',</a>
 <a name="685"><span class="lineNum">     685 </span>            :     'Accept': 'application/json'</a>
 <a name="686"><span class="lineNum">     686 </span>            :   };</a>
-<a name="687"><span class="lineNum">     687 </span><span class="lineCov">          1 :   var dio = Dio();</span></a>
+<a name="687"><span class="lineNum">     687 </span><span class="lineCov">          2 :   var dio = Dio();</span></a>
 <a name="688"><span class="lineNum">     688 </span>            : </a>
-<a name="689"><span class="lineNum">     689 </span><span class="lineCov">          2 :   var response = await httpClient.get(</span></a>
-<a name="690"><span class="lineNum">     690 </span><span class="lineCov">          3 :     '${GlobalService().baseUrl}api/zone',</span></a>
-<a name="691"><span class="lineNum">     691 </span><span class="lineCov">          1 :     options: Options(</span></a>
+<a name="689"><span class="lineNum">     689 </span><span class="lineCov">          4 :   var response = await httpClient.get(</span></a>
+<a name="690"><span class="lineNum">     690 </span><span class="lineCov">          6 :     '${GlobalService().baseUrl}api/zone',</span></a>
+<a name="691"><span class="lineNum">     691 </span><span class="lineCov">          2 :     options: Options(</span></a>
 <a name="692"><span class="lineNum">     692 </span>            :       method: 'GET',</a>
 <a name="693"><span class="lineNum">     693 </span>            :       headers: headers,</a>
 <a name="694"><span class="lineNum">     694 </span>            :     ),</a>
 <a name="695"><span class="lineNum">     695 </span>            :   );</a>
 <a name="696"><span class="lineNum">     696 </span>            : </a>
-<a name="697"><span class="lineNum">     697 </span><span class="lineNoCov">          0 :   if (response.statusCode == 200) {</span></a>
-<a name="698"><span class="lineNum">     698 </span><span class="lineNoCov">          0 :     if (response.data['status'] == true) {</span></a>
-<a name="699"><span class="lineNum">     699 </span><span class="lineNoCov">          0 :       return response.data['data'];</span></a>
+<a name="697"><span class="lineNum">     697 </span><span class="lineCov">          2 :   if (response.statusCode == 200) {</span></a>
+<a name="698"><span class="lineNum">     698 </span><span class="lineCov">          3 :     if (response.data['status'] == true) {</span></a>
+<a name="699"><span class="lineNum">     699 </span><span class="lineCov">          2 :       return response.data['data'];</span></a>
 <a name="700"><span class="lineNum">     700 </span>            :     } else {</a>
-<a name="701"><span class="lineNum">     701 </span><span class="lineNoCov">          0 :       throw Exception(response.data['message']);</span></a>
+<a name="701"><span class="lineNum">     701 </span><span class="lineCov">          3 :       throw Exception(response.data['message']);</span></a>
 <a name="702"><span class="lineNum">     702 </span>            :     }</a>
 <a name="703"><span class="lineNum">     703 </span>            :   }</a>
-<a name="704"><span class="lineNum">     704 </span><span class="lineCov">          1 :   }on SocketException catch (e) {</span></a>
-<a name="705"><span class="lineNum">     705 </span><span class="lineNoCov">          0 :   throw SocketException(e.toString());</span></a>
-<a name="706"><span class="lineNum">     706 </span><span class="lineCov">          1 :   } on FormatException catch (_) {</span></a>
+<a name="704"><span class="lineNum">     704 </span><span class="lineCov">          2 :   }on SocketException catch (e) {</span></a>
+<a name="705"><span class="lineNum">     705 </span><span class="lineCov">          2 :   throw SocketException(e.toString());</span></a>
+<a name="706"><span class="lineNum">     706 </span><span class="lineCov">          2 :   } on FormatException catch (_) {</span></a>
 <a name="707"><span class="lineNum">     707 </span>            :   throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="708"><span class="lineNum">     708 </span>            :   } catch (e) {</a>
-<a name="709"><span class="lineNum">     709 </span><span class="lineCov">          1 :   throw NetworkExceptions.getDioException(e);</span></a>
+<a name="709"><span class="lineNum">     709 </span><span class="lineCov">          2 :   throw NetworkExceptions.getDioException(e);</span></a>
 <a name="710"><span class="lineNum">     710 </span>            :   }</a>
 <a name="711"><span class="lineNum">     711 </span>            : }</a>
 <a name="712"><span class="lineNum">     712 </span>            : </a>
-<a name="713"><span class="lineNum">     713 </span><span class="lineNoCov">          0 : Future getSpecificZoneByName(String name) async{</span></a>
+<a name="713"><span class="lineNum">     713 </span><span class="lineCov">          1 : Future getSpecificZoneByName(String name) async{</span></a>
 <a name="714"><span class="lineNum">     714 </span>            :     try{</a>
-<a name="715"><span class="lineNum">     715 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="715"><span class="lineNum">     715 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="716"><span class="lineNum">     716 </span>            :         'Content-Type': 'application/json',</a>
 <a name="717"><span class="lineNum">     717 </span>            :         'Accept': 'application/json'</a>
 <a name="718"><span class="lineNum">     718 </span>            :       };</a>
 <a name="719"><span class="lineNum">     719 </span>            : </a>
-<a name="720"><span class="lineNum">     720 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
-<a name="721"><span class="lineNum">     721 </span><span class="lineNoCov">          0 :         name=='CAMEROUN'?'${GlobalService().baseUrl}api/zone?name=$name':'${GlobalService().baseUrl}api/zone?code=$name',</span></a>
-<a name="722"><span class="lineNum">     722 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="720"><span class="lineNum">     720 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
+<a name="721"><span class="lineNum">     721 </span><span class="lineCov">          4 :         name=='CAMEROUN'?'${GlobalService().baseUrl}api/zone?name=$name':'${GlobalService().baseUrl}api/zone?code=$name',</span></a>
+<a name="722"><span class="lineNum">     722 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="723"><span class="lineNum">     723 </span>            :           method: 'GET',</a>
 <a name="724"><span class="lineNum">     724 </span>            :           headers: headers,</a>
 <a name="725"><span class="lineNum">     725 </span>            :         ),</a>
 <a name="726"><span class="lineNum">     726 </span>            :       );</a>
 <a name="727"><span class="lineNum">     727 </span>            : </a>
-<a name="728"><span class="lineNum">     728 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="729"><span class="lineNum">     729 </span><span class="lineNoCov">          0 :         if (response.data['status'] == true) {</span></a>
+<a name="728"><span class="lineNum">     728 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="729"><span class="lineNum">     729 </span><span class="lineCov">          3 :         if (response.data['status'] == true) {</span></a>
 <a name="730"><span class="lineNum">     730 </span><span class="lineNoCov">          0 :           return response.data['data'];</span></a>
 <a name="731"><span class="lineNum">     731 </span>            :         } else {</a>
-<a name="732"><span class="lineNum">     732 </span><span class="lineNoCov">          0 :           throw Exception(response.data['message']);</span></a>
+<a name="732"><span class="lineNum">     732 </span><span class="lineCov">          3 :           throw Exception(response.data['message']);</span></a>
 <a name="733"><span class="lineNum">     733 </span>            :         }</a>
 <a name="734"><span class="lineNum">     734 </span>            :       }</a>
 <a name="735"><span class="lineNum">     735 </span>            :       else {</a>
 <a name="736"><span class="lineNum">     736 </span><span class="lineNoCov">          0 :         print(response.statusMessage);</span></a>
 <a name="737"><span class="lineNum">     737 </span>            :       }</a>
-<a name="738"><span class="lineNum">     738 </span><span class="lineNoCov">          0 :     }on SocketException catch (e) {</span></a>
-<a name="739"><span class="lineNum">     739 </span><span class="lineNoCov">          0 :   throw SocketException(e.toString());</span></a>
-<a name="740"><span class="lineNum">     740 </span><span class="lineNoCov">          0 :   } on FormatException catch (_) {</span></a>
+<a name="738"><span class="lineNum">     738 </span><span class="lineCov">          1 :     }on SocketException catch (e) {</span></a>
+<a name="739"><span class="lineNum">     739 </span><span class="lineCov">          2 :   throw SocketException(e.toString());</span></a>
+<a name="740"><span class="lineNum">     740 </span><span class="lineCov">          1 :   } on FormatException catch (_) {</span></a>
 <a name="741"><span class="lineNum">     741 </span>            :   throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="742"><span class="lineNum">     742 </span>            :   } catch (e) {</a>
-<a name="743"><span class="lineNum">     743 </span><span class="lineNoCov">          0 :   throw NetworkExceptions.getDioException(e);</span></a>
+<a name="743"><span class="lineNum">     743 </span><span class="lineCov">          1 :   throw NetworkExceptions.getDioException(e);</span></a>
 <a name="744"><span class="lineNum">     744 </span>            :   }</a>
 <a name="745"><span class="lineNum">     745 </span>            : </a>
 <a name="746"><span class="lineNum">     746 </span>            : }</a>
 <a name="747"><span class="lineNum">     747 </span>            : </a>
-<a name="748"><span class="lineNum">     748 </span><span class="lineNoCov">          0 :   getSpecificZoneGeoJson(String url) async {</span></a>
+<a name="748"><span class="lineNum">     748 </span><span class="lineCov">          1 :   getSpecificZoneGeoJson(String url) async {</span></a>
 <a name="749"><span class="lineNum">     749 </span>            :     try{</a>
-<a name="750"><span class="lineNum">     750 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
+<a name="750"><span class="lineNum">     750 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
 <a name="751"><span class="lineNum">     751 </span>            :         url,</a>
-<a name="752"><span class="lineNum">     752 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="752"><span class="lineNum">     752 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="753"><span class="lineNum">     753 </span>            :           method: 'GET',</a>
 <a name="754"><span class="lineNum">     754 </span>            :         ),</a>
 <a name="755"><span class="lineNum">     755 </span>            :       );</a>
-<a name="756"><span class="lineNum">     756 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="757"><span class="lineNum">     757 </span><span class="lineNoCov">          0 :         return json.encode(response.data);</span></a>
+<a name="756"><span class="lineNum">     756 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="757"><span class="lineNum">     757 </span><span class="lineCov">          2 :         return json.encode(response.data);</span></a>
 <a name="758"><span class="lineNum">     758 </span>            :       }</a>
 <a name="759"><span class="lineNum">     759 </span>            :       else {</a>
 <a name="760"><span class="lineNum">     760 </span><span class="lineNoCov">          0 :         throw Exception((response.statusMessage));</span></a>
 <a name="761"><span class="lineNum">     761 </span>            :       }</a>
 <a name="762"><span class="lineNum">     762 </span>            : </a>
-<a name="763"><span class="lineNum">     763 </span><span class="lineNoCov">          0 :     }on SocketException catch (e) {</span></a>
-<a name="764"><span class="lineNum">     764 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="765"><span class="lineNum">     765 </span><span class="lineNoCov">          0 :     } on FormatException catch (_) {</span></a>
+<a name="763"><span class="lineNum">     763 </span><span class="lineCov">          1 :     }on SocketException catch (e) {</span></a>
+<a name="764"><span class="lineNum">     764 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="765"><span class="lineNum">     765 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
 <a name="766"><span class="lineNum">     766 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="767"><span class="lineNum">     767 </span>            :     } catch (e) {</a>
-<a name="768"><span class="lineNum">     768 </span><span class="lineNoCov">          0 :       throw NetworkExceptions.getDioException(e);</span></a>
+<a name="768"><span class="lineNum">     768 </span><span class="lineCov">          1 :       throw NetworkExceptions.getDioException(e);</span></a>
 <a name="769"><span class="lineNum">     769 </span>            :     }</a>
 <a name="770"><span class="lineNum">     770 </span>            : </a>
 <a name="771"><span class="lineNum">     771 </span>            :   }</a>
@@ -862,37 +862,37 @@
 <a name="800"><span class="lineNum">     800 </span>            : </a>
 <a name="801"><span class="lineNum">     801 </span>            : }</a>
 <a name="802"><span class="lineNum">     802 </span>            : </a>
-<a name="803"><span class="lineNum">     803 </span><span class="lineNoCov">          0 : Future getDisasterMarkers() async{</span></a>
+<a name="803"><span class="lineNum">     803 </span><span class="lineCov">          1 : Future getDisasterMarkers() async{</span></a>
 <a name="804"><span class="lineNum">     804 </span>            :   try {</a>
-<a name="805"><span class="lineNum">     805 </span><span class="lineNoCov">          0 :     var headers = {</span></a>
+<a name="805"><span class="lineNum">     805 </span><span class="lineCov">          1 :     var headers = {</span></a>
 <a name="806"><span class="lineNum">     806 </span>            :       'Content-Type': 'application/json',</a>
 <a name="807"><span class="lineNum">     807 </span>            :       'Accept': 'application/json',</a>
-<a name="808"><span class="lineNum">     808 </span><span class="lineNoCov">          0 :       'Authorization': 'Bearer ${Get</span></a>
-<a name="809"><span class="lineNum">     809 </span><span class="lineNoCov">          0 :           .find&lt;AuthService&gt;()</span></a>
-<a name="810"><span class="lineNum">     810 </span><span class="lineNoCov">          0 :           .user</span></a>
-<a name="811"><span class="lineNum">     811 </span><span class="lineNoCov">          0 :           .value</span></a>
-<a name="812"><span class="lineNum">     812 </span><span class="lineNoCov">          0 :           .authToken}'</span></a>
-<a name="813"><span class="lineNum">     813 </span><span class="lineNoCov">          0 :     };</span></a>
-<a name="814"><span class="lineNum">     814 </span><span class="lineNoCov">          0 :     var response = await httpClient.get(</span></a>
-<a name="815"><span class="lineNum">     815 </span><span class="lineNoCov">          0 :       '${GlobalService().baseUrl}api/disasters',</span></a>
-<a name="816"><span class="lineNum">     816 </span><span class="lineNoCov">          0 :       options: Options(</span></a>
+<a name="808"><span class="lineNum">     808 </span><span class="lineCov">          1 :       'Authorization': 'Bearer ${Get</span></a>
+<a name="809"><span class="lineNum">     809 </span><span class="lineCov">          1 :           .find&lt;AuthService&gt;()</span></a>
+<a name="810"><span class="lineNum">     810 </span><span class="lineCov">          1 :           .user</span></a>
+<a name="811"><span class="lineNum">     811 </span><span class="lineCov">          1 :           .value</span></a>
+<a name="812"><span class="lineNum">     812 </span><span class="lineCov">          1 :           .authToken}'</span></a>
+<a name="813"><span class="lineNum">     813 </span><span class="lineCov">          1 :     };</span></a>
+<a name="814"><span class="lineNum">     814 </span><span class="lineCov">          2 :     var response = await httpClient.get(</span></a>
+<a name="815"><span class="lineNum">     815 </span><span class="lineCov">          3 :       '${GlobalService().baseUrl}api/disasters',</span></a>
+<a name="816"><span class="lineNum">     816 </span><span class="lineCov">          1 :       options: Options(</span></a>
 <a name="817"><span class="lineNum">     817 </span>            :         method: 'GET',</a>
 <a name="818"><span class="lineNum">     818 </span>            :         headers: headers,</a>
 <a name="819"><span class="lineNum">     819 </span>            :       ),</a>
 <a name="820"><span class="lineNum">     820 </span>            :     );</a>
-<a name="821"><span class="lineNum">     821 </span><span class="lineNoCov">          0 :     if (response.statusCode == 200) {</span></a>
-<a name="822"><span class="lineNum">     822 </span><span class="lineNoCov">          0 :       if (response.data['status'] == true) {</span></a>
-<a name="823"><span class="lineNum">     823 </span><span class="lineNoCov">          0 :         return response.data['data'];</span></a>
+<a name="821"><span class="lineNum">     821 </span><span class="lineCov">          2 :     if (response.statusCode == 200) {</span></a>
+<a name="822"><span class="lineNum">     822 </span><span class="lineCov">          3 :       if (response.data['status'] == true) {</span></a>
+<a name="823"><span class="lineNum">     823 </span><span class="lineCov">          2 :         return response.data['data'];</span></a>
 <a name="824"><span class="lineNum">     824 </span>            :       } else {</a>
-<a name="825"><span class="lineNum">     825 </span><span class="lineNoCov">          0 :         throw Exception(response.data['message']);</span></a>
+<a name="825"><span class="lineNum">     825 </span><span class="lineCov">          3 :         throw Exception(response.data['message']);</span></a>
 <a name="826"><span class="lineNum">     826 </span>            :       }</a>
 <a name="827"><span class="lineNum">     827 </span>            :     }</a>
-<a name="828"><span class="lineNum">     828 </span><span class="lineNoCov">          0 :   }on SocketException catch (e) {</span></a>
-<a name="829"><span class="lineNum">     829 </span><span class="lineNoCov">          0 :     throw SocketException(e.toString());</span></a>
-<a name="830"><span class="lineNum">     830 </span><span class="lineNoCov">          0 :   } on FormatException catch (_) {</span></a>
+<a name="828"><span class="lineNum">     828 </span><span class="lineCov">          1 :   }on SocketException catch (e) {</span></a>
+<a name="829"><span class="lineNum">     829 </span><span class="lineCov">          2 :     throw SocketException(e.toString());</span></a>
+<a name="830"><span class="lineNum">     830 </span><span class="lineCov">          1 :   } on FormatException catch (_) {</span></a>
 <a name="831"><span class="lineNum">     831 </span>            :     throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="832"><span class="lineNum">     832 </span>            :   } catch (e) {</a>
-<a name="833"><span class="lineNum">     833 </span><span class="lineNoCov">          0 :     throw NetworkExceptions.getDioException(e);</span></a>
+<a name="833"><span class="lineNum">     833 </span><span class="lineCov">          1 :     throw NetworkExceptions.getDioException(e);</span></a>
 <a name="834"><span class="lineNum">     834 </span>            :   }</a>
 <a name="835"><span class="lineNum">     835 </span>            : }</a>
 <a name="836"><span class="lineNum">     836 </span>            : </a>
@@ -966,37 +966,37 @@
 <a name="904"><span class="lineNum">     904 </span>            : </a>
 <a name="905"><span class="lineNum">     905 </span>            : }</a>
 <a name="906"><span class="lineNum">     906 </span>            : </a>
-<a name="907"><span class="lineNum">     907 </span><span class="lineNoCov">          0 :   Future getPostsByZone(int zone_id) async {</span></a>
+<a name="907"><span class="lineNum">     907 </span><span class="lineCov">          1 :   Future getPostsByZone(int zone_id) async {</span></a>
 <a name="908"><span class="lineNum">     908 </span>            :     try {</a>
-<a name="909"><span class="lineNum">     909 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="909"><span class="lineNum">     909 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="910"><span class="lineNum">     910 </span>            :         'Content-Type': 'application/json',</a>
 <a name="911"><span class="lineNum">     911 </span>            :         'Accept': 'application/json',</a>
-<a name="912"><span class="lineNum">     912 </span><span class="lineNoCov">          0 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="913"><span class="lineNum">     913 </span><span class="lineNoCov">          0 :             .find&lt;AuthService&gt;()</span></a>
-<a name="914"><span class="lineNum">     914 </span><span class="lineNoCov">          0 :             .user</span></a>
-<a name="915"><span class="lineNum">     915 </span><span class="lineNoCov">          0 :             .value</span></a>
-<a name="916"><span class="lineNum">     916 </span><span class="lineNoCov">          0 :             .authToken}',</span></a>
+<a name="912"><span class="lineNum">     912 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="913"><span class="lineNum">     913 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
+<a name="914"><span class="lineNum">     914 </span><span class="lineCov">          1 :             .user</span></a>
+<a name="915"><span class="lineNum">     915 </span><span class="lineCov">          1 :             .value</span></a>
+<a name="916"><span class="lineNum">     916 </span><span class="lineCov">          2 :             .authToken}',</span></a>
 <a name="917"><span class="lineNum">     917 </span>            :       };</a>
-<a name="918"><span class="lineNum">     918 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
-<a name="919"><span class="lineNum">     919 </span><span class="lineNoCov">          0 :         '${GlobalService().baseUrl}api/post?zone_id=$zone_id&amp;size=4',</span></a>
-<a name="920"><span class="lineNum">     920 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="918"><span class="lineNum">     918 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
+<a name="919"><span class="lineNum">     919 </span><span class="lineCov">          3 :         '${GlobalService().baseUrl}api/post?zone_id=$zone_id&amp;size=4',</span></a>
+<a name="920"><span class="lineNum">     920 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="921"><span class="lineNum">     921 </span>            :           method: 'GET',</a>
 <a name="922"><span class="lineNum">     922 </span>            :           headers: headers,</a>
 <a name="923"><span class="lineNum">     923 </span>            :         ),</a>
 <a name="924"><span class="lineNum">     924 </span>            :       );</a>
-<a name="925"><span class="lineNum">     925 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="926"><span class="lineNum">     926 </span><span class="lineNoCov">          0 :         if (response.data['status'] == true) {</span></a>
-<a name="927"><span class="lineNum">     927 </span><span class="lineNoCov">          0 :           return response.data['data'];</span></a>
+<a name="925"><span class="lineNum">     925 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="926"><span class="lineNum">     926 </span><span class="lineCov">          3 :         if (response.data['status'] == true) {</span></a>
+<a name="927"><span class="lineNum">     927 </span><span class="lineCov">          2 :           return response.data['data'];</span></a>
 <a name="928"><span class="lineNum">     928 </span>            :         } else {</a>
-<a name="929"><span class="lineNum">     929 </span><span class="lineNoCov">          0 :           throw Exception(response.data['message']);</span></a>
+<a name="929"><span class="lineNum">     929 </span><span class="lineCov">          3 :           throw Exception(response.data['message']);</span></a>
 <a name="930"><span class="lineNum">     930 </span>            :         }</a>
 <a name="931"><span class="lineNum">     931 </span>            :       }</a>
-<a name="932"><span class="lineNum">     932 </span><span class="lineNoCov">          0 :     }on SocketException catch (e) {</span></a>
-<a name="933"><span class="lineNum">     933 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="934"><span class="lineNum">     934 </span><span class="lineNoCov">          0 :     } on FormatException catch (_) {</span></a>
+<a name="932"><span class="lineNum">     932 </span><span class="lineCov">          1 :     }on SocketException catch (e) {</span></a>
+<a name="933"><span class="lineNum">     933 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="934"><span class="lineNum">     934 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
 <a name="935"><span class="lineNum">     935 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="936"><span class="lineNum">     936 </span>            :     } catch (e) {</a>
-<a name="937"><span class="lineNum">     937 </span><span class="lineNoCov">          0 :       throw NetworkExceptions.getDioException(e);</span></a>
+<a name="937"><span class="lineNum">     937 </span><span class="lineCov">          1 :       throw NetworkExceptions.getDioException(e);</span></a>
 <a name="938"><span class="lineNum">     938 </span>            :     }</a>
 <a name="939"><span class="lineNum">     939 </span>            : </a>
 <a name="940"><span class="lineNum">     940 </span>            : </a>
@@ -1734,174 +1734,170 @@
 <a name="1672"><span class="lineNum">    1672 </span>            :   // Handling notifications</a>
 <a name="1673"><span class="lineNum">    1673 </span>            : </a>
 <a name="1674"><span class="lineNum">    1674 </span>            :   ///Get list of notifications</a>
-<a name="1675"><span class="lineNum">    1675 </span><span class="lineCov">          1 :   Future getUserNotifications() async {</span></a>
+<a name="1675"><span class="lineNum">    1675 </span><span class="lineCov">          2 :   Future getUserNotifications() async {</span></a>
 <a name="1676"><span class="lineNum">    1676 </span>            :     try {</a>
-<a name="1677"><span class="lineNum">    1677 </span><span class="lineCov">          1 :       var headers = {</span></a>
+<a name="1677"><span class="lineNum">    1677 </span><span class="lineCov">          2 :       var headers = {</span></a>
 <a name="1678"><span class="lineNum">    1678 </span>            :         'Content-Type': 'application/json',</a>
 <a name="1679"><span class="lineNum">    1679 </span>            :         'Accept': 'application/json',</a>
-<a name="1680"><span class="lineNum">    1680 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="1681"><span class="lineNum">    1681 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
-<a name="1682"><span class="lineNum">    1682 </span><span class="lineCov">          1 :             .user</span></a>
-<a name="1683"><span class="lineNum">    1683 </span><span class="lineCov">          1 :             .value</span></a>
-<a name="1684"><span class="lineNum">    1684 </span><span class="lineCov">          2 :             .authToken}',</span></a>
+<a name="1680"><span class="lineNum">    1680 </span><span class="lineCov">          2 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="1681"><span class="lineNum">    1681 </span><span class="lineCov">          2 :             .find&lt;AuthService&gt;()</span></a>
+<a name="1682"><span class="lineNum">    1682 </span><span class="lineCov">          2 :             .user</span></a>
+<a name="1683"><span class="lineNum">    1683 </span><span class="lineCov">          2 :             .value</span></a>
+<a name="1684"><span class="lineNum">    1684 </span><span class="lineCov">          4 :             .authToken}',</span></a>
 <a name="1685"><span class="lineNum">    1685 </span>            :       };</a>
 <a name="1686"><span class="lineNum">    1686 </span>            : </a>
-<a name="1687"><span class="lineNum">    1687 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
-<a name="1688"><span class="lineNum">    1688 </span><span class="lineCov">          1 :         '${GlobalService()</span></a>
-<a name="1689"><span class="lineNum">    1689 </span><span class="lineCov">          2 :             .baseUrl}api/notifications',</span></a>
-<a name="1690"><span class="lineNum">    1690 </span><span class="lineCov">          1 :         options: Options(</span></a>
+<a name="1687"><span class="lineNum">    1687 </span><span class="lineCov">          4 :       var response = await httpClient.get(</span></a>
+<a name="1688"><span class="lineNum">    1688 </span><span class="lineCov">          2 :         '${GlobalService()</span></a>
+<a name="1689"><span class="lineNum">    1689 </span><span class="lineCov">          4 :             .baseUrl}api/notifications',</span></a>
+<a name="1690"><span class="lineNum">    1690 </span><span class="lineCov">          2 :         options: Options(</span></a>
 <a name="1691"><span class="lineNum">    1691 </span>            :           method: 'GET',</a>
 <a name="1692"><span class="lineNum">    1692 </span>            :           headers: headers,</a>
 <a name="1693"><span class="lineNum">    1693 </span>            :         ),</a>
 <a name="1694"><span class="lineNum">    1694 </span>            :       );</a>
-<a name="1695"><span class="lineNum">    1695 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="1696"><span class="lineNum">    1696 </span><span class="lineNoCov">          0 :         if (response.data['status'] == true) {</span></a>
-<a name="1697"><span class="lineNum">    1697 </span><span class="lineNoCov">          0 :           return response.data['data'];</span></a>
+<a name="1695"><span class="lineNum">    1695 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="1696"><span class="lineNum">    1696 </span><span class="lineCov">          3 :         if (response.data['status'] == true) {</span></a>
+<a name="1697"><span class="lineNum">    1697 </span><span class="lineCov">          2 :           return response.data['data'];</span></a>
 <a name="1698"><span class="lineNum">    1698 </span>            :         } else {</a>
-<a name="1699"><span class="lineNum">    1699 </span><span class="lineNoCov">          0 :           throw Exception(response.data['message']);</span></a>
+<a name="1699"><span class="lineNum">    1699 </span><span class="lineCov">          3 :           throw Exception(response.data['message']);</span></a>
 <a name="1700"><span class="lineNum">    1700 </span>            :         }</a>
 <a name="1701"><span class="lineNum">    1701 </span>            :       }</a>
-<a name="1702"><span class="lineNum">    1702 </span><span class="lineCov">          1 :     } on SocketException catch (e) {</span></a>
-<a name="1703"><span class="lineNum">    1703 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="1704"><span class="lineNum">    1704 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
+<a name="1702"><span class="lineNum">    1702 </span><span class="lineCov">          2 :     } on SocketException catch (e) {</span></a>
+<a name="1703"><span class="lineNum">    1703 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="1704"><span class="lineNum">    1704 </span><span class="lineCov">          2 :     } on FormatException catch (_) {</span></a>
 <a name="1705"><span class="lineNum">    1705 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="1706"><span class="lineNum">    1706 </span>            :     } catch (e) {</a>
-<a name="1707"><span class="lineNum">    1707 </span><span class="lineCov">          1 :       throw NetworkExceptions.getDioException(e);</span></a>
+<a name="1707"><span class="lineNum">    1707 </span><span class="lineCov">          2 :       throw NetworkExceptions.getDioException(e);</span></a>
 <a name="1708"><span class="lineNum">    1708 </span>            :     }</a>
 <a name="1709"><span class="lineNum">    1709 </span>            :   }</a>
 <a name="1710"><span class="lineNum">    1710 </span>            : </a>
 <a name="1711"><span class="lineNum">    1711 </span>            :   /// Get specific notification</a>
 <a name="1712"><span class="lineNum">    1712 </span>            : </a>
-<a name="1713"><span class="lineNum">    1713 </span><span class="lineNoCov">          0 :   Future getSpecificNotification(var id) async {</span></a>
+<a name="1713"><span class="lineNum">    1713 </span><span class="lineCov">          1 :   Future getSpecificNotification(var id) async {</span></a>
 <a name="1714"><span class="lineNum">    1714 </span>            :     try {</a>
-<a name="1715"><span class="lineNum">    1715 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="1715"><span class="lineNum">    1715 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="1716"><span class="lineNum">    1716 </span>            :         'Content-Type': 'application/json',</a>
 <a name="1717"><span class="lineNum">    1717 </span>            :         'Accept': 'application/json',</a>
-<a name="1718"><span class="lineNum">    1718 </span><span class="lineNoCov">          0 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="1719"><span class="lineNum">    1719 </span><span class="lineNoCov">          0 :             .find&lt;AuthService&gt;()</span></a>
-<a name="1720"><span class="lineNum">    1720 </span><span class="lineNoCov">          0 :             .user</span></a>
-<a name="1721"><span class="lineNum">    1721 </span><span class="lineNoCov">          0 :             .value</span></a>
-<a name="1722"><span class="lineNum">    1722 </span><span class="lineNoCov">          0 :             .authToken}',</span></a>
+<a name="1718"><span class="lineNum">    1718 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="1719"><span class="lineNum">    1719 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
+<a name="1720"><span class="lineNum">    1720 </span><span class="lineCov">          1 :             .user</span></a>
+<a name="1721"><span class="lineNum">    1721 </span><span class="lineCov">          1 :             .value</span></a>
+<a name="1722"><span class="lineNum">    1722 </span><span class="lineCov">          2 :             .authToken}',</span></a>
 <a name="1723"><span class="lineNum">    1723 </span>            :       };</a>
 <a name="1724"><span class="lineNum">    1724 </span>            : </a>
-<a name="1725"><span class="lineNum">    1725 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
-<a name="1726"><span class="lineNum">    1726 </span><span class="lineNoCov">          0 :         '${GlobalService()</span></a>
-<a name="1727"><span class="lineNum">    1727 </span><span class="lineNoCov">          0 :             .baseUrl}api/notifications/$id',</span></a>
-<a name="1728"><span class="lineNum">    1728 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="1725"><span class="lineNum">    1725 </span><span class="lineCov">          2 :       var response = await httpClient.get(</span></a>
+<a name="1726"><span class="lineNum">    1726 </span><span class="lineCov">          1 :         '${GlobalService()</span></a>
+<a name="1727"><span class="lineNum">    1727 </span><span class="lineCov">          2 :             .baseUrl}api/notifications/$id',</span></a>
+<a name="1728"><span class="lineNum">    1728 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="1729"><span class="lineNum">    1729 </span>            :           method: 'GET',</a>
 <a name="1730"><span class="lineNum">    1730 </span>            :           headers: headers,</a>
 <a name="1731"><span class="lineNum">    1731 </span>            :         ),</a>
 <a name="1732"><span class="lineNum">    1732 </span>            :       );</a>
-<a name="1733"><span class="lineNum">    1733 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="1734"><span class="lineNum">    1734 </span><span class="lineNoCov">          0 :         if (response.data['status'] == true) {</span></a>
-<a name="1735"><span class="lineNum">    1735 </span><span class="lineNoCov">          0 :           return response.data['data'];</span></a>
+<a name="1733"><span class="lineNum">    1733 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="1734"><span class="lineNum">    1734 </span><span class="lineCov">          3 :         if (response.data['status'] == true) {</span></a>
+<a name="1735"><span class="lineNum">    1735 </span><span class="lineCov">          2 :           return response.data['data'];</span></a>
 <a name="1736"><span class="lineNum">    1736 </span>            :         } else {</a>
-<a name="1737"><span class="lineNum">    1737 </span><span class="lineNoCov">          0 :           throw Exception(response.data['message']);</span></a>
+<a name="1737"><span class="lineNum">    1737 </span><span class="lineCov">          3 :           throw Exception(response.data['message']);</span></a>
 <a name="1738"><span class="lineNum">    1738 </span>            :         }</a>
 <a name="1739"><span class="lineNum">    1739 </span>            :       }</a>
-<a name="1740"><span class="lineNum">    1740 </span><span class="lineNoCov">          0 :     } on SocketException catch (e) {</span></a>
-<a name="1741"><span class="lineNum">    1741 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="1742"><span class="lineNum">    1742 </span><span class="lineNoCov">          0 :     } on FormatException catch (_) {</span></a>
+<a name="1740"><span class="lineNum">    1740 </span><span class="lineCov">          1 :     } on SocketException catch (e) {</span></a>
+<a name="1741"><span class="lineNum">    1741 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="1742"><span class="lineNum">    1742 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
 <a name="1743"><span class="lineNum">    1743 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="1744"><span class="lineNum">    1744 </span>            :     } catch (e) {</a>
-<a name="1745"><span class="lineNum">    1745 </span><span class="lineNoCov">          0 :       throw NetworkExceptions.getDioException(e);</span></a>
+<a name="1745"><span class="lineNum">    1745 </span><span class="lineCov">          1 :       throw NetworkExceptions.getDioException(e);</span></a>
 <a name="1746"><span class="lineNum">    1746 </span>            :     }</a>
 <a name="1747"><span class="lineNum">    1747 </span>            :   }</a>
 <a name="1748"><span class="lineNum">    1748 </span>            : </a>
 <a name="1749"><span class="lineNum">    1749 </span>            :   ///Delete specific notification</a>
 <a name="1750"><span class="lineNum">    1750 </span>            : </a>
-<a name="1751"><span class="lineNum">    1751 </span><span class="lineNoCov">          0 :   Future deleteSpecificNotification(var id) async {</span></a>
+<a name="1751"><span class="lineNum">    1751 </span><span class="lineCov">          1 :   Future deleteSpecificNotification(var id) async {</span></a>
 <a name="1752"><span class="lineNum">    1752 </span>            :     try {</a>
-<a name="1753"><span class="lineNum">    1753 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
+<a name="1753"><span class="lineNum">    1753 </span><span class="lineCov">          1 :       var headers = {</span></a>
 <a name="1754"><span class="lineNum">    1754 </span>            :         'Content-Type': 'application/json',</a>
 <a name="1755"><span class="lineNum">    1755 </span>            :         'Accept': 'application/json',</a>
-<a name="1756"><span class="lineNum">    1756 </span><span class="lineNoCov">          0 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="1757"><span class="lineNum">    1757 </span><span class="lineNoCov">          0 :             .find&lt;AuthService&gt;()</span></a>
-<a name="1758"><span class="lineNum">    1758 </span><span class="lineNoCov">          0 :             .user</span></a>
-<a name="1759"><span class="lineNum">    1759 </span><span class="lineNoCov">          0 :             .value</span></a>
-<a name="1760"><span class="lineNum">    1760 </span><span class="lineNoCov">          0 :             .authToken}',</span></a>
+<a name="1756"><span class="lineNum">    1756 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="1757"><span class="lineNum">    1757 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
+<a name="1758"><span class="lineNum">    1758 </span><span class="lineCov">          1 :             .user</span></a>
+<a name="1759"><span class="lineNum">    1759 </span><span class="lineCov">          1 :             .value</span></a>
+<a name="1760"><span class="lineNum">    1760 </span><span class="lineCov">          2 :             .authToken}',</span></a>
 <a name="1761"><span class="lineNum">    1761 </span>            :       };</a>
 <a name="1762"><span class="lineNum">    1762 </span>            : </a>
-<a name="1763"><span class="lineNum">    1763 </span><span class="lineNoCov">          0 :       var response = await httpClient.get(</span></a>
-<a name="1764"><span class="lineNum">    1764 </span><span class="lineNoCov">          0 :         '${GlobalService()</span></a>
-<a name="1765"><span class="lineNum">    1765 </span><span class="lineNoCov">          0 :             .baseUrl}api/notifications/$id',</span></a>
-<a name="1766"><span class="lineNum">    1766 </span><span class="lineNoCov">          0 :         options: Options(</span></a>
+<a name="1763"><span class="lineNum">    1763 </span><span class="lineCov">          2 :       var response = await httpClient.delete(</span></a>
+<a name="1764"><span class="lineNum">    1764 </span><span class="lineCov">          1 :         '${GlobalService()</span></a>
+<a name="1765"><span class="lineNum">    1765 </span><span class="lineCov">          2 :             .baseUrl}api/notifications/$id',</span></a>
+<a name="1766"><span class="lineNum">    1766 </span><span class="lineCov">          1 :         options: Options(</span></a>
 <a name="1767"><span class="lineNum">    1767 </span>            :           method: 'DELETE',</a>
 <a name="1768"><span class="lineNum">    1768 </span>            :           headers: headers,</a>
 <a name="1769"><span class="lineNum">    1769 </span>            :         ),</a>
 <a name="1770"><span class="lineNum">    1770 </span>            :       );</a>
-<a name="1771"><span class="lineNum">    1771 </span><span class="lineNoCov">          0 :       if (response.statusCode == 200) {</span></a>
-<a name="1772"><span class="lineNum">    1772 </span><span class="lineNoCov">          0 :         if (response.data['status'] == true) {</span></a>
-<a name="1773"><span class="lineNum">    1773 </span><span class="lineNoCov">          0 :           return response.data['data'];</span></a>
+<a name="1771"><span class="lineNum">    1771 </span><span class="lineCov">          2 :       if (response.statusCode == 200) {</span></a>
+<a name="1772"><span class="lineNum">    1772 </span><span class="lineCov">          3 :         if (response.data['status'] == true) {</span></a>
+<a name="1773"><span class="lineNum">    1773 </span><span class="lineCov">          2 :           return response.data['data'];</span></a>
 <a name="1774"><span class="lineNum">    1774 </span>            :         } else {</a>
-<a name="1775"><span class="lineNum">    1775 </span><span class="lineNoCov">          0 :           throw Exception(response.data['message']);</span></a>
+<a name="1775"><span class="lineNum">    1775 </span><span class="lineCov">          3 :           throw Exception(response.data['message']);</span></a>
 <a name="1776"><span class="lineNum">    1776 </span>            :         }</a>
 <a name="1777"><span class="lineNum">    1777 </span>            :       }</a>
-<a name="1778"><span class="lineNum">    1778 </span><span class="lineNoCov">          0 :     } on SocketException catch (e) {</span></a>
-<a name="1779"><span class="lineNum">    1779 </span><span class="lineNoCov">          0 :       throw SocketException(e.toString());</span></a>
-<a name="1780"><span class="lineNum">    1780 </span><span class="lineNoCov">          0 :     } on FormatException catch (_) {</span></a>
+<a name="1778"><span class="lineNum">    1778 </span><span class="lineCov">          1 :     } on SocketException catch (e) {</span></a>
+<a name="1779"><span class="lineNum">    1779 </span><span class="lineCov">          2 :       throw SocketException(e.toString());</span></a>
+<a name="1780"><span class="lineNum">    1780 </span><span class="lineCov">          1 :     } on FormatException catch (_) {</span></a>
 <a name="1781"><span class="lineNum">    1781 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="1782"><span class="lineNum">    1782 </span>            :     } catch (e) {</a>
-<a name="1783"><span class="lineNum">    1783 </span><span class="lineNoCov">          0 :       throw NetworkExceptions.getDioException(e);</span></a>
+<a name="1783"><span class="lineNum">    1783 </span><span class="lineCov">          1 :       throw NetworkExceptions.getDioException(e);</span></a>
 <a name="1784"><span class="lineNum">    1784 </span>            :     }</a>
 <a name="1785"><span class="lineNum">    1785 </span>            :   }</a>
 <a name="1786"><span class="lineNum">    1786 </span>            : </a>
-<a name="1787"><span class="lineNum">    1787 </span><span class="lineNoCov">          0 :   createNotification(NotificationModel notification) async{</span></a>
-<a name="1788"><span class="lineNum">    1788 </span><span class="lineNoCov">          0 :     print(notification.title!);</span></a>
-<a name="1789"><span class="lineNum">    1789 </span><span class="lineNoCov">          0 :     print(notification.content!);</span></a>
-<a name="1790"><span class="lineNum">    1790 </span><span class="lineNoCov">          0 :     print(notification.zoneId!);</span></a>
-<a name="1791"><span class="lineNum">    1791 </span>            : </a>
-<a name="1792"><span class="lineNum">    1792 </span>            :     try {</a>
-<a name="1793"><span class="lineNum">    1793 </span><span class="lineNoCov">          0 :       var headers = {</span></a>
-<a name="1794"><span class="lineNum">    1794 </span>            :         'Content-Type': 'application/json',</a>
-<a name="1795"><span class="lineNum">    1795 </span>            :         'Accept': 'application/json',</a>
-<a name="1796"><span class="lineNum">    1796 </span><span class="lineNoCov">          0 :         'Authorization': 'Bearer ${Get</span></a>
-<a name="1797"><span class="lineNum">    1797 </span><span class="lineNoCov">          0 :             .find&lt;AuthService&gt;()</span></a>
-<a name="1798"><span class="lineNum">    1798 </span><span class="lineNoCov">          0 :             .user</span></a>
-<a name="1799"><span class="lineNum">    1799 </span><span class="lineNoCov">          0 :             .value</span></a>
-<a name="1800"><span class="lineNum">    1800 </span><span class="lineNoCov">          0 :             .authToken}'</span></a>
-<a name="1801"><span class="lineNum">    1801 </span><span class="lineNoCov">          0 :       };</span></a>
-<a name="1802"><span class="lineNum">    1802 </span>            : </a>
-<a name="1803"><span class="lineNum">    1803 </span><span class="lineNoCov">          0 :       var request = http.MultipartRequest(</span></a>
-<a name="1804"><span class="lineNum">    1804 </span><span class="lineNoCov">          0 :           'POST', Uri.parse('${GlobalService().baseUrl}api/notifications'));</span></a>
-<a name="1805"><span class="lineNum">    1805 </span><span class="lineNoCov">          0 :       request.fields.addAll({</span></a>
-<a name="1806"><span class="lineNum">    1806 </span><span class="lineNoCov">          0 :         'titre_en': notification.title!,</span></a>
-<a name="1807"><span class="lineNum">    1807 </span><span class="lineNoCov">          0 :         'titre_fr': notification.title!,</span></a>
-<a name="1808"><span class="lineNum">    1808 </span><span class="lineNoCov">          0 :         'zone_id': notification.zoneId!,</span></a>
-<a name="1809"><span class="lineNum">    1809 </span><span class="lineNoCov">          0 :         'content_en': notification.content!,</span></a>
-<a name="1810"><span class="lineNum">    1810 </span><span class="lineNoCov">          0 :         'content_fr': notification.content!</span></a>
-<a name="1811"><span class="lineNum">    1811 </span>            :       });</a>
+<a name="1787"><span class="lineNum">    1787 </span><span class="lineCov">          1 :   createNotification(NotificationModel notification) async{</span></a>
+<a name="1788"><span class="lineNum">    1788 </span>            :     try {</a>
+<a name="1789"><span class="lineNum">    1789 </span><span class="lineCov">          1 :       var headers = {</span></a>
+<a name="1790"><span class="lineNum">    1790 </span>            :         'Content-Type': 'application/json',</a>
+<a name="1791"><span class="lineNum">    1791 </span>            :         'Accept': 'application/json',</a>
+<a name="1792"><span class="lineNum">    1792 </span><span class="lineCov">          1 :         'Authorization': 'Bearer ${Get</span></a>
+<a name="1793"><span class="lineNum">    1793 </span><span class="lineCov">          1 :             .find&lt;AuthService&gt;()</span></a>
+<a name="1794"><span class="lineNum">    1794 </span><span class="lineCov">          1 :             .user</span></a>
+<a name="1795"><span class="lineNum">    1795 </span><span class="lineCov">          1 :             .value</span></a>
+<a name="1796"><span class="lineNum">    1796 </span><span class="lineCov">          1 :             .authToken}'</span></a>
+<a name="1797"><span class="lineNum">    1797 </span><span class="lineCov">          1 :       };</span></a>
+<a name="1798"><span class="lineNum">    1798 </span>            : </a>
+<a name="1799"><span class="lineNum">    1799 </span><span class="lineCov">          1 :       var request = http.MultipartRequest(</span></a>
+<a name="1800"><span class="lineNum">    1800 </span><span class="lineCov">          4 :           'POST', Uri.parse('${GlobalService().baseUrl}api/notifications'));</span></a>
+<a name="1801"><span class="lineNum">    1801 </span><span class="lineCov">          3 :       request.fields.addAll({</span></a>
+<a name="1802"><span class="lineNum">    1802 </span><span class="lineCov">          1 :         'titre_en': notification.title!,</span></a>
+<a name="1803"><span class="lineNum">    1803 </span><span class="lineCov">          1 :         'titre_fr': notification.title!,</span></a>
+<a name="1804"><span class="lineNum">    1804 </span><span class="lineCov">          1 :         'zone_id': notification.zoneId!,</span></a>
+<a name="1805"><span class="lineNum">    1805 </span><span class="lineCov">          1 :         'content_en': notification.content!,</span></a>
+<a name="1806"><span class="lineNum">    1806 </span><span class="lineCov">          1 :         'content_fr': notification.content!</span></a>
+<a name="1807"><span class="lineNum">    1807 </span>            :       });</a>
+<a name="1808"><span class="lineNum">    1808 </span>            : </a>
+<a name="1809"><span class="lineNum">    1809 </span>            : </a>
+<a name="1810"><span class="lineNum">    1810 </span><span class="lineCov">          1 :       request.files.add(await http.MultipartFile.fromPath(</span></a>
+<a name="1811"><span class="lineNum">    1811 </span><span class="lineCov">          1 :           'media', &quot;.${notification.imageNotificationBanner![0].path}&quot;));</span></a>
 <a name="1812"><span class="lineNum">    1812 </span>            : </a>
-<a name="1813"><span class="lineNum">    1813 </span>            : </a>
-<a name="1814"><span class="lineNum">    1814 </span><span class="lineNoCov">          0 :       request.files.add(await http.MultipartFile.fromPath(</span></a>
-<a name="1815"><span class="lineNum">    1815 </span><span class="lineNoCov">          0 :           'media', &quot;.${notification.imageNotificationBanner![0].path}&quot;));</span></a>
-<a name="1816"><span class="lineNum">    1816 </span>            : </a>
-<a name="1817"><span class="lineNum">    1817 </span><span class="lineNoCov">          0 :       request.headers.addAll(headers);</span></a>
-<a name="1818"><span class="lineNum">    1818 </span><span class="lineNoCov">          0 :       http.StreamedResponse response = await request.send();</span></a>
-<a name="1819"><span class="lineNum">    1819 </span>            : // coverage:ignore-start</a>
-<a name="1820"><span class="lineNum">    1820 </span>            :       if (response.statusCode == 201) {</a>
-<a name="1821"><span class="lineNum">    1821 </span>            :         var data = await response.stream.bytesToString();</a>
-<a name="1822"><span class="lineNum">    1822 </span>            :         var result = json.decode(data);</a>
-<a name="1823"><span class="lineNum">    1823 </span>            :         if (result['status'] == true) {</a>
-<a name="1824"><span class="lineNum">    1824 </span>            :           return result['data'];</a>
-<a name="1825"><span class="lineNum">    1825 </span>            :         } else {</a>
-<a name="1826"><span class="lineNum">    1826 </span>            :           throw Exception((result['message']));</a>
-<a name="1827"><span class="lineNum">    1827 </span>            :         }</a>
-<a name="1828"><span class="lineNum">    1828 </span>            :       }</a>
-<a name="1829"><span class="lineNum">    1829 </span>            :     }on SocketException catch (e) {</a>
-<a name="1830"><span class="lineNum">    1830 </span>            :       throw SocketException(e.toString());</a>
-<a name="1831"><span class="lineNum">    1831 </span>            :     } on FormatException catch (_) {</a>
-<a name="1832"><span class="lineNum">    1832 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
-<a name="1833"><span class="lineNum">    1833 </span>            :     } catch (e) {</a>
-<a name="1834"><span class="lineNum">    1834 </span>            :       throw NetworkExceptions.getDioException(e);</a>
-<a name="1835"><span class="lineNum">    1835 </span>            :     }// coverage:ignore-end</a>
-<a name="1836"><span class="lineNum">    1836 </span>            :   }</a>
+<a name="1813"><span class="lineNum">    1813 </span><span class="lineNoCov">          0 :       request.headers.addAll(headers);</span></a>
+<a name="1814"><span class="lineNum">    1814 </span><span class="lineNoCov">          0 :       http.StreamedResponse response = await request.send();</span></a>
+<a name="1815"><span class="lineNum">    1815 </span>            : // coverage:ignore-start</a>
+<a name="1816"><span class="lineNum">    1816 </span>            :       if (response.statusCode == 201) {</a>
+<a name="1817"><span class="lineNum">    1817 </span>            :         var data = await response.stream.bytesToString();</a>
+<a name="1818"><span class="lineNum">    1818 </span>            :         var result = json.decode(data);</a>
+<a name="1819"><span class="lineNum">    1819 </span>            :         if (result['status'] == true) {</a>
+<a name="1820"><span class="lineNum">    1820 </span>            :           return result['data'];</a>
+<a name="1821"><span class="lineNum">    1821 </span>            :         } else {</a>
+<a name="1822"><span class="lineNum">    1822 </span>            :           throw Exception((result['message']));</a>
+<a name="1823"><span class="lineNum">    1823 </span>            :         }</a>
+<a name="1824"><span class="lineNum">    1824 </span>            :       }</a>
+<a name="1825"><span class="lineNum">    1825 </span>            :     }on SocketException catch (e) {</a>
+<a name="1826"><span class="lineNum">    1826 </span>            :       throw SocketException(e.toString());</a>
+<a name="1827"><span class="lineNum">    1827 </span>            :     } on FormatException catch (_) {</a>
+<a name="1828"><span class="lineNum">    1828 </span>            :       throw const FormatException(&quot;Unable to process the data&quot;);</a>
+<a name="1829"><span class="lineNum">    1829 </span>            :     } catch (e) {</a>
+<a name="1830"><span class="lineNum">    1830 </span>            :       throw NetworkExceptions.getDioException(e);</a>
+<a name="1831"><span class="lineNum">    1831 </span>            :     }// coverage:ignore-end</a>
+<a name="1832"><span class="lineNum">    1832 </span>            :   }</a>
+<a name="1833"><span class="lineNum">    1833 </span>            : </a>
+<a name="1834"><span class="lineNum">    1834 </span>            : </a>
+<a name="1835"><span class="lineNum">    1835 </span>            : </a>
+<a name="1836"><span class="lineNum">    1836 </span>            : </a>
 <a name="1837"><span class="lineNum">    1837 </span>            : </a>
-<a name="1838"><span class="lineNum">    1838 </span>            : </a>
-<a name="1839"><span class="lineNum">    1839 </span>            : </a>
-<a name="1840"><span class="lineNum">    1840 </span>            : </a>
-<a name="1841"><span class="lineNum">    1841 </span>            : </a>
-<a name="1842"><span class="lineNum">    1842 </span>            : }</a>
+<a name="1838"><span class="lineNum">    1838 </span>            : }</a>
 </pre>
       </td>
     </tr>

@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">136</td>
-            <td class="headerCovTableEntryLo">6.6 %</td>
+            <td class="headerCovTableEntry">68</td>
+            <td class="headerCovTableEntry">137</td>
+            <td class="headerCovTableEntryLo">49.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-11 15:25:32</td>
+            <td class="headerValue">2024-12-12 17:58:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -130,8 +130,8 @@
 <a name="68"><span class="lineNum">      68 </span>            : </a>
 <a name="69"><span class="lineNum">      69 </span>            : </a>
 <a name="70"><span class="lineNum">      70 </span>            : </a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          1 :   NotificationController() {</span></a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          2 :     notificationRepository = NotificationRepository();</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          2 :   NotificationController() {</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          4 :     notificationRepository = NotificationRepository();</span></a>
 <a name="73"><span class="lineNum">      73 </span>            :   }</a>
 <a name="74"><span class="lineNum">      74 </span>            : </a>
 <a name="75"><span class="lineNum">      75 </span><span class="lineNoCov">          0 :   @override</span></a>
@@ -178,29 +178,29 @@
 <a name="116"><span class="lineNum">     116 </span>            : </a>
 <a name="117"><span class="lineNum">     117 </span>            :   }</a>
 <a name="118"><span class="lineNum">     118 </span>            : </a>
-<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :   classifyNotifications(var notificationList){</span></a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineNoCov">          0 :     createdNotifications.clear();</span></a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 :     receivedNotifications.clear();</span></a>
-<a name="122"><span class="lineNum">     122 </span><span class="lineNoCov">          0 :     for(var notification in notificationList){</span></a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineNoCov">          0 :       if(notification.userModel.userId == Get.find&lt;AuthService&gt;().user.value.userId ){</span></a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">          1 :   classifyNotifications(var notificationList){</span></a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">          2 :     createdNotifications.clear();</span></a>
+<a name="121"><span class="lineNum">     121 </span><span class="lineCov">          2 :     receivedNotifications.clear();</span></a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">          2 :     for(var notification in notificationList){</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">          8 :       if(notification.userModel.userId == Get.find&lt;AuthService&gt;().user.value.userId ){</span></a>
 <a name="124"><span class="lineNum">     124 </span><span class="lineNoCov">          0 :         createdNotifications.add(notification);</span></a>
 <a name="125"><span class="lineNum">     125 </span>            :       }</a>
 <a name="126"><span class="lineNum">     126 </span>            :       else{</a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineNoCov">          0 :         receivedNotifications.add(notification);</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          2 :         receivedNotifications.add(notification);</span></a>
 <a name="128"><span class="lineNum">     128 </span>            :       }</a>
 <a name="129"><span class="lineNum">     129 </span>            :     }</a>
 <a name="130"><span class="lineNum">     130 </span>            :   }</a>
 <a name="131"><span class="lineNum">     131 </span>            : </a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          1 :   Future getNotifications() async {</span></a>
-<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          2 :     loadingNotifications.value = true;</span></a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">          2 :     notificationList.clear();</span></a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          2 :     notifications.clear();</span></a>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          2 :   Future getNotifications() async {</span></a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineCov">          4 :     loadingNotifications.value = true;</span></a>
+<a name="134"><span class="lineNum">     134 </span><span class="lineCov">          4 :     notificationList.clear();</span></a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          4 :     notifications.clear();</span></a>
 <a name="136"><span class="lineNum">     136 </span>            :     try{</a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          2 :       var list = await notificationRepository.getUserNotifications();</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :       print(list);</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :       for( var i = 0; i&lt; list.length; i++){</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          4 :       var list = await notificationRepository.getUserNotifications();</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">          1 :       print(list);</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineCov">          2 :       for( var i = 0; i&lt; list.length; i++){</span></a>
 <a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :         UserModel user = UserModel(</span></a>
-<a name="141"><span class="lineNum">     141 </span><span class="lineNoCov">          0 :             userId: list[i]['user']['id'],</span></a>
+<a name="141"><span class="lineNum">     141 </span><span class="lineCov">          2 :             userId: list[i]['user']['id'],</span></a>
 <a name="142"><span class="lineNum">     142 </span><span class="lineNoCov">          0 :             lastName:list[i]['user']['last_name'],</span></a>
 <a name="143"><span class="lineNum">     143 </span><span class="lineNoCov">          0 :             firstName: list[i]['user']['first_name'],</span></a>
 <a name="144"><span class="lineNum">     144 </span><span class="lineNoCov">          0 :             avatarUrl: list[i]['user']['avatar']</span></a>
@@ -218,20 +218,20 @@
 <a name="156"><span class="lineNum">     156 </span>            :         //notificationList.clear();</a>
 <a name="157"><span class="lineNum">     157 </span><span class="lineNoCov">          0 :         notificationList.add(notification);</span></a>
 <a name="158"><span class="lineNum">     158 </span>            :       }</a>
-<a name="159"><span class="lineNum">     159 </span><span class="lineNoCov">          0 :       if(currentUser.value.type?.toUpperCase() == &quot;COUNCIL&quot;){</span></a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">          4 :       if(currentUser.value.type?.toUpperCase() == &quot;COUNCIL&quot;){</span></a>
 <a name="160"><span class="lineNum">     160 </span><span class="lineNoCov">          0 :         await classifyNotifications(notificationList);</span></a>
 <a name="161"><span class="lineNum">     161 </span>            :       }</a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineNoCov">          0 :       loadingNotifications.value = false;</span></a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineNoCov">          0 :       return notificationList;</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          2 :       loadingNotifications.value = false;</span></a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          1 :       return notificationList;</span></a>
 <a name="164"><span class="lineNum">     164 </span>            : </a>
 <a name="165"><span class="lineNum">     165 </span>            :     }</a>
 <a name="166"><span class="lineNum">     166 </span>            :     catch (e) {</a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          4 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
 <a name="168"><span class="lineNum">     168 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
 <a name="169"><span class="lineNum">     169 </span>            :       }</a>
 <a name="170"><span class="lineNum">     170 </span>            :     }</a>
 <a name="171"><span class="lineNum">     171 </span>            :     finally {</a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          2 :       loadingNotifications.value = false;</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          4 :       loadingNotifications.value = false;</span></a>
 <a name="173"><span class="lineNum">     173 </span>            : </a>
 <a name="174"><span class="lineNum">     174 </span>            : </a>
 <a name="175"><span class="lineNum">     175 </span>            :     }</a>
@@ -298,104 +298,106 @@
 <a name="236"><span class="lineNum">     236 </span>            :     }</a>
 <a name="237"><span class="lineNum">     237 </span>            :   }</a>
 <a name="238"><span class="lineNum">     238 </span>            : </a>
-<a name="239"><span class="lineNum">     239 </span><span class="lineNoCov">          0 :   getAllRegions() async{</span></a>
-<a name="240"><span class="lineNum">     240 </span><span class="lineNoCov">          0 :     return zoneRepository.getAllRegions(2, 1);</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineCov">          1 :   getAllRegions() async{</span></a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">          2 :     return zoneRepository.getAllRegions(2, 1);</span></a>
 <a name="241"><span class="lineNum">     241 </span>            :   }</a>
 <a name="242"><span class="lineNum">     242 </span>            : </a>
-<a name="243"><span class="lineNum">     243 </span><span class="lineNoCov">          0 :   void filterSearchRegions(String query) {</span></a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineNoCov">          0 :     List dummySearchList = [];</span></a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 :     dummySearchList = listRegions;</span></a>
-<a name="246"><span class="lineNum">     246 </span><span class="lineNoCov">          0 :     if(query.isNotEmpty) {</span></a>
-<a name="247"><span class="lineNum">     247 </span><span class="lineNoCov">          0 :       List dummyListData = [];</span></a>
-<a name="248"><span class="lineNum">     248 </span><span class="lineNoCov">          0 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
-<a name="249"><span class="lineNum">     249 </span><span class="lineNoCov">          0 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
-<a name="250"><span class="lineNum">     250 </span><span class="lineNoCov">          0 :       regions.value = dummyListData;</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">          1 :   void filterSearchRegions(String query) {</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">          1 :     List dummySearchList = [];</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">          1 :     dummySearchList = listRegions;</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineCov">          1 :     if(query.isNotEmpty) {</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">          1 :       List dummyListData = [];</span></a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineCov">          3 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
+<a name="249"><span class="lineNum">     249 </span><span class="lineCov">          5 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineCov">          2 :       regions.value = dummyListData;</span></a>
 <a name="251"><span class="lineNum">     251 </span>            :       return;</a>
 <a name="252"><span class="lineNum">     252 </span>            :     } else {</a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineNoCov">          0 :       regions.value = listRegions;</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineCov">          3 :       regions.value = listRegions;</span></a>
 <a name="254"><span class="lineNum">     254 </span>            :     }</a>
 <a name="255"><span class="lineNum">     255 </span>            :   }</a>
 <a name="256"><span class="lineNum">     256 </span>            : </a>
-<a name="257"><span class="lineNum">     257 </span><span class="lineNoCov">          0 :   getAllDivisions(int index) async{</span></a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineNoCov">          0 :     print(zoneRepository.getAllDivisions(3, regions[index]['id']));</span></a>
-<a name="259"><span class="lineNum">     259 </span><span class="lineNoCov">          0 :     return zoneRepository.getAllDivisions(3, regions[index]['id']);</span></a>
+<a name="257"><span class="lineNum">     257 </span><span class="lineCov">          1 :   getAllDivisions(int index) async{</span></a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineCov">          6 :     print(zoneRepository.getAllDivisions(3, regions[index]['id']));</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">          5 :     return zoneRepository.getAllDivisions(3, regions[index]['id']);</span></a>
 <a name="260"><span class="lineNum">     260 </span>            : </a>
 <a name="261"><span class="lineNum">     261 </span>            :   }</a>
 <a name="262"><span class="lineNum">     262 </span>            : </a>
-<a name="263"><span class="lineNum">     263 </span><span class="lineNoCov">          0 :   void filterSearchDivisions(String query) {</span></a>
-<a name="264"><span class="lineNum">     264 </span><span class="lineNoCov">          0 :     List dummySearchList = [];</span></a>
-<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 :     dummySearchList = listDivisions;</span></a>
-<a name="266"><span class="lineNum">     266 </span><span class="lineNoCov">          0 :     if(query.isNotEmpty) {</span></a>
-<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 :       List dummyListData = [];</span></a>
-<a name="268"><span class="lineNum">     268 </span><span class="lineNoCov">          0 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
-<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
-<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :       divisions.value = dummyListData;</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">          1 :   void filterSearchDivisions(String query) {</span></a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">          1 :     List dummySearchList = [];</span></a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineCov">          1 :     dummySearchList = listDivisions;</span></a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineCov">          1 :     if(query.isNotEmpty) {</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          1 :       List dummyListData = [];</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineCov">          3 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineCov">          5 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineCov">          2 :       divisions.value = dummyListData;</span></a>
 <a name="271"><span class="lineNum">     271 </span>            :       return;</a>
 <a name="272"><span class="lineNum">     272 </span>            :     } else {</a>
-<a name="273"><span class="lineNum">     273 </span><span class="lineNoCov">          0 :       divisions.value = listDivisions;</span></a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          3 :       divisions.value = listDivisions;</span></a>
 <a name="274"><span class="lineNum">     274 </span>            :     }</a>
 <a name="275"><span class="lineNum">     275 </span>            :   }</a>
 <a name="276"><span class="lineNum">     276 </span>            : </a>
-<a name="277"><span class="lineNum">     277 </span><span class="lineNoCov">          0 :   getAllSubdivisions(int index) async{</span></a>
-<a name="278"><span class="lineNum">     278 </span><span class="lineNoCov">          0 :     return zoneRepository.getAllSubdivisions(4, divisions[index]['id']);</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">          1 :   getAllSubdivisions(int index) async{</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">          5 :     return zoneRepository.getAllSubdivisions(4, divisions[index]['id']);</span></a>
 <a name="279"><span class="lineNum">     279 </span>            : </a>
 <a name="280"><span class="lineNum">     280 </span>            :   }</a>
 <a name="281"><span class="lineNum">     281 </span>            : </a>
-<a name="282"><span class="lineNum">     282 </span><span class="lineNoCov">          0 :   void filterSearchSubdivisions(String query) {</span></a>
-<a name="283"><span class="lineNum">     283 </span><span class="lineNoCov">          0 :     List dummySearchList = [];</span></a>
-<a name="284"><span class="lineNum">     284 </span><span class="lineNoCov">          0 :     dummySearchList = listSubdivisions;</span></a>
-<a name="285"><span class="lineNum">     285 </span><span class="lineNoCov">          0 :     if(query.isNotEmpty) {</span></a>
-<a name="286"><span class="lineNum">     286 </span><span class="lineNoCov">          0 :       List dummyListData = [];</span></a>
-<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
-<a name="288"><span class="lineNum">     288 </span><span class="lineNoCov">          0 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
-<a name="289"><span class="lineNum">     289 </span><span class="lineNoCov">          0 :       subdivisions.value = dummyListData;</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">          1 :   void filterSearchSubdivisions(String query) {</span></a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          1 :     List dummySearchList = [];</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">          1 :     dummySearchList = listSubdivisions;</span></a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineCov">          1 :     if(query.isNotEmpty) {</span></a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          1 :       List dummyListData = [];</span></a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineCov">          3 :       dummyListData = dummySearchList.where((element) =&gt; element['name']</span></a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">          5 :           .toString().toLowerCase().contains(query.toLowerCase())).toList();</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">          2 :       subdivisions.value = dummyListData;</span></a>
 <a name="290"><span class="lineNum">     290 </span>            :       return;</a>
 <a name="291"><span class="lineNum">     291 </span>            :     } else {</a>
-<a name="292"><span class="lineNum">     292 </span><span class="lineNoCov">          0 :       subdivisions.value = listSubdivisions;</span></a>
+<a name="292"><span class="lineNum">     292 </span><span class="lineCov">          3 :       subdivisions.value = listSubdivisions;</span></a>
 <a name="293"><span class="lineNum">     293 </span>            :     }</a>
 <a name="294"><span class="lineNum">     294 </span>            :   }</a>
 <a name="295"><span class="lineNum">     295 </span>            : </a>
-<a name="296"><span class="lineNum">     296 </span><span class="lineNoCov">          0 :   createNotifications(NotificationModel notification)async{</span></a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">          1 :   createNotifications(NotificationModel notification)async{</span></a>
 <a name="297"><span class="lineNum">     297 </span>            :     try{</a>
-<a name="298"><span class="lineNum">     298 </span><span class="lineNoCov">          0 :       createNotification.value = true;</span></a>
-<a name="299"><span class="lineNum">     299 </span><span class="lineNoCov">          0 :      var result = await notificationRepository.createNotification(notification);</span></a>
-<a name="300"><span class="lineNum">     300 </span><span class="lineNoCov">          0 :      print(result);</span></a>
-<a name="301"><span class="lineNum">     301 </span><span class="lineNoCov">          0 :       await getNotifications();</span></a>
-<a name="302"><span class="lineNum">     302 </span><span class="lineNoCov">          0 :       createNotification.value = false;</span></a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">          2 :       createNotification.value = true;</span></a>
+<a name="299"><span class="lineNum">     299 </span><span class="lineCov">          2 :      var result = await notificationRepository.createNotification(notification);</span></a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineCov">          1 :      print(result);</span></a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">          1 :       await getNotifications();</span></a>
+<a name="302"><span class="lineNum">     302 </span><span class="lineCov">          2 :       createNotification.value = false;</span></a>
 <a name="303"><span class="lineNum">     303 </span>            : </a>
-<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).notification_created_successfully ));</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineCov">          3 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).notification_created_successfully ));</span></a>
 <a name="305"><span class="lineNum">     305 </span><span class="lineNoCov">          0 :       Navigator.pop(Get.context!);</span></a>
 <a name="306"><span class="lineNum">     306 </span>            : </a>
 <a name="307"><span class="lineNum">     307 </span>            :     }</a>
 <a name="308"><span class="lineNum">     308 </span>            :     catch (e) {</a>
-<a name="309"><span class="lineNum">     309 </span><span class="lineNoCov">          0 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
 <a name="310"><span class="lineNum">     310 </span><span class="lineNoCov">          0 :         createNotification.value = false;</span></a>
 <a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
 <a name="312"><span class="lineNum">     312 </span>            :       }</a>
 <a name="313"><span class="lineNum">     313 </span>            :     }</a>
 <a name="314"><span class="lineNum">     314 </span>            :     finally {</a>
-<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 :       createNotification.value = false;</span></a>
+<a name="315"><span class="lineNum">     315 </span><span class="lineCov">          2 :       createNotification.value = false;</span></a>
 <a name="316"><span class="lineNum">     316 </span>            :     }</a>
 <a name="317"><span class="lineNum">     317 </span>            : </a>
 <a name="318"><span class="lineNum">     318 </span>            :   }</a>
 <a name="319"><span class="lineNum">     319 </span>            : </a>
-<a name="320"><span class="lineNum">     320 </span><span class="lineNoCov">          0 :   deleteSpecificNotification(int id) async {</span></a>
+<a name="320"><span class="lineNum">     320 </span><span class="lineCov">          1 :   deleteSpecificNotification(int id) async {</span></a>
 <a name="321"><span class="lineNum">     321 </span>            :     try{</a>
-<a name="322"><span class="lineNum">     322 </span><span class="lineNoCov">          0 :       var result = await notificationRepository.deleteSpecificNotification(id);</span></a>
-<a name="323"><span class="lineNum">     323 </span><span class="lineNoCov">          0 :       Get.showSnackbar(Ui.SuccessSnackBar(message: &quot;Notification deleted successfully&quot;));</span></a>
-<a name="324"><span class="lineNum">     324 </span>            :       return result;</a>
-<a name="325"><span class="lineNum">     325 </span>            :     }</a>
-<a name="326"><span class="lineNum">     326 </span>            :     catch(e){</a>
-<a name="327"><span class="lineNum">     327 </span><span class="lineNoCov">          0 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
-<a name="328"><span class="lineNum">     328 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
-<a name="329"><span class="lineNum">     329 </span>            :       }</a>
-<a name="330"><span class="lineNum">     330 </span>            :     }</a>
-<a name="331"><span class="lineNum">     331 </span>            : </a>
-<a name="332"><span class="lineNum">     332 </span>            :   }</a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineCov">          2 :       var result = await notificationRepository.deleteSpecificNotification(id);</span></a>
+<a name="323"><span class="lineNum">     323 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.SuccessSnackBar(message: &quot;Notification deleted successfully&quot;));</span></a>
+<a name="325"><span class="lineNum">     325 </span>            :       }</a>
+<a name="326"><span class="lineNum">     326 </span>            :       return result;</a>
+<a name="327"><span class="lineNum">     327 </span>            :     }</a>
+<a name="328"><span class="lineNum">     328 </span>            :     catch(e){</a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
+<a name="331"><span class="lineNum">     331 </span>            :       }</a>
+<a name="332"><span class="lineNum">     332 </span>            :     }</a>
 <a name="333"><span class="lineNum">     333 </span>            : </a>
-<a name="334"><span class="lineNum">     334 </span>            : }</a>
+<a name="334"><span class="lineNum">     334 </span>            :   }</a>
 <a name="335"><span class="lineNum">     335 </span>            : </a>
-<a name="336"><span class="lineNum">     336 </span>            : </a>
+<a name="336"><span class="lineNum">     336 </span>            : }</a>
+<a name="337"><span class="lineNum">     337 </span>            : </a>
+<a name="338"><span class="lineNum">     338 </span>            : </a>
 </pre>
       </td>
     </tr>

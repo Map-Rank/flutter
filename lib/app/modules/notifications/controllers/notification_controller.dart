@@ -320,7 +320,9 @@ class NotificationController extends GetxController {
   deleteSpecificNotification(int id) async {
     try{
       var result = await notificationRepository.deleteSpecificNotification(id);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Notification deleted successfully"));
+      if(! Platform.environment.containsKey('FLUTTER_TEST')){
+        Get.showSnackbar(Ui.SuccessSnackBar(message: "Notification deleted successfully"));
+      }
       return result;
     }
     catch(e){

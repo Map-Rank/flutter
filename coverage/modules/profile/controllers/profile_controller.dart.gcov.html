@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">74</td>
+            <td class="headerCovTableEntry">94</td>
             <td class="headerCovTableEntry">182</td>
-            <td class="headerCovTableEntryLo">40.7 %</td>
+            <td class="headerCovTableEntryLo">51.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-11 15:25:32</td>
+            <td class="headerValue">2024-12-12 17:58:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -226,26 +226,26 @@
 <a name="164"><span class="lineNum">     164 </span>            :     }</a>
 <a name="165"><span class="lineNum">     165 </span>            :   }</a>
 <a name="166"><span class="lineNum">     166 </span>            : </a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineNoCov">          0 :   initializeMyPostDetails(Post post){</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.content = post.content;</span></a>
-<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.zone = post.zone;</span></a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.postId = post.postId;</span></a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.commentCount = post.commentCount;</span></a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.likeCount = post.likeCount;</span></a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.shareCount = post.shareCount;</span></a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.publishedDate = post.publishedDate;</span></a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.imagesUrl = post.imagesUrl;</span></a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.user = post.user;</span></a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.liked = post.liked;</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.likeTapped = post.likeTapped;</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.isFollowing = post.isFollowing;</span></a>
-<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.commentList = post.commentList;</span></a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.sectors = post.sectors;</span></a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.zonePostId = post.zonePostId;</span></a>
-<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.zoneLevelId = post.zoneLevelId;</span></a>
-<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :     Get.find&lt;CommunityController&gt;().postDetails.value.zoneParentId = post.zoneParentId;</span></a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :     likeCount?.value = post.likeCount!.value;</span></a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 :     shareCount?.value =post.shareCount!.value;</span></a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">          1 :   initializeMyPostDetails(Post post){</span></a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.content = post.content;</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.zone = post.zone;</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.postId = post.postId;</span></a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.commentCount = post.commentCount;</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.likeCount = post.likeCount;</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.shareCount = post.shareCount;</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.publishedDate = post.publishedDate;</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.imagesUrl = post.imagesUrl;</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.user = post.user;</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.liked = post.liked;</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.likeTapped = post.likeTapped;</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.isFollowing = post.isFollowing;</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.commentList = post.commentList;</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.sectors = post.sectors;</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.zonePostId = post.zonePostId;</span></a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.zoneLevelId = post.zoneLevelId;</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">          6 :     Get.find&lt;CommunityController&gt;().postDetails.value.zoneParentId = post.zoneParentId;</span></a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">          4 :     likeCount?.value = post.likeCount!.value;</span></a>
+<a name="186"><span class="lineNum">     186 </span><span class="lineCov">          4 :     shareCount?.value =post.shareCount!.value;</span></a>
 <a name="187"><span class="lineNum">     187 </span>            :   }</a>
 <a name="188"><span class="lineNum">     188 </span>            : </a>
 <a name="189"><span class="lineNum">     189 </span><span class="lineCov">          2 :   getAllMyEvents(){</span></a>

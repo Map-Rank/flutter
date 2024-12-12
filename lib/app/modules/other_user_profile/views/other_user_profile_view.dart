@@ -26,7 +26,6 @@ class OtherUserProfileView extends GetView<OtherUserProfileController> {
       backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () async {
-          await controller.refreshProfile(showMessage: true);
         },
         child:  Container(
           color: backgroundColor,

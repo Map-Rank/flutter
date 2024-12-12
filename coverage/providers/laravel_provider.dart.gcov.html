@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-11 15:25:32</td>
+            <td class="headerValue">2024-12-12 17:58:55</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -740,17 +740,17 @@
 <a name="678"><span class="lineNum">     678 </span>            : </a>
 <a name="679"><span class="lineNum">     679 </span>            : }</a>
 <a name="680"><span class="lineNum">     680 </span>            : </a>
-<a name="681"><span class="lineNum">     681 </span><span class="lineCov">          2 : Future getAllZonesFilterByName() async{</span></a>
+<a name="681"><span class="lineNum">     681 </span><span class="lineCov">          3 : Future getAllZonesFilterByName() async{</span></a>
 <a name="682"><span class="lineNum">     682 </span>            :     try{</a>
-<a name="683"><span class="lineNum">     683 </span><span class="lineCov">          2 :   var headers = {</span></a>
+<a name="683"><span class="lineNum">     683 </span><span class="lineCov">          3 :   var headers = {</span></a>
 <a name="684"><span class="lineNum">     684 </span>            :     'Content-Type': 'application/json',</a>
 <a name="685"><span class="lineNum">     685 </span>            :     'Accept': 'application/json'</a>
 <a name="686"><span class="lineNum">     686 </span>            :   };</a>
-<a name="687"><span class="lineNum">     687 </span><span class="lineCov">          2 :   var dio = Dio();</span></a>
+<a name="687"><span class="lineNum">     687 </span><span class="lineCov">          3 :   var dio = Dio();</span></a>
 <a name="688"><span class="lineNum">     688 </span>            : </a>
-<a name="689"><span class="lineNum">     689 </span><span class="lineCov">          4 :   var response = await httpClient.get(</span></a>
-<a name="690"><span class="lineNum">     690 </span><span class="lineCov">          6 :     '${GlobalService().baseUrl}api/zone',</span></a>
-<a name="691"><span class="lineNum">     691 </span><span class="lineCov">          2 :     options: Options(</span></a>
+<a name="689"><span class="lineNum">     689 </span><span class="lineCov">          6 :   var response = await httpClient.get(</span></a>
+<a name="690"><span class="lineNum">     690 </span><span class="lineCov">          9 :     '${GlobalService().baseUrl}api/zone',</span></a>
+<a name="691"><span class="lineNum">     691 </span><span class="lineCov">          3 :     options: Options(</span></a>
 <a name="692"><span class="lineNum">     692 </span>            :       method: 'GET',</a>
 <a name="693"><span class="lineNum">     693 </span>            :       headers: headers,</a>
 <a name="694"><span class="lineNum">     694 </span>            :     ),</a>
@@ -763,12 +763,12 @@
 <a name="701"><span class="lineNum">     701 </span><span class="lineCov">          3 :       throw Exception(response.data['message']);</span></a>
 <a name="702"><span class="lineNum">     702 </span>            :     }</a>
 <a name="703"><span class="lineNum">     703 </span>            :   }</a>
-<a name="704"><span class="lineNum">     704 </span><span class="lineCov">          2 :   }on SocketException catch (e) {</span></a>
+<a name="704"><span class="lineNum">     704 </span><span class="lineCov">          3 :   }on SocketException catch (e) {</span></a>
 <a name="705"><span class="lineNum">     705 </span><span class="lineCov">          2 :   throw SocketException(e.toString());</span></a>
-<a name="706"><span class="lineNum">     706 </span><span class="lineCov">          2 :   } on FormatException catch (_) {</span></a>
+<a name="706"><span class="lineNum">     706 </span><span class="lineCov">          3 :   } on FormatException catch (_) {</span></a>
 <a name="707"><span class="lineNum">     707 </span>            :   throw const FormatException(&quot;Unable to process the data&quot;);</a>
 <a name="708"><span class="lineNum">     708 </span>            :   } catch (e) {</a>
-<a name="709"><span class="lineNum">     709 </span><span class="lineCov">          2 :   throw NetworkExceptions.getDioException(e);</span></a>
+<a name="709"><span class="lineNum">     709 </span><span class="lineCov">          3 :   throw NetworkExceptions.getDioException(e);</span></a>
 <a name="710"><span class="lineNum">     710 </span>            :   }</a>
 <a name="711"><span class="lineNum">     711 </span>            : }</a>
 <a name="712"><span class="lineNum">     712 </span>            : </a>

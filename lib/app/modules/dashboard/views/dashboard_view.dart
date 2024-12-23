@@ -1,11 +1,8 @@
-// coverage:ignore-file
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -23,6 +20,7 @@ import '../../profile/views/profile_view.dart';
 import '../../root/controllers/root_controller.dart';
 
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
@@ -94,7 +92,7 @@ class DashboardView extends GetView<DashboardController> {
                                       LatLng(controller.defaultLat.value,
                                           controller.defaultLng.value), 6);
                                 },
-                                child: Icon(FontAwesomeIcons.multiply, color: Colors.grey.shade600,
+                                child: Icon(FontAwesomeIcons.multiply, color: Colors.grey.shade600, key: Key('clear'),
                                   size: 15,)):Icon(null),
                             )
                         ),
@@ -384,6 +382,7 @@ class DashboardView extends GetView<DashboardController> {
             child: Row(
               children: [
                 GestureDetector(
+                  key: Key('modalBottomSheet'),
                   onTap: (){
                     showModalBottomSheet(
                       context: context,
@@ -393,7 +392,7 @@ class DashboardView extends GetView<DashboardController> {
                         useSafeArea: true,
                         //backgroundColor:Colors.transparent,
                         builder: (context) => Container(
-                          height: Get.height/1.8,
+                          height: Get.height/1.65,
                           decoration: BoxDecoration(
                             color: Colors.white
                           ),

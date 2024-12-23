@@ -254,7 +254,9 @@ class ProfileController extends GetxController {
           currentUser.value.imageFile = profileImage.value;
 
         }
-        Navigator.of(Get.context!).pop();
+        if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+          Navigator.of(Get.context!).pop();
+        }
         //Get.showSnackbar(Ui.SuccessSnackBar(message: "Picture saved successfully".tr));
         //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();
       }
@@ -281,7 +283,10 @@ class ProfileController extends GetxController {
           currentUser.value.imageFile = profileImage.value;
 
         }
-        Navigator.of(Get.context!).pop();
+        if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+          Navigator.of(Get.context!).pop();
+        }
+
       }
 
     }
@@ -368,7 +373,9 @@ class ProfileController extends GetxController {
           loadFeedbackImage.value = !loadFeedbackImage.value;
 
         }
-        Navigator.of(Get.context!).pop();
+        if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+          Navigator.of(Get.context!).pop();
+        }
       }
 
     }

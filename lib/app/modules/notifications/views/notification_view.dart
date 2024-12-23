@@ -89,6 +89,7 @@ class NotificationView extends GetView<NotificationController> {
             height: Get.height,
             decoration: BoxDecoration(color: backgroundColor,),
             child: ListView(
+              key: Key('listView'),
               children: [
                 if(controller.currentUser.value.type?.toUpperCase() == "COUNCIL")...[
                   Align(
@@ -158,7 +159,9 @@ class NotificationView extends GetView<NotificationController> {
                 ],
 
 
-                Obx(() => controller.loadingNotifications.value?CircularLoadingWidget(
+                Obx(() => controller.loadingNotifications.value?
+                CircularLoadingWidget(
+                  key: Key('circularLoading'),
                   height: 300,
                   onCompleteText: "Notification List is Empty".tr,
                   onComplete: (value) {

@@ -45,6 +45,8 @@ class UserModel extends Model {
     avatarUrl = stringFromJson(json, 'avatar');
     myPosts = listFromJson(json, 'my_posts');
     followerCount = stringFromJson(json, 'follower_count');
+    firebaseToken = stringFromJson(json, 'fcm_token');
+    myEvents = listFromJson(json, 'my_events');
     followingCount = stringFromJson(json, 'following_count');
 
     super.fromJson(json);

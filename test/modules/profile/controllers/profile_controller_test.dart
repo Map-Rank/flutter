@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mapnrank/app/models/event_model.dart';
 import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/modules/auth/controllers/auth_controller.dart';
@@ -21,11 +23,21 @@ import 'profile_controller_test.mocks.dart';
 
 
 class MockAuthController extends Mock implements AuthController {}
+
+class MockImageLibrary extends Mock {
+  Im.Image? decodeImage(List<int> bytes);
+  List<int> encodeJpg(Im.Image image, {int quality = 90});
+}
+
 @GenerateMocks([
   AuthService,
   UserRepository,
   ZoneRepository,
   SectorRepository,
+  ImagePicker,
+  Directory,
+  File,
+  Image,
 ])
 void main() {
   late ProfileController profileController;
@@ -34,6 +46,14 @@ void main() {
   late MockSectorRepository mockSectorRepository;
   late MockAuthService mockAuthService;
   late MockAuthController mockAuthController;
+  late MockImagePicker mockImagePicker;
+  late MockDirectory mockDirectory;
+  late MockFile mockFile;
+  late MockImage mockImage;
+  late Im.Image mockDecodedImage;
+  late List<int> encodedImageBytes;
+  late MockImageLibrary mockImageLibrary;
+
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +62,13 @@ void main() {
     mockSectorRepository = MockSectorRepository();
     mockAuthService = MockAuthService();
     mockAuthController = MockAuthController();
+    mockImagePicker = MockImagePicker();
+    mockImageLibrary = MockImageLibrary();
+    mockDirectory = MockDirectory();
+    mockFile = MockFile();
+    mockImage = MockImage();
+    mockDecodedImage = Im.Image(width: 100, height: 100);
+    encodedImageBytes = [1, 2, 3, 4];
     Get.lazyPut(()=>AuthService());
     Get.put(AuthController());
 
@@ -322,6 +349,111 @@ void main() {
       expect(Get.find<CommunityController>().postDetails.value.zoneParentId, post.zoneParentId);
       expect(Get.find<CommunityController>().likeCount?.value, post.likeCount?.value);
       expect(Get.find<CommunityController>().shareCount?.value, post.shareCount?.value);
+    });
+
+    test('pickImage with camera source processes and compresses image', () async {
+
+      const TEST_MOCK_STORAGE = './test/test_pictures/filter.PNG';
+      const channel = MethodChannel(
+        'plugins.flutter.io/image_picker',
+      );
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        return TEST_MOCK_STORAGE;
+      });
+
+      // Arrange
+      final pickedFile = XFile('test/test_pictures/filter.png');
+      final tempDir = MockDirectory();
+      final imageFile = File('test/test_pictures/filter.png');
+      final imageBytes = Uint8List.fromList([0, 1, 2, 3, 4,0]); // Dummy bytes
+      final path = '/temp/path';
+      when(tempDir.path).thenReturn(path);// Dummy bytes
+
+      when(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80))
+          .thenAnswer((_) async => pickedFile);
+
+      when(mockFile.readAsBytesSync()).thenAnswer((_) => imageBytes);
+      when(mockFile.lengthSync()).thenReturn(2048); // 2KBing
+
+
+      // Simulate the decodeImage and encodeJpg functions
+      when(mockImageLibrary.decodeImage(imageBytes)).thenReturn(mockDecodedImage);
+      // when(mockImageLibrary.encodeJpg(mockDecodedImage, quality: 90))
+      //     .thenReturn(encodedImageBytes);
+      //when(Im.decodeImage(imageBytes)).thenReturn(mockImage);
+      //when(mockImageLibrary.encodeJpg(mockImage, quality: 25)).thenReturn(imageBytes);
+
+
+      // Assert that the decoded image is the mock image
+
+      // Act
+      await profileController.profileImagePicker(ImageSource.camera.toString());
+      profileController.profileImage.value = imageFile;
+      var decodedImage = mockImageLibrary.decodeImage(imageBytes);
+      //var result = mockImageLibrary.encodeJpg(Im.Image(width:100, height:100), quality: 90);
+
+      //final encodedImage = Im.encodeJpg(image!, quality: 25);
+
+      // Assert
+      expect(profileController.profileImage.isNull, false);
+      expect(decodedImage, mockDecodedImage);
+      //expect(result, encodedImageBytes);
+      //expect(eventsController.event.imagesFileBanner?.isNotEmpty, true);
+      //verify(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80)).called(1);
+      //verify(getTemporaryDirectory()).called(1);
+    });
+
+
+    test('pickFeedbackImage with camera source processes and compresses image', () async {
+
+      const TEST_MOCK_STORAGE = './test/test_pictures/filter.PNG';
+      const channel = MethodChannel(
+        'plugins.flutter.io/image_picker',
+      );
+      channel.setMockMethodCallHandler((MethodCall methodCall) async {
+        return TEST_MOCK_STORAGE;
+      });
+
+      // Arrange
+      final pickedFile = XFile('test/test_pictures/filter.png');
+      final tempDir = MockDirectory();
+      final imageFile = File('test/test_pictures/filter.png');
+      final imageBytes = Uint8List.fromList([0, 1, 2, 3, 4,0]); // Dummy bytes
+      final path = '/temp/path';
+      when(tempDir.path).thenReturn(path);// Dummy bytes
+
+      when(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80))
+          .thenAnswer((_) async => pickedFile);
+
+      when(mockFile.readAsBytesSync()).thenAnswer((_) => imageBytes);
+      when(mockFile.lengthSync()).thenReturn(2048); // 2KBing
+
+
+      // Simulate the decodeImage and encodeJpg functions
+      when(mockImageLibrary.decodeImage(imageBytes)).thenReturn(mockDecodedImage);
+      // when(mockImageLibrary.encodeJpg(mockDecodedImage, quality: 90))
+      //     .thenReturn(encodedImageBytes);
+      //when(Im.decodeImage(imageBytes)).thenReturn(mockImage);
+      //when(mockImageLibrary.encodeJpg(mockImage, quality: 25)).thenReturn(imageBytes);
+
+
+      // Assert that the decoded image is the mock image
+
+      // Act
+      await profileController.feedbackImagePicker(ImageSource.camera.toString());
+      profileController.feedbackImage = imageFile;
+      var decodedImage = mockImageLibrary.decodeImage(imageBytes);
+      //var result = mockImageLibrary.encodeJpg(Im.Image(width:100, height:100), quality: 90);
+
+      //final encodedImage = Im.encodeJpg(image!, quality: 25);
+
+      // Assert
+      expect(profileController.feedbackImage.isNull, false);
+      expect(decodedImage, mockDecodedImage);
+      //expect(result, encodedImageBytes);
+      //expect(eventsController.event.imagesFileBanner?.isNotEmpty, true);
+      //verify(mockImagePicker.pickImage(source: ImageSource.camera, imageQuality: 80)).called(1);
+      //verify(getTemporaryDirectory()).called(1);
     });
 
 

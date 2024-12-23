@@ -21,8 +21,9 @@ class NotificationItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.parse(notification.date!);
-    return notification.userModel?.userId == Get.find<AuthService>().user.value.userId? Dismissible(
-      key: Key(this.notification.hashCode.toString()),
+    return notification.userModel?.userId == Get.find<AuthService>().user.value.userId?
+    Dismissible(
+      key: Key('dismissibleNotification'),
       background: Container(
         padding: EdgeInsets.all(12),
         margin: EdgeInsets.symmetric(horizontal: 20,),
@@ -43,6 +44,7 @@ class NotificationItemWidget extends StatelessWidget {
         // Then show a snackbar
       },
       child: GestureDetector(
+        key: Key('tapNotificationDismiss'),
         onTap: () {
           onTap(notification);
         },
@@ -186,7 +188,9 @@ class NotificationItemWidget extends StatelessWidget {
           ),
         ),
       ),
-    ): GestureDetector(
+    )
+        : GestureDetector(
+      key: Key('tapNotification'),
       onTap: () {
         onTap(notification);
       },
@@ -261,7 +265,8 @@ class NotificationItemWidget extends StatelessWidget {
                               ]
                           )),
 
-                          RichText(text: TextSpan(
+                          RichText(
+                              text: TextSpan(
                               children: [
                                 TextSpan(
                                     text: "${AppLocalizations.of(context).by}: ",
@@ -269,6 +274,7 @@ class NotificationItemWidget extends StatelessWidget {
                                         fontWeight: FontWeight.w600,fontSize: 12, color: Color(0xff242424).withOpacity(0.9)))
                                 ),
                                 TextSpan(
+
                                     text: '${notification.userModel!.lastName} ${notification.userModel!.firstName}',
                                     style: Get.textTheme.bodyLarge?.merge(TextStyle(
                                         fontWeight: FontWeight.normal,fontSize: 12, color: Colors.black))

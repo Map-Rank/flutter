@@ -8,6 +8,7 @@ class TooltipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      key: Key('firstStack'),
       clipBehavior: Clip.none,
       children: [
         Container(
@@ -76,15 +77,3 @@ class TooltipTrianglePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.grey[200],
-        body: Center(
-          child: TooltipWidget(text: 'Some text example!!!!'),
-        ),
-      ),
-    ),
-  );
-}

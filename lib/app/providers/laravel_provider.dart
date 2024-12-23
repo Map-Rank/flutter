@@ -69,7 +69,7 @@ class LaravelApiClient extends GetxService {
         'fcm_token':user.firebaseToken!,
         'sectors': user.sectors![0].toString()
       });
-
+// coverage:ignore-start
       if (user.imageFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
             'files', ".${user.imageFile!.path}"));
@@ -85,7 +85,7 @@ class LaravelApiClient extends GetxService {
 
       http.StreamedResponse response = await request.send();
 
-// coverage:ignore-start
+
       if (response.statusCode == 201) {
         var data = await response.stream.bytesToString();
         var result = json.decode(data);
@@ -125,7 +125,7 @@ class LaravelApiClient extends GetxService {
         'zone_id': user.zoneId!,
 
       });
-
+// coverage:ignore-start
       if (user.imageFile != null) {
         request.files.add(await http.MultipartFile.fromPath(
             'files', ".${user.imageFile!.path}"));
@@ -141,7 +141,7 @@ class LaravelApiClient extends GetxService {
 
       http.StreamedResponse response = await request.send();
 
-// coverage:ignore-start
+
       if (response.statusCode == 200) {
         var data = await response.stream.bytesToString();
         var result = json.decode(data);

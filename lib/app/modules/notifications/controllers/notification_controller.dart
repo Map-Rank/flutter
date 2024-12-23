@@ -109,6 +109,12 @@ class NotificationController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
   Future refreshNotification() async {
     notificationList = await getNotifications();
     notifications.value = notificationList;

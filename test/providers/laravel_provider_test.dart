@@ -213,9 +213,9 @@ void main() {
       password: 'password',
       gender: 'male',
       zoneId: '1',
-        firebaseToken: 'koi14',
-        imageFile: [File('path/to/file')],
       language: 'en',
+      firebaseToken: 'koi14',
+      imageFile: [File('path/to/file')],
     );
 
     final uri = Uri.parse('${GlobalService().baseUrl}api/create/request');

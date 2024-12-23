@@ -138,6 +138,7 @@ class LoginView extends GetView<AuthController> {
                               key: null, suffixIcon: const Icon(null), suffix: Icon(null),
                             )
                                 :Column(
+                              key: Key('phoneWidget'),
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -256,6 +257,7 @@ class LoginView extends GetView<AuthController> {
                                 )
                             ).paddingSymmetric(vertical: 20, )
                                 :BlockButtonWidget(
+                              key: Key('loginSpinkit'),
                               onPressed: () async {
 
                               },

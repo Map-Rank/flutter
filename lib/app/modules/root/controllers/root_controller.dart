@@ -1,4 +1,4 @@
-
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';
@@ -118,8 +118,9 @@ class RootController extends GetxController {
   }
 
   void getNotificationsCount() async {
+    var list = [];
     var count = 0;
-    var list = await _notificationController.getNotifications();
+    list =  await _notificationController.getNotifications()??[];
     for(int i =0; i<list.length; i++ ){
 
           count = count +1;

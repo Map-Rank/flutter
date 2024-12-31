@@ -261,11 +261,12 @@ class CommunityView extends GetView<CommunityController> {
                             GestureDetector(
                               onTap: () async {
 
-                                await controller.selectCameraOrGalleryFeedbackImage();
+                                await selectCameraOrGalleryFeedbackImage(context);
                                 controller.loadFeedbackImage.value = false;
 
                               },
                               child: Container(
+                                key: Key('cameraContainer'),
                                 width: 100,
                                 height: 100,
                                 alignment: Alignment.center,
@@ -506,8 +507,8 @@ class CommunityView extends GetView<CommunityController> {
                                   child: TextButton.icon(
                                     icon: Image.asset(
                                         "assets/images/filter.png",
-                                        width: 20,
-                                        height: 20,
+                                        width: 15,
+                                        height: 15,
                                         fit: BoxFit.fitWidth) ,
                                     label: Text(AppLocalizations.of(context).filter_by_location, style: TextStyle(color: Colors.black),),
                                     onPressed: () {
@@ -535,8 +536,8 @@ class CommunityView extends GetView<CommunityController> {
                                   child: TextButton.icon(
                                     icon: Image.asset(
                                         "assets/images/filter.png",
-                                        width: 20,
-                                        height: 20,
+                                        width: 15,
+                                        height: 15,
                                         fit: BoxFit.fitWidth) ,
                                     label: Text(AppLocalizations.of(context).filter_by_sector, style: TextStyle(color: Colors.black)),
                                     onPressed: () {
@@ -773,6 +774,46 @@ class CommunityView extends GetView<CommunityController> {
             height: 100,
           ),
         ));
+  }
+
+  selectCameraOrGalleryFeedbackImage(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (_){
+          return AlertDialog(
+            key: Key('cameraDialog'),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            content: Container(
+                height: 170,
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: ()async{
+                        await controller.feedbackImagePicker('camera');
+                        //Navigator.pop(Get.context);
+
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.camera),
+                      title: Text( AppLocalizations.of(Get.context!).take_picture, style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    ),
+                    ListTile(
+                      onTap: ()async{
+                        await controller.feedbackImagePicker('gallery');
+                        //Navigator.pop(Get.context);
+
+                      },
+                      leading: const Icon(FontAwesomeIcons.image),
+                      title: Text( AppLocalizations.of(Get.context!).upload_image
+                          , style: Get.textTheme.headlineMedium?.merge(const TextStyle(fontSize: 15))),
+                    )
+                  ],
+                )
+            ),
+          );
+        });
   }
 
 }

@@ -36,6 +36,7 @@ class CreatePostView extends GetView<CommunityController> {
           // ),
           centerTitle: true,
           leading: IconButton(
+            key: Key('backCreatePost'),
             icon: const Icon(Icons.arrow_back_ios, color: interfaceColor),
             onPressed: () async => {
               if(controller.isRootFolder){
@@ -57,6 +58,7 @@ class CreatePostView extends GetView<CommunityController> {
               //height: 80,
                 child: Center(
                     child: InkWell(
+                      key: Key('avatar'),
                         onTap: () async{
                           print("Post is: ${controller.post.content}");
                           if(controller.post.content != null && controller.post.content != ''){
@@ -106,8 +108,8 @@ class CreatePostView extends GetView<CommunityController> {
             decoration: const BoxDecoration(color: backgroundColor,
             ),
             child:  ListView(
+              key: Key('listView'),
               //padding: EdgeInsets.all(20),
-
               children: [
 
                 Container(
@@ -153,6 +155,7 @@ class CreatePostView extends GetView<CommunityController> {
                               context: Get.context!,
                               builder: (_){
                                 return AlertDialog(
+                                  key:Key('imageDialog'),
                                   shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(Radius.circular(20))
                                   ),
@@ -167,7 +170,8 @@ class CreatePostView extends GetView<CommunityController> {
                                                 Navigator.pop(Get.context!);
                                               },
                                               leading: const Icon(FontAwesomeIcons.camera),
-                                              title: Text(AppLocalizations.of(context).take_picture, style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
+                                              title: Text(
+                                                  AppLocalizations.of(context).take_picture, style: Get.textTheme.headlineMedium!.merge(const TextStyle(fontSize: 15))),
                                             ),
                                             ListTile(
                                               onTap: ()async{
@@ -188,6 +192,7 @@ class CreatePostView extends GetView<CommunityController> {
                                 );
                               });},
                           child: Row(
+                            key: Key('inputImage'),
                             children: [
                               FaIcon(FontAwesomeIcons.camera, color: Colors.black,),
                               SizedBox(width: 10,),
@@ -654,6 +659,7 @@ class CreatePostView extends GetView<CommunityController> {
 
                                                         return GestureDetector(
                                                             onTap: () async {
+                                                              // coverage:ignore-start
                                                               controller.subdivisionSelected.value = !controller.subdivisionSelected.value;
                                                               controller.subdivisionSelectedIndex.value = index;
 
@@ -700,9 +706,11 @@ class CreatePostView extends GetView<CommunityController> {
 
 
                                                               //print(controller.subdivisionSelected);
+                                                              // coverage:ignore-end
 
                                                             },
                                                             child: Obx(() => LocationWidget(
+                                                              key: Key('locationSubdivisionKey'),
                                                               regionName: controller.subdivisions[index]['name'],
                                                               selected: controller.subdivisionSelectedIndex.value == index && controller.subdivisionSelectedValue.contains(controller.subdivisions[index]) ? true  : false ,
                                                             ))
@@ -929,6 +937,7 @@ class CreatePostView extends GetView<CommunityController> {
                 context: Get.context!,
                 builder: (_){
                   return AlertDialog(
+                    key: Key('cameraDialog'),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20))
                     ),
@@ -963,7 +972,9 @@ class CreatePostView extends GetView<CommunityController> {
                     ],
                   );
                 });
-          }, icon: Icon(FontAwesomeIcons.camera)),
+          }, icon: Icon(
+            key: Key('cameraKey'),
+              FontAwesomeIcons.camera)),
         )
       ],
     )

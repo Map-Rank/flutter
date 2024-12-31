@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -32,10 +33,10 @@ class MockDashboardController extends GetxController with Mock implements Dashbo
   RxDouble defaultLng = 12.3445856.obs;
 
   @override
-  RxDouble locationLat = 7.3696495.obs;
+  RxDouble locationLat = 7.3896495.obs;
 
   @override
-  RxDouble locationLng = 12.3445856.obs;
+  RxDouble locationLng = 12.3945856.obs;
 
   @override
   var locationName = ''.obs;
@@ -93,7 +94,7 @@ class MockDashboardController extends GetxController with Mock implements Dashbo
   ).obs;
 
   @override
-  List<Map<String, dynamic>> zones = [];
+  List<Map<String, dynamic>> zones = [{'name':'Zone1', 'id': 1}, {'name':'Zone2', 'id': 2}, {'name':'Zone3', 'id': 3}];
 
   @override
   List<Map<String, dynamic>> listAllZones = [];

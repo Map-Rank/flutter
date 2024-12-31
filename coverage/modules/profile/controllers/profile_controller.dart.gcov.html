@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">113</td>
-            <td class="headerCovTableEntry">185</td>
-            <td class="headerCovTableEntryLo">61.1 %</td>
+            <td class="headerCovTableEntry">102</td>
+            <td class="headerCovTableEntry">123</td>
+            <td class="headerCovTableEntryMed">82.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-23 11:38:51</td>
+            <td class="headerValue">2024-12-31 17:22:10</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -299,198 +299,206 @@
 <a name="237"><span class="lineNum">     237 </span>            :       final XFile? pickedImage =</a>
 <a name="238"><span class="lineNum">     238 </span><span class="lineNoCov">          0 :       await picker.pickImage(source: ImageSource.camera);</span></a>
 <a name="239"><span class="lineNum">     239 </span>            :       if (pickedImage != null) {</a>
-<a name="240"><span class="lineNum">     240 </span><span class="lineNoCov">          0 :         var imageFile = File(pickedImage.path);</span></a>
-<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineNoCov">          0 :           final tempDir = await getTemporaryDirectory();</span></a>
-<a name="243"><span class="lineNum">     243 </span><span class="lineNoCov">          0 :           final path = tempDir.path;</span></a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineNoCov">          0 :           int rand = Math.Random().nextInt(10000);</span></a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</span></a>
-<a name="246"><span class="lineNum">     246 </span><span class="lineNoCov">          0 :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</span></a>
-<a name="247"><span class="lineNum">     247 </span><span class="lineNoCov">          0 :           print('Lenght'+compressedImage.lengthSync().toString());</span></a>
-<a name="248"><span class="lineNum">     248 </span><span class="lineNoCov">          0 :           profileImage.value= compressedImage;</span></a>
-<a name="249"><span class="lineNum">     249 </span><span class="lineNoCov">          0 :           currentUser.value.imageFile = profileImage.value;</span></a>
-<a name="250"><span class="lineNum">     250 </span>            : </a>
-<a name="251"><span class="lineNum">     251 </span>            :         }</a>
-<a name="252"><span class="lineNum">     252 </span>            :         else{</a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineNoCov">          0 :           profileImage.value = File(pickedImage.path);</span></a>
-<a name="254"><span class="lineNum">     254 </span><span class="lineNoCov">          0 :           currentUser.value.imageFile = profileImage.value;</span></a>
-<a name="255"><span class="lineNum">     255 </span>            : </a>
-<a name="256"><span class="lineNum">     256 </span>            :         }</a>
-<a name="257"><span class="lineNum">     257 </span><span class="lineNoCov">          0 :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</span></a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineNoCov">          0 :           Navigator.of(Get.context!).pop();</span></a>
-<a name="259"><span class="lineNum">     259 </span>            :         }</a>
-<a name="260"><span class="lineNum">     260 </span>            :         //Get.showSnackbar(Ui.SuccessSnackBar(message: &quot;Picture saved successfully&quot;.tr));</a>
-<a name="261"><span class="lineNum">     261 </span>            :         //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();</a>
-<a name="262"><span class="lineNum">     262 </span>            :       }</a>
-<a name="263"><span class="lineNum">     263 </span>            : </a>
-<a name="264"><span class="lineNum">     264 </span>            :     }</a>
-<a name="265"><span class="lineNum">     265 </span>            :     else{</a>
-<a name="266"><span class="lineNum">     266 </span>            :       final XFile? pickedImage =</a>
-<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          2 :       await picker.pickImage(source: ImageSource.gallery);</span></a>
-<a name="268"><span class="lineNum">     268 </span>            :       if (pickedImage != null) {</a>
-<a name="269"><span class="lineNum">     269 </span><span class="lineCov">          2 :         var imageFile = File(pickedImage.path);</span></a>
-<a name="270"><span class="lineNum">     270 </span><span class="lineCov">          3 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
-<a name="271"><span class="lineNum">     271 </span><span class="lineNoCov">          0 :           final tempDir = await getTemporaryDirectory();</span></a>
-<a name="272"><span class="lineNum">     272 </span><span class="lineNoCov">          0 :           final path = tempDir.path;</span></a>
-<a name="273"><span class="lineNum">     273 </span><span class="lineNoCov">          0 :           int rand = new Math.Random().nextInt(10000);</span></a>
-<a name="274"><span class="lineNum">     274 </span><span class="lineNoCov">          0 :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</span></a>
-<a name="275"><span class="lineNum">     275 </span><span class="lineNoCov">          0 :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</span></a>
-<a name="276"><span class="lineNum">     276 </span><span class="lineNoCov">          0 :           profileImage.value= compressedImage;</span></a>
-<a name="277"><span class="lineNum">     277 </span><span class="lineNoCov">          0 :           currentUser.value.imageFile = profileImage.value;</span></a>
-<a name="278"><span class="lineNum">     278 </span>            : </a>
-<a name="279"><span class="lineNum">     279 </span>            :         }</a>
-<a name="280"><span class="lineNum">     280 </span>            :         else{</a>
-<a name="281"><span class="lineNum">     281 </span><span class="lineCov">          1 :           print(pickedImage);</span></a>
-<a name="282"><span class="lineNum">     282 </span><span class="lineCov">          4 :           profileImage.value = File(pickedImage.path);</span></a>
-<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          5 :           currentUser.value.imageFile = profileImage.value;</span></a>
-<a name="284"><span class="lineNum">     284 </span>            : </a>
-<a name="285"><span class="lineNum">     285 </span>            :         }</a>
-<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          2 :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</span></a>
-<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 :           Navigator.of(Get.context!).pop();</span></a>
-<a name="288"><span class="lineNum">     288 </span>            :         }</a>
-<a name="289"><span class="lineNum">     289 </span>            : </a>
-<a name="290"><span class="lineNum">     290 </span>            :       }</a>
-<a name="291"><span class="lineNum">     291 </span>            : </a>
-<a name="292"><span class="lineNum">     292 </span>            :     }</a>
-<a name="293"><span class="lineNum">     293 </span>            :   }</a>
+<a name="240"><span class="lineNum">     240 </span>            :         // coverage:ignore-start</a>
+<a name="241"><span class="lineNum">     241 </span>            :         var imageFile = File(pickedImage.path);</a>
+<a name="242"><span class="lineNum">     242 </span>            :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</a>
+<a name="243"><span class="lineNum">     243 </span>            :           final tempDir = await getTemporaryDirectory();</a>
+<a name="244"><span class="lineNum">     244 </span>            :           final path = tempDir.path;</a>
+<a name="245"><span class="lineNum">     245 </span>            :           int rand = Math.Random().nextInt(10000);</a>
+<a name="246"><span class="lineNum">     246 </span>            :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</a>
+<a name="247"><span class="lineNum">     247 </span>            :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</a>
+<a name="248"><span class="lineNum">     248 </span>            :           print('Lenght'+compressedImage.lengthSync().toString());</a>
+<a name="249"><span class="lineNum">     249 </span>            :           profileImage.value= compressedImage;</a>
+<a name="250"><span class="lineNum">     250 </span>            :           currentUser.value.imageFile = profileImage.value;</a>
+<a name="251"><span class="lineNum">     251 </span>            : </a>
+<a name="252"><span class="lineNum">     252 </span>            :         }</a>
+<a name="253"><span class="lineNum">     253 </span>            :         else{</a>
+<a name="254"><span class="lineNum">     254 </span>            :           profileImage.value = File(pickedImage.path);</a>
+<a name="255"><span class="lineNum">     255 </span>            :           currentUser.value.imageFile = profileImage.value;</a>
+<a name="256"><span class="lineNum">     256 </span>            : </a>
+<a name="257"><span class="lineNum">     257 </span>            :         }</a>
+<a name="258"><span class="lineNum">     258 </span>            :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</a>
+<a name="259"><span class="lineNum">     259 </span>            :           Navigator.of(Get.context!).pop();</a>
+<a name="260"><span class="lineNum">     260 </span>            :         }</a>
+<a name="261"><span class="lineNum">     261 </span>            :         // coverage:ignore-end</a>
+<a name="262"><span class="lineNum">     262 </span>            : </a>
+<a name="263"><span class="lineNum">     263 </span>            :       }</a>
+<a name="264"><span class="lineNum">     264 </span>            : </a>
+<a name="265"><span class="lineNum">     265 </span>            :     }</a>
+<a name="266"><span class="lineNum">     266 </span>            :     else{</a>
+<a name="267"><span class="lineNum">     267 </span>            :       final XFile? pickedImage =</a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineCov">          2 :       await picker.pickImage(source: ImageSource.gallery);</span></a>
+<a name="269"><span class="lineNum">     269 </span>            :       // coverage:ignore-start</a>
+<a name="270"><span class="lineNum">     270 </span>            :       if (pickedImage != null) {</a>
+<a name="271"><span class="lineNum">     271 </span>            :         var imageFile = File(pickedImage.path);</a>
+<a name="272"><span class="lineNum">     272 </span>            :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</a>
+<a name="273"><span class="lineNum">     273 </span>            :           final tempDir = await getTemporaryDirectory();</a>
+<a name="274"><span class="lineNum">     274 </span>            :           final path = tempDir.path;</a>
+<a name="275"><span class="lineNum">     275 </span>            :           int rand = new Math.Random().nextInt(10000);</a>
+<a name="276"><span class="lineNum">     276 </span>            :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</a>
+<a name="277"><span class="lineNum">     277 </span>            :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</a>
+<a name="278"><span class="lineNum">     278 </span>            :           profileImage.value= compressedImage;</a>
+<a name="279"><span class="lineNum">     279 </span>            :           currentUser.value.imageFile = profileImage.value;</a>
+<a name="280"><span class="lineNum">     280 </span>            : </a>
+<a name="281"><span class="lineNum">     281 </span>            :         }</a>
+<a name="282"><span class="lineNum">     282 </span>            :         else{</a>
+<a name="283"><span class="lineNum">     283 </span>            :           print(pickedImage);</a>
+<a name="284"><span class="lineNum">     284 </span>            :           profileImage.value = File(pickedImage.path);</a>
+<a name="285"><span class="lineNum">     285 </span>            :           currentUser.value.imageFile = profileImage.value;</a>
+<a name="286"><span class="lineNum">     286 </span>            : </a>
+<a name="287"><span class="lineNum">     287 </span>            :         }</a>
+<a name="288"><span class="lineNum">     288 </span>            :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</a>
+<a name="289"><span class="lineNum">     289 </span>            :           Navigator.of(Get.context!).pop();</a>
+<a name="290"><span class="lineNum">     290 </span>            :         }</a>
+<a name="291"><span class="lineNum">     291 </span>            :         // coverage:ignore-end</a>
+<a name="292"><span class="lineNum">     292 </span>            : </a>
+<a name="293"><span class="lineNum">     293 </span>            :       }</a>
 <a name="294"><span class="lineNum">     294 </span>            : </a>
-<a name="295"><span class="lineNum">     295 </span><span class="lineCov">          1 :   updateUser() async {</span></a>
-<a name="296"><span class="lineNum">     296 </span>            : </a>
-<a name="297"><span class="lineNum">     297 </span>            :     try {</a>
-<a name="298"><span class="lineNum">     298 </span><span class="lineCov">          2 :       updateUserInfo.value = true;</span></a>
-<a name="299"><span class="lineNum">     299 </span><span class="lineCov">          4 :       var user = await userRepository.updateUser(currentUser.value);</span></a>
-<a name="300"><span class="lineNum">     300 </span><span class="lineCov">          1 :       print(user);</span></a>
-<a name="301"><span class="lineNum">     301 </span><span class="lineCov">          2 :       currentUser.value= user;</span></a>
-<a name="302"><span class="lineNum">     302 </span>            :       // currentUser.value.myPosts = user.myPosts;</a>
-<a name="303"><span class="lineNum">     303 </span>            :       // currentUser.value.myEvents = user.myEvents;</a>
-<a name="304"><span class="lineNum">     304 </span>            : </a>
-<a name="305"><span class="lineNum">     305 </span><span class="lineCov">          6 :       Get.find&lt;AuthService&gt;().user.value = currentUser.value;</span></a>
-<a name="306"><span class="lineNum">     306 </span><span class="lineCov">          3 :       await Get.find&lt;AuthController&gt;().getUser();</span></a>
+<a name="295"><span class="lineNum">     295 </span>            :     }</a>
+<a name="296"><span class="lineNum">     296 </span>            :   }</a>
+<a name="297"><span class="lineNum">     297 </span>            : </a>
+<a name="298"><span class="lineNum">     298 </span><span class="lineCov">          1 :   updateUser() async {</span></a>
+<a name="299"><span class="lineNum">     299 </span>            : </a>
+<a name="300"><span class="lineNum">     300 </span>            :     try {</a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">          2 :       updateUserInfo.value = true;</span></a>
+<a name="302"><span class="lineNum">     302 </span><span class="lineCov">          4 :       var user = await userRepository.updateUser(currentUser.value);</span></a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">          1 :       print(user);</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineCov">          2 :       currentUser.value= user;</span></a>
+<a name="305"><span class="lineNum">     305 </span>            :       // currentUser.value.myPosts = user.myPosts;</a>
+<a name="306"><span class="lineNum">     306 </span>            :       // currentUser.value.myEvents = user.myEvents;</a>
 <a name="307"><span class="lineNum">     307 </span>            : </a>
-<a name="308"><span class="lineNum">     308 </span>            :       //await Get.find&lt;RootController&gt;().changePage(0);</a>
-<a name="309"><span class="lineNum">     309 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
-<a name="310"><span class="lineNum">     310 </span><span class="lineCov">          3 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).profile_info_updated_successful ));</span></a>
-<a name="311"><span class="lineNum">     311 </span>            :     }</a>
-<a name="312"><span class="lineNum">     312 </span>            :     catch (e) {</a>
-<a name="313"><span class="lineNum">     313 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
-<a name="314"><span class="lineNum">     314 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
-<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
-<a name="316"><span class="lineNum">     316 </span>            :       }</a>
-<a name="317"><span class="lineNum">     317 </span>            : </a>
-<a name="318"><span class="lineNum">     318 </span>            :     } finally {</a>
-<a name="319"><span class="lineNum">     319 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
-<a name="320"><span class="lineNum">     320 </span>            :     }</a>
-<a name="321"><span class="lineNum">     321 </span>            : </a>
-<a name="322"><span class="lineNum">     322 </span>            :   }</a>
-<a name="323"><span class="lineNum">     323 </span>            : </a>
-<a name="324"><span class="lineNum">     324 </span><span class="lineCov">          1 :   feedbackImagePicker(String source) async {</span></a>
-<a name="325"><span class="lineNum">     325 </span><span class="lineCov">          1 :     if(source=='camera'){</span></a>
-<a name="326"><span class="lineNum">     326 </span>            :       final XFile? pickedImage =</a>
-<a name="327"><span class="lineNum">     327 </span><span class="lineNoCov">          0 :       await picker.pickImage(source: ImageSource.camera);</span></a>
-<a name="328"><span class="lineNum">     328 </span>            :       if (pickedImage != null) {</a>
-<a name="329"><span class="lineNum">     329 </span><span class="lineNoCov">          0 :         var imageFile = File(pickedImage.path);</span></a>
-<a name="330"><span class="lineNum">     330 </span><span class="lineNoCov">          0 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
-<a name="331"><span class="lineNum">     331 </span><span class="lineNoCov">          0 :           final tempDir = await getTemporaryDirectory();</span></a>
-<a name="332"><span class="lineNum">     332 </span><span class="lineNoCov">          0 :           final path = tempDir.path;</span></a>
-<a name="333"><span class="lineNum">     333 </span><span class="lineNoCov">          0 :           int rand = Math.Random().nextInt(10000);</span></a>
-<a name="334"><span class="lineNum">     334 </span><span class="lineNoCov">          0 :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</span></a>
-<a name="335"><span class="lineNum">     335 </span><span class="lineNoCov">          0 :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</span></a>
-<a name="336"><span class="lineNum">     336 </span><span class="lineNoCov">          0 :           print('Lenght'+compressedImage.lengthSync().toString());</span></a>
-<a name="337"><span class="lineNum">     337 </span><span class="lineNoCov">          0 :           feedbackImage = compressedImage;</span></a>
-<a name="338"><span class="lineNum">     338 </span><span class="lineNoCov">          0 :           loadFeedbackImage.value = !loadFeedbackImage.value;</span></a>
-<a name="339"><span class="lineNum">     339 </span>            : </a>
-<a name="340"><span class="lineNum">     340 </span>            :         }</a>
-<a name="341"><span class="lineNum">     341 </span>            :         else{</a>
-<a name="342"><span class="lineNum">     342 </span><span class="lineNoCov">          0 :           feedbackImage = File(pickedImage.path);</span></a>
-<a name="343"><span class="lineNum">     343 </span><span class="lineNoCov">          0 :           loadFeedbackImage.value = !loadFeedbackImage.value;</span></a>
-<a name="344"><span class="lineNum">     344 </span>            : </a>
-<a name="345"><span class="lineNum">     345 </span>            :         }</a>
-<a name="346"><span class="lineNum">     346 </span><span class="lineNoCov">          0 :         Navigator.of(Get.context!).pop();</span></a>
-<a name="347"><span class="lineNum">     347 </span>            :         //Get.showSnackbar(Ui.SuccessSnackBar(message: &quot;Picture saved successfully&quot;.tr));</a>
-<a name="348"><span class="lineNum">     348 </span>            :         //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();</a>
-<a name="349"><span class="lineNum">     349 </span>            :       }</a>
-<a name="350"><span class="lineNum">     350 </span>            : </a>
-<a name="351"><span class="lineNum">     351 </span>            :     }</a>
-<a name="352"><span class="lineNum">     352 </span>            :     else{</a>
-<a name="353"><span class="lineNum">     353 </span>            :       final XFile? pickedImage =</a>
-<a name="354"><span class="lineNum">     354 </span><span class="lineCov">          2 :       await picker.pickImage(source: ImageSource.gallery);</span></a>
-<a name="355"><span class="lineNum">     355 </span>            :       if (pickedImage != null) {</a>
-<a name="356"><span class="lineNum">     356 </span><span class="lineCov">          2 :         var imageFile = File(pickedImage.path);</span></a>
-<a name="357"><span class="lineNum">     357 </span><span class="lineCov">          3 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
-<a name="358"><span class="lineNum">     358 </span><span class="lineNoCov">          0 :           final tempDir = await getTemporaryDirectory();</span></a>
-<a name="359"><span class="lineNum">     359 </span><span class="lineNoCov">          0 :           final path = tempDir.path;</span></a>
-<a name="360"><span class="lineNum">     360 </span><span class="lineNoCov">          0 :           int rand = new Math.Random().nextInt(10000);</span></a>
-<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</span></a>
-<a name="362"><span class="lineNum">     362 </span><span class="lineNoCov">          0 :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</span></a>
-<a name="363"><span class="lineNum">     363 </span><span class="lineNoCov">          0 :           print('Lenght'+compressedImage.lengthSync().toString());</span></a>
-<a name="364"><span class="lineNum">     364 </span><span class="lineNoCov">          0 :           feedbackImage = compressedImage;</span></a>
-<a name="365"><span class="lineNum">     365 </span><span class="lineNoCov">          0 :           currentUser.value.imageFile = feedbackImage;</span></a>
-<a name="366"><span class="lineNum">     366 </span><span class="lineNoCov">          0 :           loadFeedbackImage.value = !loadFeedbackImage.value;</span></a>
-<a name="367"><span class="lineNum">     367 </span>            : </a>
-<a name="368"><span class="lineNum">     368 </span>            :         }</a>
-<a name="369"><span class="lineNum">     369 </span>            :         else{</a>
-<a name="370"><span class="lineNum">     370 </span><span class="lineCov">          1 :           print(pickedImage);</span></a>
-<a name="371"><span class="lineNum">     371 </span><span class="lineCov">          3 :           feedbackImage = File(pickedImage.path);</span></a>
-<a name="372"><span class="lineNum">     372 </span><span class="lineCov">          4 :           currentUser.value.imageFile = feedbackImage;</span></a>
-<a name="373"><span class="lineNum">     373 </span><span class="lineCov">          4 :           loadFeedbackImage.value = !loadFeedbackImage.value;</span></a>
-<a name="374"><span class="lineNum">     374 </span>            : </a>
-<a name="375"><span class="lineNum">     375 </span>            :         }</a>
-<a name="376"><span class="lineNum">     376 </span><span class="lineCov">          2 :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</span></a>
-<a name="377"><span class="lineNum">     377 </span><span class="lineNoCov">          0 :           Navigator.of(Get.context!).pop();</span></a>
-<a name="378"><span class="lineNum">     378 </span>            :         }</a>
-<a name="379"><span class="lineNum">     379 </span>            :       }</a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">          6 :       Get.find&lt;AuthService&gt;().user.value = currentUser.value;</span></a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineCov">          3 :       await Get.find&lt;AuthController&gt;().getUser();</span></a>
+<a name="310"><span class="lineNum">     310 </span>            : </a>
+<a name="311"><span class="lineNum">     311 </span>            :       //await Get.find&lt;RootController&gt;().changePage(0);</a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
+<a name="313"><span class="lineNum">     313 </span><span class="lineCov">          3 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).profile_info_updated_successful ));</span></a>
+<a name="314"><span class="lineNum">     314 </span>            :     }</a>
+<a name="315"><span class="lineNum">     315 </span>            :     catch (e) {</a>
+<a name="316"><span class="lineNum">     316 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
+<a name="319"><span class="lineNum">     319 </span>            :       }</a>
+<a name="320"><span class="lineNum">     320 </span>            : </a>
+<a name="321"><span class="lineNum">     321 </span>            :     } finally {</a>
+<a name="322"><span class="lineNum">     322 </span><span class="lineCov">          2 :       updateUserInfo.value = false;</span></a>
+<a name="323"><span class="lineNum">     323 </span>            :     }</a>
+<a name="324"><span class="lineNum">     324 </span>            : </a>
+<a name="325"><span class="lineNum">     325 </span>            :   }</a>
+<a name="326"><span class="lineNum">     326 </span>            : </a>
+<a name="327"><span class="lineNum">     327 </span><span class="lineCov">          1 :   feedbackImagePicker(String source) async {</span></a>
+<a name="328"><span class="lineNum">     328 </span><span class="lineCov">          1 :     if(source=='camera'){</span></a>
+<a name="329"><span class="lineNum">     329 </span>            :       final XFile? pickedImage =</a>
+<a name="330"><span class="lineNum">     330 </span><span class="lineNoCov">          0 :       await picker.pickImage(source: ImageSource.camera);</span></a>
+<a name="331"><span class="lineNum">     331 </span>            :       if (pickedImage != null) {</a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineNoCov">          0 :         var imageFile = File(pickedImage.path);</span></a>
+<a name="333"><span class="lineNum">     333 </span><span class="lineNoCov">          0 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
+<a name="334"><span class="lineNum">     334 </span>            :           // coverage:ignore-start</a>
+<a name="335"><span class="lineNum">     335 </span>            :           final tempDir = await getTemporaryDirectory();</a>
+<a name="336"><span class="lineNum">     336 </span>            :           final path = tempDir.path;</a>
+<a name="337"><span class="lineNum">     337 </span>            :           int rand = Math.Random().nextInt(10000);</a>
+<a name="338"><span class="lineNum">     338 </span>            :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</a>
+<a name="339"><span class="lineNum">     339 </span>            :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</a>
+<a name="340"><span class="lineNum">     340 </span>            :           print('Lenght'+compressedImage.lengthSync().toString());</a>
+<a name="341"><span class="lineNum">     341 </span>            :           feedbackImage = compressedImage;</a>
+<a name="342"><span class="lineNum">     342 </span>            :           loadFeedbackImage.value = !loadFeedbackImage.value;</a>
+<a name="343"><span class="lineNum">     343 </span>            : </a>
+<a name="344"><span class="lineNum">     344 </span>            :         }</a>
+<a name="345"><span class="lineNum">     345 </span>            :         else{</a>
+<a name="346"><span class="lineNum">     346 </span>            :           feedbackImage = File(pickedImage.path);</a>
+<a name="347"><span class="lineNum">     347 </span>            :           loadFeedbackImage.value = !loadFeedbackImage.value;</a>
+<a name="348"><span class="lineNum">     348 </span>            : </a>
+<a name="349"><span class="lineNum">     349 </span>            :         }</a>
+<a name="350"><span class="lineNum">     350 </span>            :         Navigator.of(Get.context!).pop();</a>
+<a name="351"><span class="lineNum">     351 </span>            :         //Get.showSnackbar(Ui.SuccessSnackBar(message: &quot;Picture saved successfully&quot;.tr));</a>
+<a name="352"><span class="lineNum">     352 </span>            :         //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();</a>
+<a name="353"><span class="lineNum">     353 </span>            :       }</a>
+<a name="354"><span class="lineNum">     354 </span>            :       // coverage:ignore-end</a>
+<a name="355"><span class="lineNum">     355 </span>            : </a>
+<a name="356"><span class="lineNum">     356 </span>            :     }</a>
+<a name="357"><span class="lineNum">     357 </span>            :     else{</a>
+<a name="358"><span class="lineNum">     358 </span>            :       final XFile? pickedImage =</a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">          2 :       await picker.pickImage(source: ImageSource.gallery);</span></a>
+<a name="360"><span class="lineNum">     360 </span>            :       if (pickedImage != null) {</a>
+<a name="361"><span class="lineNum">     361 </span><span class="lineCov">          2 :         var imageFile = File(pickedImage.path);</span></a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineCov">          3 :         if(imageFile.lengthSync()&gt;pow(1024, 2)){</span></a>
+<a name="363"><span class="lineNum">     363 </span>            :           // coverage:ignore-start</a>
+<a name="364"><span class="lineNum">     364 </span>            :           final tempDir = await getTemporaryDirectory();</a>
+<a name="365"><span class="lineNum">     365 </span>            :           final path = tempDir.path;</a>
+<a name="366"><span class="lineNum">     366 </span>            :           int rand = new Math.Random().nextInt(10000);</a>
+<a name="367"><span class="lineNum">     367 </span>            :           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());</a>
+<a name="368"><span class="lineNum">     368 </span>            :           var compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));</a>
+<a name="369"><span class="lineNum">     369 </span>            :           print('Lenght'+compressedImage.lengthSync().toString());</a>
+<a name="370"><span class="lineNum">     370 </span>            :           feedbackImage = compressedImage;</a>
+<a name="371"><span class="lineNum">     371 </span>            :           currentUser.value.imageFile = feedbackImage;</a>
+<a name="372"><span class="lineNum">     372 </span>            :           loadFeedbackImage.value = !loadFeedbackImage.value;</a>
+<a name="373"><span class="lineNum">     373 </span>            : </a>
+<a name="374"><span class="lineNum">     374 </span>            :         }</a>
+<a name="375"><span class="lineNum">     375 </span>            :         else{</a>
+<a name="376"><span class="lineNum">     376 </span>            :           print(pickedImage);</a>
+<a name="377"><span class="lineNum">     377 </span>            :           feedbackImage = File(pickedImage.path);</a>
+<a name="378"><span class="lineNum">     378 </span>            :           currentUser.value.imageFile = feedbackImage;</a>
+<a name="379"><span class="lineNum">     379 </span>            :           loadFeedbackImage.value = !loadFeedbackImage.value;</a>
 <a name="380"><span class="lineNum">     380 </span>            : </a>
-<a name="381"><span class="lineNum">     381 </span>            :     }</a>
-<a name="382"><span class="lineNum">     382 </span>            :   }</a>
-<a name="383"><span class="lineNum">     383 </span>            : </a>
-<a name="384"><span class="lineNum">     384 </span><span class="lineNoCov">          0 :   void launchWhatsApp(String message) async {</span></a>
-<a name="385"><span class="lineNum">     385 </span><span class="lineNoCov">          0 :     String url() {</span></a>
-<a name="386"><span class="lineNum">     386 </span><span class="lineNoCov">          0 :       if (Platform.isAndroid) {</span></a>
-<a name="387"><span class="lineNum">     387 </span>            :         // add the [https]</a>
-<a name="388"><span class="lineNum">     388 </span><span class="lineNoCov">          0 :         return &quot;https://wa.me/${GlobalService.contactUsNumber}/?text=${Uri.parse(message)}&quot;; // new line</span></a>
-<a name="389"><span class="lineNum">     389 </span>            :       } else {</a>
-<a name="390"><span class="lineNum">     390 </span>            :         // add the [https]</a>
-<a name="391"><span class="lineNum">     391 </span><span class="lineNoCov">          0 :         return &quot;https://api.whatsapp.com/send?phone=${GlobalService.contactUsNumber}=${Uri.parse(message)}&quot;; // new line</span></a>
-<a name="392"><span class="lineNum">     392 </span>            :       }</a>
-<a name="393"><span class="lineNum">     393 </span>            :     }</a>
-<a name="394"><span class="lineNum">     394 </span>            : </a>
-<a name="395"><span class="lineNum">     395 </span><span class="lineNoCov">          0 :     if (await canLaunchUrlString(url())) {</span></a>
-<a name="396"><span class="lineNum">     396 </span><span class="lineNoCov">          0 :       await launchUrlString(url());</span></a>
-<a name="397"><span class="lineNum">     397 </span>            :     } else {</a>
-<a name="398"><span class="lineNum">     398 </span><span class="lineNoCov">          0 :       throw 'Could not launch ${url()}';</span></a>
-<a name="399"><span class="lineNum">     399 </span>            :     }</a>
-<a name="400"><span class="lineNum">     400 </span>            :   }</a>
+<a name="381"><span class="lineNum">     381 </span>            :         }</a>
+<a name="382"><span class="lineNum">     382 </span>            :         if (!Platform.environment.containsKey('FLUTTER_TEST')) {</a>
+<a name="383"><span class="lineNum">     383 </span>            :           Navigator.of(Get.context!).pop();</a>
+<a name="384"><span class="lineNum">     384 </span>            :         }</a>
+<a name="385"><span class="lineNum">     385 </span>            :         // coverage:ignore-end</a>
+<a name="386"><span class="lineNum">     386 </span>            :       }</a>
+<a name="387"><span class="lineNum">     387 </span>            : </a>
+<a name="388"><span class="lineNum">     388 </span>            :     }</a>
+<a name="389"><span class="lineNum">     389 </span>            :   }</a>
+<a name="390"><span class="lineNum">     390 </span>            :   // coverage:ignore-start</a>
+<a name="391"><span class="lineNum">     391 </span>            :   void launchWhatsApp(String message) async {</a>
+<a name="392"><span class="lineNum">     392 </span>            :     String url() {</a>
+<a name="393"><span class="lineNum">     393 </span>            :       if (Platform.isAndroid) {</a>
+<a name="394"><span class="lineNum">     394 </span>            :         // add the [https]</a>
+<a name="395"><span class="lineNum">     395 </span>            :         return &quot;https://wa.me/${GlobalService.contactUsNumber}/?text=${Uri.parse(message)}&quot;; // new line</a>
+<a name="396"><span class="lineNum">     396 </span>            :       } else {</a>
+<a name="397"><span class="lineNum">     397 </span>            :         // add the [https]</a>
+<a name="398"><span class="lineNum">     398 </span>            :         return &quot;https://api.whatsapp.com/send?phone=${GlobalService.contactUsNumber}=${Uri.parse(message)}&quot;; // new line</a>
+<a name="399"><span class="lineNum">     399 </span>            :       }</a>
+<a name="400"><span class="lineNum">     400 </span>            :     }</a>
 <a name="401"><span class="lineNum">     401 </span>            : </a>
-<a name="402"><span class="lineNum">     402 </span>            : </a>
-<a name="403"><span class="lineNum">     403 </span><span class="lineCov">          1 :   sendFeedback()async{</span></a>
-<a name="404"><span class="lineNum">     404 </span>            :     try{</a>
-<a name="405"><span class="lineNum">     405 </span><span class="lineCov">          2 :       showDialog(context: Get.context!, builder: (context){</span></a>
-<a name="406"><span class="lineNum">     406 </span><span class="lineNoCov">          0 :         return CommentLoadingWidget();</span></a>
-<a name="407"><span class="lineNum">     407 </span>            :       },);</a>
-<a name="408"><span class="lineNum">     408 </span><span class="lineNoCov">          0 :       await userRepository.sendFeedback(</span></a>
-<a name="409"><span class="lineNum">     409 </span><span class="lineNoCov">          0 :           FeedbackModel(</span></a>
-<a name="410"><span class="lineNum">     410 </span><span class="lineNoCov">          0 :               feedbackText: feedbackController.text,</span></a>
-<a name="411"><span class="lineNum">     411 </span><span class="lineNoCov">          0 :               imageFile: feedbackImage,</span></a>
-<a name="412"><span class="lineNum">     412 </span><span class="lineNoCov">          0 :               rating: rating.toString()</span></a>
-<a name="413"><span class="lineNum">     413 </span>            :           ));</a>
-<a name="414"><span class="lineNum">     414 </span><span class="lineNoCov">          0 :       Navigator.of(Get.context!).pop();</span></a>
-<a name="415"><span class="lineNum">     415 </span><span class="lineNoCov">          0 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).feedback_created_successful ));</span></a>
-<a name="416"><span class="lineNum">     416 </span>            : </a>
-<a name="417"><span class="lineNum">     417 </span>            :     }</a>
-<a name="418"><span class="lineNum">     418 </span>            :     catch (e) {</a>
-<a name="419"><span class="lineNum">     419 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
-<a name="420"><span class="lineNum">     420 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
-<a name="421"><span class="lineNum">     421 </span>            :       }</a>
-<a name="422"><span class="lineNum">     422 </span>            : </a>
-<a name="423"><span class="lineNum">     423 </span>            :     }</a>
-<a name="424"><span class="lineNum">     424 </span>            :     finally {</a>
-<a name="425"><span class="lineNum">     425 </span>            : </a>
-<a name="426"><span class="lineNum">     426 </span>            :     }</a>
-<a name="427"><span class="lineNum">     427 </span>            : </a>
-<a name="428"><span class="lineNum">     428 </span>            :   }</a>
-<a name="429"><span class="lineNum">     429 </span>            : }</a>
+<a name="402"><span class="lineNum">     402 </span>            :     if (await canLaunchUrlString(url())) {</a>
+<a name="403"><span class="lineNum">     403 </span>            :       await launchUrlString(url());</a>
+<a name="404"><span class="lineNum">     404 </span>            :     } else {</a>
+<a name="405"><span class="lineNum">     405 </span>            :       throw 'Could not launch ${url()}';</a>
+<a name="406"><span class="lineNum">     406 </span>            :     }</a>
+<a name="407"><span class="lineNum">     407 </span>            :   }</a>
+<a name="408"><span class="lineNum">     408 </span>            :   // coverage:ignore-end</a>
+<a name="409"><span class="lineNum">     409 </span>            : </a>
+<a name="410"><span class="lineNum">     410 </span>            : </a>
+<a name="411"><span class="lineNum">     411 </span><span class="lineCov">          1 :   sendFeedback()async{</span></a>
+<a name="412"><span class="lineNum">     412 </span>            :     try{</a>
+<a name="413"><span class="lineNum">     413 </span><span class="lineCov">          2 :       showDialog(context: Get.context!, builder: (context){</span></a>
+<a name="414"><span class="lineNum">     414 </span><span class="lineNoCov">          0 :         return CommentLoadingWidget();</span></a>
+<a name="415"><span class="lineNum">     415 </span>            :       },);</a>
+<a name="416"><span class="lineNum">     416 </span><span class="lineNoCov">          0 :       await userRepository.sendFeedback(</span></a>
+<a name="417"><span class="lineNum">     417 </span><span class="lineNoCov">          0 :           FeedbackModel(</span></a>
+<a name="418"><span class="lineNum">     418 </span><span class="lineNoCov">          0 :               feedbackText: feedbackController.text,</span></a>
+<a name="419"><span class="lineNum">     419 </span><span class="lineNoCov">          0 :               imageFile: feedbackImage,</span></a>
+<a name="420"><span class="lineNum">     420 </span><span class="lineNoCov">          0 :               rating: rating.toString()</span></a>
+<a name="421"><span class="lineNum">     421 </span>            :           ));</a>
+<a name="422"><span class="lineNum">     422 </span><span class="lineNoCov">          0 :       Navigator.of(Get.context!).pop();</span></a>
+<a name="423"><span class="lineNum">     423 </span><span class="lineNoCov">          0 :       Get.showSnackbar(Ui.SuccessSnackBar(message: AppLocalizations.of(Get.context!).feedback_created_successful ));</span></a>
+<a name="424"><span class="lineNum">     424 </span>            : </a>
+<a name="425"><span class="lineNum">     425 </span>            :     }</a>
+<a name="426"><span class="lineNum">     426 </span>            :     catch (e) {</a>
+<a name="427"><span class="lineNum">     427 </span><span class="lineCov">          2 :       if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="428"><span class="lineNum">     428 </span><span class="lineNoCov">          0 :         Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));</span></a>
+<a name="429"><span class="lineNum">     429 </span>            :       }</a>
 <a name="430"><span class="lineNum">     430 </span>            : </a>
-<a name="431"><span class="lineNum">     431 </span>            : </a>
+<a name="431"><span class="lineNum">     431 </span>            :     }</a>
+<a name="432"><span class="lineNum">     432 </span>            :     finally {</a>
+<a name="433"><span class="lineNum">     433 </span>            : </a>
+<a name="434"><span class="lineNum">     434 </span>            :     }</a>
+<a name="435"><span class="lineNum">     435 </span>            : </a>
+<a name="436"><span class="lineNum">     436 </span>            :   }</a>
+<a name="437"><span class="lineNum">     437 </span>            : }</a>
+<a name="438"><span class="lineNum">     438 </span>            : </a>
+<a name="439"><span class="lineNum">     439 </span>            : </a>
 </pre>
       </td>
     </tr>

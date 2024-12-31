@@ -370,28 +370,6 @@ class MockCommunityController extends _i1.Mock
       );
 
   @override
-  _i2.RxBool get createUpdatePosts => (super.noSuchMethod(
-        Invocation.getter(#createUpdatePosts),
-        returnValue: _FakeRxBool_1(
-          this,
-          Invocation.getter(#createUpdatePosts),
-        ),
-        returnValueForMissingStub: _FakeRxBool_1(
-          this,
-          Invocation.getter(#createUpdatePosts),
-        ),
-      ) as _i2.RxBool);
-
-  @override
-  set createUpdatePosts(_i2.RxBool? _createUpdatePosts) => super.noSuchMethod(
-        Invocation.setter(
-          #createUpdatePosts,
-          _createUpdatePosts,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   _i2.RxBool get updatePosts => (super.noSuchMethod(
         Invocation.getter(#updatePosts),
         returnValue: _FakeRxBool_1(
@@ -409,6 +387,28 @@ class MockCommunityController extends _i1.Mock
         Invocation.setter(
           #updatePosts,
           _updatePosts,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i2.RxBool get createUpdatePosts => (super.noSuchMethod(
+        Invocation.getter(#createUpdatePosts),
+        returnValue: _FakeRxBool_1(
+          this,
+          Invocation.getter(#createUpdatePosts),
+        ),
+        returnValueForMissingStub: _FakeRxBool_1(
+          this,
+          Invocation.getter(#createUpdatePosts),
+        ),
+      ) as _i2.RxBool);
+
+  @override
+  set createUpdatePosts(_i2.RxBool? _createUpdatePosts) => super.noSuchMethod(
+        Invocation.setter(
+          #createUpdatePosts,
+          _createUpdatePosts,
         ),
         returnValueForMissingStub: null,
       );

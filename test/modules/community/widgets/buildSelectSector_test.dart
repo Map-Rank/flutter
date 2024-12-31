@@ -13,7 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MockCommunityController extends GetxController with Mock implements CommunityController {
   @override
-  var sectors = <Map<String, dynamic>>[].obs;
+  var sectors = <Map<String, dynamic>>[{"name":'sector 1', "id":1}].obs;
 
   @override
   var loadingSectors = false.obs;

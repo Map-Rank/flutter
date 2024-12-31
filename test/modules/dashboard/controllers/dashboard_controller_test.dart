@@ -6,6 +6,7 @@ import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mapnrank/app/models/post_model.dart';
 import 'package:mapnrank/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:mapnrank/app/repositories/community_repository.dart';
 import 'package:mapnrank/app/repositories/user_repository.dart';
@@ -21,7 +22,7 @@ import '../../dashboard/controllers/dashboard_controller_test.mocks.dart';
 @GenerateMocks([
   UserRepository,
   ZoneRepository,
-  CommunityRepository
+  CommunityRepository,
 
 ])
 void main() {
@@ -31,20 +32,12 @@ void main() {
   late MockUserRepository mockUserRepository;
 
   setUp(() {
-    Get.testMode = true;
     TestWidgetsFlutterBinding.ensureInitialized();
-
-    Get.lazyPut(()=>AuthService());
     mockZoneRepository = MockZoneRepository();
     mockCommunityRepository = MockCommunityRepository();
     mockUserRepository = MockUserRepository();
 
-    dashboardController = DashboardController()
-      ..zoneRepository = mockZoneRepository
-      ..communityRepository = mockCommunityRepository
-      ..userRepository = mockUserRepository;
-    dashboardController.cameroonGeoJson = '';
-
+    Get.lazyPut(()=>AuthService());
 
     const TEST_MOCK_STORAGE = '/test/test_pictures';
     const channel = MethodChannel(
@@ -53,6 +46,19 @@ void main() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
       return TEST_MOCK_STORAGE;
     });
+
+    dashboardController = DashboardController()
+      ..zoneRepository = mockZoneRepository
+      ..communityRepository = mockCommunityRepository
+      ..userRepository = mockUserRepository;
+    dashboardController.cameroonGeoJson = '';
+
+    dashboardController.listAllZones = [{'name':"zone 1"}, {"name":"zone 2"}];
+
+    dashboardController.loadingCameroonGeoJson.value = true;
+
+    dashboardController.listPostsZoneStatistics = [].cast<Map<String, dynamic>>();
+
 
 
 

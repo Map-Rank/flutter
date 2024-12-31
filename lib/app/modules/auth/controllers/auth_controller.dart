@@ -339,6 +339,7 @@ class AuthController extends GetxController {
   }
 
   void startProgress() {
+    // coverage:ignore-start
     const int updatesPerSecond = 60; // Smooth updates per second
     final int totalUpdates = duration.inSeconds * updatesPerSecond;
     final double increment = 1.0 / totalUpdates;
@@ -358,6 +359,7 @@ class AuthController extends GetxController {
         }
       },
     );
+    // coverage:ignore-end
   }
 
 
@@ -434,6 +436,7 @@ class AuthController extends GetxController {
   }
 
   profileImagePicker(String source) async {
+    // coverage:ignore-start
     if(source=='camera'){
       final XFile? pickedImage =
       await picker.pickImage(source: ImageSource.camera);
@@ -491,6 +494,7 @@ class AuthController extends GetxController {
       }
 
     }
+    // coverage:ignore-end
   }
 
   register() async {

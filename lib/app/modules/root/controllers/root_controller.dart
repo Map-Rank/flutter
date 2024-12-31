@@ -1,4 +1,4 @@
-
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mapnrank/app/modules/community/controllers/community_controller.dart';

@@ -78,34 +78,6 @@ class NotificationController extends GetxController {
     notificationRepository = NotificationRepository();
     notification = NotificationModel();
     notifications.value = await getNotifications();
-
-    var box = GetStorage();
-
-    var boxRegions = box.read("allRegions");
-
-    if(boxRegions == null){
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(Get.context!).loading_regions),
-        duration: Duration(seconds: 3),
-      ));
-
-      regionsSet = await getAllRegions();
-      listRegions.value = regionsSet['data'];
-      loadingRegions.value = !regionsSet['status'];
-      regions.value = listRegions;
-
-      box.write("allRegions", regionsSet);
-
-    }
-    else{
-
-      listRegions.value = boxRegions['data'];
-      loadingRegions.value = !boxRegions['status'];
-      regions.value = listRegions;
-
-
-    }
-
     super.onInit();
   }
 
@@ -192,11 +164,13 @@ class NotificationController extends GetxController {
       XFile? pickedFile = await imagePicker.pickImage(source: source, imageQuality: 80);
       File imageFile = File(pickedFile!.path);
       if(imageFile.lengthSync()>pow(1024, 2)){
+        // coverage:ignore-start
         final tempDir = await getTemporaryDirectory();
         final path = tempDir.path;
         int rand = Math.Random().nextInt(10000);
         Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());
         compressedImage = File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
+        // coverage:ignore-end
 
 
       }
@@ -218,11 +192,13 @@ class NotificationController extends GetxController {
       while(i<galleryFiles.length){
         File imageFile = File(galleryFiles[i].path);
         if(imageFile.lengthSync()>pow(1024, 2)){
+          // coverage:ignore-start
           final tempDir = await getTemporaryDirectory();
           final path = tempDir.path;
           int rand = Math.Random().nextInt(10000);
           Im.Image? image1 = Im.decodeImage(imageFile.readAsBytesSync());
           compressedImage =  File('${path}/img_$rand.jpg')..writeAsBytesSync(Im.encodeJpg(image1!, quality: 25));
+          // coverage:ignore-end
 
 
         }

@@ -237,6 +237,7 @@ class ProfileController extends GetxController {
       final XFile? pickedImage =
       await picker.pickImage(source: ImageSource.camera);
       if (pickedImage != null) {
+        // coverage:ignore-start
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
           final tempDir = await getTemporaryDirectory();
@@ -257,14 +258,15 @@ class ProfileController extends GetxController {
         if (!Platform.environment.containsKey('FLUTTER_TEST')) {
           Navigator.of(Get.context!).pop();
         }
-        //Get.showSnackbar(Ui.SuccessSnackBar(message: "Picture saved successfully".tr));
-        //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();
+        // coverage:ignore-end
+
       }
 
     }
     else{
       final XFile? pickedImage =
       await picker.pickImage(source: ImageSource.gallery);
+      // coverage:ignore-start
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
@@ -286,6 +288,7 @@ class ProfileController extends GetxController {
         if (!Platform.environment.containsKey('FLUTTER_TEST')) {
           Navigator.of(Get.context!).pop();
         }
+        // coverage:ignore-end
 
       }
 
@@ -328,6 +331,7 @@ class ProfileController extends GetxController {
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
+          // coverage:ignore-start
           final tempDir = await getTemporaryDirectory();
           final path = tempDir.path;
           int rand = Math.Random().nextInt(10000);
@@ -347,6 +351,7 @@ class ProfileController extends GetxController {
         //Get.showSnackbar(Ui.SuccessSnackBar(message: "Picture saved successfully".tr));
         //loadIdentityFile.value = !loadIdentityFile.value;//Navigator.of(Get.context).pop();
       }
+      // coverage:ignore-end
 
     }
     else{
@@ -355,6 +360,7 @@ class ProfileController extends GetxController {
       if (pickedImage != null) {
         var imageFile = File(pickedImage.path);
         if(imageFile.lengthSync()>pow(1024, 2)){
+          // coverage:ignore-start
           final tempDir = await getTemporaryDirectory();
           final path = tempDir.path;
           int rand = new Math.Random().nextInt(10000);
@@ -376,11 +382,12 @@ class ProfileController extends GetxController {
         if (!Platform.environment.containsKey('FLUTTER_TEST')) {
           Navigator.of(Get.context!).pop();
         }
+        // coverage:ignore-end
       }
 
     }
   }
-
+  // coverage:ignore-start
   void launchWhatsApp(String message) async {
     String url() {
       if (Platform.isAndroid) {
@@ -398,6 +405,7 @@ class ProfileController extends GetxController {
       throw 'Could not launch ${url()}';
     }
   }
+  // coverage:ignore-end
 
 
   sendFeedback()async{

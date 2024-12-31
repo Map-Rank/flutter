@@ -110,8 +110,6 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.pumpAndSettle();
-
     // Verify the controller state change for division selection
    // expect(mockCommunityController.chooseADivision.value, true);
 

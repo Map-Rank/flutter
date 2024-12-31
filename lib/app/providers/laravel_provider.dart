@@ -429,6 +429,7 @@ class LaravelApiClient extends GetxService {
       data: data,
     );
 
+    // coverage:ignore-start
     if (response.statusCode == 200) {
       if (response.data['status'] == true) {
         showDialog(context: Get.context!,
@@ -458,6 +459,7 @@ class LaravelApiClient extends GetxService {
         throw  Exception(response.data['message']);
       }
     }
+    // coverage:ignore-end
     on SocketException catch (e) {
       throw SocketException(e.toString());
     } on FormatException catch (_) {

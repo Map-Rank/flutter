@@ -29,9 +29,7 @@ import 'package:image/image.dart' as Im;
 import 'dart:math' as Math;
 
 // Mock classes
-class MockImagePicker extends Mock implements ImagePicker {
-}
-class MockFile extends Mock implements File {}
+
 class MockGetContext extends Mock implements BuildContext {}
 
 class MockDashboardController extends Mock implements DashboardController {}
@@ -46,9 +44,13 @@ class MockGetStorage extends Mock implements GetStorage {}
 class MockAppLocalizations extends Mock implements AppLocalizations {}
 class MockBuildContext extends Mock implements BuildContext {}
 class MockUi extends Mock implements Ui {}
-class MockImage extends Mock implements Im.Image {}
 // Mock Timer class
 class MockTimer extends Mock implements Timer {}
+
+class MockImageLibrary extends Mock {
+  Im.Image? decodeImage(List<int> bytes);
+  List<int> encodeJpg(Im.Image image, {int quality = 90});
+}
 
 
 @GenerateMocks([
@@ -57,6 +59,11 @@ class MockTimer extends Mock implements Timer {}
   ZoneRepository,
   SectorRepository,
   RootController,
+  ImagePicker,
+  Directory,
+  File,
+  Image,
+
 ])
 void main() {
   late AuthController authController;
@@ -76,6 +83,9 @@ void main() {
   late MockAppLocalizations mockLocalizations;
   late MockBuildContext mockContext;
   late MockImage mockImage;
+  late Im.Image mockDecodedImage;
+  late MockImageLibrary mockImageLibrary;
+  late List<int> encodedImageBytes;
 
 
 
@@ -89,6 +99,9 @@ void main() {
     mockGetStorage = MockGetStorage();
     mockImagePicker = MockImagePicker();
     mockFile = MockFile();
+    mockImageLibrary = MockImageLibrary();
+    mockDecodedImage = Im.Image(width: 100, height: 100);
+    encodedImageBytes = [1, 2, 3, 4]; // C
     mockRootController = MockRootController();
     mockDashboardController = MockDashboardController();
     mockCommunityController = MockCommunityController();
@@ -829,167 +842,6 @@ void main() {
     verify(mockUserRepository.login(any)).called(1);
 
   });
-
-
-  // test('profileImagePicker from camera', () async {
-  //
-  //   // Get a temporary directory
-  //   final directory = await getTemporaryDirectory();
-  //   final path = '${directory.path}/filter.png';
-  //
-  //   // Create a temporary image file
-  //   final file = File(path);
-  //   await file.writeAsBytes(List.generate(100, (index) => index % 256));
-  //
-  //   // Create an XFile object pointing to the temporary image file
-  //   final pickedImage = XFile(file.path);
-  //
-  //   when(authController.picker.pickImage(source: ImageSource.camera))
-  //       .thenAnswer((_) async => pickedImage);
-  //   when(mockFile.path).thenReturn(pickedImage.path);
-  //   when(mockFile.lengthSync()).thenReturn(500000); // file size less than 1MB
-  //
-  //   // Act
-  //   await authController.profileImagePicker('camera');
-  //
-  //   // Assert
-  //   expect(authController.profileImage, isNotNull);
-  //   expect(authController.profileImage!.path, pickedImage.path);
-  //
-  // });
-  //
-  // test('profileImagePicker from gallery', () async {
-  //   // Arrange
-  //   final directory = await getTemporaryDirectory();
-  //   final path = '${directory.path}/filter.png';
-  //
-  //   // Create a temporary image file
-  //   final file = File(path);
-  //   await file.writeAsBytes(List.generate(100, (index) => index % 256));
-  //
-  //   // Create an XFile object pointing to the temporary image file
-  //   final pickedImage = XFile(file.path);
-  //   when(mockImagePicker.pickImage(source: ImageSource.gallery))
-  //       .thenAnswer((_) async => pickedImage);
-  //   when(mockFile.path).thenReturn(pickedImage.path);
-  //   when(mockFile.lengthSync()).thenReturn(500000); // file size less than 1MB
-  //
-  //   // Act
-  //   await authController.profileImagePicker('gallery');
-  //
-  //   // Assert
-  //   expect(authController.profileImage, isNotNull);
-  //   expect(authController.profileImage!.path, pickedImage.path);
-  //
-  // });
-
-//   test('should handle image picked from camera and compress if larger than 1MB', () async {
-//     final pickedImage = XFile('/test/test_pictures/filter.png');
-//     // when(mockImagePicker.pickImage(source: ImageSource.camera))
-//     //     .thenAnswer((_) async => pickedImage);
-//     // when(mockFile.lengthSync()).thenReturn(int.parse('${pow(1024, 2) + 1}')); // Larger than 1MB
-//     // when(mockFile.readAsBytesSync()).thenReturn(Uint8List(0));
-//     // when(mockFile.writeAsBytesSync([])).thenReturn(null);
-//     // when(Im.decodeImage(Uint8List(0))).thenReturn(mockImage);
-//     // when(Im.encodeJpg(mockImage, quality: 25)).thenReturn(Uint8List(0));
-//     final directory = await getTemporaryDirectory();
-//       final path = '${directory.path}/filter.png';
-//
-//       // Create a temporary image file
-//       final file = File(path);
-//       authController.profileImage = file;
-//       authController.picker = ImagePicker();
-//
-//     await authController.profileImagePicker('camera');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.camera)).called(1);
-//     verify(mockFile.writeAsBytesSync([])).called(1);
-//     expect(authController.profileImage, isNotNull);
-//     expect(authController.loadProfileImage.value, true);
-//   });
-//
-//   test('should handle image picked from camera and do not compress if smaller than 1MB', () async {
-//     final pickedImage = XFile('/test/test_pictures/filter.png');
-//     when(mockImagePicker.pickImage(source: ImageSource.camera))
-//         .thenAnswer((_) async => pickedImage);
-//     when(mockFile.lengthSync()).thenReturn(int.parse('${pow(1024, 2) + 1}')); // Smaller than 1MB
-//
-//     await authController.profileImagePicker('camera');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.camera)).called(1);
-//     expect(authController.profileImage, isNotNull);
-//     expect(authController.loadProfileImage.value, true);
-//   });
-//
-//   test('should handle image picked from gallery and compress if larger than 1MB', () async {
-//     final pickedImage = XFile('/test/test_pictures/filter.png');
-//     when(mockImagePicker.pickImage(source: ImageSource.gallery))
-//         .thenAnswer((_) async => pickedImage);
-//     when(mockFile.lengthSync()).thenReturn(int.parse('${pow(1024, 2) + 1}')); // Larger than 1MB
-//     when(mockFile.readAsBytesSync()).thenReturn(Uint8List(0));
-//     when(mockFile.writeAsBytesSync([])).thenReturn(null);
-//     when(Im.decodeImage(Uint8List(0))).thenReturn(mockImage);
-//     when(Im.encodeJpg(mockImage, quality: 25)).thenReturn(Uint8List(0));
-//
-//     await authController.profileImagePicker('gallery');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.gallery)).called(1);
-//     verify(mockFile.writeAsBytesSync([])).called(1);
-//     expect(authController.profileImage, isNotNull);
-//     expect(authController.loadProfileImage.value, true);
-//   });
-//
-//   test('should handle image picked from gallery and do not compress if smaller than 1MB', () async {
-//     final pickedImage = XFile('/test/test_pictures/filter.png');
-//     when(mockImagePicker.pickImage(source: ImageSource.gallery))
-//         .thenAnswer((_) async => pickedImage);
-//     when(mockFile.lengthSync()).thenReturn(int.parse('${pow(1024, 2) + 1}')); // Smaller than 1MB
-//
-//     await authController.profileImagePicker('gallery');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.gallery)).called(1);
-//     expect(authController.profileImage, isNotNull);
-//     expect(authController.loadProfileImage.value, true);
-//   });
-//
-//   test('should handle no image picked from camera', () async {
-//     when(mockImagePicker.pickImage(source: ImageSource.camera)).thenAnswer((_) async => null);
-//
-//     await authController.profileImagePicker('camera');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.camera)).called(1);
-//     expect(authController.profileImage, isNull);
-//     expect(authController.loadProfileImage.value, false);
-//   });
-//
-//   test('should handle no image picked from gallery', () async {
-//     when(mockImagePicker.pickImage(source: ImageSource.gallery)).thenAnswer((_) async => null);
-//
-//     await authController.profileImagePicker('gallery');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.gallery)).called(1);
-//     expect(authController.profileImage, isNull);
-//     expect(authController.loadProfileImage.value, false);
-//   });
-//
-//   test('should handle errors during image picking', () async {
-//     when(mockImagePicker.pickImage(source: ImageSource.camera)).thenThrow(Exception('Error'));
-//
-//     await authController.profileImagePicker('camera');
-//
-//     // Verify interactions
-//     verify(mockImagePicker.pickImage(source: ImageSource.camera)).called(1);
-//     expect(authController.profileImage, isNull);
-//     expect(authController.loadProfileImage.value, false);
-//
-// });
-
 
 
   tearDown(() {

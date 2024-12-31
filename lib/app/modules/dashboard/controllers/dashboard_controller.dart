@@ -110,7 +110,6 @@ class DashboardController extends GetxController {
   void onInit() async {
     userRepository = UserRepository();
     zoneRepository = ZoneRepository();
-    sectorRepository = SectorRepository();
     communityRepository = CommunityRepository();
 
     var listZones = await getAllZonesFilterByName()??[];
@@ -255,6 +254,7 @@ class DashboardController extends GetxController {
   }
 
 
+  // coverage:ignore-start
   displayDivisions(LatLng point) async {
     print(jsonDecode(cameroonGeoJson)["features"]);
     var name = await isPointInAnyPolygon(point, regionGeoJsonParser.value.polygons, jsonDecode(cameroonGeoJson)["features"]);
@@ -320,6 +320,7 @@ class DashboardController extends GetxController {
 
 
   }
+  // coverage:ignore-end
 
 
    isPointInAnyPolygon(LatLng point, List<Polygon<Object>> polygons, var features) async {

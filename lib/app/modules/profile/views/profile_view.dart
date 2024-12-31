@@ -355,7 +355,6 @@ class ProfileView extends GetView<ProfileController> {
                 ),
               ),
               GestureDetector(
-                key: Key('signoutkey'),
                 onTap: (() {
                   Get.lazyPut(()=>AuthController());
                   if(! Platform.environment.containsKey('FLUTTER_TEST')){
@@ -385,6 +384,7 @@ class ProfileView extends GetView<ProfileController> {
                     ),);
                 }),
                 child: Container(
+                  key: Key('logOutKey'),
                   decoration: BoxDecoration(
                       color: Colors.black.withOpacity(.03),
                       borderRadius: BorderRadius.circular(14.0)),
@@ -432,6 +432,7 @@ class ProfileView extends GetView<ProfileController> {
                   Get.find<AuthController>().loading.value = false;
                   showDialog(context: context,
                     builder: (context) => AlertDialog(
+                      key: Key('deleteAccountDialog'),
                       insetPadding: EdgeInsets.all(20),
                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),
                       title:  Text(AppLocalizations.of(context).delete_account),
@@ -453,6 +454,7 @@ class ProfileView extends GetView<ProfileController> {
                     ),);
                 }),
                 child: Container(
+                  key: Key('deleteAccountKey'),
                   decoration: BoxDecoration(
                       color: Colors.black.withOpacity(.03),
                       borderRadius: BorderRadius.circular(14.0)),

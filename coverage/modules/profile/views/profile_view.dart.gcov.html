@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">154</td>
-            <td class="headerCovTableEntry">216</td>
-            <td class="headerCovTableEntryLo">71.3 %</td>
+            <td class="headerCovTableEntry">184</td>
+            <td class="headerCovTableEntry">218</td>
+            <td class="headerCovTableEntryMed">84.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2024-12-23 11:38:51</td>
+            <td class="headerValue">2024-12-31 17:22:10</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -417,36 +417,36 @@
 <a name="355"><span class="lineNum">     355 </span>            :                 ),</a>
 <a name="356"><span class="lineNum">     356 </span>            :               ),</a>
 <a name="357"><span class="lineNum">     357 </span><span class="lineCov">          1 :               GestureDetector(</span></a>
-<a name="358"><span class="lineNum">     358 </span><span class="lineCov">          1 :                 key: Key('signoutkey'),</span></a>
-<a name="359"><span class="lineNum">     359 </span><span class="lineNoCov">          0 :                 onTap: (() {</span></a>
-<a name="360"><span class="lineNum">     360 </span><span class="lineNoCov">          0 :                   Get.lazyPut(()=&gt;AuthController());</span></a>
-<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 :                   if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
-<a name="362"><span class="lineNum">     362 </span><span class="lineNoCov">          0 :                     Get.find&lt;AuthController&gt;().loading.value = false;</span></a>
-<a name="363"><span class="lineNum">     363 </span>            :                   }</a>
-<a name="364"><span class="lineNum">     364 </span><span class="lineNoCov">          0 :                   showDialog(context: context,</span></a>
-<a name="365"><span class="lineNum">     365 </span><span class="lineNoCov">          0 :                     builder: (context) =&gt; AlertDialog(</span></a>
-<a name="366"><span class="lineNum">     366 </span><span class="lineNoCov">          0 :                       key: Key('logout_app'),</span></a>
-<a name="367"><span class="lineNum">     367 </span><span class="lineNoCov">          0 :                       insetPadding: EdgeInsets.all(20),</span></a>
-<a name="368"><span class="lineNum">     368 </span><span class="lineNoCov">          0 :                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),</span></a>
-<a name="369"><span class="lineNum">     369 </span><span class="lineNoCov">          0 :                       title:  Text(AppLocalizations.of(context).logout),</span></a>
-<a name="370"><span class="lineNum">     370 </span><span class="lineNoCov">          0 :                       content: Obx(() =&gt;  !Get.find&lt;AuthController&gt;().loading.value ?Text(AppLocalizations.of(context).sign_out_warning, textAlign: TextAlign.justify, style: TextStyle(),)</span></a>
-<a name="371"><span class="lineNum">     371 </span><span class="lineNoCov">          0 :                           : SizedBox(height: 30,</span></a>
-<a name="372"><span class="lineNum">     372 </span><span class="lineNoCov">          0 :                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),</span></a>
-<a name="373"><span class="lineNum">     373 </span><span class="lineNoCov">          0 :                       actions: [</span></a>
-<a name="374"><span class="lineNum">     374 </span><span class="lineNoCov">          0 :                         TextButton(onPressed: (){</span></a>
-<a name="375"><span class="lineNum">     375 </span><span class="lineNoCov">          0 :                           Get.find&lt;AuthController&gt;().logout();</span></a>
-<a name="376"><span class="lineNum">     376 </span><span class="lineNoCov">          0 :                           Get.lazyPut(()=&gt;AuthController());</span></a>
-<a name="377"><span class="lineNum">     377 </span><span class="lineNoCov">          0 :                         }, child: Text(AppLocalizations.of(context).exit, style: TextStyle(color: Colors.red),)),</span></a>
-<a name="378"><span class="lineNum">     378 </span>            : </a>
-<a name="379"><span class="lineNum">     379 </span><span class="lineNoCov">          0 :                         TextButton(onPressed: (){</span></a>
-<a name="380"><span class="lineNum">     380 </span><span class="lineNoCov">          0 :                           Navigator.of(context).pop();</span></a>
-<a name="381"><span class="lineNum">     381 </span><span class="lineNoCov">          0 :                         }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),</span></a>
-<a name="382"><span class="lineNum">     382 </span>            : </a>
-<a name="383"><span class="lineNum">     383 </span>            :                       ],</a>
-<a name="384"><span class="lineNum">     384 </span>            : </a>
-<a name="385"><span class="lineNum">     385 </span>            :                     ),);</a>
-<a name="386"><span class="lineNum">     386 </span>            :                 }),</a>
-<a name="387"><span class="lineNum">     387 </span><span class="lineCov">          1 :                 child: Container(</span></a>
+<a name="358"><span class="lineNum">     358 </span><span class="lineCov">          1 :                 onTap: (() {</span></a>
+<a name="359"><span class="lineNum">     359 </span><span class="lineCov">          2 :                   Get.lazyPut(()=&gt;AuthController());</span></a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">          2 :                   if(! Platform.environment.containsKey('FLUTTER_TEST')){</span></a>
+<a name="361"><span class="lineNum">     361 </span><span class="lineNoCov">          0 :                     Get.find&lt;AuthController&gt;().loading.value = false;</span></a>
+<a name="362"><span class="lineNum">     362 </span>            :                   }</a>
+<a name="363"><span class="lineNum">     363 </span><span class="lineCov">          1 :                   showDialog(context: context,</span></a>
+<a name="364"><span class="lineNum">     364 </span><span class="lineCov">          2 :                     builder: (context) =&gt; AlertDialog(</span></a>
+<a name="365"><span class="lineNum">     365 </span><span class="lineCov">          1 :                       key: Key('logout_app'),</span></a>
+<a name="366"><span class="lineNum">     366 </span><span class="lineCov">          1 :                       insetPadding: EdgeInsets.all(20),</span></a>
+<a name="367"><span class="lineNum">     367 </span><span class="lineCov">          1 :                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),</span></a>
+<a name="368"><span class="lineNum">     368 </span><span class="lineCov">          3 :                       title:  Text(AppLocalizations.of(context).logout),</span></a>
+<a name="369"><span class="lineNum">     369 </span><span class="lineCov">         10 :                       content: Obx(() =&gt;  !Get.find&lt;AuthController&gt;().loading.value ?Text(AppLocalizations.of(context).sign_out_warning, textAlign: TextAlign.justify, style: TextStyle(),)</span></a>
+<a name="370"><span class="lineNum">     370 </span><span class="lineNoCov">          0 :                           : SizedBox(height: 30,</span></a>
+<a name="371"><span class="lineNum">     371 </span><span class="lineNoCov">          0 :                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),</span></a>
+<a name="372"><span class="lineNum">     372 </span><span class="lineCov">          1 :                       actions: [</span></a>
+<a name="373"><span class="lineNum">     373 </span><span class="lineCov">          1 :                         TextButton(onPressed: (){</span></a>
+<a name="374"><span class="lineNum">     374 </span><span class="lineNoCov">          0 :                           Get.find&lt;AuthController&gt;().logout();</span></a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineNoCov">          0 :                           Get.lazyPut(()=&gt;AuthController());</span></a>
+<a name="376"><span class="lineNum">     376 </span><span class="lineCov">          4 :                         }, child: Text(AppLocalizations.of(context).exit, style: TextStyle(color: Colors.red),)),</span></a>
+<a name="377"><span class="lineNum">     377 </span>            : </a>
+<a name="378"><span class="lineNum">     378 </span><span class="lineCov">          1 :                         TextButton(onPressed: (){</span></a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineNoCov">          0 :                           Navigator.of(context).pop();</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">          4 :                         }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),</span></a>
+<a name="381"><span class="lineNum">     381 </span>            : </a>
+<a name="382"><span class="lineNum">     382 </span>            :                       ],</a>
+<a name="383"><span class="lineNum">     383 </span>            : </a>
+<a name="384"><span class="lineNum">     384 </span>            :                     ),);</a>
+<a name="385"><span class="lineNum">     385 </span>            :                 }),</a>
+<a name="386"><span class="lineNum">     386 </span><span class="lineCov">          1 :                 child: Container(</span></a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">          1 :                   key: Key('logOutKey'),</span></a>
 <a name="388"><span class="lineNum">     388 </span><span class="lineCov">          1 :                   decoration: BoxDecoration(</span></a>
 <a name="389"><span class="lineNum">     389 </span><span class="lineCov">          1 :                       color: Colors.black.withOpacity(.03),</span></a>
 <a name="390"><span class="lineNum">     390 </span><span class="lineCov">          1 :                       borderRadius: BorderRadius.circular(14.0)),</span></a>
@@ -490,94 +490,96 @@
 <a name="428"><span class="lineNum">     428 </span>            :                 height: 16,</a>
 <a name="429"><span class="lineNum">     429 </span>            :               ),</a>
 <a name="430"><span class="lineNum">     430 </span><span class="lineCov">          1 :               GestureDetector(</span></a>
-<a name="431"><span class="lineNum">     431 </span><span class="lineNoCov">          0 :                 onTap: (() {</span></a>
-<a name="432"><span class="lineNum">     432 </span><span class="lineNoCov">          0 :                   Get.find&lt;AuthController&gt;().loading.value = false;</span></a>
-<a name="433"><span class="lineNum">     433 </span><span class="lineNoCov">          0 :                   showDialog(context: context,</span></a>
-<a name="434"><span class="lineNum">     434 </span><span class="lineNoCov">          0 :                     builder: (context) =&gt; AlertDialog(</span></a>
-<a name="435"><span class="lineNum">     435 </span><span class="lineNoCov">          0 :                       insetPadding: EdgeInsets.all(20),</span></a>
-<a name="436"><span class="lineNum">     436 </span><span class="lineNoCov">          0 :                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),</span></a>
-<a name="437"><span class="lineNum">     437 </span><span class="lineNoCov">          0 :                       title:  Text(AppLocalizations.of(context).delete_account),</span></a>
-<a name="438"><span class="lineNum">     438 </span><span class="lineNoCov">          0 :                       content: Obx(() =&gt;  !Get.find&lt;AuthController&gt;().loading.value ?Text(AppLocalizations.of(context).delete_account_warning, textAlign: TextAlign.justify, style: TextStyle(),)</span></a>
-<a name="439"><span class="lineNum">     439 </span><span class="lineNoCov">          0 :                           : SizedBox(height: 30,</span></a>
-<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 :                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),</span></a>
-<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :                       actions: [</span></a>
-<a name="442"><span class="lineNum">     442 </span><span class="lineNoCov">          0 :                         TextButton(onPressed: (){</span></a>
-<a name="443"><span class="lineNum">     443 </span><span class="lineNoCov">          0 :                           Get.find&lt;AuthController&gt;().deleteAccount();</span></a>
-<a name="444"><span class="lineNum">     444 </span><span class="lineNoCov">          0 :                           Get.lazyPut(()=&gt;AuthController());</span></a>
-<a name="445"><span class="lineNum">     445 </span><span class="lineNoCov">          0 :                         }, child: Text(AppLocalizations.of(context).delete, style: TextStyle(color: Colors.red),)),</span></a>
-<a name="446"><span class="lineNum">     446 </span>            : </a>
-<a name="447"><span class="lineNum">     447 </span><span class="lineNoCov">          0 :                         TextButton(onPressed: (){</span></a>
-<a name="448"><span class="lineNum">     448 </span><span class="lineNoCov">          0 :                           Navigator.of(context).pop();</span></a>
-<a name="449"><span class="lineNum">     449 </span><span class="lineNoCov">          0 :                         }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),</span></a>
-<a name="450"><span class="lineNum">     450 </span>            : </a>
-<a name="451"><span class="lineNum">     451 </span>            :                       ],</a>
-<a name="452"><span class="lineNum">     452 </span>            : </a>
-<a name="453"><span class="lineNum">     453 </span>            :                     ),);</a>
-<a name="454"><span class="lineNum">     454 </span>            :                 }),</a>
-<a name="455"><span class="lineNum">     455 </span><span class="lineCov">          1 :                 child: Container(</span></a>
-<a name="456"><span class="lineNum">     456 </span><span class="lineCov">          1 :                   decoration: BoxDecoration(</span></a>
-<a name="457"><span class="lineNum">     457 </span><span class="lineCov">          1 :                       color: Colors.black.withOpacity(.03),</span></a>
-<a name="458"><span class="lineNum">     458 </span><span class="lineCov">          1 :                       borderRadius: BorderRadius.circular(14.0)),</span></a>
-<a name="459"><span class="lineNum">     459 </span><span class="lineCov">          1 :                   child: ListTile(</span></a>
-<a name="460"><span class="lineNum">     460 </span><span class="lineCov">          1 :                     leading: Container(</span></a>
-<a name="461"><span class="lineNum">     461 </span>            :                       height: 45,</a>
-<a name="462"><span class="lineNum">     462 </span>            :                       width: 45,</a>
-<a name="463"><span class="lineNum">     463 </span><span class="lineCov">          1 :                       decoration: BoxDecoration(</span></a>
-<a name="464"><span class="lineNum">     464 </span>            :                           shape: BoxShape.circle,</a>
-<a name="465"><span class="lineNum">     465 </span><span class="lineCov">          1 :                           color: Colors.black.withOpacity(.05)),</span></a>
-<a name="466"><span class="lineNum">     466 </span>            :                       child: const Icon(</a>
-<a name="467"><span class="lineNum">     467 </span>            :                         Icons.delete_forever,</a>
-<a name="468"><span class="lineNum">     468 </span>            :                         size: 27,</a>
-<a name="469"><span class="lineNum">     469 </span>            :                         color: Colors.black,</a>
-<a name="470"><span class="lineNum">     470 </span>            :                       ),</a>
-<a name="471"><span class="lineNum">     471 </span>            :                     ),</a>
-<a name="472"><span class="lineNum">     472 </span><span class="lineCov">          1 :                     title: Padding(</span></a>
-<a name="473"><span class="lineNum">     473 </span><span class="lineCov">          1 :                       padding: EdgeInsets.only(bottom: 6.0),</span></a>
-<a name="474"><span class="lineNum">     474 </span><span class="lineCov">          1 :                       child: Text(</span></a>
-<a name="475"><span class="lineNum">     475 </span><span class="lineCov">          2 :                         AppLocalizations.of(context).delete_account,</span></a>
-<a name="476"><span class="lineNum">     476 </span><span class="lineCov">          1 :                         style: TextStyle(</span></a>
-<a name="477"><span class="lineNum">     477 </span>            :                           color: Colors.black,</a>
-<a name="478"><span class="lineNum">     478 </span>            :                           fontWeight: FontWeight.w700,</a>
-<a name="479"><span class="lineNum">     479 </span>            :                           fontSize: 18.0,</a>
-<a name="480"><span class="lineNum">     480 </span>            :                         ),</a>
-<a name="481"><span class="lineNum">     481 </span>            :                       ),</a>
-<a name="482"><span class="lineNum">     482 </span>            :                     ),</a>
-<a name="483"><span class="lineNum">     483 </span><span class="lineCov">          1 :                     subtitle: Text(</span></a>
-<a name="484"><span class="lineNum">     484 </span><span class="lineCov">          2 :                       AppLocalizations.of(context).delete_account_of_app,</span></a>
-<a name="485"><span class="lineNum">     485 </span><span class="lineCov">          1 :                       style: TextStyle(color: Colors.grey, fontSize: 14.0),</span></a>
-<a name="486"><span class="lineNum">     486 </span>            :                     ),</a>
-<a name="487"><span class="lineNum">     487 </span>            :                     trailing: const Icon(</a>
-<a name="488"><span class="lineNum">     488 </span>            :                       Icons.navigate_next_rounded,</a>
-<a name="489"><span class="lineNum">     489 </span>            :                       size: 24,</a>
-<a name="490"><span class="lineNum">     490 </span>            :                       color: Colors.black,</a>
-<a name="491"><span class="lineNum">     491 </span>            :                     ),</a>
-<a name="492"><span class="lineNum">     492 </span>            :                   ),</a>
-<a name="493"><span class="lineNum">     493 </span>            :                 ),</a>
-<a name="494"><span class="lineNum">     494 </span>            :               ),</a>
-<a name="495"><span class="lineNum">     495 </span>            :               const SizedBox(</a>
-<a name="496"><span class="lineNum">     496 </span>            :                 height: 16,</a>
-<a name="497"><span class="lineNum">     497 </span>            :               ),</a>
-<a name="498"><span class="lineNum">     498 </span>            :               const SizedBox(</a>
-<a name="499"><span class="lineNum">     499 </span>            :                 height: 60,</a>
-<a name="500"><span class="lineNum">     500 </span>            :               ),</a>
-<a name="501"><span class="lineNum">     501 </span>            :               const Row(</a>
-<a name="502"><span class="lineNum">     502 </span>            :                 mainAxisAlignment: MainAxisAlignment.center,</a>
-<a name="503"><span class="lineNum">     503 </span>            :                 children: [</a>
-<a name="504"><span class="lineNum">     504 </span>            :                   Text(</a>
-<a name="505"><span class="lineNum">     505 </span>            :                     'Version 0.1-2024',</a>
-<a name="506"><span class="lineNum">     506 </span>            :                     style: TextStyle(color: Colors.grey, fontSize: 12.0),</a>
-<a name="507"><span class="lineNum">     507 </span>            :                   ),</a>
-<a name="508"><span class="lineNum">     508 </span>            :                 ],</a>
-<a name="509"><span class="lineNum">     509 </span>            :               )</a>
-<a name="510"><span class="lineNum">     510 </span>            :             ],</a>
-<a name="511"><span class="lineNum">     511 </span>            :           ),</a>
-<a name="512"><span class="lineNum">     512 </span>            :         ),</a>
-<a name="513"><span class="lineNum">     513 </span>            :       ),</a>
-<a name="514"><span class="lineNum">     514 </span>            :     ));</a>
-<a name="515"><span class="lineNum">     515 </span>            :   }</a>
-<a name="516"><span class="lineNum">     516 </span>            : }</a>
-<a name="517"><span class="lineNum">     517 </span>            : </a>
-<a name="518"><span class="lineNum">     518 </span>            : </a>
+<a name="431"><span class="lineNum">     431 </span><span class="lineCov">          1 :                 onTap: (() {</span></a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineCov">          4 :                   Get.find&lt;AuthController&gt;().loading.value = false;</span></a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">          1 :                   showDialog(context: context,</span></a>
+<a name="434"><span class="lineNum">     434 </span><span class="lineCov">          2 :                     builder: (context) =&gt; AlertDialog(</span></a>
+<a name="435"><span class="lineNum">     435 </span><span class="lineCov">          1 :                       key: Key('deleteAccountDialog'),</span></a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineCov">          1 :                       insetPadding: EdgeInsets.all(20),</span></a>
+<a name="437"><span class="lineNum">     437 </span><span class="lineCov">          1 :                       icon: Icon(FontAwesomeIcons.warning, color: Colors.orange,),</span></a>
+<a name="438"><span class="lineNum">     438 </span><span class="lineCov">          3 :                       title:  Text(AppLocalizations.of(context).delete_account),</span></a>
+<a name="439"><span class="lineNum">     439 </span><span class="lineCov">         10 :                       content: Obx(() =&gt;  !Get.find&lt;AuthController&gt;().loading.value ?Text(AppLocalizations.of(context).delete_account_warning, textAlign: TextAlign.justify, style: TextStyle(),)</span></a>
+<a name="440"><span class="lineNum">     440 </span><span class="lineNoCov">          0 :                           : SizedBox(height: 30,</span></a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineNoCov">          0 :                           child: SpinKitThreeBounce(color: interfaceColor, size: 20)),),</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineCov">          1 :                       actions: [</span></a>
+<a name="443"><span class="lineNum">     443 </span><span class="lineCov">          1 :                         TextButton(onPressed: (){</span></a>
+<a name="444"><span class="lineNum">     444 </span><span class="lineNoCov">          0 :                           Get.find&lt;AuthController&gt;().deleteAccount();</span></a>
+<a name="445"><span class="lineNum">     445 </span><span class="lineNoCov">          0 :                           Get.lazyPut(()=&gt;AuthController());</span></a>
+<a name="446"><span class="lineNum">     446 </span><span class="lineCov">          4 :                         }, child: Text(AppLocalizations.of(context).delete, style: TextStyle(color: Colors.red),)),</span></a>
+<a name="447"><span class="lineNum">     447 </span>            : </a>
+<a name="448"><span class="lineNum">     448 </span><span class="lineCov">          1 :                         TextButton(onPressed: (){</span></a>
+<a name="449"><span class="lineNum">     449 </span><span class="lineNoCov">          0 :                           Navigator.of(context).pop();</span></a>
+<a name="450"><span class="lineNum">     450 </span><span class="lineCov">          4 :                         }, child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: interfaceColor),)),</span></a>
+<a name="451"><span class="lineNum">     451 </span>            : </a>
+<a name="452"><span class="lineNum">     452 </span>            :                       ],</a>
+<a name="453"><span class="lineNum">     453 </span>            : </a>
+<a name="454"><span class="lineNum">     454 </span>            :                     ),);</a>
+<a name="455"><span class="lineNum">     455 </span>            :                 }),</a>
+<a name="456"><span class="lineNum">     456 </span><span class="lineCov">          1 :                 child: Container(</span></a>
+<a name="457"><span class="lineNum">     457 </span><span class="lineCov">          1 :                   key: Key('deleteAccountKey'),</span></a>
+<a name="458"><span class="lineNum">     458 </span><span class="lineCov">          1 :                   decoration: BoxDecoration(</span></a>
+<a name="459"><span class="lineNum">     459 </span><span class="lineCov">          1 :                       color: Colors.black.withOpacity(.03),</span></a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineCov">          1 :                       borderRadius: BorderRadius.circular(14.0)),</span></a>
+<a name="461"><span class="lineNum">     461 </span><span class="lineCov">          1 :                   child: ListTile(</span></a>
+<a name="462"><span class="lineNum">     462 </span><span class="lineCov">          1 :                     leading: Container(</span></a>
+<a name="463"><span class="lineNum">     463 </span>            :                       height: 45,</a>
+<a name="464"><span class="lineNum">     464 </span>            :                       width: 45,</a>
+<a name="465"><span class="lineNum">     465 </span><span class="lineCov">          1 :                       decoration: BoxDecoration(</span></a>
+<a name="466"><span class="lineNum">     466 </span>            :                           shape: BoxShape.circle,</a>
+<a name="467"><span class="lineNum">     467 </span><span class="lineCov">          1 :                           color: Colors.black.withOpacity(.05)),</span></a>
+<a name="468"><span class="lineNum">     468 </span>            :                       child: const Icon(</a>
+<a name="469"><span class="lineNum">     469 </span>            :                         Icons.delete_forever,</a>
+<a name="470"><span class="lineNum">     470 </span>            :                         size: 27,</a>
+<a name="471"><span class="lineNum">     471 </span>            :                         color: Colors.black,</a>
+<a name="472"><span class="lineNum">     472 </span>            :                       ),</a>
+<a name="473"><span class="lineNum">     473 </span>            :                     ),</a>
+<a name="474"><span class="lineNum">     474 </span><span class="lineCov">          1 :                     title: Padding(</span></a>
+<a name="475"><span class="lineNum">     475 </span><span class="lineCov">          1 :                       padding: EdgeInsets.only(bottom: 6.0),</span></a>
+<a name="476"><span class="lineNum">     476 </span><span class="lineCov">          1 :                       child: Text(</span></a>
+<a name="477"><span class="lineNum">     477 </span><span class="lineCov">          2 :                         AppLocalizations.of(context).delete_account,</span></a>
+<a name="478"><span class="lineNum">     478 </span><span class="lineCov">          1 :                         style: TextStyle(</span></a>
+<a name="479"><span class="lineNum">     479 </span>            :                           color: Colors.black,</a>
+<a name="480"><span class="lineNum">     480 </span>            :                           fontWeight: FontWeight.w700,</a>
+<a name="481"><span class="lineNum">     481 </span>            :                           fontSize: 18.0,</a>
+<a name="482"><span class="lineNum">     482 </span>            :                         ),</a>
+<a name="483"><span class="lineNum">     483 </span>            :                       ),</a>
+<a name="484"><span class="lineNum">     484 </span>            :                     ),</a>
+<a name="485"><span class="lineNum">     485 </span><span class="lineCov">          1 :                     subtitle: Text(</span></a>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">          2 :                       AppLocalizations.of(context).delete_account_of_app,</span></a>
+<a name="487"><span class="lineNum">     487 </span><span class="lineCov">          1 :                       style: TextStyle(color: Colors.grey, fontSize: 14.0),</span></a>
+<a name="488"><span class="lineNum">     488 </span>            :                     ),</a>
+<a name="489"><span class="lineNum">     489 </span>            :                     trailing: const Icon(</a>
+<a name="490"><span class="lineNum">     490 </span>            :                       Icons.navigate_next_rounded,</a>
+<a name="491"><span class="lineNum">     491 </span>            :                       size: 24,</a>
+<a name="492"><span class="lineNum">     492 </span>            :                       color: Colors.black,</a>
+<a name="493"><span class="lineNum">     493 </span>            :                     ),</a>
+<a name="494"><span class="lineNum">     494 </span>            :                   ),</a>
+<a name="495"><span class="lineNum">     495 </span>            :                 ),</a>
+<a name="496"><span class="lineNum">     496 </span>            :               ),</a>
+<a name="497"><span class="lineNum">     497 </span>            :               const SizedBox(</a>
+<a name="498"><span class="lineNum">     498 </span>            :                 height: 16,</a>
+<a name="499"><span class="lineNum">     499 </span>            :               ),</a>
+<a name="500"><span class="lineNum">     500 </span>            :               const SizedBox(</a>
+<a name="501"><span class="lineNum">     501 </span>            :                 height: 60,</a>
+<a name="502"><span class="lineNum">     502 </span>            :               ),</a>
+<a name="503"><span class="lineNum">     503 </span>            :               const Row(</a>
+<a name="504"><span class="lineNum">     504 </span>            :                 mainAxisAlignment: MainAxisAlignment.center,</a>
+<a name="505"><span class="lineNum">     505 </span>            :                 children: [</a>
+<a name="506"><span class="lineNum">     506 </span>            :                   Text(</a>
+<a name="507"><span class="lineNum">     507 </span>            :                     'Version 0.1-2024',</a>
+<a name="508"><span class="lineNum">     508 </span>            :                     style: TextStyle(color: Colors.grey, fontSize: 12.0),</a>
+<a name="509"><span class="lineNum">     509 </span>            :                   ),</a>
+<a name="510"><span class="lineNum">     510 </span>            :                 ],</a>
+<a name="511"><span class="lineNum">     511 </span>            :               )</a>
+<a name="512"><span class="lineNum">     512 </span>            :             ],</a>
+<a name="513"><span class="lineNum">     513 </span>            :           ),</a>
+<a name="514"><span class="lineNum">     514 </span>            :         ),</a>
+<a name="515"><span class="lineNum">     515 </span>            :       ),</a>
+<a name="516"><span class="lineNum">     516 </span>            :     ));</a>
+<a name="517"><span class="lineNum">     517 </span>            :   }</a>
+<a name="518"><span class="lineNum">     518 </span>            : }</a>
+<a name="519"><span class="lineNum">     519 </span>            : </a>
+<a name="520"><span class="lineNum">     520 </span>            : </a>
 </pre>
       </td>
     </tr>
